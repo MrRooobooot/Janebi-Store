@@ -7,9 +7,10 @@ import { useToast } from '../contexts/ToastContext';
 import { useCart } from '../contexts/CartContext';
 import { motion } from 'motion/react';
 import { Product } from '../types';
-import { useState } from 'react';
+import { useState, memo } from 'react';
 
-export default function ProductCard({ product }: { product: Product }) {
+// ⚡ Bolt: Wrapped in React.memo to prevent unnecessary re-renders when parent grids/lists re-render
+const ProductCard = memo(function ProductCard({ product }: { product: Product }) {
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { toggleCompare, isInCompare } = useCompare();
   const { addToCart } = useCart();
@@ -122,4 +123,6 @@ export default function ProductCard({ product }: { product: Product }) {
       </button>
     </motion.div>
   );
-}
+});
+
+export default ProductCard;
