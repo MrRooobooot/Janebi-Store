@@ -42,6 +42,7 @@ export default function Header() {
             {/* Mobile: hamburger — only shown when search is closed */}
             {!mobileSearchOpen && (
               <button
+                aria-label={mobileMenuOpen ? "بستن منو" : "باز کردن منو"}
                 className="lg:hidden p-2 text-gray-600 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 focus:outline-none rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
@@ -83,6 +84,7 @@ export default function Header() {
                   />
                 </div>
                 <button
+                  aria-label="بستن جستجو"
                   onClick={() => setMobileSearchOpen(false)}
                   className="mr-3 p-2 text-gray-500 dark:text-gray-400 hover:text-orange-600 shrink-0"
                 >
@@ -96,6 +98,7 @@ export default function Header() {
           <div className="flex items-center gap-1.5 sm:gap-2.5 md:gap-3">
             {/* Mobile Search Icon */}
             <button
+              aria-label="جستجو"
               onClick={() => { setMobileSearchOpen(true); setMobileMenuOpen(false); }}
               className="md:hidden p-2 rounded-xl text-gray-600 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               title="جستجو"
@@ -276,7 +279,7 @@ export default function Header() {
             <HeaderSearch onSearchSubmit={() => setMobileMenuOpen(false)} />
           </div>
           <div className="flex justify-around mb-4 sm:hidden pb-4 border-b border-gray-100 dark:border-gray-800">
-            <button onClick={toggleTheme} className="flex flex-col items-center text-gray-600 dark:text-gray-300 hover:text-orange-600">
+            <button aria-label={isDarkMode ? "حالت روز" : "حالت شب"} onClick={toggleTheme} className="flex flex-col items-center text-gray-600 dark:text-gray-300 hover:text-orange-600">
               {isDarkMode ? <Sun className="h-6 w-6 text-amber-400" /> : <Moon className="h-6 w-6" />}
               <span className="text-xs mt-1">{isDarkMode ? 'روز' : 'شب'}</span>
             </button>
