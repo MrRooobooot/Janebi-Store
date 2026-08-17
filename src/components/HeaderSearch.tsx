@@ -191,6 +191,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
           {/* Right Icon: Search */}
           <button
             type="submit"
+            aria-label="جستجو"
             className="absolute right-3.5 flex items-center justify-center text-gray-400 hover:text-orange-600 transition-colors"
             title="جستجو"
           >
@@ -205,6 +206,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
             {query && !loading && (
               <button
                 type="button"
+                aria-label="پاک کردن"
                 onClick={() => {
                   setQuery('');
                   setResults([]);
@@ -383,6 +385,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
                           <span>{item}</span>
                           <button
                             type="button"
+                            aria-label={`حذف ${item} از جستجوهای اخیر`}
                             onClick={(e) => removeRecentSearch(e, item)}
                             className="text-gray-400 hover:text-red-500 p-0.5 rounded-full"
                           >
