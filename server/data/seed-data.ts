@@ -209,7 +209,7 @@ export const ALL_BRANDS = [
   {
     name: "Anker",
     faName: "انکر",
-    logo: "https://cdn.simpleicons.org/anker/00A3E0",
+    logo: "/brands/anker.svg",
     image: "https://images.unsplash.com/photo-1609592424074-32b00ff37207?auto=format&fit=crop&w=600&q=80",
     count: 24,
     desc: "پیشرو در تولید شارژر، پاوربانک و تجهیزات شارژ فوق سریع"
@@ -217,7 +217,7 @@ export const ALL_BRANDS = [
   {
     name: "Apple",
     faName: "اپل",
-    logo: "https://cdn.simpleicons.org/apple/000000/ffffff",
+    logo: "/brands/apple.svg",
     image: "https://images.unsplash.com/photo-1603313011101-320f26a4f6f6?auto=format&fit=crop&w=600&q=80",
     count: 35,
     desc: "لوازم جانبی اصلی و تایید شده MFi برای آیفون و اپل واچ"
@@ -225,7 +225,7 @@ export const ALL_BRANDS = [
   {
     name: "Samsung",
     faName: "سامسونگ",
-    logo: "https://cdn.simpleicons.org/samsung/1428A0",
+    logo: "/brands/samsung.svg",
     image: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=600&q=80",
     count: 28,
     desc: "شارژرهای دیواری اصلی سوپر فست، گلس و هندزفری‌های گلکسی"
@@ -233,7 +233,7 @@ export const ALL_BRANDS = [
   {
     name: "Baseus",
     faName: "بیسوس",
-    logo: "https://images.unsplash.com/photo-1622445268465-843d63d69b30?auto=format&fit=crop&w=150&q=80",
+    logo: "/brands/baseus.svg",
     image: "https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=600&q=80",
     count: 42,
     desc: "طراحی مدرن و تکنولوژی نوآورانه در لوازم جانبی خودرو و دیجیتال"
@@ -241,7 +241,7 @@ export const ALL_BRANDS = [
   {
     name: "Xiaomi",
     faName: "شیائومی",
-    logo: "https://cdn.simpleicons.org/xiaomi/FF6900",
+    logo: "/brands/xiaomi.svg",
     image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=600&q=80",
     count: 30,
     desc: "هندزفری‌های اقتصادی، پاوربانک‌های باکیفیت و اکسسوری همراه"
@@ -249,10 +249,26 @@ export const ALL_BRANDS = [
   {
     name: "Nillkin",
     faName: "نیلکین",
-    logo: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?auto=format&fit=crop&w=150&q=80",
+    logo: "/brands/nillkin.svg",
     image: "https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=600&q=80",
     count: 18,
     desc: "تخصصی‌ترین برند تولید قاب‌های ضدضربه و محافظ لنز دوربین"
+  },
+  {
+    name: "Sony",
+    faName: "سونی",
+    logo: "/brands/sony.svg",
+    image: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=600&q=80",
+    count: 15,
+    desc: "برترین تکنولوژی نویزکنسلینگ و کیفیت صدای بی‌نظیر Hi-Res"
+  },
+  {
+    name: "JBL",
+    faName: "جی‌بی‌ال",
+    logo: "/brands/jbl.svg",
+    image: "https://images.unsplash.com/photo-1589003077984-894e133dabab?auto=format&fit=crop&w=600&q=80",
+    count: 12,
+    desc: "اسپیکرهای بلوتوثی پرتابل ضدآب و هندزفری‌های ورزشی"
   }
 ];
 

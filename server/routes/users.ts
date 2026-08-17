@@ -157,20 +157,20 @@ router.delete('/me/addresses/:id', validate(idParamSchema), async (req: AuthRequ
   const addressId = req.params.id as string;
 
   try {
-    const deleted = db.transaction((tx) => {
-      const target = tx.select().from(addresses).where(and(eq(addresses.id, addressId), eq(addresses.userId, userId))).get();
+    const deleted = await db.transaction(async (tx) => {
+      const targetList = await tx.select().from(addresses).where(and(eq(addresses.id, addressId), eq(addresses.userId, userId))).limit(1);
+      const target = targetList[0];
       if (!target) {
         return null;
       }
 
-      tx.delete(addresses)
-        .where(and(eq(addresses.id, addressId), eq(addresses.userId, userId)))
-        .run();
+      await tx.delete(addresses)
+        .where(and(eq(addresses.id, addressId), eq(addresses.userId, userId)));
 
       if (target.isDefault) {
-        const remaining = tx.select().from(addresses).where(eq(addresses.userId, userId)).orderBy(desc(addresses.id)).limit(1).get();
-        if (remaining) {
-          tx.update(addresses).set({ isDefault: true }).where(eq(addresses.id, remaining.id)).run();
+        const remainingList = await tx.select().from(addresses).where(eq(addresses.userId, userId)).orderBy(desc(addresses.id)).limit(1);
+        if (remainingList.length > 0) {
+          await tx.update(addresses).set({ isDefault: true }).where(eq(addresses.id, remainingList[0].id));
         }
       }
 
@@ -191,23 +191,22 @@ router.put('/me/addresses/:id/default', validate(idParamSchema), async (req: Aut
   const addressId = req.params.id as string;
 
   try {
-    const success = db.transaction((tx) => {
-      const target = tx.select().from(addresses).where(and(eq(addresses.id, addressId), eq(addresses.userId, userId))).get();
+    const success = await db.transaction(async (tx) => {
+      const targetList = await tx.select().from(addresses).where(and(eq(addresses.id, addressId), eq(addresses.userId, userId))).limit(1);
+      const target = targetList[0];
       if (!target) {
         return false;
       }
 
       // Set all user addresses to not default
-      tx.update(addresses)
+      await tx.update(addresses)
         .set({ isDefault: false })
-        .where(eq(addresses.userId, userId))
-        .run();
+        .where(eq(addresses.userId, userId));
         
       // Set the selected one to default
-      tx.update(addresses)
+      await tx.update(addresses)
         .set({ isDefault: true })
-        .where(and(eq(addresses.id, addressId), eq(addresses.userId, userId)))
-        .run();
+        .where(and(eq(addresses.id, addressId), eq(addresses.userId, userId)));
 
       return true;
     });

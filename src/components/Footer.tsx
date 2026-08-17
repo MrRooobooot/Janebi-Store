@@ -7,7 +7,7 @@ export default function Footer() {
   const [email, setEmail] = useState('');
   const { addToast } = useToast();
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
@@ -15,9 +15,21 @@ export default function Footer() {
       return;
     }
     
-    if (email.trim()) {
-      addToast('با موفقیت در خبرنامه عضو شدید', 'success');
-      setEmail('');
+    try {
+      const res = await fetch('/api/contact/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        addToast(data.message || 'با موفقیت در خبرنامه عضو شدید', 'success');
+        setEmail('');
+      } else {
+        addToast(data.error || 'خطا در ثبت عضویت خبرنامه', 'error');
+      }
+    } catch {
+      addToast('خطا در برقراری ارتباط با سرور', 'error');
     }
   };
 

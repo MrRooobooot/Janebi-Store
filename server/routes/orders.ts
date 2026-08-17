@@ -3,7 +3,7 @@ import { validate } from '../middleware/validate.js';
 import { orderSubmitSchema } from '../validators/index.js';
 import { db } from '../db/index.js';
 import { orders, orderItems, products, cartItems, coupons } from '../db/schema.js';
-import { desc, eq, and, inArray, sql } from 'drizzle-orm';
+import { desc, eq, and, gte, inArray, sql } from 'drizzle-orm';
 
 import { authenticate, AuthRequest } from '../middleware/auth.js';
 
@@ -61,7 +61,7 @@ router.post('/', validate(orderSubmitSchema), async (req: AuthRequest, res) => {
     const dateStr = new Intl.DateTimeFormat("fa-IR", { year: "numeric", month: "long", day: "numeric" }).format(today);
     
     // We will do everything in a single transaction
-    const newOrder = db.transaction((tx) => {
+    const newOrder = await db.transaction(async (tx) => {
       // Aggregate duplicate items by productId
       const itemMap = new Map<number, number>();
       for (const item of items) {
@@ -81,7 +81,7 @@ router.post('/', validate(orderSubmitSchema), async (req: AuthRequest, res) => {
         throw new Error('سبد خرید خالی است');
       }
 
-      const dbProducts = tx.select().from(products).where(inArray(products.id, productIds)).all();
+      const dbProducts = await tx.select().from(products).where(inArray(products.id, productIds));
 
       let realSubtotal = 0;
       const finalItems: any[] = [];
@@ -114,7 +114,8 @@ router.post('/', validate(orderSubmitSchema), async (req: AuthRequest, res) => {
       // Handle Coupon
       let realDiscount = 0;
       if (couponCode) {
-        const coupon = tx.select().from(coupons).where(eq(coupons.code, couponCode.toUpperCase())).get();
+        const couponList = await tx.select().from(coupons).where(eq(coupons.code, couponCode.toUpperCase())).limit(1);
+        const coupon = couponList[0];
         
         if (!coupon || !coupon.active) {
           throw new Error('کد تخفیف نامعتبر است یا منقضی شده است');
@@ -154,10 +155,10 @@ router.post('/', validate(orderSubmitSchema), async (req: AuthRequest, res) => {
         recipientPostalCode: recipient.postalCode
       };
 
-      tx.insert(orders).values(orderData).run();
+      await tx.insert(orders).values(orderData);
 
       for (const item of finalItems) {
-        tx.insert(orderItems).values({
+        await tx.insert(orderItems).values({
           orderId,
           productId: item.id,
           price: item.price,
@@ -165,15 +166,20 @@ router.post('/', validate(orderSubmitSchema), async (req: AuthRequest, res) => {
           title: item.title,
           image: item.image,
           brand: item.brand || 'نامشخص'
-        }).run();
+        });
         
-        // Decrement stock exactly
-        tx.update(products)
+        // Decrement stock atomically with constraint
+        const updated = await tx.update(products)
           .set({ stockQuantity: sql`stockQuantity - ${item.quantity}` })
-          .where(eq(products.id, item.id)).run();
+          .where(and(eq(products.id, item.id), gte(products.stockQuantity, item.quantity)))
+          .returning({ id: products.id, stockQuantity: products.stockQuantity });
+
+        if (!updated || updated.length === 0) {
+          throw new Error(`موجودی محصول ${item.title} کافی نیست`);
+        }
       }
       
-      tx.delete(cartItems).where(eq(cartItems.userId, userId)).run();
+      await tx.delete(cartItems).where(eq(cartItems.userId, userId));
 
       return {
         ...orderData,
@@ -197,8 +203,9 @@ router.post('/:id/cancel', async (req: AuthRequest, res) => {
   const orderId = req.params.id as string;
 
   try {
-    const cancelledOrder = db.transaction((tx) => {
-      const order = tx.select().from(orders).where(eq(orders.id, orderId)).get();
+    const cancelledOrder = await db.transaction(async (tx) => {
+      const orderList = await tx.select().from(orders).where(eq(orders.id, orderId)).limit(1);
+      const order = orderList[0];
       if (!order) {
         throw { status: 404, message: 'سفارش یافت نشد' };
       }
@@ -211,24 +218,22 @@ router.post('/:id/cancel', async (req: AuthRequest, res) => {
         throw { status: 400, message: 'امکان لغو این سفارش وجود ندارد' };
       }
 
-      const itemsToRestock = tx.select().from(orderItems).where(eq(orderItems.orderId, orderId)).all();
+      const itemsToRestock = await tx.select().from(orderItems).where(eq(orderItems.orderId, orderId));
       for (const item of itemsToRestock) {
-        tx.update(products)
+        await tx.update(products)
           .set({ stockQuantity: sql`stockQuantity + ${item.qty}` })
-          .where(eq(products.id, item.productId))
-          .run();
+          .where(eq(products.id, item.productId));
       }
 
-      tx.update(orders)
+      await tx.update(orders)
         .set({
           status: 'cancelled',
           statusText: 'لغو شده توسط کاربر'
         })
-        .where(eq(orders.id, orderId))
-        .run();
+        .where(eq(orders.id, orderId));
 
-      const updated = tx.select().from(orders).where(eq(orders.id, orderId)).get();
-      return updated;
+      const updatedList = await tx.select().from(orders).where(eq(orders.id, orderId)).limit(1);
+      return updatedList[0];
     });
 
     res.json({

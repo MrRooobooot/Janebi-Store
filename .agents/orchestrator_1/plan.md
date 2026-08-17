@@ -1,36 +1,35 @@
-# Master Plan: Janebi-Store Comprehensive Audit, Edge-Case Testing & Verification
+# Master Plan: Janebi-Store Phase 2 (PostgreSQL Migration & Staging)
 
 ## Objective
-Fulfill all requirements in `ORIGINAL_REQUEST.md`:
-1. R1: Deep-Dive Edge Case & Stress Testing (Inventory/Concurrency, Coupons, Payment/Order Idempotency, Auth/RBAC, Address Book & Profile).
-2. R2: Frontend UI & Form Validation Verification (Phone format, Persian digits, LTR inputs, modal rendering/React Portals).
-3. R3: Automated Regression & Test Suite Expansion (Vitest + Supertest 100% pass rate, zero warnings/flake, clean build).
+Execute all Phase 2 requirements from `ORIGINAL_REQUEST.md`:
+1. R1: PostgreSQL Driver & Dual-Dialect Configuration (`server/db/`, `server/env.ts`, `docker-compose.yml`, `.env`).
+2. R2: PostgreSQL Schema & Migration Verification (`server/db/schema.pg.ts`, `drizzle/pg/`, `drizzle.pg.config.ts`).
+3. R3: High-Concurrency Transaction & Stock Lock Verification (atomic decrement, rollback integrity under race conditions).
+4. R4: Regression Safety & Test Suite Pass (100% pass rate on `npm test`, clean build on `npm run build`).
 
-## Phase 0: Survey & Scope Mapping (Parallel Explorers)
-- Spawn Explorer 1: Backend Architecture, APIs, DB Schema, Transactions & Concurrency.
-- Spawn Explorer 2: Frontend Components, Forms, Modals, RTL/LTR styling, Digit conversion.
-- Spawn Explorer 3: Existing Test Suite, Vitest/Supertest configuration, SQLite test isolation, Build setup.
+## Phase 0: Survey & Current State Assessment (Parallel Explorers)
+- **Explorer 1 (`explorer_pg_survey_1`)**: Database layer survey (`server/db/`, `server/env.ts`, dual-dialect connection support, SQLite vs Postgres drivers, pooling, and configuration).
+- **Explorer 2 (`explorer_pg_survey_2`)**: Schema & Migrations survey (`server/db/schema.ts`, `server/db/schema.pg.ts`, `drizzle/pg/`, `drizzle.pg.config.ts`, DDL generation, column types, FKs).
+- **Explorer 3 (`explorer_pg_survey_3`)**: Concurrency, Transactions & Test Suite survey (Transaction rollback mechanisms, atomic stock decrement SQL/Drizzle queries, Vitest suite compatibility, build pipeline).
 
-## Phase 1: Global Decomposition & Architecture Specification
-- Synthesize survey findings into `PROJECT.md` & `TEST_INFRA.md`.
-- Establish Feature Inventory, Milestone breakdowns, and Interface Contracts.
+## Phase 1: Synthesis & Decomposition (PROJECT.md & Work Packages)
+- Synthesize explorer findings.
+- Formulate milestone work packages:
+  - M1: Dual-Dialect DB Connection & Environment Config (`server/db/`, `server/env.ts`, `.env`, `docker-compose.yml`).
+  - M2: PostgreSQL Schema, Relations & Drizzle Migration Generator (`server/db/schema.pg.ts`, `drizzle.pg.config.ts`, `drizzle/pg/`).
+  - M3: Concurrency Transaction Hardening & Dual-Dialect Atomic Stock Locks (`server/routes/orders.ts`, transaction isolation, rollback verification).
+  - M4: Integration Test Suite Verification & Dual-Dialect Concurrency Testing (`npm test`, PostgreSQL mock/in-memory or integration tests, regression checks).
 
-## Phase 2: Dual Track Execution
-- **Track 1: Implementation & Hardening**
-  - M1: Backend Concurrency, Inventory Lock, Rollbacks, and Order/Payment Idempotency.
-  - M2: Coupon Calculation Engine, Expiration/Thresholds, and Address Book Atomicity.
-  - M3: Auth & RBAC Security Boundaries (Tokens, Admin 403, Profile mutations).
-  - M4: Frontend Form Validation, Persian/English digits, LTR fields, and React Portal Modals.
-- **Track 2: Comprehensive Test Suite & Regression**
-  - E2E / Integration test expansion across all tiers (Tier 1 Feature Coverage, Tier 2 Boundary/Corner, Tier 3 Cross-Feature, Tier 4 Workloads).
-  - Negative tests covering 400, 401, 403, 404 for all endpoints.
+## Phase 2: Execution & Implementation
+- Dispatch workers for each milestone with strict file ownership.
+- Verify intermediate builds and tests.
 
-## Phase 3: Adversarial Verification & Forensic Audit
-- Tier 5 Adversarial Stress & Concurrency Testing (Challenger).
-- Code Review & Static Analysis (Reviewer).
-- Integrity Forensics Audit (Auditor - Hard Veto).
+## Phase 3: Gate Checks & Audits
+- Independent Reviewers (`teamwork_preview_reviewer` x2).
+- Empirical Challengers (`teamwork_preview_challenger` x2 - stress/concurrency testing).
+- Forensic Integrity Auditor (`teamwork_preview_auditor` - binary veto).
 
 ## Phase 4: Final Acceptance Verification & Reporting
-- Full test suite run (100% pass rate).
-- Production build validation (`npm run build`).
-- Summary reporting to user/parent agent.
+- Full automated test suite verification (`npm test` 100% pass).
+- Production build verification (`npm run build`).
+- Final handoff and completion reporting to parent.

@@ -128,3 +128,19 @@ CREATE TABLE `wishlist_items` (
 	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON UPDATE no action ON DELETE no action
 );
+--> statement-breakpoint
+CREATE TABLE `contact_messages` (
+	`id` text PRIMARY KEY NOT NULL,
+	`name` text NOT NULL,
+	`email` text NOT NULL,
+	`phone` text,
+	`subject` text,
+	`message` text NOT NULL,
+	`status` text DEFAULT 'unread' NOT NULL,
+	`created_at` text NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE `newsletter_subscribers` (
+	`email` text PRIMARY KEY NOT NULL,
+	`subscribed_at` text NOT NULL
+);

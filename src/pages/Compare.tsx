@@ -93,7 +93,7 @@ export default function Compare() {
 
                       <div className="flex flex-col items-center text-center">
                         <Link
-                          to={`/product/${item.id}`}
+                          to={`/products/${item.id}`}
                           className="w-32 h-32 mb-4 bg-white dark:bg-gray-800 rounded-2xl p-2 flex items-center justify-center border border-gray-100 dark:border-gray-700 group-hover:border-orange-200 dark:group-hover:border-orange-800/50 transition-colors"
                         >
                           <img
@@ -104,7 +104,7 @@ export default function Compare() {
                         </Link>
 
                         <Link
-                          to={`/product/${item.id}`}
+                          to={`/products/${item.id}`}
                           className="font-bold text-gray-900 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-400 line-clamp-2 mb-3 text-xs sm:text-sm transition-colors h-10 leading-snug"
                         >
                           {item.title}

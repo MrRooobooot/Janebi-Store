@@ -123,25 +123,24 @@ router.get('/verify', async (req, res) => {
       return res.redirect(`/checkout/callback?status=success&orderId=${order.id}&ref_id=${order.refId || ''}`);
     }
 
-    const restockOrder = (tx: any, orderId: string) => {
-      const itemsToRestock = tx.select().from(orderItems).where(eq(orderItems.orderId, orderId)).all();
+    const restockOrder = async (tx: any, orderId: string) => {
+      const itemsToRestock = await tx.select().from(orderItems).where(eq(orderItems.orderId, orderId));
       for (const item of itemsToRestock) {
-        tx.update(products)
+        await tx.update(products)
           .set({ stockQuantity: sql`stockQuantity + ${item.qty}` })
-          .where(eq(products.id, item.productId))
-          .run();
+          .where(eq(products.id, item.productId));
       }
-      tx.update(orders)
+      await tx.update(orders)
         .set({ status: 'cancelled', statusText: 'لغو شده (پرداخت ناموفق)' })
-        .where(eq(orders.id, orderId))
-        .run();
+        .where(eq(orders.id, orderId));
     };
 
     if (status !== 'OK') {
-      db.transaction((tx) => {
-        const currentOrder = tx.select().from(orders).where(eq(orders.id, order.id)).get();
+      await db.transaction(async (tx) => {
+        const currentOrderList = await tx.select().from(orders).where(eq(orders.id, order.id)).limit(1);
+        const currentOrder = currentOrderList[0];
         if (!currentOrder || currentOrder.status !== 'pending_payment') return;
-        restockOrder(tx, order.id);
+        await restockOrder(tx, order.id);
       });
       
       return res.redirect(`/checkout/callback?status=failed&orderId=${order.id}`);
@@ -150,17 +149,17 @@ router.get('/verify', async (req, res) => {
     // Dummy merchant handling for testing
     if (authority.startsWith('DUMMY_AUTH_')) {
       const dummyRefId = `REF-${Math.floor(Math.random() * 1000000)}`;
-      db.transaction((tx) => {
-        const currentOrder = tx.select().from(orders).where(eq(orders.id, order.id)).get();
+      await db.transaction(async (tx) => {
+        const currentOrderList = await tx.select().from(orders).where(eq(orders.id, order.id)).limit(1);
+        const currentOrder = currentOrderList[0];
         if (!currentOrder || currentOrder.status !== 'pending_payment') return;
-        tx.update(orders)
+        await tx.update(orders)
           .set({ 
             status: 'processing', 
             statusText: 'در حال پردازش (پرداخت موفق)',
             refId: dummyRefId
           })
-          .where(eq(orders.id, order.id))
-          .run();
+          .where(eq(orders.id, order.id));
       });
       
       return res.redirect(`/checkout/callback?status=success&orderId=${order.id}&ref_id=${dummyRefId}`);
@@ -188,26 +187,27 @@ router.get('/verify', async (req, res) => {
     if (responseData.data && (responseData.data.code === 100 || responseData.data.code === 101)) {
       const refId = responseData.data.ref_id.toString();
       
-      db.transaction((tx) => {
-        const currentOrder = tx.select().from(orders).where(eq(orders.id, order.id)).get();
+      await db.transaction(async (tx) => {
+        const currentOrderList = await tx.select().from(orders).where(eq(orders.id, order.id)).limit(1);
+        const currentOrder = currentOrderList[0];
         if (!currentOrder || currentOrder.status !== 'pending_payment') return;
-        tx.update(orders)
+        await tx.update(orders)
           .set({ 
             status: 'processing', 
             statusText: 'در حال پردازش (پرداخت موفق)',
             refId: refId
           })
-          .where(eq(orders.id, order.id))
-          .run();
+          .where(eq(orders.id, order.id));
       });
       
       return res.redirect(`/checkout/callback?status=success&orderId=${order.id}&ref_id=${refId}`);
     } else {
       console.error('ZarinPal Verify Error:', responseData);
-      db.transaction((tx) => {
-        const currentOrder = tx.select().from(orders).where(eq(orders.id, order.id)).get();
+      await db.transaction(async (tx) => {
+        const currentOrderList = await tx.select().from(orders).where(eq(orders.id, order.id)).limit(1);
+        const currentOrder = currentOrderList[0];
         if (!currentOrder || currentOrder.status !== 'pending_payment') return;
-        restockOrder(tx, order.id);
+        await restockOrder(tx, order.id);
       });
       
       return res.redirect(`/checkout/callback?status=failed&orderId=${order.id}`);

@@ -25,10 +25,28 @@ router.get('/stats', async (req, res) => {
 
     const totalOrders = (await db.select({ count: sql<number>`count(*)` }).from(orders))[0].count;
 
+    // Status breakdown
+    const allOrdersList = await db.select({ status: orders.status }).from(orders);
+    const statusCounts: Record<string, number> = {
+      pending_payment: 0,
+      processing: 0,
+      shipped: 0,
+      delivered: 0,
+      cancelled: 0,
+    };
+    for (const o of allOrdersList) {
+      if (statusCounts[o.status] !== undefined) {
+        statusCounts[o.status]++;
+      }
+    }
+
+    // Low stock products (stock <= 5)
+    const lowStockProducts = await db.select().from(products).where(sql`stockQuantity <= 5`).limit(8);
+
     // Recent orders
     const recentOrders = await db.query.orders.findMany({
       orderBy: [desc(orders.date)],
-      limit: 5,
+      limit: 6,
       with: { items: true }
     });
 
@@ -37,8 +55,11 @@ router.get('/stats', async (req, res) => {
         totalUsers,
         totalProducts,
         totalRevenue,
-        totalOrders
+        totalOrders,
+        lowStockCount: lowStockProducts.length
       },
+      statusCounts,
+      lowStockProducts,
       recentOrders
     });
   } catch (error) {
@@ -165,12 +186,12 @@ router.delete('/products/:id', async (req, res) => {
       return res.status(404).json({ error: 'محصول یافت نشد', message: 'محصول یافت نشد' });
     }
 
-    db.transaction((tx) => {
-      tx.delete(productFeatures).where(eq(productFeatures.productId, prodId)).run();
-      tx.delete(cartItems).where(eq(cartItems.productId, prodId)).run();
-      tx.delete(wishlistItems).where(eq(wishlistItems.productId, prodId)).run();
-      tx.delete(reviews).where(eq(reviews.productId, prodId)).run();
-      tx.delete(products).where(eq(products.id, prodId)).run();
+    await db.transaction(async (tx) => {
+      await tx.delete(productFeatures).where(eq(productFeatures.productId, prodId));
+      await tx.delete(cartItems).where(eq(cartItems.productId, prodId));
+      await tx.delete(wishlistItems).where(eq(wishlistItems.productId, prodId));
+      await tx.delete(reviews).where(eq(reviews.productId, prodId));
+      await tx.delete(products).where(eq(products.id, prodId));
     });
 
     res.json({ message: 'محصول با موفقیت حذف شد' });
@@ -280,6 +301,161 @@ router.delete('/coupons/:code', async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'Internal server error' });
   }
+});
+
+// ---------------------------------------------------------
+// CONTACT MESSAGES MANAGEMENT
+// ---------------------------------------------------------
+router.get('/contact-messages', async (req, res) => {
+  try {
+    const { contactMessages } = await import('../db/schema.js');
+    const messages = await db.select().from(contactMessages);
+    res.json(messages);
+  } catch (error) {
+    console.error('Fetch contact messages error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+router.put('/contact-messages/:id/status', async (req, res) => {
+  try {
+    const { contactMessages } = await import('../db/schema.js');
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!['unread', 'read', 'resolved'].includes(status)) {
+      return res.status(400).json({ message: 'Invalid status' });
+    }
+
+    await db.update(contactMessages)
+      .set({ status })
+      .where(eq(contactMessages.id, id));
+
+    res.json({ success: true, message: 'وضعیت پیام بروزرسانی شد' });
+  } catch (error) {
+    console.error('Update contact message status error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+router.put('/products/:id/stock', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { stockQuantity } = req.body;
+    const prodId = parseInt(id);
+
+    if (isNaN(prodId) || stockQuantity === undefined || isNaN(parseInt(stockQuantity))) {
+      return res.status(400).json({ error: 'مقدار موجودی نامعتبر است' });
+    }
+
+    const [updated] = await db.update(products)
+      .set({ stockQuantity: Math.max(0, parseInt(stockQuantity)) })
+      .where(eq(products.id, prodId))
+      .returning();
+
+    if (!updated) {
+      return res.status(404).json({ error: 'محصول یافت نشد' });
+    }
+
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ message: 'خطای سرور در بروزرسانی موجودی' });
+  }
+});
+
+router.put('/orders/:id/tracking', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { refId } = req.body;
+
+    const [updated] = await db.update(orders)
+      .set({ refId: refId ? String(refId).trim() : null })
+      .where(eq(orders.id, id))
+      .returning();
+
+    if (!updated) {
+      return res.status(404).json({ error: 'سفارش یافت نشد' });
+    }
+
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ message: 'خطای سرور در ثبت کد رهگیری' });
+  }
+});
+
+// ---------------------------------------------------------
+// REVIEWS MANAGEMENT
+// ---------------------------------------------------------
+router.get('/reviews', async (req, res) => {
+  try {
+    const allReviews = await db.query.reviews.findMany({
+      orderBy: [desc(reviews.date)],
+      with: { product: true }
+    });
+    res.json(allReviews);
+  } catch (error) {
+    console.error('Fetch admin reviews error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+router.delete('/reviews/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await db.delete(reviews).where(eq(reviews.id, id));
+    res.json({ success: true, message: 'نظر با موفقیت حذف شد' });
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// ---------------------------------------------------------
+// NEWSLETTER MANAGEMENT
+// ---------------------------------------------------------
+router.get('/newsletter', async (req, res) => {
+  try {
+    const { newsletterSubscribers } = await import('../db/schema.js');
+    const subscribers = await db.select().from(newsletterSubscribers);
+    res.json(subscribers);
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+router.delete('/newsletter/:email', async (req, res) => {
+  try {
+    const { newsletterSubscribers } = await import('../db/schema.js');
+    const { email } = req.params;
+    await db.delete(newsletterSubscribers).where(eq(newsletterSubscribers.email, email.toLowerCase()));
+    res.json({ success: true, message: 'عضویت با موفقیت حذف شد' });
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// ---------------------------------------------------------
+// STORE SETTINGS
+// ---------------------------------------------------------
+let storeSettings = {
+  storeName: 'جانبی آرنا',
+  phone: '۰۲۱-۸۸۸۸۹۹۹۹',
+  email: 'info@janebi-arena.ir',
+  supportHours: 'همه‌روزه از ساعت ۹:۰۰ الی ۲۱:۰۰',
+  address: 'تهران، خیابان ولیعصر، تقاطع طالقانی، مجتمع نور، طبقه ۲، واحد ۱۰۴',
+  freeShippingThreshold: 2000000,
+  announcement: 'ارسال رایگان برای تمامی سفارش‌های بالای ۲ میلیون تومان | کد تخفیف: WELCOME10'
+};
+
+router.get('/settings', (req, res) => {
+  res.json(storeSettings);
+});
+
+router.put('/settings', (req, res) => {
+  storeSettings = {
+    ...storeSettings,
+    ...req.body
+  };
+  res.json({ success: true, message: 'تنظیمات فروشگاه با موفقیت ذخیره شد', settings: storeSettings });
 });
 
 export default router;

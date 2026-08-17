@@ -1,31 +1,33 @@
-# Progress Tracking
+# Progress Tracking — Janebi-Store Phase 2
 
-Last visited: 2026-08-15T12:50:15+03:30
+Last visited: 2026-08-15T22:56:30+03:30
 
 ## Iteration Status
-Current iteration: 4 / 32
+Current iteration: 1 / 32
 
 ## Current Phase
-Phase 2: Milestone Execution
+Phase 3: Verification Gate Checks
 
 ## Milestones & Status
-- [x] Phase 0: Parallel Codebase Survey (Explorers 1, 2, 3)
-- [x] Phase 1: PROJECT.md & TEST_INFRA.md Formulation
-- [ ] Phase 2: Implementation & Test Suite Expansion
-  - [x] M1: Inventory, Concurrency, Transactions & Payment/Order Security [DONE]
-  - [x] M2: Coupon Engine, Address Book Atomicity & Cascading Admin Deletions [DONE]
-  - [x] M3: Frontend Forms, Persian Digits, and Portal Modals [DONE]
-  - [ ] M4: Automated Test Expansion (Vitest + Supertest full coverage) [IN_PROGRESS]
-- [ ] Phase 3: Gate Checks (Reviewer, Challenger, Auditor)
-- [ ] Phase 4: Full Acceptance Run (100% Pass, Clean Build) & Final Report
+- [x] Phase 0: Parallel Codebase Survey (Explorers 1, 2, 3) [COMPLETED]
+- [x] Phase 1: Synthesis & Decomposition (PROJECT.md updated) [COMPLETED]
+- [x] Phase 2: Implementation Milestones (Worker c99de12b...) [COMPLETED]
+  - [x] M1: PostgreSQL Driver & Dual-Dialect Configuration [DONE]
+  - [x] M2: PostgreSQL Schema & Migration Verification [DONE]
+  - [x] M3: High-Concurrency Transaction & Stock Lock Verification [DONE]
+  - [x] M4: Full Test Suite Regression & Concurrency Verification [DONE]
+- [ ] Phase 3: Gate Checks (Reviewer x2, Challenger x2, Auditor) [IN_PROGRESS]
+- [ ] Phase 4: Final Acceptance Run (100% Pass, Clean Build) & Completion Report
 
 ## Agent Dispatch Log
 | Agent | Role | Status | Findings / Output |
 |---|---|---|---|
-| c2e48b0b... (explorer_survey_1) | Backend Codebase Explorer | Done | Completed backend survey |
-| 83117ce0... (explorer_survey_2) | Frontend UI & Form Explorer | Done | Completed frontend survey |
-| 73632d41... (explorer_survey_3) | Test Infra & Build Explorer | Done | Completed test survey |
-| 60611d30... (worker_m1) | Backend & Concurrency Worker | Done | Implemented schema TS, inventory race, discount clamp, order cancel, payment restocking |
-| 6ae73939... (worker_m2) | Coupon & User APIs Worker | Done | Implemented address atomicity, password update API, admin cascade delete, coupon engine |
-| da4d5b98... (worker_m3) | Frontend UI & Modal Worker | Done | Implemented Persian digit normalization, Portal modals with body scroll lock, LTR inputs, admin table fix |
-| 1b861078... (worker_m4) | Test Suite Expansion Worker | Running | Actively writing cart, wishlist, contact, products, concurrency, and rollback test suites |
+| 7a49b2d5... (explorer_pg_survey_1) | DB & Dual-Dialect Explorer | Done | Completed database layer & dynamic dialect survey |
+| 7181f291... (explorer_pg_survey_2) | PG Schema & Migrations Explorer | Done | Completed schema parity & migration pipeline survey |
+| 09940e02... (explorer_pg_survey_3) | Concurrency & Test Explorer | Done | Completed transaction & stock decrement concurrency survey |
+| c99de12b... (worker_pg_phase2) | Phase 2 Implementation Worker | Done | Implemented dual dialect, schema parity, async transactions with RETURNING, sequence sync, and package scripts |
+| 631925a4... (reviewer_pg_1) | Code & Architecture Reviewer | Running | Reviewing server/db, server/routes, tests, build |
+| 762d8bc3... (reviewer_pg_2) | Security & Integrity Reviewer | Running | Reviewing transaction rollback, atomic locks, security |
+| 01a7a9e1... (challenger_pg_1) | Concurrency Stress Challenger | Running | Running concurrency and race condition stress tests |
+| 1f02d080... (challenger_pg_2) | Migration & Build Challenger | Running | Verifying DDL generation, migrations, build artifacts |
+| d0d0189e... (auditor_pg_1) | Forensic Integrity Auditor | Running | Conducting anti-cheating, authenticity, and regression audit |

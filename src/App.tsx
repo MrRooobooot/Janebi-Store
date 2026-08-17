@@ -41,6 +41,10 @@ const AdminProducts = lazy(() => import('./pages/admin/Products'));
 const AdminOrders = lazy(() => import('./pages/admin/Orders'));
 const AdminUsers = lazy(() => import('./pages/admin/Users'));
 const AdminCoupons = lazy(() => import('./pages/admin/Coupons'));
+const AdminMessages = lazy(() => import('./pages/admin/Messages'));
+const AdminReviews = lazy(() => import('./pages/admin/Reviews'));
+const AdminNewsletter = lazy(() => import('./pages/admin/Newsletter'));
+const AdminSettings = lazy(() => import('./pages/admin/Settings'));
 
 import { ToastProvider } from './contexts/ToastContext';
 import { WishlistProvider } from './contexts/WishlistContext';
@@ -91,8 +95,12 @@ export default function App() {
                         <Route index element={<Dashboard />} />
                         <Route path="products" element={<AdminProducts />} />
                         <Route path="orders" element={<AdminOrders />} />
+                        <Route path="reviews" element={<AdminReviews />} />
                         <Route path="users" element={<AdminUsers />} />
                         <Route path="coupons" element={<AdminCoupons />} />
+                        <Route path="messages" element={<AdminMessages />} />
+                        <Route path="newsletter" element={<AdminNewsletter />} />
+                        <Route path="settings" element={<AdminSettings />} />
                       </Route>
                     </Routes>
                   </Suspense>

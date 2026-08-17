@@ -13,14 +13,47 @@ const envSchema = z.object({
   DATABASE_URL: z.string().default('./data/janebi.db'),
   GEMINI_API_KEY: z.string().optional().or(z.literal('')),
   APP_URL: z.string().url().default('http://localhost:3000'),
+  ALLOWED_ORIGINS: z.string().optional().default(''),
+}).superRefine((data, ctx) => {
+  if (data.NODE_ENV === 'production') {
+    if (!data.JWT_ACCESS_SECRET || data.JWT_ACCESS_SECRET.length < 16) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['JWT_ACCESS_SECRET'],
+        message: 'JWT_ACCESS_SECRET must be at least 16 characters in production',
+      });
+    }
+    if (!data.JWT_REFRESH_SECRET || data.JWT_REFRESH_SECRET.length < 16) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['JWT_REFRESH_SECRET'],
+        message: 'JWT_REFRESH_SECRET must be at least 16 characters in production',
+      });
+    }
+  }
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
 
 if (!parsedEnv.success) {
-  console.error('❌ Invalid environment variables:');
-  console.error(JSON.stringify(parsedEnv.error.format(), null, 2));
+  console.error('❌ Fatal Environment Configuration Error:');
+  const sanitizedErrors = parsedEnv.error.issues.map(issue => ({
+    field: issue.path.join('.'),
+    message: issue.message,
+  }));
+  console.error(JSON.stringify(sanitizedErrors, null, 2));
   process.exit(1);
 }
 
-export const env = parsedEnv.data;
+const parsedData = parsedEnv.data;
+
+// Compute allowed origins list
+const extraOrigins = parsedData.ALLOWED_ORIGINS
+  ? parsedData.ALLOWED_ORIGINS.split(',').map(o => o.trim()).filter(Boolean)
+  : [];
+const computedAllowedOrigins = Array.from(new Set([parsedData.APP_URL, ...extraOrigins]));
+
+export const env = {
+  ...parsedData,
+  allowedOrigins: computedAllowedOrigins,
+};

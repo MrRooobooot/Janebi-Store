@@ -11,8 +11,11 @@
     "lint": "tsc --noEmit",
     "test": "vitest run",
     "db:generate": "drizzle-kit generate",
+    "db:generate:pg": "drizzle-kit generate --config=drizzle.pg.config.ts",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "db:push:pg": "drizzle-kit push --config=drizzle.pg.config.ts",
+    "db:studio": "drizzle-kit studio",
+    "db:studio:pg": "drizzle-kit studio --config=drizzle.pg.config.ts"
   },
   "dependencies": {
     "@google/genai": "^2.15.0",
@@ -29,10 +32,12 @@
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^1.28.0",
     "motion": "^12.43.0",
+    "pg": "^8.23.0",
     "pino-http": "^11.0.0",
     "react": "^19.0.1",
     "react-dom": "^19.0.1",
     "react-router-dom": "^7.18.2",
+    "thesvg": "^3.3.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {
@@ -42,6 +47,7 @@
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.1.2",
+    "@types/pg": "^8.21.0",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "@types/supertest": "^7.2.1",

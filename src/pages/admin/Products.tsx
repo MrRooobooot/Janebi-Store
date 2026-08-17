@@ -123,80 +123,145 @@ export default function AdminProducts() {
     }
   };
 
-  const filteredProducts = products.filter(p => p.title.includes(search) || p.sku?.includes(search) || p.brand.includes(search));
+  const [categoryFilter, setCategoryFilter] = useState('all');
+
+  const handleQuickStockUpdate = async (productId: number, newStock: number) => {
+    if (newStock < 0) return;
+    try {
+      const res = await fetch(`/api/admin/products/${productId}/stock`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ stockQuantity: newStock })
+      });
+      if (res.ok) {
+        setProducts(prev => prev.map(p => p.id === productId ? { ...p, stockQuantity: newStock } : p));
+        addToast('موجودی انبار بروزرسانی شد', 'success');
+      } else {
+        addToast('خطا در تغییر موجودی', 'error');
+      }
+    } catch {
+      addToast('خطا در ارتباط با سرور', 'error');
+    }
+  };
+
+  const categories = Array.from(new Set(products.map(p => p.category))).filter(Boolean);
+
+  const filteredProducts = products.filter(p => {
+    const matchesSearch = !search || p.title.toLowerCase().includes(search.toLowerCase()) || 
+      p.sku?.toLowerCase().includes(search.toLowerCase()) || 
+      p.brand.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory = categoryFilter === 'all' || p.category === categoryFilter;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-right">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-black text-gray-900 dark:text-white mb-1">مدیریت محصولات و انبار</h1>
-          <p className="text-gray-500 dark:text-gray-400">افزودن، ویرایش، حذف و کنترل موجودی انبار محصولات</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400">افزودن، ویرایش، حذف و کنترل موجودی انبار محصولات</p>
         </div>
         <button 
           onClick={() => openModal()}
-          className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-xl font-bold transition-colors flex items-center gap-2 shadow-lg shadow-orange-500/20"
+          className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs transition-colors flex items-center gap-2 shadow-md shadow-orange-500/20"
         >
-          <Plus className="w-5 h-5" />
+          <Plus className="w-4 h-4" />
           افزودن محصول جدید
         </button>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-4">
-        <div className="relative max-w-md mb-4">
-          <input 
-            type="text" 
-            placeholder="جستجو در محصولات (نام، برند، SKU)..." 
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/50"
-          />
-          <Search className="w-5 h-5 text-gray-400 absolute left-3 top-2.5" />
+      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-4 space-y-4">
+        {/* Search & Category Filter */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="relative w-full sm:w-80">
+            <input 
+              type="text" 
+              placeholder="جستجو در محصولات (نام، برند، SKU)..." 
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:border-orange-500"
+            />
+            <Search className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" />
+          </div>
+
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <select
+              value={categoryFilter}
+              onChange={e => setCategoryFilter(e.target.value)}
+              className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-gray-700 dark:text-gray-200 focus:outline-none focus:border-orange-500"
+            >
+              <option value="all">همه دسته‌بندی‌ها</option>
+              {categories.map(c => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+            <span className="text-xs text-gray-500 font-bold px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded-lg">
+              {filteredProducts.length} کالا
+            </span>
+          </div>
         </div>
 
+        {/* Table */}
         <div className="overflow-x-auto">
-          <table className="w-full text-right">
+          <table className="w-full text-right text-xs">
             <thead>
-              <tr className="bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 text-sm border-b border-gray-100 dark:border-gray-700">
-                <th className="p-4 font-medium">تصویر</th>
-                <th className="p-4 font-medium">نام محصول</th>
-                <th className="p-4 font-medium">دسته‌بندی</th>
-                <th className="p-4 font-medium">قیمت</th>
-                <th className="p-4 font-medium">موجودی انبار</th>
-                <th className="p-4 font-medium text-center">عملیات</th>
+              <tr className="bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700">
+                <th className="p-3.5 font-bold">تصویر</th>
+                <th className="p-3.5 font-bold">نام و برند محصول</th>
+                <th className="p-3.5 font-bold">دسته‌بندی</th>
+                <th className="p-3.5 font-bold">قیمت</th>
+                <th className="p-3.5 font-bold">موجودی انبار (تغییر سریع)</th>
+                <th className="p-3.5 font-bold text-center">عملیات</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
               {loading ? (
-                <tr><td colSpan={6} className="text-center p-8">در حال بارگذاری...</td></tr>
+                <tr><td colSpan={6} className="text-center p-8 text-gray-400">در حال بارگذاری...</td></tr>
               ) : filteredProducts.map(p => {
                 const qty = p.stockQuantity ?? 0;
                 return (
-                  <tr key={p.id} className="text-sm hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                    <td className="p-4">
+                  <tr key={p.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <td className="p-3.5">
                       <img src={p.image} alt={p.title} className="w-12 h-12 rounded-lg object-contain bg-white dark:bg-gray-900 p-1 border border-gray-100 dark:border-gray-800" />
                     </td>
-                    <td className="p-4 font-bold text-gray-900 dark:text-white">{p.title}</td>
-                    <td className="p-4 text-gray-600 dark:text-gray-300">{p.category}</td>
-                    <td className="p-4 font-bold text-gray-900 dark:text-white">{p.price.toLocaleString()} تومان</td>
-                    <td className="p-4">
-                      {qty > 5 ? (
-                        <span className="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-md text-xs font-bold">
-                          {qty} عدد در انبار
-                        </span>
-                      ) : qty > 0 ? (
-                        <span className="bg-amber-100 text-amber-700 px-2.5 py-1 rounded-md text-xs font-bold">
-                          {qty} عدد (رو به اتمام)
-                        </span>
-                      ) : (
-                        <span className="bg-red-100 text-red-700 px-2.5 py-1 rounded-md text-xs font-bold">
-                          ناموجود
-                        </span>
-                      )}
+                    <td className="p-3.5">
+                      <div className="font-bold text-gray-900 dark:text-white">{p.title}</div>
+                      <div className="text-[11px] text-gray-400 mt-0.5">برند: {p.brand} | {p.sku ? `کد: ${p.sku}` : ''}</div>
                     </td>
-                    <td className="p-4">
+                    <td className="p-3.5 text-gray-600 dark:text-gray-300">{p.category}</td>
+                    <td className="p-3.5 font-bold text-gray-900 dark:text-white font-mono">{p.price.toLocaleString()} تومان</td>
+                    <td className="p-3.5">
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => handleQuickStockUpdate(p.id, Math.max(0, qty - 1))}
+                          className="w-6 h-6 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-rose-100 hover:text-rose-600 flex items-center justify-center font-bold text-xs transition-colors"
+                          title="کاهش موجودی"
+                        >
+                          -
+                        </button>
+                        <span className={`px-2.5 py-1 rounded-md text-xs font-mono font-bold ${
+                          qty > 5 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300' :
+                          qty > 0 ? 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300' :
+                          'bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300'
+                        }`}>
+                          {qty} عدد
+                        </span>
+                        <button
+                          onClick={() => handleQuickStockUpdate(p.id, qty + 1)}
+                          className="w-6 h-6 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-emerald-100 hover:text-emerald-600 flex items-center justify-center font-bold text-xs transition-colors"
+                          title="افزایش موجودی"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </td>
+                    <td className="p-3.5">
                       <div className="flex items-center justify-center gap-2">
-                        <button onClick={() => openModal(p)} className="p-2 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"><Edit2 className="w-4 h-4" /></button>
-                        <button onClick={() => handleDelete(p.id)} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"><Trash2 className="w-4 h-4" /></button>
+                        <button onClick={() => openModal(p)} className="p-1.5 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors" title="ویرایش کامل"><Edit2 className="w-4 h-4" /></button>
+                        <button onClick={() => handleDelete(p.id)} className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors" title="حذف محصول"><Trash2 className="w-4 h-4" /></button>
                       </div>
                     </td>
                   </tr>

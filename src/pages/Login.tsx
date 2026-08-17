@@ -16,6 +16,83 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
 
+  // Forgot password OTP states
+  const [showForgotModal, setShowForgotModal] = useState(false);
+  const [forgotStep, setForgotStep] = useState<1 | 2>(1);
+  const [forgotPhone, setForgotPhone] = useState('');
+  const [resetOtpCode, setResetOtpCode] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [forgotLoading, setForgotLoading] = useState(false);
+
+  const handleSendResetOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const normalized = normalizeIranianMobile(forgotPhone);
+    if (!isValidIranianMobile(normalized)) {
+      addToast('لطفاً شماره موبایل معتبر وارد کنید', 'error');
+      return;
+    }
+
+    setForgotLoading(true);
+    try {
+      const res = await fetch('/api/auth/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: normalized }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        addToast(data.message || 'کد تایید ارسال شد', 'success');
+        setForgotStep(2);
+      } else {
+        addToast(data.message || 'خطا در ارسال کد تایید', 'error');
+      }
+    } catch {
+      addToast('خطا در برقراری ارتباط با سرور', 'error');
+    } finally {
+      setForgotLoading(false);
+    }
+  };
+
+  const handleResetPasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const normalized = normalizeIranianMobile(forgotPhone);
+    if (!resetOtpCode || resetOtpCode.length < 5) {
+      addToast('کد تایید باید ۵ رقمی باشد', 'error');
+      return;
+    }
+    if (!newPassword || newPassword.length < 4) {
+      addToast('رمز عبور جدید باید حداقل ۴ کاراکتر باشد', 'error');
+      return;
+    }
+
+    setForgotLoading(true);
+    try {
+      const res = await fetch('/api/auth/reset-password-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          phone: normalized,
+          code: resetOtpCode.trim(),
+          newPassword: newPassword.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        addToast(data.message || 'رمز عبور با موفقیت تغییر کرد', 'success');
+        setShowForgotModal(false);
+        setForgotStep(1);
+        setResetOtpCode('');
+        setNewPassword('');
+      } else {
+        addToast(data.message || 'خطا در تغییر رمز عبور', 'error');
+      }
+    } catch {
+      addToast('خطا در برقراری ارتباط با سرور', 'error');
+    } finally {
+      setForgotLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -113,9 +190,13 @@ export default function Login() {
               <span>مرا به خاطر داشته باش</span>
             </label>
 
-            <a href="#forgot" onClick={(e) => { e.preventDefault(); addToast('رمز عبور موقت به موبایل شما ارسال خواهد شد', 'info'); }} className="text-orange-600 dark:text-orange-400 hover:underline font-bold">
+            <button
+              type="button"
+              onClick={() => setShowForgotModal(true)} 
+              className="text-orange-600 dark:text-orange-400 hover:underline font-bold"
+            >
               رمز عبور را فراموش کرده‌اید؟
-            </a>
+            </button>
           </div>
 
           <button
@@ -134,6 +215,97 @@ export default function Login() {
           </Link>
         </div>
       </motion.div>
+
+      {/* Forgot Password OTP Modal */}
+      {showForgotModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative">
+            <h3 className="text-lg font-black text-gray-900 dark:text-gray-100 mb-2">بازیابی رمز عبور</h3>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-6">
+              {forgotStep === 1 
+                ? 'شماره موبایل خود را وارد کنید تا کد تایید پیامک شود.' 
+                : 'کد تایید پیامک شده و رمز عبور جدید خود را وارد کنید.'}
+            </p>
+
+            {forgotStep === 1 ? (
+              <form onSubmit={handleSendResetOtp} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">شماره موبایل</label>
+                  <input
+                    type="tel"
+                    dir="ltr"
+                    value={forgotPhone}
+                    onChange={(e) => setForgotPhone(e.target.value)}
+                    placeholder="09123456789"
+                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-3 px-4 text-xs font-mono font-bold text-gray-900 dark:text-gray-100 text-left focus:outline-none focus:border-orange-500"
+                    required
+                  />
+                </div>
+                <div className="flex gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowForgotModal(false)}
+                    className="flex-1 py-3 rounded-2xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 text-xs font-bold hover:bg-gray-50 dark:hover:bg-gray-800"
+                  >
+                    انصراف
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={forgotLoading}
+                    className="flex-1 py-3 rounded-2xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold shadow-md shadow-orange-500/20 disabled:opacity-60"
+                  >
+                    {forgotLoading ? 'در حال ارسال...' : 'ارسال کد تایید'}
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <form onSubmit={handleResetPasswordSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">کد تایید ۵ رقمی</label>
+                  <input
+                    type="text"
+                    dir="ltr"
+                    maxLength={5}
+                    value={resetOtpCode}
+                    onChange={(e) => setResetOtpCode(e.target.value)}
+                    placeholder="12345"
+                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-3 px-4 text-center text-sm font-mono font-bold text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500 tracking-widest"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">رمز عبور جدید</label>
+                  <input
+                    type="password"
+                    dir="ltr"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-3 px-4 text-xs font-mono font-bold text-gray-900 dark:text-gray-100 text-left focus:outline-none focus:border-orange-500"
+                    required
+                  />
+                </div>
+                <div className="flex gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setForgotStep(1)}
+                    className="flex-1 py-3 rounded-2xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 text-xs font-bold hover:bg-gray-50 dark:hover:bg-gray-800"
+                  >
+                    بازگشت
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={forgotLoading}
+                    className="flex-1 py-3 rounded-2xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold shadow-md shadow-orange-500/20 disabled:opacity-60"
+                  >
+                    {forgotLoading ? 'در حال ثبت...' : 'تغییر رمز عبور'}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

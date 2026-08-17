@@ -31,7 +31,7 @@ export const products = sqliteTable('products', {
   title: text('title').notNull(),
   category: text('category').notNull(),
   price: integer('price').notNull(),
-  originalPrice: integer('originalPrice'), // changed to camelCase mapping for easier frontend matching
+  originalPrice: integer('originalPrice'),
   discount: integer('discount').default(0),
   image: text('image').notNull(),
   brand: text('brand').notNull(),
@@ -117,6 +117,22 @@ export const wishlistItems = sqliteTable('wishlist_items', {
   userId: text('user_id').references(() => users.id).notNull(),
   productId: integer('product_id').references(() => products.id).notNull(),
   addedAt: integer('added_at').notNull()
+});
+
+export const contactMessages = sqliteTable('contact_messages', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  email: text('email').notNull(),
+  phone: text('phone'),
+  subject: text('subject'),
+  message: text('message').notNull(),
+  status: text('status').default('unread').notNull(),
+  createdAt: text('created_at').notNull()
+});
+
+export const newsletterSubscribers = sqliteTable('newsletter_subscribers', {
+  email: text('email').primaryKey(),
+  subscribedAt: text('subscribed_at').notNull()
 });
 
 // RELATIONS

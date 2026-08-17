@@ -3,7 +3,7 @@ import { validate } from '../middleware/validate.js';
 import { productQuerySchema, idParamSchema, reviewSubmitSchema } from '../validators/index.js';
 import { db } from '../db/index.js';
 import { products, reviews } from '../db/schema.js';
-import { eq, or, like, and, SQL, gte, lte, gt, inArray, desc, asc } from 'drizzle-orm';
+import { eq, or, like, and, SQL, sql, gte, lte, gt, inArray, desc, asc } from 'drizzle-orm';
 
 const router = Router();
 
@@ -83,10 +83,9 @@ router.get('/', validate(productQuerySchema), async (req, res) => {
     }
   });
 
-  // Calculate total count (simplified, should ideally use a count query)
-  // For SQLite this is fine for small datasets
-  const allMatch = await db.query.products.findMany({ where: finalCondition });
-  const total = allMatch.length;
+  // Calculate total count using proper SQL count to avoid memory leaks
+  const [{ count }] = await db.select({ count: sql<number>`count(*)` }).from(products).where(finalCondition);
+  const total = Number(count);
   const totalPages = Math.ceil(total / pageSize);
 
   res.setHeader('X-Total-Count', total.toString());

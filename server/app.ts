@@ -1,10 +1,12 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import pino from 'pino-http';
+import pinoHttp from 'pino-http';
 import rateLimit from 'express-rate-limit';
 
+import { requestIdMiddleware } from './middleware/requestId.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { NotFoundError } from './errors/AppError.js';
 import { env } from './env.js';
 
 import productsRoutes from './routes/products.js';
@@ -25,32 +27,81 @@ export const app = express();
 // Trust reverse proxy (Nginx)
 app.set('trust proxy', 1);
 
-// Middleware
-app.use(helmet({
-  contentSecurityPolicy: false,
-}));
-app.use(cors());
-app.use(express.json());
-app.use(pino(
-  process.env.NODE_ENV !== 'production' && env.NODE_ENV !== 'production'
-    ? {
-        transport: {
-          target: 'pino-pretty',
-          options: { colorize: true }
-        }
-      }
-    : {}
-));
+// 1. Request ID Generation & Propagation
+app.use(requestIdMiddleware);
 
-// Rate limiting
+// 2. Security Headers via Helmet
+app.use(helmet({
+  contentSecurityPolicy: env.NODE_ENV === 'production' ? {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
+      imgSrc: ["'self'", "data:", "https:", "blob:"],
+      connectSrc: ["'self'", ...env.allowedOrigins],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    }
+  } : false,
+  crossOriginEmbedderPolicy: false,
+}));
+
+// 3. Strict CORS Configuration
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow non-browser requests (curl, server-to-server, tests without origin)
+    if (!origin) return callback(null, true);
+    if (env.NODE_ENV !== 'production') return callback(null, true);
+    if (env.allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error(`CORS origin '${origin}' is not allowed`));
+  },
+  credentials: true,
+  exposedHeaders: ['X-Request-ID', 'X-Total-Count', 'X-Total-Pages', 'X-Current-Page'],
+}));
+
+// 4. Request Body Parsers
+app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ extended: true, limit: '2mb' }));
+
+// 5. Structured Logging via Pino with Zero-Leak Secret Redaction
+app.use(pinoHttp({
+  genReqId: (req) => (req as any).id,
+  redact: {
+    paths: [
+      'req.headers.authorization',
+      'req.headers.cookie',
+      'req.body.password',
+      'req.body.code',
+      'req.body.refreshToken',
+      'req.body.token',
+      'req.body.authority',
+      'req.body.apiKey',
+      'req.body.merchantId',
+      'res.headers["set-cookie"]'
+    ],
+    censor: '[REDACTED]',
+  },
+  level: env.NODE_ENV === 'test' ? 'silent' : (env.NODE_ENV === 'production' ? 'info' : 'debug'),
+  transport: (env.NODE_ENV !== 'production' && env.NODE_ENV !== 'test')
+    ? {
+        target: 'pino-pretty',
+        options: { colorize: true }
+      }
+    : undefined,
+}));
+
+// 6. Rate limiting on /api/
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
-  skip: () => process.env.NODE_ENV === 'test' || env.NODE_ENV === 'test',
+  skip: () => env.NODE_ENV === 'test' || process.env.NODE_ENV === 'test',
 });
 app.use('/api/', limiter);
 
-// Routes
+// 7. API Domain Routes
 app.use('/api/products', productsRoutes);
 app.use('/api/categories', categoriesRoutes);
 app.use('/api/brands', brandsRoutes);
@@ -64,5 +115,10 @@ app.use('/api/contact', contactRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/admin', adminRoutes);
 
-// Global Error Handler
+// 8. 404 Fallback for unmatched /api routes
+app.use('/api', (req, res, next) => {
+  next(new NotFoundError(`اندپوینت '${req.originalUrl}' یافت نشد`));
+});
+
+// 9. Global Centralized Error Handler
 app.use(errorHandler);

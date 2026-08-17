@@ -12,9 +12,17 @@ export const validate = (schema: ZodSchema) =>
       return next();
     } catch (error) {
       if (error instanceof ZodError) {
+        const requestId = req.id || (typeof req.headers['x-request-id'] === 'string' ? req.headers['x-request-id'] : 'unknown-request-id');
+        const message = error.issues[0]?.message || 'خطای اعتبارسنجی';
         return res.status(400).json({
-          error: 'Validation Error',
-          message: error.issues[0]?.message || 'خطای اعتبارسنجی',
+          status: 'error',
+          error: {
+            code: 'VALIDATION_ERROR',
+            message,
+            requestId,
+            details: error.issues,
+          },
+          message,
           details: error.issues,
         });
       }

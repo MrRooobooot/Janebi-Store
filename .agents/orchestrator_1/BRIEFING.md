@@ -1,38 +1,35 @@
-# BRIEFING — 2026-08-15T12:47:35+03:30
+# BRIEFING — 2026-08-15T22:56:30+03:30
 
 ## Mission
-Execute a comprehensive deep-dive audit, edge-case testing, frontend UI/form verification, and multi-layered automated test suite expansion with 100% pass rate and clean build for Janebi-Store.
+Orchestrate and execute Janebi-Store Phase 2: PostgreSQL Migration & Staging, Dual-Dialect runtime capability, Drizzle migration generation, high-concurrency stock lock verification, and 100% test suite regression safety.
 
 ## 🔒 My Identity
 - Archetype: orchestrator
 - Roles: [orchestrator, user_liaison, human_reporter, successor]
 - Working directory: /Users/aidin/antigravity/Janebi-Store/.agents/orchestrator_1
 - Original parent: parent
-- Original parent conversation ID: 70789e95-8fa6-442d-8c4a-ad1dc5a1e2c4
+- Original parent conversation ID: 4e9ed8bc-5a84-464d-a638-d71820d435af
 
 ## 🔒 My Workflow
 - **Pattern**: Project Pattern (Survey -> Decompose & Delegate / Dual Track: Implementation & E2E Testing)
 - **Scope document**: /Users/aidin/antigravity/Janebi-Store/PROJECT.md
-1. **Survey**: [Completed] 3 Explorers surveyed Backend, Frontend, and Test Infra.
-2. **Decompose & Delegate**: [Completed] Created PROJECT.md and TEST_INFRA.md.
-3. **Dispatch & Execute**:
-   - M1: Backend Concurrency, Inventory Lock, Rollbacks, and Order/Payment Security [DONE]
-   - M2: Coupon Engine, Address Book Atomicity, Cascading Deletions & User APIs [DONE]
-   - M3: Frontend UI, Persian Digit Sanitization, LTR Inputs & React Portal Modals [DONE]
-   - M4: Comprehensive Vitest + Supertest Expansion & Regression Verification [IN_PROGRESS]
-4. **On failure**: Retry -> Replace -> Skip -> Redistribute -> Redesign -> Escalate.
-5. **Succession**: Spawn successor if spawn count reaches 16.
+1. **Decompose**: Decomposed into 4 milestones: M1 (Dual-Dialect DB & Config), M2 (PG Schema & Migrations), M3 (Concurrency & Transactions), M4 (Regression & Test Suite).
+2. **Dispatch & Execute**:
+   - Survey: 3 parallel Explorers [COMPLETED]
+   - Implementation: `worker_pg_phase2` [COMPLETED]
+   - Gate Verification: 2 Reviewers, 2 Challengers, 1 Forensic Auditor [IN_PROGRESS]
+3. **On failure**:
+   - Retry -> Replace -> Skip -> Redistribute -> Redesign -> Escalate.
+4. **Succession**: Spawn successor when spawn count reaches 16 and all subagents are complete.
 - **Work items**:
-  1. Survey & Architecture Mapping [done]
-  2. Decomposition & Project Specification (PROJECT.md) [done]
-  3. Milestone 1 Execution [done]
-  4. Milestone 2 Execution [done]
-  5. Milestone 3 Execution [done]
-  6. Milestone 4 Execution [in-progress]
-  7. Phase 3 Verification Gates (Reviewer, Challenger, Auditor) [pending]
-  8. Final Synthesis & Reporting [pending]
-- **Current phase**: 2 (Milestone 4 Execution)
-- **Current focus**: Milestone 4 execution (Test suite expansion: cart, wishlist, contact, reviews, products filters/sort, concurrency race conditions, transaction rollback, negative RBAC 400/401/403/404).
+  1. Parallel Survey [done]
+  2. Synthesis & Decomposition (PROJECT.md) [done]
+  3. M1-M3 Implementation (`worker_pg_phase2`) [done]
+  4. M4: Regression Safety & Test Suite Pass [in-progress]
+  5. Verification Gates (Reviewers, Challengers, Auditor) [in-progress]
+  6. Final Acceptance & Reporting [pending]
+- **Current phase**: 3 (Verification Gates)
+- **Current focus**: Reviewer, Challenger, and Forensic Auditor verification.
 
 ## 🔒 Key Constraints
 - NEVER write, modify, or create source code files directly.
@@ -41,37 +38,41 @@ Execute a comprehensive deep-dive audit, edge-case testing, frontend UI/form ver
 - Never reuse subagents after handoff. Always spawn fresh.
 
 ## Current Parent
-- Conversation ID: 70789e95-8fa6-442d-8c4a-ad1dc5a1e2c4
-- Updated: 2026-08-15T12:47:35+03:30
+- Conversation ID: 4e9ed8bc-5a84-464d-a638-d71820d435af
+- Updated: 2026-08-15T22:56:30+03:30
 
 ## Key Decisions Made
-- Milestones 1, 2, and 3 successfully implemented and verified. Dispatched Worker 4 for Milestone 4 (comprehensive test suite expansion).
+- `worker_pg_phase2` successfully completed implementation of dual-dialect DB layer, sequence sync, schema parity, async transactions with RETURNING, package scripts, and 100% test pass.
+- Dispatched 2 Reviewers, 2 Challengers, and 1 Forensic Auditor in parallel.
 
 ## Team Roster
 | Agent | Type | Work Item | Status | Conv ID |
 |-------|------|-----------|--------|---------|
-| explorer_survey_1 | teamwork_preview_explorer | Backend Architecture & APIs Survey | completed | c2e48b0b-5858-49d7-a29e-91970a407bf3 |
-| explorer_survey_2 | teamwork_preview_explorer | Frontend UI & Form/Modal Survey | completed | 83117ce0-a9eb-42b1-aff1-2cbaf26f4124 |
-| explorer_survey_3 | teamwork_preview_explorer | Test Infra & Build Setup Survey | completed | 73632d41-772e-4211-8f9e-aae9a38860cc |
-| worker_m1 | teamwork_preview_worker | Milestone 1 Implementation | completed | 60611d30-9241-4ace-8a7b-0e8c665e6057 |
-| worker_m2 | teamwork_preview_worker | Milestone 2 Implementation | completed | 6ae73939-1ef2-44e4-8297-cf6f3ddfded4 |
-| worker_m3 | teamwork_preview_worker | Milestone 3 Implementation | completed | da4d5b98-1733-4dbf-83f6-e8ccd3a77612 |
-| worker_m4 | teamwork_preview_worker | Milestone 4 Implementation | in-progress | 1b861078-afa6-4d5a-a519-e8699e494504 |
+| explorer_pg_survey_1 | teamwork_preview_explorer | DB & Dual-Dialect Survey | completed | 7a49b2d5-4bd9-486a-b05e-9ffa8093d78e |
+| explorer_pg_survey_2 | teamwork_preview_explorer | PG Schema & Migrations Survey | completed | 7181f291-476e-47f5-8bd0-779e428944b3 |
+| explorer_pg_survey_3 | teamwork_preview_explorer | Concurrency, Transactions & Test Survey | completed | 09940e02-7751-4be8-a27f-93ac101529af |
+| worker_pg_phase2 | teamwork_preview_worker | Phase 2 Implementation (M1-M3) | completed | c99de12b-290a-4d6b-8511-81239e1481d5 |
+| reviewer_pg_1 | teamwork_preview_reviewer | Code & Architecture Review | in-progress | 631925a4-2a9a-4813-9afc-4770cc470353 |
+| reviewer_pg_2 | teamwork_preview_reviewer | Security & Integrity Review | in-progress | 762d8bc3-178e-4127-a9ac-6ea26f9b3db4 |
+| challenger_pg_1 | teamwork_preview_challenger | Concurrency Stress Challenger | in-progress | 01a7a9e1-ad6f-4c4e-989b-53ae4b318583 |
+| challenger_pg_2 | teamwork_preview_challenger | Migration & Build Challenger | in-progress | 1f02d080-fc38-4b82-964c-4f5f089e8fa0 |
+| auditor_pg_1 | teamwork_preview_auditor | Forensic Integrity Auditor | in-progress | d0d0189e-469a-46c0-ae0d-6ddd2ac67d0c |
 
 ## Succession Status
 - Succession required: no
-- Spawn count: 7 / 16
-- Pending subagents: 1b861078-afa6-4d5a-a519-e8699e494504
+- Spawn count: 9 / 16
+- Pending subagents: 631925a4-2a9a-4813-9afc-4770cc470353, 762d8bc3-178e-4127-a9ac-6ea26f9b3db4, 01a7a9e1-ad6f-4c4e-989b-53ae4b318583, 1f02d080-fc38-4b82-964c-4f5f089e8fa0, d0d0189e-469a-46c0-ae0d-6ddd2ac67d0c
 - Predecessor: none
 - Successor: not yet spawned
 
 ## Active Timers
-- Heartbeat cron: e22c3267-7268-4f99-a8e7-004e467ebba3/task-13
+- Heartbeat cron: a9a4c762-ee7c-416b-8c75-0c96d3fb9598/task-23
 - Safety timer: none
 
 ## Artifact Index
 - /Users/aidin/antigravity/Janebi-Store/.agents/ORIGINAL_REQUEST.md — Authoritative User Request
 - /Users/aidin/antigravity/Janebi-Store/PROJECT.md — Global Architecture & Milestones
-- /Users/aidin/antigravity/Janebi-Store/TEST_INFRA.md — Testing Infrastructure Blueprint
-- /Users/aidin/antigravity/Janebi-Store/.agents/orchestrator_1/plan.md — Execution Plan
-- /Users/aidin/antigravity/Janebi-Store/.agents/orchestrator_1/progress.md — Progress Heartbeat
+- /Users/aidin/antigravity/Janebi-Store/.agents/orchestrator_1/GATE_STATUS.md — Gate Verdict Tracking
+- /Users/aidin/antigravity/Janebi-Store/.agents/orchestrator_1/context.md — Phase 2 Context
+- /Users/aidin/antigravity/Janebi-Store/.agents/orchestrator_1/plan.md — Phase 2 Execution Plan
+- /Users/aidin/antigravity/Janebi-Store/.agents/orchestrator_1/progress.md — Progress Tracking
