@@ -1,0 +1,74 @@
+name: Production CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: production-deployment
+  cancel-in-progress: false
+
+jobs:
+  test-and-build:
+    name: 🧪 Automated Testing & Build Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies
+        run: npm ci
+
+      - name: 🛡️ Run Lint & Type Checks
+        run: npm run lint
+
+      - name: 🧪 Run Automated Test Suite (Vitest)
+        run: npm test
+
+      - name: 🏗️ Verify Production Bundle Build
+        run: npm run build
+
+  deploy:
+    name: 🚀 Deploy to Production VPS
+    needs: test-and-build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: 🔐 Execute Remote Deployment over SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          script_stop: true
+          command_timeout: 15m
+          script: |
+            echo "🚀 Starting automated deployment for Janebi Store..."
+            cd /var/www/janebi-store || exit 1
+            
+            echo "📥 Fetching latest code from GitHub..."
+            git fetch origin main
+            git reset --hard origin/main
+            
+            echo "🐳 Building and restarting Docker containers..."
+            if command -v docker-compose &> /dev/null; then
+              docker-compose up -d --build
+            else
+              docker compose up -d --build
+            fi
+            
+            echo "🧹 Cleaning up unused Docker images..."
+            docker image prune -f
+            
+            echo "✅ Deployment completed successfully!"
