@@ -62,7 +62,9 @@ router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
     const today = new Date();
     const dateStr = new Intl.DateTimeFormat("fa-IR", { year: "numeric", month: "long", day: "numeric" }).format(today);
     
-    const newOrder = db.transaction((tx) => {
+    // Portable async transaction: works on both SQLite (queued by db wrapper)
+    // and PostgreSQL.
+    const newOrder = await db.transaction(async (tx) => {
       // Aggregate duplicate items by productId
       const itemMap = new Map<number, number>();
       for (const item of items) {
@@ -82,7 +84,7 @@ router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
         throw new Error("سبد خرید خالی است");
       }
 
-      const dbProducts = tx.select().from(products).where(inArray(products.id, productIds)).all();
+      const dbProducts = await tx.select().from(products).where(inArray(products.id, productIds));
 
       let realSubtotal = 0;
       const finalItems: any[] = [];
@@ -115,7 +117,8 @@ router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
       // Handle Coupon
       let couponDiscount = 0;
       if (couponCode) {
-        const coupon = tx.select().from(coupons).where(eq(coupons.code, couponCode.toUpperCase())).get();
+        const couponList = await tx.select().from(coupons).where(eq(coupons.code, couponCode.toUpperCase()));
+        const coupon = couponList[0];
         
         if (!coupon || !coupon.active) {
           throw new Error("کد تخفیف نامعتبر است یا منقضی شده است");
@@ -137,7 +140,8 @@ router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
       // Handle VIP Points Redemption (1 VIP Point = 1000 Tomans discount)
       let vipDiscount = 0;
       let pointsToDeduct = 0;
-      const currentUser = tx.select().from(users).where(eq(users.id, userId)).get();
+      const currentUserList = await tx.select().from(users).where(eq(users.id, userId));
+      const currentUser = currentUserList[0];
       const currentVipPoints = currentUser?.vipPoints || 0;
 
       if (useVipPoints && currentVipPoints > 0) {
@@ -147,10 +151,9 @@ router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
         if (maxPointsUsable > 0) {
           pointsToDeduct = maxPointsUsable;
           vipDiscount = pointsToDeduct * 1000;
-          tx.update(users)
-            .set({ vipPoints: sql`vip_points - ${pointsToDeduct}` })
-            .where(eq(users.id, userId))
-            .run();
+          await tx.update(users)
+            .set({ vipPoints: sql`${users.vipPoints} - ${pointsToDeduct}` })
+            .where(eq(users.id, userId));
         }
       }
 
@@ -183,10 +186,10 @@ router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
         refId: null
       };
 
-      tx.insert(orders).values(orderData).run();
+      await tx.insert(orders).values(orderData);
 
       for (const item of finalItems) {
-        tx.insert(orderItems).values({
+        await tx.insert(orderItems).values({
           orderId: orderId,
           productId: item.id,
           price: item.price,
@@ -194,24 +197,25 @@ router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
           title: item.title,
           image: item.image,
           brand: item.brand
-        }).run();
+        });
 
-        tx.update(products)
-          .set({ stockQuantity: sql`stockQuantity - ${item.quantity}` })
-          .where(eq(products.id, item.id))
-          .run();
+        await tx.update(products)
+          // Use the drizzle column reference (not a raw identifier) so the
+          // generated SQL quotes the column correctly on both dialects —
+          // PG folds unquoted stockQuantity to stockquantity and fails.
+          .set({ stockQuantity: sql`${products.stockQuantity} - ${item.quantity}` })
+          .where(eq(products.id, item.id));
       }
 
       // Add earned points immediately for cash-on-delivery, or upon online verify
       if (paymentMethod !== "online" && earnedVipPoints > 0) {
-        tx.update(users)
-          .set({ vipPoints: sql`vip_points + ${earnedVipPoints}` })
-          .where(eq(users.id, userId))
-          .run();
+        await tx.update(users)
+          .set({ vipPoints: sql`${users.vipPoints} + ${earnedVipPoints}` })
+          .where(eq(users.id, userId));
       }
 
       // Clear user cart
-      tx.delete(cartItems).where(eq(cartItems.userId, userId)).run();
+      await tx.delete(cartItems).where(eq(cartItems.userId, userId));
 
       return {
         ...orderData,
@@ -238,8 +242,11 @@ router.post("/:id/cancel", async (req: AuthRequest, res) => {
   const orderId = req.params.id as string;
 
   try {
-    const cancelledOrder = db.transaction((tx) => {
-      const order = tx.select().from(orders).where(eq(orders.id, orderId)).get();
+    // Portable async transaction: works on both SQLite (queued by db wrapper)
+    // and PostgreSQL.
+    const cancelledOrder = await db.transaction(async (tx) => {
+      const orderList = await tx.select().from(orders).where(eq(orders.id, orderId));
+      const order = orderList[0];
       if (!order) {
         throw { status: 404, message: "سفارش یافت نشد" };
       }
@@ -252,24 +259,22 @@ router.post("/:id/cancel", async (req: AuthRequest, res) => {
         throw { status: 400, message: "امکان لغو این سفارش وجود ندارد" };
       }
 
-      const itemsToRestock = tx.select().from(orderItems).where(eq(orderItems.orderId, orderId)).all();
+      const itemsToRestock = await tx.select().from(orderItems).where(eq(orderItems.orderId, orderId));
       for (const item of itemsToRestock) {
-        tx.update(products)
-          .set({ stockQuantity: sql`stockQuantity + ${item.qty}` })
-          .where(eq(products.id, item.productId))
-          .run();
+        await tx.update(products)
+          .set({ stockQuantity: sql`${products.stockQuantity} + ${item.qty}` })
+          .where(eq(products.id, item.productId));
       }
 
-      tx.update(orders)
+      await tx.update(orders)
         .set({
           status: "cancelled",
           statusText: "لغو شده توسط کاربر"
         })
-        .where(eq(orders.id, orderId))
-        .run();
+        .where(eq(orders.id, orderId));
 
-      const updated = tx.select().from(orders).where(eq(orders.id, orderId)).get();
-      return updated;
+      const updatedList = await tx.select().from(orders).where(eq(orders.id, orderId));
+      return updatedList[0];
     });
 
     appCache.invalidate("products");

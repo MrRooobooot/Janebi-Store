@@ -17,6 +17,10 @@ let dbInstance: any;
 let poolInstance: pkg.Pool | null = null;
 let sqliteInstance: Database.Database | null = null;
 
+// Resolves when dialect-specific migrations have been applied (PG path).
+// For SQLite, migrations run synchronously during init so this is pre-resolved.
+let migrationsReady: Promise<void> = Promise.resolve();
+
 if (isPostgres) {
   poolInstance = new Pool({
     connectionString: env.DATABASE_URL,
@@ -25,6 +29,36 @@ if (isPostgres) {
     connectionTimeoutMillis: 5000,
   });
   dbInstance = drizzlePg(poolInstance, { schema: pgSchema });
+
+  // Auto-apply postgres migrations on init (mirrors the sqlite bootstrap below).
+  // Runs asynchronously; server bootstrap awaits migrationsReady before seeding.
+  // Idempotent: "already exists"/"duplicate column" failures are tolerated.
+  const pgMigrationDir = path.resolve(process.cwd(), 'drizzle/pg');
+  migrationsReady = (async () => {
+    try {
+      if (!fs.existsSync(pgMigrationDir)) return;
+      const files = fs.readdirSync(pgMigrationDir).filter(f => f.endsWith('.sql')).sort();
+      for (const file of files) {
+        const sqlContent = fs.readFileSync(path.join(pgMigrationDir, file), 'utf-8');
+        const statements = sqlContent.split('--> statement-breakpoint');
+        for (const statement of statements) {
+          const trimmed = statement.trim();
+          if (!trimmed) continue;
+          try {
+            await poolInstance!.query(trimmed);
+          } catch (err: any) {
+            const msg = String(err.message || '');
+            if (!msg.includes('already exists') && !msg.includes('duplicate column')) {
+              console.warn(`⚠️ PG migration ${file} statement warning:`, msg);
+            }
+          }
+        }
+      }
+      console.log('✅ PostgreSQL migrations applied/verified');
+    } catch (migErr: any) {
+      console.warn('⚠️ PG migration bootstrap skipped:', migErr?.message);
+    }
+  })();
 } else {
   const rawDbPath = (env.DATABASE_URL.startsWith('postgres://') || env.DATABASE_URL.startsWith('postgresql://'))
     ? './data/janebi.db'
@@ -73,8 +107,22 @@ if (isPostgres) {
 
   const rawSqliteDb = drizzleSqlite(sqliteInstance, { schema: sqliteSchema });
 
+  // Transaction mutex: better-sqlite3 has a single connection, so concurrent
+  // transactions would interleave BEGIN/COMMIT and corrupt each other's
+  // savepoints. Every transaction is queued and executed one at a time.
+  let txChain: Promise<unknown> = Promise.resolve();
   let txDepth = 0;
-  function createTransaction(callback: (tx: any) => any) {
+  function runQueued<T>(callback: (tx: any) => any): Promise<T> {
+    const run = txChain.then(
+      () => executeTransaction(callback),
+      () => executeTransaction(callback)
+    );
+    // Keep the chain alive regardless of outcome, but surface errors to the caller.
+    txChain = run.then(() => undefined, () => undefined);
+    return run as Promise<T>;
+  }
+
+  function executeTransaction(callback: (tx: any) => any) {
     const isNested = txDepth > 0;
     const spName = `sp_${txDepth}`;
     txDepth++;
@@ -131,7 +179,7 @@ if (isPostgres) {
   dbInstance = new Proxy(rawSqliteDb, {
     get(target, prop, receiver) {
       if (prop === 'transaction') {
-        return createTransaction;
+        return runQueued;
       }
       return Reflect.get(target, prop, receiver);
     }
@@ -141,6 +189,11 @@ if (isPostgres) {
 export const pool = poolInstance;
 export const sqlite = sqliteInstance;
 export const db: BetterSQLite3Database<typeof sqliteSchema> = dbInstance;
+
+// Await this before touching the database (server bootstrap does).
+export function dbReady(): Promise<void> {
+  return migrationsReady;
+}
 
 export async function closeDb(): Promise<void> {
   if (poolInstance) {

@@ -41,8 +41,8 @@ router.get('/stats', async (req, res) => {
       }
     }
 
-    // Low stock products (stock <= 5)
-    const lowStockProducts = await db.select().from(products).where(sql`stockQuantity <= 5`).limit(8);
+    // Low stock products (stock <= 5) — column ref keeps PG quoting correct
+    const lowStockProducts = await db.select().from(products).where(sql`${products.stockQuantity} <= 5`).limit(8);
 
     // Recent orders
     const recentOrders = await db.query.orders.findMany({
@@ -282,14 +282,14 @@ router.delete('/products/:id', async (req, res) => {
       return res.status(404).json({ error: 'محصول یافت نشد', message: 'محصول یافت نشد' });
     }
 
-    // NOTE: better-sqlite3 is a SYNC driver — the tx callback must contain no awaits,
-    // otherwise the transaction commits at the first await point.
-    db.transaction((tx) => {
-      tx.delete(productFeatures).where(eq(productFeatures.productId, prodId)).run();
-      tx.delete(cartItems).where(eq(cartItems.productId, prodId)).run();
-      tx.delete(wishlistItems).where(eq(wishlistItems.productId, prodId)).run();
-      tx.delete(reviews).where(eq(reviews.productId, prodId)).run();
-      tx.delete(products).where(eq(products.id, prodId)).run();
+    // Portable async transaction: works on both SQLite (queued by db wrapper)
+    // and PostgreSQL.
+    await db.transaction(async (tx) => {
+      await tx.delete(productFeatures).where(eq(productFeatures.productId, prodId));
+      await tx.delete(cartItems).where(eq(cartItems.productId, prodId));
+      await tx.delete(wishlistItems).where(eq(wishlistItems.productId, prodId));
+      await tx.delete(reviews).where(eq(reviews.productId, prodId));
+      await tx.delete(products).where(eq(products.id, prodId));
     });
 
     appCache.invalidate('products');

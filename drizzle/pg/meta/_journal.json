@@ -8,6 +8,13 @@
       "when": 1786812770653,
       "tag": "0000_tan_captain_cross",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1787487288344,
+      "tag": "0001_sloppy_strong_guy",
+      "breakpoints": true
     }
   ]
 }

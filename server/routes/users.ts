@@ -157,24 +157,23 @@ router.delete('/me/addresses/:id', validate(idParamSchema), async (req: AuthRequ
   const addressId = req.params.id as string;
 
   try {
-    // NOTE: better-sqlite3 is a SYNC driver — the tx callback must contain no awaits,
-    // otherwise the transaction commits at the first await point and remaining
-    // statements escape the transaction (race condition under concurrency).
-    const deleted = db.transaction((tx) => {
-      const targetList = tx.select().from(addresses).where(and(eq(addresses.id, addressId), eq(addresses.userId, userId))).all();
+    // Portable async transaction: works on both SQLite (queued by db wrapper)
+    // and PostgreSQL. No sync .run()/.all() calls — those don't exist on the
+    // PG dialect builders.
+    const deleted = await db.transaction(async (tx) => {
+      const targetList = await tx.select().from(addresses).where(and(eq(addresses.id, addressId), eq(addresses.userId, userId)));
       const target = targetList[0];
       if (!target) {
         return null;
       }
 
-      tx.delete(addresses)
-        .where(and(eq(addresses.id, addressId), eq(addresses.userId, userId)))
-        .run();
+      await tx.delete(addresses)
+        .where(and(eq(addresses.id, addressId), eq(addresses.userId, userId)));
 
       if (target.isDefault) {
-        const remainingList = tx.select().from(addresses).where(eq(addresses.userId, userId)).orderBy(desc(addresses.id)).limit(1).all();
+        const remainingList = await tx.select().from(addresses).where(eq(addresses.userId, userId)).orderBy(desc(addresses.id)).limit(1);
         if (remainingList.length > 0) {
-          tx.update(addresses).set({ isDefault: true }).where(eq(addresses.id, remainingList[0].id)).run();
+          await tx.update(addresses).set({ isDefault: true }).where(eq(addresses.id, remainingList[0].id));
         }
       }
 
@@ -195,27 +194,25 @@ router.put('/me/addresses/:id/default', validate(idParamSchema), async (req: Aut
   const addressId = req.params.id as string;
 
   try {
-    // NOTE: better-sqlite3 is a SYNC driver — the tx callback must contain no awaits,
-    // otherwise the transaction commits at the first await point and remaining
-    // statements escape the transaction (multi-default race under concurrency).
-    const success = db.transaction((tx) => {
-      const targetList = tx.select().from(addresses).where(and(eq(addresses.id, addressId), eq(addresses.userId, userId))).all();
+    // Portable async transaction: works on both SQLite (queued by db wrapper)
+    // and PostgreSQL. Concurrent txs are serialized by the db wrapper on SQLite,
+    // so the multi-default race is impossible.
+    const success = await db.transaction(async (tx) => {
+      const targetList = await tx.select().from(addresses).where(and(eq(addresses.id, addressId), eq(addresses.userId, userId)));
       const target = targetList[0];
       if (!target) {
         return false;
       }
 
       // Set all user addresses to not default
-      tx.update(addresses)
+      await tx.update(addresses)
         .set({ isDefault: false })
-        .where(eq(addresses.userId, userId))
-        .run();
+        .where(eq(addresses.userId, userId));
 
       // Set the selected one to default
-      tx.update(addresses)
+      await tx.update(addresses)
         .set({ isDefault: true })
-        .where(and(eq(addresses.id, addressId), eq(addresses.userId, userId)))
-        .run();
+        .where(and(eq(addresses.id, addressId), eq(addresses.userId, userId)));
 
       return true;
     });

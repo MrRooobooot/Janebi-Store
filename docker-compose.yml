@@ -28,7 +28,9 @@ services:
     restart: always
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      # Must match the credentials embedded in DATABASE_URL above.
+      # Override both via .env (POSTGRES_PASSWORD / DATABASE_URL) in production.
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       POSTGRES_DB: janebi
     ports:
       - "127.0.0.1:5432:5432"

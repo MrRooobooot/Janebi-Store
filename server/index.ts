@@ -1,6 +1,6 @@
 import { app } from './app.js';
 import { env } from './env.js';
-import { db } from './db/index.js';
+import { db, dbReady } from './db/index.js';
 import * as schema from './db/schema.js';
 import { ALL_PRODUCTS, REVIEWS_STORE, VALID_COUPONS } from './data/seed-data.js';
 import express from 'express';
@@ -9,6 +9,9 @@ import fs from 'fs';
 
 async function ensureDatabaseInitialized() {
   try {
+    // Wait for dialect-specific migrations (PG) to finish before seeding.
+    await dbReady();
+
     // Read and run migration SQL if needed
     const migrationFile = path.resolve(process.cwd(), 'drizzle/0000_absurd_night_nurse.sql');
     if (fs.existsSync(migrationFile)) {

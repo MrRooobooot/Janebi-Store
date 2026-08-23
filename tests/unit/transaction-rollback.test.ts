@@ -108,64 +108,58 @@ describe('Database Transaction Rollback Integrity', () => {
     expect(afterOrders.length).toBe(initialOrderCount);
   });
 
-  it('rolls back database modifications when an unhandled error is thrown inside db.transaction', () => {
+  it('rolls back database modifications when an unhandled error is thrown inside db.transaction', async () => {
     const initialPrice = 200000;
 
-    expect(() => {
-      db.transaction((tx) => {
-        // Step 1: Update product price inside transaction
-        tx.update(products)
-          .set({ price: 999999 })
-          .where(eq(products.id, prodInStockId))
-          .run();
+    await expect(db.transaction(async (tx) => {
+      // Step 1: Update product price inside transaction
+      await tx.update(products)
+        .set({ price: 999999 })
+        .where(eq(products.id, prodInStockId));
 
-        // Step 2: Throw artificial exception
-        throw new Error('Simulated failure during checkout/transaction');
-      });
-    }).toThrow('Simulated failure during checkout/transaction');
+      // Step 2: Throw artificial exception
+      throw new Error('Simulated failure during checkout/transaction');
+    })).rejects.toThrow('Simulated failure during checkout/transaction');
 
     // Verify the update was completely discarded and price reverted
-    const p = db.select().from(products).where(eq(products.id, prodInStockId)).get();
+    const p = await db.query.products.findFirst({ where: eq(products.id, prodInStockId) });
     expect(p?.price).toBe(initialPrice);
   });
 
-  it('rolls back multi-table writes atomically upon transaction failure', () => {
+  it('rolls back multi-table writes atomically upon transaction failure', async () => {
     const fakeOrderId = `ORD-FAIL-${Date.now()}`;
 
-    expect(() => {
-      db.transaction((tx) => {
-        // 1. Insert order
-        tx.insert(orders).values({
-          id: fakeOrderId,
-          userId: testUserId,
-          date: '1403/05/25',
-          status: 'pending_payment',
-          statusText: 'تست',
-          total: 50000,
-          subtotal: 50000,
-          paymentMethod: 'online',
-          shippingMethod: 'standard',
-          recipientName: 'تست',
-          recipientPhone: testPhone,
-          recipientAddress: 'آدرس'
-        }).run();
-
-        // 2. Decrement stock
-        tx.update(products)
-          .set({ stockQuantity: sql`stockQuantity - 5` })
-          .where(eq(products.id, prodInStockId))
-          .run();
-
-        // 3. Throw to abort
-        throw new Error('Abort transaction');
+    await expect(db.transaction(async (tx) => {
+      // 1. Insert order
+      await tx.insert(orders).values({
+        id: fakeOrderId,
+        userId: testUserId,
+        date: '1403/05/25',
+        status: 'pending_payment',
+        statusText: 'تست',
+        total: 50000,
+        subtotal: 50000,
+        paymentMethod: 'online',
+        shippingMethod: 'standard',
+        recipientName: 'تست',
+        recipientPhone: testPhone,
+        recipientAddress: 'آدرس'
       });
-    }).toThrow('Abort transaction');
+
+      // 2. Decrement stock
+      await tx.update(products)
+        .set({ stockQuantity: sql`stockQuantity - 5` })
+        .where(eq(products.id, prodInStockId));
+
+      // 3. Throw to abort
+      throw new Error('Abort transaction');
+    })).rejects.toThrow('Abort transaction');
 
     // Verify neither order nor stock change was persisted
-    const orderCheck = db.select().from(orders).where(eq(orders.id, fakeOrderId)).get();
+    const orderCheck = await db.query.orders.findFirst({ where: eq(orders.id, fakeOrderId) });
     expect(orderCheck).toBeUndefined();
 
-    const productCheck = db.select().from(products).where(eq(products.id, prodInStockId)).get();
+    const productCheck = await db.query.products.findFirst({ where: eq(products.id, prodInStockId) });
     expect(productCheck?.stockQuantity).toBe(10);
   });
 });
