@@ -48,21 +48,37 @@ app.use(
   })
 );
 
-// Middleware - Restricted CORS
-app.use(
+// Middleware - Restricted CORS.
+// Same-origin requests (Origin equals the site's own scheme+host, derived from
+// the forwarded Host header) are ALWAYS allowed — blocking them breaks ES
+// module scripts, which send Origin even for same-origin loads.
+function isSameOrigin(origin: string | undefined, req: { headers: Record<string, any> }): boolean {
+  if (!origin) return false;
+  const host = (req.headers["x-forwarded-host"] as string) || (req.headers.host as string);
+  if (!host) return false;
+  return origin === `https://${host}` || origin === `http://${host}`;
+}
+
+app.use((req: any, res: any, next: any) => {
   cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
-      if (!origin || allowedOrigins.includes(origin) || env.NODE_ENV !== "production") {
-        callback(null, true);
+    origin: (origin, cb) => {
+      // Allow no-origin requests (mobile apps, curl), same-origin module loads,
+      // explicitly configured origins, and everything outside production.
+      if (
+        !origin ||
+        allowedOrigins.includes(origin) ||
+        isSameOrigin(origin, req) ||
+        env.NODE_ENV !== "production"
+      ) {
+        cb(null, true);
       } else {
-        callback(new Error("Not allowed by CORS"));
+        cb(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
     exposedHeaders: ["X-Request-ID"],
-  })
-);
+  })(req, res, next);
+});
 
 app.use(express.json());
 app.use(
