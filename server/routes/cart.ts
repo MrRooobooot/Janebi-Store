@@ -52,8 +52,10 @@ router.post('/', validate(cartItemSchema), async (req: AuthRequest, res) => {
         .set({ quantity: newQty })
         .where(eq(cartItems.id, existing.id));
     } else {
+      // Unique id: Date.now() alone can collide when the same user adds the
+      // same product twice in the same millisecond (PK violation → 500).
       await db.insert(cartItems).values({
-        id: `cart-${Date.now()}`,
+        id: `cart-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
         userId,
         productId,
         quantity,

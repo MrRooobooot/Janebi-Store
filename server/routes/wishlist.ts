@@ -46,7 +46,7 @@ router.post('/', validate(wishlistItemSchema), async (req: AuthRequest, res) => 
     }
 
     await db.insert(wishlistItems).values({
-      id: `wish-${Date.now()}`,
+      id: `wish-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       userId,
       productId,
       addedAt: Math.floor(Date.now() / 1000)
