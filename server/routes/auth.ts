@@ -1,24 +1,25 @@
-import { Router } from 'express';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import { validate } from '../middleware/validate.js';
-import { registerSchema, loginSchema } from '../validators/index.js';
-import { db } from '../db/index.js';
-import { users, addresses } from '../db/schema.js';
-import { eq } from 'drizzle-orm';
-import { env } from '../env.js';
-import { authenticate, AuthRequest } from '../middleware/auth.js';
+import { Router } from "express";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { validate } from "../middleware/validate.js";
+import { registerSchema, loginSchema, otpSendSchema, otpVerifySchema } from "../validators/index.js";
+import { db } from "../db/index.js";
+import { users, addresses } from "../db/schema.js";
+import { eq } from "drizzle-orm";
+import { env } from "../env.js";
+import { authenticate, AuthRequest } from "../middleware/auth.js";
+import { setAuthCookies, clearAuthCookies, parseCookies } from "../utils/cookies.js";
 
 const router = Router();
 
 // Generate tokens
 const generateTokens = (userId: string) => {
-  const accessToken = jwt.sign({ userId }, env.JWT_ACCESS_SECRET, { expiresIn: '1d' });
-  const refreshToken = jwt.sign({ userId }, env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
+  const accessToken = jwt.sign({ userId }, env.JWT_ACCESS_SECRET, { expiresIn: "1d" });
+  const refreshToken = jwt.sign({ userId }, env.JWT_REFRESH_SECRET, { expiresIn: "7d" });
   return { accessToken, refreshToken };
 };
 
-router.post('/register', validate(registerSchema), async (req, res) => {
+router.post("/register", validate(registerSchema), async (req, res) => {
   const { name, phone, password } = req.body;
 
   try {
@@ -28,7 +29,7 @@ router.post('/register', validate(registerSchema), async (req, res) => {
     });
 
     if (existingUser) {
-      return res.status(400).json({ message: 'کاربری با این شماره موبایل قبلا ثبت نام کرده است' });
+      return res.status(400).json({ message: "کاربری با این شماره موبایل قبلا ثبت نام کرده است" });
     }
 
     // Hash password
@@ -43,24 +44,25 @@ router.post('/register', validate(registerSchema), async (req, res) => {
       phone,
       password: hashedPassword,
       joinedDate,
-      role: 'user',
+      role: "user",
       vipPoints: 0
     });
 
     const tokens = generateTokens(userId);
+    setAuthCookies(res, tokens.accessToken, tokens.refreshToken, env.NODE_ENV === "production");
 
     res.status(201).json({
-      message: 'ثبت نام با موفقیت انجام شد',
-      user: { id: userId, name, phone, role: 'user', addresses: [] },
+      message: "ثبت نام با موفقیت انجام شد",
+      user: { id: userId, name, phone, role: "user", addresses: [] },
       ...tokens
     });
   } catch (error) {
-    console.error('Register error:', error);
-    res.status(500).json({ message: 'خطای سرور' });
+    console.error("Register error:", error);
+    res.status(500).json({ message: "خطای سرور" });
   }
 });
 
-router.post('/login', validate(loginSchema), async (req, res) => {
+router.post("/login", validate(loginSchema), async (req, res) => {
   const { phone, password } = req.body;
 
   try {
@@ -69,15 +71,17 @@ router.post('/login', validate(loginSchema), async (req, res) => {
     });
 
     if (!user) {
-      return res.status(401).json({ message: 'شماره موبایل یا رمز عبور اشتباه است' });
+      return res.status(401).json({ message: "شماره موبایل یا رمز عبور اشتباه است" });
     }
 
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
-      return res.status(401).json({ message: 'شماره موبایل یا رمز عبور اشتباه است' });
+      return res.status(401).json({ message: "شماره موبایل یا رمز عبور اشتباه است" });
     }
 
     const tokens = generateTokens(user.id);
+    setAuthCookies(res, tokens.accessToken, tokens.refreshToken, env.NODE_ENV === "production");
+
     const { password: _, ...userWithoutPassword } = user;
 
     const userAddresses = await db.query.addresses.findMany({
@@ -85,17 +89,58 @@ router.post('/login', validate(loginSchema), async (req, res) => {
     });
 
     res.json({
-      message: 'ورود با موفقیت انجام شد',
+      message: "ورود با موفقیت انجام شد",
       user: { ...userWithoutPassword, addresses: userAddresses },
       ...tokens
     });
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ message: 'خطای سرور' });
+    console.error("Login error:", error);
+    res.status(500).json({ message: "خطای سرور" });
   }
 });
 
-router.get('/me', authenticate, async (req: AuthRequest, res) => {
+router.post("/refresh", async (req, res) => {
+  try {
+    const cookies = parseCookies(req);
+    const refreshToken = cookies.refreshToken || (req.body && req.body.refreshToken);
+
+    if (!refreshToken) {
+      return res.status(401).json({ message: "No refresh token provided" });
+    }
+
+    const decoded = jwt.verify(refreshToken, env.JWT_REFRESH_SECRET) as any;
+    if (!decoded || !decoded.userId) {
+      return res.status(401).json({ message: "Invalid refresh token payload" });
+    }
+
+    const user = await db.query.users.findFirst({
+      where: eq(users.id, decoded.userId)
+    });
+
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    const tokens = generateTokens(user.id);
+    setAuthCookies(res, tokens.accessToken, tokens.refreshToken, env.NODE_ENV === "production");
+
+    const { password: _, ...userWithoutPassword } = user;
+    res.json({
+      message: "Token refreshed successfully",
+      user: userWithoutPassword,
+      ...tokens
+    });
+  } catch (error) {
+    return res.status(401).json({ message: "Invalid or expired refresh token" });
+  }
+});
+
+router.post("/logout", (req, res) => {
+  clearAuthCookies(res, env.NODE_ENV === "production");
+  res.json({ message: "با موفقیت خارج شدید" });
+});
+
+router.get("/me", authenticate, async (req: AuthRequest, res) => {
   const userAddresses = await db.query.addresses.findMany({
     where: eq(addresses.userId, req.user.id)
   });
@@ -214,6 +259,122 @@ router.post('/refresh', async (req, res) => {
     res.json(tokens);
   } catch (error) {
     res.status(401).json({ message: 'توکن منقضی شده است. لطفا مجددا وارد شوید' });
+  }
+});
+
+
+// In-memory OTP Store for phone verification with expiration
+interface OtpEntry {
+  code: string;
+  expiresAt: number;
+  attempts: number;
+}
+const otpStore = new Map<string, OtpEntry>();
+
+router.post("/otp/send", validate(otpSendSchema), async (req, res) => {
+  const { phone } = req.body;
+  
+  // Rate limit OTP requests per phone
+  const existing = otpStore.get(phone);
+  if (existing && Date.now() < existing.expiresAt && existing.expiresAt - Date.now() > 60 * 1000) {
+    return res.status(429).json({
+      message: "کد تایید اخیراً ارسال شده است. لطفاً کمی صبر کنید.",
+      retryAfter: Math.ceil((existing.expiresAt - Date.now() - 60 * 1000) / 1000)
+    });
+  }
+
+  // Generate 5-digit OTP
+  const code = Math.floor(10000 + Math.random() * 90000).toString();
+  const expiresAt = Date.now() + 2 * 60 * 1000; // 2 minutes
+
+  otpStore.set(phone, { code, expiresAt, attempts: 0 });
+
+  // In production, integrate SMS provider (e.g. Kavehnegar / Ghasedak)
+  // For sandbox/development/test, return or log code
+  if (env.NODE_ENV !== "production") {
+    console.log(`[SMS Simulator] OTP Code for ${phone}: ${code}`);
+  }
+
+  res.json({
+    message: "کد تایید با موفقیت ارسال شد",
+    expiresIn: 120,
+    ...(env.NODE_ENV !== "production" ? { debugCode: code } : {})
+  });
+});
+
+router.post("/otp/verify", validate(otpVerifySchema), async (req, res) => {
+  const { phone, code, name } = req.body;
+
+  const entry = otpStore.get(phone);
+  if (!entry) {
+    return res.status(400).json({ message: "کد تاییدی برای این شماره ثبت نشده است یا منقضی شده" });
+  }
+
+  if (Date.now() > entry.expiresAt) {
+    otpStore.delete(phone);
+    return res.status(400).json({ message: "کد تایید منقضی شده است. لطفاً مجدداً درخواست دهید." });
+  }
+
+  if (entry.attempts >= 5) {
+    otpStore.delete(phone);
+    return res.status(429).json({ message: "تعداد دفعات اشتباه بیش از حد مجاز بود. کد جدید دریافت کنید." });
+  }
+
+  if (entry.code !== code) {
+    entry.attempts++;
+    return res.status(400).json({ message: "کد تایید وارد شده نامعتبر است" });
+  }
+
+  // OTP verified successfully
+  otpStore.delete(phone);
+
+  try {
+    let user = await db.query.users.findFirst({
+      where: eq(users.phone, phone)
+    });
+
+    if (!user) {
+      // Create new user automatically via OTP registration
+      const userId = `usr-${Date.now()}`;
+      const joinedDate = new Intl.DateTimeFormat("fa-IR").format(new Date());
+      const randomPassword = await bcrypt.hash(Math.random().toString(36), 10);
+      const userName = name || "کاربر جـانبی";
+
+      await db.insert(users).values({
+        id: userId,
+        name: userName,
+        phone,
+        password: randomPassword,
+        joinedDate,
+        role: "user",
+        vipPoints: 100 // Bonus VIP points on first OTP signup!
+      });
+
+      user = await db.query.users.findFirst({
+        where: eq(users.id, userId)
+      });
+    }
+
+    if (!user) {
+      return res.status(500).json({ message: "خطای سرور در بازیابی حساب کاربری" });
+    }
+
+    const tokens = generateTokens(user.id);
+    setAuthCookies(res, tokens.accessToken, tokens.refreshToken, env.NODE_ENV === "production");
+
+    const { password: _, ...userWithoutPassword } = user;
+    const userAddresses = await db.query.addresses.findMany({
+      where: eq(addresses.userId, user.id)
+    });
+
+    res.json({
+      message: "ورود با موفقیت انجام شد",
+      user: { ...userWithoutPassword, addresses: userAddresses },
+      ...tokens
+    });
+  } catch (error) {
+    console.error("OTP login error:", error);
+    res.status(500).json({ message: "خطای سرور" });
   }
 });
 

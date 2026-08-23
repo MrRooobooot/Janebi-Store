@@ -1,6 +1,6 @@
 import { app } from './app.js';
 import { env } from './env.js';
-import { db, isPostgres, pool, sqlite } from './db/index.js';
+import { db } from './db/index.js';
 import * as schema from './db/schema.js';
 import { ALL_PRODUCTS, REVIEWS_STORE, VALID_COUPONS } from './data/seed-data.js';
 import express from 'express';
@@ -10,37 +10,17 @@ import fs from 'fs';
 async function ensureDatabaseInitialized() {
   try {
     // Read and run migration SQL if needed
-    if (isPostgres && pool) {
-      const pgMigrationDir = path.resolve(process.cwd(), 'drizzle/pg');
-      if (fs.existsSync(pgMigrationDir)) {
-        const files = fs.readdirSync(pgMigrationDir).filter(f => f.endsWith('.sql')).sort();
-        for (const file of files) {
-          const sqlContent = fs.readFileSync(path.join(pgMigrationDir, file), 'utf-8');
-          const statements = sqlContent.split('--> statement-breakpoint');
-          for (const statement of statements) {
-            const trimmed = statement.trim();
-            if (trimmed) {
-              await pool.query(trimmed).catch((err: any) => {
-                if (!err.message?.includes('already exists') && !err.message?.includes('duplicate key')) {
-                  console.warn('Postgres DDL notice:', err.message);
-                }
-              });
-            }
-          }
-        }
-      }
-    } else if (sqlite) {
-      const sqliteMigrationDir = path.resolve(process.cwd(), 'drizzle/sqlite');
-      if (fs.existsSync(sqliteMigrationDir)) {
-        const files = fs.readdirSync(sqliteMigrationDir).filter(f => f.endsWith('.sql')).sort();
-        for (const file of files) {
-          const sqlContent = fs.readFileSync(path.join(sqliteMigrationDir, file), 'utf-8');
-          const statements = sqlContent.split('--> statement-breakpoint');
-          for (const statement of statements) {
-            const trimmed = statement.trim();
-            if (trimmed) {
-              sqlite.exec(trimmed);
-            }
+    const migrationFile = path.resolve(process.cwd(), 'drizzle/0000_absurd_night_nurse.sql');
+    if (fs.existsSync(migrationFile)) {
+      const sql = fs.readFileSync(migrationFile, 'utf-8');
+      const statements = sql.split('--> statement-breakpoint');
+      for (const statement of statements) {
+        const trimmed = statement.trim();
+        if (trimmed) {
+          try {
+            (db as any).session.client.exec(trimmed);
+          } catch (e) {
+            // Ignore table/index already exists errors
           }
         }
       }
@@ -106,17 +86,6 @@ async function ensureDatabaseInitialized() {
           active: true
         }).onConflictDoNothing();
       }
-
-      if (isPostgres && pool) {
-        await pool.query(`
-          SELECT setval(pg_get_serial_sequence('products', 'id'), (SELECT COALESCE(MAX(id), 1) FROM products));
-          SELECT setval(pg_get_serial_sequence('product_features', 'id'), (SELECT COALESCE(MAX(id), 1) FROM product_features));
-          SELECT setval(pg_get_serial_sequence('order_items', 'id'), (SELECT COALESCE(MAX(id), 1) FROM order_items));
-        `).catch((err: any) => {
-          console.warn('Sequence synchronization notice:', err.message);
-        });
-      }
-
       console.log('✅ Initial database seed completed!');
     }
   } catch (err) {

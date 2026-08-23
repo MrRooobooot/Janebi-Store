@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import request from 'supertest';
+import request from '../setup/request.js';
 import express from 'express';
 import { json } from 'express';
 import { db } from '../../server/db/index.js';

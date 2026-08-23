@@ -60,6 +60,7 @@ export const orderSubmitSchema = z.object({
     shippingMethod: z.string().optional(),
     paymentMethod: z.string().optional(),
     couponCode: z.string().optional(),
+    useVipPoints: z.boolean().optional(),
     subtotal: z.number().nonnegative().optional(),
     shippingFee: z.number().nonnegative().optional(),
     discountAmount: z.number().nonnegative().optional(),
@@ -118,5 +119,19 @@ export const updateCartItemSchema = z.object({
 export const wishlistItemSchema = z.object({
   body: z.object({
     productId: z.number().int().positive()
+  })
+});
+
+export const otpSendSchema = z.object({
+  body: z.object({
+    phone: z.string().regex(/^09\d{9}$/, "شماره موبایل معتبر نیست")
+  })
+});
+
+export const otpVerifySchema = z.object({
+  body: z.object({
+    phone: z.string().regex(/^09\d{9}$/, "شماره موبایل معتبر نیست"),
+    code: z.string().regex(/^\d{5}$/, "کد تایید باید ۵ رقم باشد"),
+    name: z.string().optional()
   })
 });

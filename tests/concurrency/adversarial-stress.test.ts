@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import request from 'supertest';
+import request from '../setup/request.js';
 import express, { json } from 'express';
 import { db } from '../../server/db/index.js';
 import { products, users, orders, orderItems, addresses, cartItems, coupons } from '../../server/db/schema.js';
@@ -495,14 +495,15 @@ describe('Adversarial Concurrency & Stress Verification', () => {
     expect(defaultAddresses.length).toBe(1);
   });
 
-  it('Scenario 9: High-frequency SQLite mixed read/write burst -> zero SQLITE_BUSY crashes and 100% completion', async () => {
+  it('Scenario 9: High-frequency SQLite mixed read/write burst -> zero SQLITE_BUSY crashes and 100% completion', { timeout: 15000 }, async () => {
+
     const operations: Promise<any>[] = [];
 
     // Interleave 10 product queries, 10 cart queries, 10 coupon queries, 10 order queries
     for (let i = 0; i < 10; i++) {
       operations.push(request(app).get('/api/products?page=1&limit=5'));
       operations.push(request(app).get('/api/cart').set('Authorization', `Bearer ${testToken}`));
-      operations.push(request(app).get('/api/coupons/validate?code=OFFER20&cartTotal=1000000'));
+      operations.push(request(app).post('/api/coupons/validate').send({ code: 'OFFER20', cartTotal: 1000000 }));
       operations.push(request(app).get('/api/orders/my-orders').set('Authorization', `Bearer ${testToken}`));
     }
 

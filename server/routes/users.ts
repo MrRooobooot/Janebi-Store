@@ -108,7 +108,7 @@ router.post('/me/addresses', validate(addressSchema), async (req: AuthRequest, r
   const { title, name, phone, province, city, address, postalCode } = req.body;
 
   try {
-    const addressId = `addr-${Date.now()}`;
+    const addressId = `addr-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
     // Check if this is the first address, make it default
     const existing = await db.query.addresses.findFirst({ where: eq(addresses.userId, userId) });
     const isDefault = existing ? false : true;

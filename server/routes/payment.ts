@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { db } from '../db/index.js';
-import { orders, orderItems, products } from '../db/schema.js';
+import { orders, orderItems, products, users } from '../db/schema.js';
 import { eq, sql } from 'drizzle-orm';
 import { authenticate, AuthRequest } from '../middleware/auth.js';
 import { env } from '../env.js';
@@ -36,10 +36,9 @@ router.post('/request', authenticate, async (req: AuthRequest, res) => {
     // Convert Tomans to Rials for ZarinPal (multiply by 10)
     const amountInRials = order.total * 10;
 
-    // Use a dynamic callback URL based on the request host
-    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
-    const host = req.headers.host;
-    const callbackUrl = `${protocol}://${host}/api/payment/verify`;
+    // Use configured APP_URL or fallback safely to trusted forwarded headers
+    const baseUrl = env.APP_URL || `${req.headers['x-forwarded-proto'] || req.protocol}://${req.headers.host}`;
+    const callbackUrl = `${baseUrl.replace(/\/+$/, "")}/api/payment/verify`;
 
     // Fallback for demo/testing/sandbox when real ZarinPal gateway is not configured or in test mode
     const isDummyMerchant = !env.ZARINPAL_MERCHANT_ID || 
@@ -123,24 +122,25 @@ router.get('/verify', async (req, res) => {
       return res.redirect(`/checkout/callback?status=success&orderId=${order.id}&ref_id=${order.refId || ''}`);
     }
 
-    const restockOrder = async (tx: any, orderId: string) => {
-      const itemsToRestock = await tx.select().from(orderItems).where(eq(orderItems.orderId, orderId));
+    const restockOrder = (tx: any, orderId: string) => {
+      const itemsToRestock = tx.select().from(orderItems).where(eq(orderItems.orderId, orderId)).all();
       for (const item of itemsToRestock) {
-        await tx.update(products)
+        tx.update(products)
           .set({ stockQuantity: sql`stockQuantity + ${item.qty}` })
-          .where(eq(products.id, item.productId));
+          .where(eq(products.id, item.productId))
+          .run();
       }
-      await tx.update(orders)
+      tx.update(orders)
         .set({ status: 'cancelled', statusText: 'لغو شده (پرداخت ناموفق)' })
-        .where(eq(orders.id, orderId));
+        .where(eq(orders.id, orderId))
+        .run();
     };
 
     if (status !== 'OK') {
-      await db.transaction(async (tx) => {
-        const currentOrderList = await tx.select().from(orders).where(eq(orders.id, order.id)).limit(1);
-        const currentOrder = currentOrderList[0];
+      db.transaction((tx) => {
+        const currentOrder = tx.select().from(orders).where(eq(orders.id, order.id)).get();
         if (!currentOrder || currentOrder.status !== 'pending_payment') return;
-        await restockOrder(tx, order.id);
+        restockOrder(tx, order.id);
       });
       
       return res.redirect(`/checkout/callback?status=failed&orderId=${order.id}`);
@@ -149,17 +149,20 @@ router.get('/verify', async (req, res) => {
     // Dummy merchant handling for testing
     if (authority.startsWith('DUMMY_AUTH_')) {
       const dummyRefId = `REF-${Math.floor(Math.random() * 1000000)}`;
-      await db.transaction(async (tx) => {
-        const currentOrderList = await tx.select().from(orders).where(eq(orders.id, order.id)).limit(1);
-        const currentOrder = currentOrderList[0];
+      db.transaction((tx) => {
+        const currentOrder = tx.select().from(orders).where(eq(orders.id, order.id)).get();
         if (!currentOrder || currentOrder.status !== 'pending_payment') return;
-        await tx.update(orders)
+        tx.update(orders)
           .set({ 
             status: 'processing', 
             statusText: 'در حال پردازش (پرداخت موفق)',
             refId: dummyRefId
           })
-          .where(eq(orders.id, order.id));
+          .where(eq(orders.id, order.id))
+          .run();
+        if (order.vipPointsEarned && order.vipPointsEarned > 0 && order.userId) {
+          tx.update(users).set({ vipPoints: sql`vip_points + ${order.vipPointsEarned}` }).where(eq(users.id, order.userId)).run();
+        }
       });
       
       return res.redirect(`/checkout/callback?status=success&orderId=${order.id}&ref_id=${dummyRefId}`);
@@ -187,27 +190,26 @@ router.get('/verify', async (req, res) => {
     if (responseData.data && (responseData.data.code === 100 || responseData.data.code === 101)) {
       const refId = responseData.data.ref_id.toString();
       
-      await db.transaction(async (tx) => {
-        const currentOrderList = await tx.select().from(orders).where(eq(orders.id, order.id)).limit(1);
-        const currentOrder = currentOrderList[0];
+      db.transaction((tx) => {
+        const currentOrder = tx.select().from(orders).where(eq(orders.id, order.id)).get();
         if (!currentOrder || currentOrder.status !== 'pending_payment') return;
-        await tx.update(orders)
+        tx.update(orders)
           .set({ 
             status: 'processing', 
             statusText: 'در حال پردازش (پرداخت موفق)',
             refId: refId
           })
-          .where(eq(orders.id, order.id));
+          .where(eq(orders.id, order.id))
+          .run();
       });
       
       return res.redirect(`/checkout/callback?status=success&orderId=${order.id}&ref_id=${refId}`);
     } else {
       console.error('ZarinPal Verify Error:', responseData);
-      await db.transaction(async (tx) => {
-        const currentOrderList = await tx.select().from(orders).where(eq(orders.id, order.id)).limit(1);
-        const currentOrder = currentOrderList[0];
+      db.transaction((tx) => {
+        const currentOrder = tx.select().from(orders).where(eq(orders.id, order.id)).get();
         if (!currentOrder || currentOrder.status !== 'pending_payment') return;
-        await restockOrder(tx, order.id);
+        restockOrder(tx, order.id);
       });
       
       return res.redirect(`/checkout/callback?status=failed&orderId=${order.id}`);

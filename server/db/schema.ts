@@ -59,6 +59,8 @@ export const orders = sqliteTable('orders', {
   subtotal: integer('subtotal').notNull(),
   shippingFee: integer('shippingFee').default(0),
   discountAmount: integer('discountAmount').default(0),
+  vipPointsUsed: integer('vip_points_used').default(0),
+  vipPointsEarned: integer('vip_points_earned').default(0),
   paymentMethod: text('paymentMethod').notNull(),
   shippingMethod: text('shippingMethod').notNull(),
   recipientName: text('recipientName').notNull(),

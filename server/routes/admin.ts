@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { db } from '../db/index.js';
 import { users, products, orders, reviews, coupons, productFeatures, cartItems, wishlistItems } from '../db/schema.js';
+import { appCache } from '../utils/cache.js';
 import { eq, desc, sql } from 'drizzle-orm';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
 
@@ -65,6 +66,97 @@ router.get('/stats', async (req, res) => {
   } catch (error) {
     console.error('Admin stats error:', error);
     res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
+// ---------------------------------------------------------
+// COMPREHENSIVE ANALYTICS & INSIGHTS
+// ---------------------------------------------------------
+router.get("/analytics", async (req, res) => {
+  try {
+    const allOrders = await db.query.orders.findMany({
+      with: { items: true }
+    });
+
+    const allUsers = await db.select().from(users);
+    const allProducts = await db.select().from(products);
+
+    // Sales by Category
+    const categorySales: Record<string, { category: string; count: number; revenue: number }> = {};
+    for (const p of allProducts) {
+      if (!categorySales[p.category]) {
+        categorySales[p.category] = { category: p.category, count: 0, revenue: 0 };
+      }
+    }
+
+    let completedRevenue = 0;
+    let totalDiscountGiven = 0;
+    let totalVipPointsDistributed = 0;
+
+    for (const order of allOrders) {
+      if (["processing", "shipped", "delivered"].includes(order.status)) {
+        completedRevenue += order.total;
+        totalDiscountGiven += order.discountAmount || 0;
+        totalVipPointsDistributed += order.vipPointsEarned || 0;
+
+        for (const item of order.items) {
+          const matchedProd = allProducts.find(p => p.id === item.productId);
+          const cat = matchedProd?.category || "متفرقه";
+          if (!categorySales[cat]) {
+            categorySales[cat] = { category: cat, count: 0, revenue: 0 };
+          }
+          categorySales[cat].count += item.qty;
+          categorySales[cat].revenue += item.price * item.qty;
+        }
+      }
+    }
+
+    // Top Selling Products
+    const productSalesMap: Record<number, { id: number; title: string; count: number; revenue: number }> = {};
+    for (const order of allOrders) {
+      if (["processing", "shipped", "delivered"].includes(order.status)) {
+        for (const item of order.items) {
+          if (!productSalesMap[item.productId]) {
+            productSalesMap[item.productId] = {
+              id: item.productId,
+              title: item.title,
+              count: 0,
+              revenue: 0
+            };
+          }
+          productSalesMap[item.productId].count += item.qty;
+          productSalesMap[item.productId].revenue += item.price * item.qty;
+        }
+      }
+    }
+
+    const topSellingProducts = Object.values(productSalesMap)
+      .sort((a, b) => b.revenue - a.revenue)
+      .slice(0, 5);
+
+    // VIP loyalty overview
+    const totalVipUsers = allUsers.filter(u => (u.vipPoints || 0) > 0).length;
+    const totalActiveVipPoints = allUsers.reduce((sum, u) => sum + (u.vipPoints || 0), 0);
+
+    res.json({
+      financials: {
+        completedRevenue,
+        totalDiscountGiven,
+        totalOrdersCount: allOrders.length,
+        averageOrderValue: allOrders.length > 0 ? Math.round(completedRevenue / allOrders.length) : 0,
+      },
+      loyalty: {
+        totalVipUsers,
+        totalActiveVipPoints,
+        totalVipPointsDistributed,
+      },
+      categoryPerformance: Object.values(categorySales),
+      topSellingProducts,
+    });
+  } catch (error) {
+    console.error("Admin analytics error:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
@@ -133,6 +225,8 @@ router.post('/products', async (req, res) => {
       sku: sku || `SKU-${Date.now()}`
     }).returning();
 
+    appCache.invalidate('products');
+    appCache.invalidate('categories');
     res.status(201).json(inserted);
   } catch (error) {
     console.error('Add product error:', error);
@@ -163,6 +257,8 @@ router.put('/products/:id', async (req, res) => {
       return res.status(404).json({ error: 'محصول یافت نشد', message: 'محصول یافت نشد' });
     }
 
+    appCache.invalidate('products');
+    appCache.invalidate('categories');
     res.json(updated);
   } catch (error) {
     console.error('Update product error:', error);
@@ -194,6 +290,8 @@ router.delete('/products/:id', async (req, res) => {
       await tx.delete(products).where(eq(products.id, prodId));
     });
 
+    appCache.invalidate('products');
+    appCache.invalidate('categories');
     res.json({ message: 'محصول با موفقیت حذف شد' });
   } catch (error: any) {
     console.error('Delete product error:', error);

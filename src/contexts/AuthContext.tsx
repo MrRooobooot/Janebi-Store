@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useToast } from './ToastContext';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { useToast } from "./ToastContext";
 
 export interface AddressItem {
   id: string;
@@ -29,10 +29,11 @@ interface AuthContextType {
   user: UserProfile | null;
   isLoggedIn: boolean;
   login: (phone: string, password: string) => Promise<boolean>;
+  verifyOtp: (phone: string, code: string, name?: string) => Promise<boolean>;
   register: (name: string, phone: string, password: string) => Promise<boolean>;
   logout: () => void;
   updateProfile: (data: Partial<UserProfile>) => void;
-  addAddress: (address: Omit<AddressItem, 'id'>) => void;
+  addAddress: (address: Omit<AddressItem, "id">) => void;
   updateAddress: (id: string, address: Partial<AddressItem>) => void;
   deleteAddress: (id: string) => void;
   setDefaultAddress: (id: string) => void;
@@ -45,129 +46,198 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { addToast } = useToast();
   const [user, setUser] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      fetch('/api/auth/me', {
+
+  const checkAuth = async () => {
+    try {
+      const res = await fetch("/api/auth/me", {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
-      .then(res => res.json())
-      .then(data => {
+          ...(localStorage.getItem("token") ? { Authorization: `Bearer ${localStorage.getItem("token")}` } : {})
+        },
+        credentials: "include"
+      });
+      if (res.ok) {
+        const data = await res.json();
         if (data.user) {
           setUser(data.user);
-        } else {
-          localStorage.removeItem('token');
+          return;
         }
-      })
-      .catch(() => {
-        localStorage.removeItem('token');
-      })
-      .finally(() => {
-        setIsLoading(false);
+      }
+
+      // Try automatic token refresh via HttpOnly refresh cookie
+      const refreshRes = await fetch("/api/auth/refresh", {
+        method: "POST",
+        credentials: "include"
       });
-    } else {
+      if (refreshRes.ok) {
+        const refreshData = await refreshRes.json();
+        if (refreshData.user) {
+          setUser(refreshData.user);
+          if (refreshData.accessToken) {
+            localStorage.setItem("token", refreshData.accessToken);
+          }
+          return;
+        }
+      }
+
+      setUser(null);
+      localStorage.removeItem("token");
+    } catch {
+      setUser(null);
+      localStorage.removeItem("token");
+    } finally {
       setIsLoading(false);
     }
+  };
+
+  useEffect(() => {
+    checkAuth();
   }, []);
 
   const login = async (phone: string, password: string): Promise<boolean> => {
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, password })
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone, password }),
+        credentials: "include"
       });
       const data = await res.json();
       if (res.ok) {
         setUser(data.user);
-        localStorage.setItem('token', data.accessToken);
-        addToast(data.message, 'success');
+        if (data.accessToken) {
+          localStorage.setItem("token", data.accessToken);
+        }
+        addToast(data.message, "success");
         return true;
       } else {
-        addToast(data.message, 'error');
+        addToast(data.message, "error");
         return false;
       }
     } catch (e) {
-      addToast('خطا در ارتباط با سرور', 'error');
+      addToast("خطا در ارتباط با سرور", "error");
+      return false;
+    }
+  };
+
+  
+  const verifyOtp = async (phone: string, code: string, name?: string): Promise<boolean> => {
+    try {
+      const res = await fetch("/api/auth/otp/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone, code, name }),
+        credentials: "include"
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setUser(data.user);
+        if (data.accessToken) {
+          localStorage.setItem("token", data.accessToken);
+        }
+        addToast(data.message, "success");
+        return true;
+      } else {
+        addToast(data.message, "error");
+        return false;
+      }
+    } catch {
+      addToast("خطا در ارتباط با سرور", "error");
       return false;
     }
   };
 
   const register = async (name: string, phone: string, password: string): Promise<boolean> => {
     try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, phone, password })
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, phone, password }),
+        credentials: "include"
       });
       const data = await res.json();
       if (res.ok) {
         setUser(data.user);
-        localStorage.setItem('token', data.accessToken);
-        addToast(data.message, 'success');
+        if (data.accessToken) {
+          localStorage.setItem("token", data.accessToken);
+        }
+        addToast(data.message, "success");
         return true;
       } else {
-        addToast(data.message, 'error');
+        addToast(data.message, "error");
         return false;
       }
     } catch (e) {
-      addToast('خطا در ارتباط با سرور', 'error');
+      addToast("خطا در ارتباط با سرور", "error");
       return false;
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include"
+      });
+    } catch {}
     setUser(null);
-    localStorage.removeItem('token');
-    addToast('با موفقیت خارج شدید', 'success');
+    localStorage.removeItem("token");
+    addToast("با موفقیت خارج شدید", "success");
+  };
+
+  const getAuthHeaders = (): Record<string, string> => {
+    const token = localStorage.getItem("token");
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+    return headers;
   };
 
   const updateProfile = async (data: Partial<UserProfile>) => {
     try {
-      const res = await fetch('/api/users/me', {
-        method: 'PUT',
+      const res = await fetch("/api/users/me", {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          "Content-Type": "application/json",
+          ...getAuthHeaders()
         },
+        credentials: "include",
         body: JSON.stringify(data)
       });
       if (res.ok) {
         setUser(prev => prev ? { ...prev, ...data } : null);
-        addToast('پروفایل با موفقیت بروزرسانی شد', 'success');
+        addToast("پروفایل با موفقیت بروزرسانی شد", "success");
       } else {
         const error = await res.json();
-        addToast(error.message, 'error');
+        addToast(error.message, "error");
       }
     } catch (e) {
-      addToast('خطا در ارتباط با سرور', 'error');
+      addToast("خطا در ارتباط با سرور", "error");
     }
   };
 
-  const addAddress = async (address: Omit<AddressItem, 'id'>) => {
+  const addAddress = async (address: Omit<AddressItem, "id">) => {
     if (!user) return;
     try {
-      const res = await fetch('/api/users/me/addresses', {
-        method: 'POST',
+      const res = await fetch("/api/users/me/addresses", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          "Content-Type": "application/json",
+          ...getAuthHeaders()
         },
+        credentials: "include",
         body: JSON.stringify(address)
       });
       if (res.ok) {
         const data = await res.json();
         setUser({ ...user, addresses: [...(user.addresses || []), data.address] });
-        addToast(data.message, 'success');
+        addToast(data.message, "success");
       } else {
         const error = await res.json();
-        addToast(error.message, 'error');
+        addToast(error.message, "error");
       }
     } catch (e) {
-      addToast('خطا در ارتباط با سرور', 'error');
+      addToast("خطا در ارتباط با سرور", "error");
     }
   };
 
@@ -175,11 +245,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!user || !user.addresses) return;
     try {
       const res = await fetch(`/api/users/me/addresses/${id}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          "Content-Type": "application/json",
+          ...getAuthHeaders()
         },
+        credentials: "include",
         body: JSON.stringify(address)
       });
       if (res.ok) {
@@ -188,13 +259,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           ...user,
           addresses: user.addresses.map(a => a.id === id ? data.address : a)
         });
-        addToast(data.message, 'success');
+        addToast(data.message, "success");
       } else {
         const error = await res.json();
-        addToast(error.message, 'error');
+        addToast(error.message, "error");
       }
     } catch (e) {
-      addToast('خطا در ارتباط با سرور', 'error');
+      addToast("خطا در ارتباط با سرور", "error");
     }
   };
 
@@ -202,21 +273,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!user || !user.addresses) return;
     try {
       const res = await fetch(`/api/users/me/addresses/${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        method: "DELETE",
+        headers: getAuthHeaders(),
+        credentials: "include"
       });
       if (res.ok) {
         setUser({
           ...user,
           addresses: user.addresses.filter(a => a.id !== id)
         });
-        addToast('آدرس حذف شد', 'success');
+        addToast("آدرس حذف شد", "success");
       } else {
         const error = await res.json();
-        addToast(error.message, 'error');
+        addToast(error.message, "error");
       }
     } catch (e) {
-      addToast('خطا در ارتباط با سرور', 'error');
+      addToast("خطا در ارتباط با سرور", "error");
     }
   };
 
@@ -224,8 +296,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!user || !user.addresses) return;
     try {
       const res = await fetch(`/api/users/me/addresses/${id}/default`, {
-        method: 'PUT',
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        method: "PUT",
+        headers: getAuthHeaders(),
+        credentials: "include"
       });
       if (res.ok) {
         setUser({
@@ -235,13 +308,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             isDefault: a.id === id
           }))
         });
-        addToast('آدرس پیش‌فرض تغییر کرد', 'success');
+        addToast("آدرس پیش‌فرض تغییر کرد", "success");
       } else {
         const error = await res.json();
-        addToast(error.message, 'error');
+        addToast(error.message, "error");
       }
     } catch (e) {
-      addToast('خطا در ارتباط با سرور', 'error');
+      addToast("خطا در ارتباط با سرور", "error");
     }
   };
 
@@ -252,6 +325,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isLoggedIn: !!user,
         isLoading,
         login,
+        verifyOtp,
         register,
         logout,
         updateProfile,
@@ -269,7 +343,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }

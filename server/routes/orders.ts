@@ -1,17 +1,17 @@
-import { Router } from 'express';
-import { validate } from '../middleware/validate.js';
-import { orderSubmitSchema } from '../validators/index.js';
-import { db } from '../db/index.js';
-import { orders, orderItems, products, cartItems, coupons } from '../db/schema.js';
-import { desc, eq, and, gte, inArray, sql } from 'drizzle-orm';
-
-import { authenticate, AuthRequest } from '../middleware/auth.js';
+import { Router } from "express";
+import { validate } from "../middleware/validate.js";
+import { orderSubmitSchema } from "../validators/index.js";
+import { db } from "../db/index.js";
+import { orders, orderItems, products, cartItems, coupons, users } from "../db/schema.js";
+import { desc, eq, and, inArray, sql } from "drizzle-orm";
+import { appCache } from "../utils/cache.js";
+import { authenticate, AuthRequest } from "../middleware/auth.js";
 
 const router = Router();
 
 router.use(authenticate);
 
-router.get(['/', '/my-orders'], async (req: AuthRequest, res) => {
+router.get(["/", "/my-orders"], async (req: AuthRequest, res) => {
   const userId = req.user.id as string;
   const allOrders = await db.query.orders.findMany({
     where: eq(orders.userId, userId),
@@ -30,6 +30,8 @@ router.get(['/', '/my-orders'], async (req: AuthRequest, res) => {
     subtotal: o.subtotal,
     shippingFee: o.shippingFee,
     discountAmount: o.discountAmount,
+    vipPointsUsed: o.vipPointsUsed || 0,
+    vipPointsEarned: o.vipPointsEarned || 0,
     paymentMethod: o.paymentMethod,
     shippingMethod: o.shippingMethod,
     recipient: {
@@ -51,17 +53,16 @@ router.get(['/', '/my-orders'], async (req: AuthRequest, res) => {
   res.json(formatted);
 });
 
-router.post('/', validate(orderSubmitSchema), async (req: AuthRequest, res) => {
+router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
   const userId = req.user.id as string;
-  const { items, recipient, shippingMethod, paymentMethod, couponCode } = req.body;
+  const { items, recipient, shippingMethod, paymentMethod, couponCode, useVipPoints } = req.body;
 
   try {
     const orderId = `ORD-${Math.floor(100000 + Math.random() * 900000)}`;
     const today = new Date();
     const dateStr = new Intl.DateTimeFormat("fa-IR", { year: "numeric", month: "long", day: "numeric" }).format(today);
     
-    // We will do everything in a single transaction
-    const newOrder = await db.transaction(async (tx) => {
+    const newOrder = db.transaction((tx) => {
       // Aggregate duplicate items by productId
       const itemMap = new Map<number, number>();
       for (const item of items) {
@@ -78,10 +79,10 @@ router.post('/', validate(orderSubmitSchema), async (req: AuthRequest, res) => {
 
       const productIds = aggregatedItems.map(i => i.id);
       if (productIds.length === 0) {
-        throw new Error('سبد خرید خالی است');
+        throw new Error("سبد خرید خالی است");
       }
 
-      const dbProducts = await tx.select().from(products).where(inArray(products.id, productIds));
+      const dbProducts = tx.select().from(products).where(inArray(products.id, productIds)).all();
 
       let realSubtotal = 0;
       const finalItems: any[] = [];
@@ -112,13 +113,12 @@ router.post('/', validate(orderSubmitSchema), async (req: AuthRequest, res) => {
       }
 
       // Handle Coupon
-      let realDiscount = 0;
+      let couponDiscount = 0;
       if (couponCode) {
-        const couponList = await tx.select().from(coupons).where(eq(coupons.code, couponCode.toUpperCase())).limit(1);
-        const coupon = couponList[0];
+        const coupon = tx.select().from(coupons).where(eq(coupons.code, couponCode.toUpperCase())).get();
         
         if (!coupon || !coupon.active) {
-          throw new Error('کد تخفیف نامعتبر است یا منقضی شده است');
+          throw new Error("کد تخفیف نامعتبر است یا منقضی شده است");
         }
         
         if (realSubtotal < coupon.minTotal) {
@@ -126,16 +126,40 @@ router.post('/', validate(orderSubmitSchema), async (req: AuthRequest, res) => {
         }
         
         if (coupon.percent) {
-          realDiscount = Math.round(realSubtotal * (coupon.percent / 100));
+          couponDiscount = Math.round(realSubtotal * (coupon.percent / 100));
         } else if (coupon.amount) {
-          realDiscount = coupon.amount;
+          couponDiscount = coupon.amount;
         }
 
-        realDiscount = Math.min(realDiscount, realSubtotal);
+        couponDiscount = Math.min(couponDiscount, realSubtotal);
       }
 
-      const realShippingFee = shippingMethod === 'express' ? 50000 : 35000;
-      const realTotal = Math.max(0, realSubtotal + realShippingFee - realDiscount);
+      // Handle VIP Points Redemption (1 VIP Point = 1000 Tomans discount)
+      let vipDiscount = 0;
+      let pointsToDeduct = 0;
+      const currentUser = tx.select().from(users).where(eq(users.id, userId)).get();
+      const currentVipPoints = currentUser?.vipPoints || 0;
+
+      if (useVipPoints && currentVipPoints > 0) {
+        const remainingPayable = Math.max(0, realSubtotal - couponDiscount);
+        // Max points usable up to remaining payable amount
+        const maxPointsUsable = Math.min(currentVipPoints, Math.floor(remainingPayable / 1000));
+        if (maxPointsUsable > 0) {
+          pointsToDeduct = maxPointsUsable;
+          vipDiscount = pointsToDeduct * 1000;
+          tx.update(users)
+            .set({ vipPoints: sql`vip_points - ${pointsToDeduct}` })
+            .where(eq(users.id, userId))
+            .run();
+        }
+      }
+
+      const totalDiscount = couponDiscount + vipDiscount;
+      const realShippingFee = shippingMethod === "express" ? 50000 : 35000;
+      const realTotal = Math.max(0, realSubtotal + realShippingFee - totalDiscount);
+
+      // Earn 1 VIP Point for every 100,000 Tomans paid
+      const earnedVipPoints = Math.floor(realTotal / 100000);
 
       const orderData = {
         id: orderId,
@@ -146,109 +170,122 @@ router.post('/', validate(orderSubmitSchema), async (req: AuthRequest, res) => {
         total: realTotal,
         subtotal: realSubtotal,
         shippingFee: realShippingFee,
-        discountAmount: realDiscount,
-        paymentMethod: paymentMethod === "online" ? "پرداخت آنلاین" : "پرداخت در محل",
-        shippingMethod: shippingMethod === "express" ? "ارسال اکسپرس" : "پست پیشتاز",
+        discountAmount: totalDiscount,
+        vipPointsUsed: pointsToDeduct,
+        vipPointsEarned: earnedVipPoints,
+        paymentMethod: paymentMethod === "online" ? "پرداخت آنلاین زرین‌پال" : "پرداخت در محل",
+        shippingMethod: shippingMethod === "express" ? "پست پیشتاز (سریع)" : "پست سفارشی (معمولی)",
         recipientName: recipient.name,
         recipientPhone: recipient.phone,
         recipientAddress: recipient.address,
-        recipientPostalCode: recipient.postalCode
+        recipientPostalCode: recipient.postalCode || null,
+        authority: null,
+        refId: null
       };
 
-      await tx.insert(orders).values(orderData);
+      tx.insert(orders).values(orderData).run();
 
       for (const item of finalItems) {
-        await tx.insert(orderItems).values({
-          orderId,
+        tx.insert(orderItems).values({
+          orderId: orderId,
           productId: item.id,
           price: item.price,
           qty: item.quantity,
           title: item.title,
           image: item.image,
-          brand: item.brand || 'نامشخص'
-        });
-        
-        // Decrement stock atomically with constraint
-        const updated = await tx.update(products)
-          .set({ stockQuantity: sql`stockQuantity - ${item.quantity}` })
-          .where(and(eq(products.id, item.id), gte(products.stockQuantity, item.quantity)))
-          .returning({ id: products.id, stockQuantity: products.stockQuantity });
+          brand: item.brand
+        }).run();
 
-        if (!updated || updated.length === 0) {
-          throw new Error(`موجودی محصول ${item.title} کافی نیست`);
-        }
+        tx.update(products)
+          .set({ stockQuantity: sql`stockQuantity - ${item.quantity}` })
+          .where(eq(products.id, item.id))
+          .run();
       }
-      
-      await tx.delete(cartItems).where(eq(cartItems.userId, userId));
+
+      // Add earned points immediately for cash-on-delivery, or upon online verify
+      if (paymentMethod !== "online" && earnedVipPoints > 0) {
+        tx.update(users)
+          .set({ vipPoints: sql`vip_points + ${earnedVipPoints}` })
+          .where(eq(users.id, userId))
+          .run();
+      }
+
+      // Clear user cart
+      tx.delete(cartItems).where(eq(cartItems.userId, userId)).run();
 
       return {
         ...orderData,
-        recipient,
         items: finalItems
       };
     });
 
+    appCache.invalidate("products");
     res.status(201).json({
       success: true,
-      message: `سفارش شما با موفقیت ثبت شد`,
+      message: "سفارش شما با موفقیت ثبت شد",
       order: newOrder
     });
+
   } catch (error: any) {
-    res.status(400).json({ message: error.message || 'خطای سرور در ثبت سفارش' });
+    console.error("Order creation error:", error);
+    res.status(400).json({ message: error.message || "خطا در ثبت سفارش" });
   }
 });
 
-router.post('/:id/cancel', async (req: AuthRequest, res) => {
+
+router.post("/:id/cancel", async (req: AuthRequest, res) => {
   const userId = req.user.id as string;
   const orderId = req.params.id as string;
 
   try {
-    const cancelledOrder = await db.transaction(async (tx) => {
-      const orderList = await tx.select().from(orders).where(eq(orders.id, orderId)).limit(1);
-      const order = orderList[0];
+    const cancelledOrder = db.transaction((tx) => {
+      const order = tx.select().from(orders).where(eq(orders.id, orderId)).get();
       if (!order) {
-        throw { status: 404, message: 'سفارش یافت نشد' };
+        throw { status: 404, message: "سفارش یافت نشد" };
       }
 
       if (order.userId !== userId) {
-        throw { status: 403, message: 'شما دسترسی به این سفارش ندارید' };
+        throw { status: 403, message: "شما دسترسی به این سفارش ندارید" };
       }
 
-      if (order.status !== 'pending_payment' && order.status !== 'processing') {
-        throw { status: 400, message: 'امکان لغو این سفارش وجود ندارد' };
+      if (order.status !== "pending_payment" && order.status !== "processing") {
+        throw { status: 400, message: "امکان لغو این سفارش وجود ندارد" };
       }
 
-      const itemsToRestock = await tx.select().from(orderItems).where(eq(orderItems.orderId, orderId));
+      const itemsToRestock = tx.select().from(orderItems).where(eq(orderItems.orderId, orderId)).all();
       for (const item of itemsToRestock) {
-        await tx.update(products)
+        tx.update(products)
           .set({ stockQuantity: sql`stockQuantity + ${item.qty}` })
-          .where(eq(products.id, item.productId));
+          .where(eq(products.id, item.productId))
+          .run();
       }
 
-      await tx.update(orders)
+      tx.update(orders)
         .set({
-          status: 'cancelled',
-          statusText: 'لغو شده توسط کاربر'
+          status: "cancelled",
+          statusText: "لغو شده توسط کاربر"
         })
-        .where(eq(orders.id, orderId));
+        .where(eq(orders.id, orderId))
+        .run();
 
-      const updatedList = await tx.select().from(orders).where(eq(orders.id, orderId)).limit(1);
-      return updatedList[0];
+      const updated = tx.select().from(orders).where(eq(orders.id, orderId)).get();
+      return updated;
     });
 
+    appCache.invalidate("products");
     res.json({
-      message: 'سفارش با موفقیت لغو شد',
+      message: "سفارش با موفقیت لغو شد",
       order: cancelledOrder
     });
   } catch (error: any) {
     if (error && error.status) {
       return res.status(error.status).json({ message: error.message });
     }
-    res.status(500).json({ message: error.message || 'خطای سرور در لغو سفارش' });
+    res.status(500).json({ message: error.message || "خطای سرور در لغو سفارش" });
   }
 });
 
-router.get('/:id', async (req: AuthRequest, res) => {
+router.get("/:id", async (req: AuthRequest, res) => {
   const userId = req.user.id as string;
   const orderId = req.params.id as string;
   
@@ -259,7 +296,7 @@ router.get('/:id', async (req: AuthRequest, res) => {
     });
 
     if (!order) {
-      return res.status(404).json({ message: 'سفارش یافت نشد' });
+      return res.status(404).json({ message: "سفارش یافت نشد" });
     }
 
     const formatted = {
@@ -271,6 +308,8 @@ router.get('/:id', async (req: AuthRequest, res) => {
       subtotal: order.subtotal,
       shippingFee: order.shippingFee,
       discountAmount: order.discountAmount,
+      vipPointsUsed: order.vipPointsUsed || 0,
+      vipPointsEarned: order.vipPointsEarned || 0,
       paymentMethod: order.paymentMethod,
       shippingMethod: order.shippingMethod,
       recipient: {
@@ -291,7 +330,7 @@ router.get('/:id', async (req: AuthRequest, res) => {
 
     res.json(formatted);
   } catch (error) {
-    res.status(500).json({ message: 'خطای سرور' });
+    res.status(500).json({ message: "خطای سرور" });
   }
 });
 

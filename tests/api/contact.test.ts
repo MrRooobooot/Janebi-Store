@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import request from 'supertest';
+import request from '../setup/request.js';
 import { app } from '../../server/app.js';
 
 describe('Contact API Integration Tests', () => {

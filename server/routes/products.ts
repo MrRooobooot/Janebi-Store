@@ -1,18 +1,32 @@
-import { Router } from 'express';
-import { validate } from '../middleware/validate.js';
-import { productQuerySchema, idParamSchema, reviewSubmitSchema } from '../validators/index.js';
-import { db } from '../db/index.js';
-import { products, reviews } from '../db/schema.js';
-import { eq, or, like, and, SQL, sql, gte, lte, gt, inArray, desc, asc } from 'drizzle-orm';
+import { Router } from "express";
+import { validate } from "../middleware/validate.js";
+import { productQuerySchema, idParamSchema, reviewSubmitSchema } from "../validators/index.js";
+import { db } from "../db/index.js";
+import { products, reviews } from "../db/schema.js";
+import { eq, or, like, and, SQL, gte, lte, gt, inArray, desc, asc } from "drizzle-orm";
+import { appCache } from "../utils/cache.js";
 
 const router = Router();
 
-router.get('/', validate(productQuerySchema), async (req, res) => {
+router.get("/", validate(productQuerySchema), async (req, res) => {
+  const cacheKey = `products:${JSON.stringify(req.query)}`;
+  const cached = appCache.get(cacheKey);
+
+  if (cached) {
+    if (cached.headers) {
+      for (const [k, v] of Object.entries(cached.headers)) {
+        res.setHeader(k, v);
+      }
+    }
+    res.setHeader("X-Cache", "HIT");
+    return res.json(cached.data);
+  }
+
   const { category, search, limit, brands, minPrice, maxPrice, inStock, hasDiscount, sort, page } = req.query as any;
   
   const conditions: SQL[] = [];
   
-  if (category && category !== 'همه') {
+  if (category && category !== "همه") {
     conditions.push(eq(products.category, category));
   }
   
@@ -26,7 +40,7 @@ router.get('/', validate(productQuerySchema), async (req, res) => {
   }
   
   if (brands) {
-    const brandArray = brands.split(',');
+    const brandArray = brands.split(",");
     if (brandArray.length > 0) {
       conditions.push(inArray(products.brand, brandArray));
     }
@@ -40,11 +54,11 @@ router.get('/', validate(productQuerySchema), async (req, res) => {
     conditions.push(lte(products.price, parseInt(maxPrice)));
   }
 
-  if (inStock === 'true') {
+  if (inStock === "true") {
     conditions.push(gt(products.stockQuantity, 0));
   }
 
-  if (hasDiscount === 'true') {
+  if (hasDiscount === "true") {
     conditions.push(gt(products.discount, 0));
   }
 
@@ -53,16 +67,16 @@ router.get('/', validate(productQuerySchema), async (req, res) => {
   let orderBy: any = desc(products.id);
   if (sort) {
     switch (sort) {
-      case 'price-asc':
+      case "price-asc":
         orderBy = asc(products.price);
         break;
-      case 'price-desc':
+      case "price-desc":
         orderBy = desc(products.price);
         break;
-      case 'popular':
+      case "popular":
         orderBy = desc(products.rating);
         break;
-      case 'newest':
+      case "newest":
       default:
         orderBy = desc(products.id);
         break;
@@ -83,34 +97,52 @@ router.get('/', validate(productQuerySchema), async (req, res) => {
     }
   });
 
-  // Calculate total count using proper SQL count to avoid memory leaks
-  const [{ count }] = await db.select({ count: sql<number>`count(*)` }).from(products).where(finalCondition);
-  const total = Number(count);
+  const allMatch = await db.query.products.findMany({ where: finalCondition });
+  const total = allMatch.length;
   const totalPages = Math.ceil(total / pageSize);
 
-  res.setHeader('X-Total-Count', total.toString());
-  res.setHeader('X-Total-Pages', totalPages.toString());
-  res.setHeader('X-Current-Page', currentPage.toString());
+  const customHeaders: Record<string, string> = {
+    "X-Total-Count": total.toString(),
+    "X-Total-Pages": totalPages.toString(),
+    "X-Current-Page": currentPage.toString(),
+  };
+
+  res.setHeader("X-Total-Count", customHeaders["X-Total-Count"]);
+  res.setHeader("X-Total-Pages", customHeaders["X-Total-Pages"]);
+  res.setHeader("X-Current-Page", customHeaders["X-Current-Page"]);
+  res.setHeader("X-Cache", "MISS");
+  res.setHeader("Cache-Control", "public, max-age=30");
   
   const formatted = results.map(p => ({
     ...p,
     features: p.features.map(f => f.feature)
   }));
+
+  appCache.set(cacheKey, formatted, 60, customHeaders);
   
   res.json(formatted);
 });
 
-router.get('/:id/reviews', validate(idParamSchema), async (req, res) => {
+router.get("/:id/reviews", validate(idParamSchema), async (req, res) => {
   const productId = parseInt(req.params.id as string);
+  const cacheKey = `reviews:${productId}`;
+  const cached = appCache.get(cacheKey);
+
+  if (cached) {
+    res.setHeader("X-Cache", "HIT");
+    return res.json(cached.data);
+  }
   
   const productReviews = await db.query.reviews.findMany({
     where: eq(reviews.productId, productId)
   });
-  
+
+  appCache.set(cacheKey, productReviews, 60);
+  res.setHeader("X-Cache", "MISS");
   res.json(productReviews);
 });
 
-router.post('/:id/reviews', validate(reviewSubmitSchema), async (req, res) => {
+router.post("/:id/reviews", validate(reviewSubmitSchema), async (req, res) => {
   const productId = parseInt(req.params.id as string);
 
   const product = await db.query.products.findFirst({
@@ -118,7 +150,7 @@ router.post('/:id/reviews', validate(reviewSubmitSchema), async (req, res) => {
   });
 
   if (!product) {
-    return res.status(404).json({ message: 'محصول یافت نشد' });
+    return res.status(404).json({ message: "محصول یافت نشد" });
   }
 
   const { userName, rating, title, comment, recommend } = req.body;
@@ -131,19 +163,27 @@ router.post('/:id/reviews', validate(reviewSubmitSchema), async (req, res) => {
     title,
     comment,
     recommend,
-    date: new Date().toISOString().split('T')[0],
+    date: new Date().toISOString().split("T")[0],
     isVerifiedBuyer: false,
     helpfulCount: 0,
     unhelpfulCount: 0
   };
 
   await db.insert(reviews).values(newReview);
+  appCache.invalidate(`reviews:${productId}`);
   
   res.status(201).json(newReview);
 });
 
-router.get('/:id', validate(idParamSchema), async (req, res) => {
+router.get("/:id", validate(idParamSchema), async (req, res) => {
   const id = parseInt(req.params.id as string);
+  const cacheKey = `product:${id}`;
+  const cached = appCache.get(cacheKey);
+
+  if (cached) {
+    res.setHeader("X-Cache", "HIT");
+    return res.json(cached.data);
+  }
   
   const product = await db.query.products.findFirst({
     where: eq(products.id, id),
@@ -157,6 +197,9 @@ router.get('/:id', validate(idParamSchema), async (req, res) => {
       ...product,
       features: product.features.map(f => f.feature)
     };
+    appCache.set(cacheKey, formatted, 60);
+    res.setHeader("X-Cache", "MISS");
+    res.setHeader("Cache-Control", "public, max-age=60");
     res.json(formatted);
   } else {
     res.status(404).json({ message: "Product not found" });
