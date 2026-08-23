@@ -87,13 +87,22 @@
 
 ## Remaining Work
 - [x] Commit + push فیکس‌های Wave 1 و Wave 2 (تا `c5b2131`)
-- [ ] Verification روی سرور Production: بررسی .env سرور (JWT secrets + APP_URL + ZARINPAL_SANDBOX)، دیپلوی، health check زنده، E2E سفارش روی janebiarena.ir
-- [ ] تصمیم admin settings persistence (الان در RAM — restart به پیش‌فرض برمی‌گردد)
-- [ ] تست PG واقعی (`TEST_DIALECT=postgres`) یک‌بار روی سرور
+- [x] دیپلوی Production (rsync + remote rebuild) — 2026-08-23
+- [x] Verification زنده: health لوکال+پابلیک ok، products 200، کوپن WELCOME10 کارا، E2E ثبت‌نام→سفارش→گارد پرداخت 503→لغو 200، پاکسازی داده تست
+- [ ] **قبل از Launch واقعی**: ZARINPAL_MERCHANT_ID واقعی + ZARINPAL_SANDBOX=false در .env سرور (الان merchant=dummy → درگاه آنلاین 503 می‌دهد؛ COD سالم است)
+- [ ] تصمیم admin settings persistence (در RAM است — restart به پیش‌فرض برمی‌گردد)
 - [ ] Final Forensic Audit
 
 ## Known Bugs
-- (همه موارد Wave 1+2 فیکس شدند — لیست در Completed Work)
+- (همه موارد Wave 1+2 فیکس شدند)
+
+## Deployment Status (2026-08-23)
+- سرور: ubuntu@45.82.137.67، مسیر ~/Janebi-Store (git repo نیست — rsync)
+- DB واقعی production: **SQLite** در volume ./data (PG فقط idle بالا است — مهاجرت به PG به آینده موکول شد چون دیتای زنده همانجاست)
+- NODE_ENV داخل کانتینر: production (از compose هاردکد؛ .env سرور development نوشته که نادیده گرفته می‌شود — گمراه‌کننده ولی بی‌اثر)
+- بکاپ‌ها: ~/backups/ (env + janebi-consistent-20260823.db با integrity ok)
+- کانتینرها: janebi-store (Up, new image)، janebi-postgres (healthy)
+- health: https://janebiarena.ir/api/health → {"status":"ok","database":"ok"}
 
 ## Risks
 - تست‌ها روی SQLite، پروداکشن PG → پاریتی با migration دوگانه حفظ شد؛ تست PG اختیاری (`TEST_DIALECT=postgres`) باید یک‌بار روی سرور اجرا شود
@@ -113,7 +122,7 @@
 ## Next Action
 Commit فیکس‌های Wave 1 → ادامه Audit (auth/users/cart routes + فرانت Checkout/Cart + admin persistence) → Wave 2 fixes → دیپلوی و Verification زنده.
 
-> **به‌روزرسانی:** Wave 1 و 2 کامیت و push شدند (`05d8975`، `941a994`، `c5b2131`). گام بعدی: **دیپلوی به VPS + Verification زنده** — نیازمند SSH credentials از کاربر (طبق D2 قبل از هر mutation بکاپ گرفته می‌شود).
+> **به‌روزرسانی:** Wave 1+2 دیپلوی شد. E2E زنده روی janebiarena.ir سبز (ثبت‌نام→سفارش→گارد پرداخت→لغو). داده تست پاکسازی شد. گام بعدی: merchant واقعی زرین‌پال + Final Forensic Audit.
 
 ## Verification Evidence (Fix Waves 1+2)
 - `npm test` → **Test Files 29 passed (29), Tests 276 passed (276)** (۷ تست launch-readiness + ۴ تست contact-persistence جدید)
