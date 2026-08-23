@@ -5,7 +5,8 @@ import pino from "pino-http";
 import rateLimit from "express-rate-limit";
 
 import { errorHandler } from "./middleware/errorHandler.js";
-import { env } from "./env.js";
+import { requestIdMiddleware } from "./middleware/requestId.js";
+import { env, allowedOrigins } from "./env.js";
 
 import productsRoutes from "./routes/products.js";
 import categoriesRoutes from "./routes/categories.js";
@@ -24,6 +25,9 @@ export const app = express();
 
 // Trust reverse proxy (Nginx)
 app.set("trust proxy", 1);
+
+// Request ID tracing — must run before everything else
+app.use(requestIdMiddleware);
 
 // Middleware - Security Headers with CSP
 app.use(
@@ -45,10 +49,6 @@ app.use(
 );
 
 // Middleware - Restricted CORS
-const allowedOrigins = env.CORS_ORIGIN
-  ? env.CORS_ORIGIN.split(",").map((o) => o.trim())
-  : [env.APP_URL, "http://localhost:3000", "http://localhost:5173"];
-
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -60,6 +60,7 @@ app.use(
       }
     },
     credentials: true,
+    exposedHeaders: ["X-Request-ID"],
   })
 );
 
@@ -115,6 +116,21 @@ app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/admin", adminRoutes);
+
+// 404 catch-all — unmatched API routes get the standardized error envelope.
+// Scoped to /api ONLY: non-API requests must fall through to the serving layer
+// (vite middleware in dev, express.static + SPA fallback in server/index.ts).
+app.use("/api", (req, res) => {
+  res.status(404).json({
+    status: "error",
+    error: {
+      code: "NOT_FOUND",
+      message: `مسیر ${req.originalUrl} یافت نشد`,
+      requestId: req.id || "unknown-request-id",
+    },
+    message: `مسیر ${req.originalUrl} یافت نشد`,
+  });
+});
 
 // Global Error Handler
 app.use(errorHandler);

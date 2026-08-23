@@ -282,12 +282,14 @@ router.delete('/products/:id', async (req, res) => {
       return res.status(404).json({ error: 'محصول یافت نشد', message: 'محصول یافت نشد' });
     }
 
-    await db.transaction(async (tx) => {
-      await tx.delete(productFeatures).where(eq(productFeatures.productId, prodId));
-      await tx.delete(cartItems).where(eq(cartItems.productId, prodId));
-      await tx.delete(wishlistItems).where(eq(wishlistItems.productId, prodId));
-      await tx.delete(reviews).where(eq(reviews.productId, prodId));
-      await tx.delete(products).where(eq(products.id, prodId));
+    // NOTE: better-sqlite3 is a SYNC driver — the tx callback must contain no awaits,
+    // otherwise the transaction commits at the first await point.
+    db.transaction((tx) => {
+      tx.delete(productFeatures).where(eq(productFeatures.productId, prodId)).run();
+      tx.delete(cartItems).where(eq(cartItems.productId, prodId)).run();
+      tx.delete(wishlistItems).where(eq(wishlistItems.productId, prodId)).run();
+      tx.delete(reviews).where(eq(reviews.productId, prodId)).run();
+      tx.delete(products).where(eq(products.id, prodId)).run();
     });
 
     appCache.invalidate('products');

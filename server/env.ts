@@ -23,7 +23,12 @@ const envSchema = z.object({
   GEMINI_API_KEY: z.string().optional().or(z.literal("")),
   APP_URL: z.string().url().default("http://localhost:3000"),
   CORS_ORIGIN: z.string().optional(),
-}).superRefine((data, ctx) => {
+}).transform((data) => ({
+  ...data,
+  allowedOrigins: data.CORS_ORIGIN
+    ? data.CORS_ORIGIN.split(",").map((o) => o.trim())
+    : [data.APP_URL, "http://localhost:3000", "http://localhost:5173"],
+})).superRefine((data, ctx) => {
   if (data.NODE_ENV === "production") {
     if (INSECURE_DEFAULT_SECRETS.includes(data.JWT_ACCESS_SECRET)) {
       ctx.addIssue({
@@ -51,3 +56,6 @@ if (!parsedEnv.success) {
 }
 
 export const env = parsedEnv.data;
+
+// Allowed CORS origins, derived from environment configuration
+export const allowedOrigins: string[] = env.allowedOrigins;
