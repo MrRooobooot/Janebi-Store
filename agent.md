@@ -3,7 +3,7 @@
 > **این فایل تنها Source of Truth وضعیت پروژه است.** ترتیب اعتبار اطلاعات:
 > ۱) کد فعلی و Runtime واقعی ← ۲) همین فایل ← ۳) تست‌ها/Evidence ← ۴) سایر مستندات.
 > هر تناقضی بین این فایل و کد → کد برنده است و این فایل باید اصلاح شود.
-> **Last Updated: 2026-08-23 (Session #3 — Fix Wave 1 completed)**
+> **Last Updated: 2026-08-23 (Session #3 — Fix Waves 1+2 completed & pushed)**
 
 ---
 
@@ -64,7 +64,7 @@
 - `3f726d0` docs(env): document POSTGRES_PASSWORD and CORS_ORIGIN in .env.example
 - `aa9ca74` fix(cors): allow same-origin requests — site JS assets returned 500 (APP_URL اشتباه + Origin خودِ سایت reject می‌شد)
 - حذف روت‌های مرده OTP، مونت requestId middleware، اسکوپ catch-all به /api
-- **Fix Wave 1 (uncommitted — در working tree)**:
+- **Fix Wave 1 (commit `05d8975`)**:
   - 🔴 payment.ts: گارد Production برای درگاه Dummy — در NODE_ENV=production اگر merchant واقعی تنظیم نباشد، `/api/payment/request` با 503 رد می‌شود (قبلاً سفارش بدون پول واقعی «پرداخت‌شده» می‌شد)
   - 🟠 payment.ts: اعطای vipPointsEarned در مسیر verify موفق زرین‌پال واقعی (قبلاً فقط مسیر Dummy امتیاز می‌داد)
   - 🟠 payment.ts: بازگشت vipPointsUsed + صفر کردن آن هنگام شکست پرداخت (restockOrder)
@@ -74,20 +74,26 @@
   - 🟡 کوپن: ستون `expiresAt` (هر دو دایالکت) + migration های `0002_coupon_expires_at.sql` + enforcement در validate و order-create
   - 🟢 app.ts: endpoint `GET /api/health` با چک واقعی DB (pool.query برای PG / prepare برای SQLite)
   - 🔴 docker-compose.yml: حذف JWT secrets و DATABASE_URL و POSTGRES_PASSWORD و APP_URL پیش‌فرض → `${VAR:?...}` fail-fast؛ literal `***` داخل DATABASE_URL پیش‌فرض هم حذف شد
+- **Fix Wave 2 (کامیت `941a994` و `c5b2131` — push شده)**:
+  - 🟠 contact.ts: فرم تماس حالا در جدول contact_messages ذخیره می‌شود (قبلاً فقط console.log — پیام‌ها هرگز به Admin Messages نمی‌رسیدند)
+  - 🟠 contact.ts: route گمشده `POST /api/contact/newsletter` اضافه شد (فرانت footer به آن fetch می‌زد و 404 می‌گرفت)
+  - 🟡 cart/wishlist: پسوند random به id ها (جلوگیری از PK collision در همان میلی‌ثانیه)
+  - 🟡 VipClubTab: کدهای ساختگی VIP-GOLD50/JANEBI-FREE حذف و ۴ کد واقعی seed شده جایگزین شدند
+  - 🟡 rate limit عمومی 100→600 req/15min (سقف قبلی یک session عادی خرید را قفل می‌کرد؛ auth limiter سخت‌تر دست‌نخورده)
+  - 🟢 deploy.yml: مسیر غلط /var/www → ~/Janebi-Store + health check بعد از دیپلوی
 
 ## In Progress
-- (هیچ — Fix Wave 1 تمام شد)
+- (هیچ — Wave 2 تمام شد)
 
 ## Remaining Work
-- [ ] Commit + push فیکس‌های Wave 1
-- [ ] ادامه Audit: users/cart/wishlist/contact/auth routes، فرانت (Checkout flow، Cart sync)، admin settings persistence (در حافظه است — restart از دست می‌دهد)
-- [ ] Rate limit عمومی 100req/15min احتمالاً برای فروشگاه واقعی تنگ است — تصمیم+تنظیم
-- [ ] deploy.yml مسیر /var/www غلط — اصلاح یا حذف
-- [ ] Verification روی سرور Production: دیپلوی + health check زنده + E2E پرداخت Dummy-safe روی janebiarena.ir
+- [x] Commit + push فیکس‌های Wave 1 و Wave 2 (تا `c5b2131`)
+- [ ] Verification روی سرور Production: بررسی .env سرور (JWT secrets + APP_URL + ZARINPAL_SANDBOX)، دیپلوی، health check زنده، E2E سفارش روی janebiarena.ir
+- [ ] تصمیم admin settings persistence (الان در RAM — restart به پیش‌فرض برمی‌گردد)
+- [ ] تست PG واقعی (`TEST_DIALECT=postgres`) یک‌بار روی سرور
 - [ ] Final Forensic Audit
 
 ## Known Bugs
-- (همه موارد Wave 1 فیکس شدند — لیست در Completed Work)
+- (همه موارد Wave 1+2 فیکس شدند — لیست در Completed Work)
 
 ## Risks
 - تست‌ها روی SQLite، پروداکشن PG → پاریتی با migration دوگانه حفظ شد؛ تست PG اختیاری (`TEST_DIALECT=postgres`) باید یک‌بار روی سرور اجرا شود
