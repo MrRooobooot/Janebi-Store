@@ -41,17 +41,33 @@ router.post('/', validate(cartItemSchema), async (req: AuthRequest, res) => {
   const { productId, quantity = 1 } = req.body;
 
   try {
-    // Check if product exists in cart
+    // Product must exist, be in stock, and not exceed available stock.
+    const product = await db.query.products.findFirst({
+      where: eq(products.id, productId)
+    });
+    if (!product) {
+      return res.status(404).json({ message: 'محصول یافت نشد' });
+    }
+    if (product.stockQuantity <= 0) {
+      return res.status(400).json({ message: 'این محصول ناموجود است' });
+    }
+
     const existing = await db.query.cartItems.findFirst({
       where: and(eq(cartItems.userId, userId), eq(cartItems.productId, productId))
     });
 
     if (existing) {
       const newQty = Math.min(existing.quantity + quantity, 10);
+      if (newQty > product.stockQuantity) {
+        return res.status(400).json({ message: `فقط ${product.stockQuantity} عدد از این محصول موجود است` });
+      }
       await db.update(cartItems)
         .set({ quantity: newQty })
         .where(eq(cartItems.id, existing.id));
     } else {
+      if (quantity > product.stockQuantity) {
+        return res.status(400).json({ message: `فقط ${product.stockQuantity} عدد از این محصول موجود است` });
+      }
       // Unique id: Date.now() alone can collide when the same user adds the
       // same product twice in the same millisecond (PK violation → 500).
       await db.insert(cartItems).values({
@@ -65,6 +81,7 @@ router.post('/', validate(cartItemSchema), async (req: AuthRequest, res) => {
 
     res.json({ message: 'محصول به سبد خرید اضافه شد' });
   } catch (error) {
+    console.error('Add to cart error:', error);
     res.status(500).json({ message: 'خطای سرور' });
   }
 });

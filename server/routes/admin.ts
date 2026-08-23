@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { db } from '../db/index.js';
-import { users, products, orders, reviews, coupons, productFeatures, cartItems, wishlistItems } from '../db/schema.js';
+import { users, products, orders, reviews, coupons, productFeatures, cartItems, wishlistItems, storeSettings } from '../db/schema.js';
 import { appCache } from '../utils/cache.js';
 import { eq, desc, sql } from 'drizzle-orm';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
@@ -534,28 +534,59 @@ router.delete('/newsletter/:email', async (req, res) => {
 });
 
 // ---------------------------------------------------------
-// STORE SETTINGS
+// STORE SETTINGS — persisted in the store_settings table so
+// they survive container restarts (previously RAM-only).
 // ---------------------------------------------------------
-let storeSettings = {
+const DEFAULT_SETTINGS: Record<string, string> = {
   storeName: 'جانبی آرنا',
   phone: '۰۲۱-۸۸۸۸۹۹۹۹',
   email: 'info@janebi-arena.ir',
   supportHours: 'همه‌روزه از ساعت ۹:۰۰ الی ۲۱:۰۰',
   address: 'تهران، خیابان ولیعصر، تقاطع طالقانی، مجتمع نور، طبقه ۲، واحد ۱۰۴',
-  freeShippingThreshold: 2000000,
+  freeShippingThreshold: '2000000',
   announcement: 'ارسال رایگان برای تمامی سفارش‌های بالای ۲ میلیون تومان | کد تخفیف: WELCOME10'
 };
 
-router.get('/settings', (req, res) => {
-  res.json(storeSettings);
+router.get('/settings', async (req, res) => {
+  try {
+    const rows = await db.select().from(storeSettings);
+    const merged: Record<string, string> = { ...DEFAULT_SETTINGS };
+    for (const row of rows) merged[row.key] = row.value;
+    // freeShippingThreshold stays numeric for API compatibility.
+    res.json({ ...merged, freeShippingThreshold: parseInt(merged.freeShippingThreshold) || 0 });
+  } catch (error) {
+    console.error('Fetch settings error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 });
 
-router.put('/settings', (req, res) => {
-  storeSettings = {
-    ...storeSettings,
-    ...req.body
-  };
-  res.json({ success: true, message: 'تنظیمات فروشگاه با موفقیت ذخیره شد', settings: storeSettings });
+router.put('/settings', async (req, res) => {
+  try {
+    const body = req.body || {};
+    const updates = Object.entries(body).filter(([key]) => key in DEFAULT_SETTINGS);
+    if (updates.length === 0) {
+      return res.status(400).json({ message: 'هیچ فیلد معتبری برای ذخیره ارسال نشده است' });
+    }
+
+    for (const [key, value] of updates) {
+      await db.insert(storeSettings)
+        .values({ key, value: String(value) })
+        .onConflictDoUpdate({ target: storeSettings.key, set: { value: String(value) } });
+    }
+
+    const rows = await db.select().from(storeSettings);
+    const merged: Record<string, string> = { ...DEFAULT_SETTINGS };
+    for (const row of rows) merged[row.key] = row.value;
+
+    res.json({
+      success: true,
+      message: 'تنظیمات فروشگاه با موفقیت ذخیره شد',
+      settings: { ...merged, freeShippingThreshold: parseInt(merged.freeShippingThreshold) || 0 }
+    });
+  } catch (error) {
+    console.error('Update settings error:', error);
+    res.status(500).json({ message: 'خطای سرور در ذخیره تنظیمات' });
+  }
 });
 
 export default router;

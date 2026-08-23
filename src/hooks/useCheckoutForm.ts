@@ -113,7 +113,7 @@ export function useCheckoutForm() {
       }
 
       const createdOrder = data.order || {
-        id: data.orderId || `ORD-${Math.floor(100000 + Math.random() * 900000)}`,
+        id: data.orderId || `ORD-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`,
         status: 'processing',
         total: finalPayable,
       };
@@ -131,12 +131,13 @@ export function useCheckoutForm() {
             },
             body: JSON.stringify({ orderId: createdOrder.id })
           });
-          const paymentData = await paymentRes.json();
+          const paymentData = await paymentRes.json().catch(() => ({}));
           if (paymentRes.ok && paymentData.url) {
             window.location.href = paymentData.url;
             return; // Exit here, let the browser redirect
           } else {
-            addToast('خطا در اتصال به درگاه پرداخت.', 'error');
+            // Surface the server's Persian message (e.g. gateway not configured).
+            addToast(paymentData.error || 'خطا در اتصال به درگاه پرداخت.', 'error');
             navigate('/profile?tab=orders');
           }
         } catch (paymentErr) {

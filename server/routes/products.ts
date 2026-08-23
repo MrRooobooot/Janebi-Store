@@ -3,7 +3,7 @@ import { validate } from "../middleware/validate.js";
 import { productQuerySchema, idParamSchema, reviewSubmitSchema } from "../validators/index.js";
 import { db } from "../db/index.js";
 import { products, reviews } from "../db/schema.js";
-import { eq, or, like, and, SQL, gte, lte, gt, inArray, desc, asc } from "drizzle-orm";
+import { eq, or, like, and, SQL, gte, lte, gt, inArray, desc, asc, sql } from "drizzle-orm";
 import { appCache } from "../utils/cache.js";
 
 const router = Router();
@@ -169,8 +169,28 @@ router.post("/:id/reviews", validate(reviewSubmitSchema), async (req, res) => {
     unhelpfulCount: 0
   };
 
-  await db.insert(reviews).values(newReview);
+  await db.transaction(async (tx) => {
+    await tx.insert(reviews).values(newReview);
+
+    // Recompute the product's aggregate rating + review count so listings
+    // and sort-by-rating reflect real reviews (previously stale forever).
+    const agg = await tx
+      .select({
+        avg: sql<number>`COALESCE(AVG(${reviews.rating}), 0)`,
+        count: sql<number>`COUNT(*)`,
+      })
+      .from(reviews)
+      .where(eq(reviews.productId, productId));
+
+    const newRating = Math.round(Number(agg[0]?.avg) * 10) / 10;
+    await tx.update(products)
+      .set({ rating: newRating, reviewsCount: Number(agg[0]?.count) || 0 })
+      .where(eq(products.id, productId));
+  });
+
   appCache.invalidate(`reviews:${productId}`);
+  appCache.invalidate(`product:${productId}`);
+  appCache.invalidate("products");
   
   res.status(201).json(newReview);
 });

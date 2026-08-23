@@ -139,6 +139,13 @@ export const newsletterSubscribers = sqliteTable('newsletter_subscribers', {
   subscribedAt: text('subscribed_at').notNull()
 });
 
+// Key/value store for editable shop settings (admin Settings page).
+// Persisted so a container restart no longer resets them to defaults.
+export const storeSettings = sqliteTable('store_settings', {
+  key: text('key').primaryKey(),
+  value: text('value').notNull()
+});
+
 // RELATIONS
 export const productsRelations = relations(products, ({ many }) => ({
   features: many(productFeatures),
