@@ -96,9 +96,12 @@ app.use(
 );
 
 // Rate limiting - General API
+// 100 req/15min starved real browsing: a single catalogue session (product
+// lists, cart, profile, wishlist) easily exceeds it. 600/15min (~40/min)
+// still caps abuse while leaving normal shopping untouched.
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 600,
   skip: () => process.env.NODE_ENV === "test" || env.NODE_ENV === "test",
   standardHeaders: true,
   legacyHeaders: false,

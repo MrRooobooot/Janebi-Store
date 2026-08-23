@@ -5,9 +5,13 @@ import { useToast } from '../../contexts/ToastContext';
 import { toPersianDigits } from '../../lib/utils';
 import { useState } from 'react';
 
+// Only codes that actually exist in the database (seed-data VALID_COUPONS).
+// Showing fake codes here sent users to checkout with invalid coupons.
 const COUPONS = [
-  { code: 'VIP-GOLD50', discount: '۵۰ هزار تومان تخفیف خرید بالای ۵۰۰ هزار تومان', expires: '۱۰ روز آینده' },
-  { code: 'JANEBI-FREE', discount: 'ارسال کاملاً رایگان برای اولین خرید جدید', expires: 'پایان ماه' },
+  { code: 'WELCOME10', discount: '۱۰٪ تخفیف خوش‌آمدگویی برای خرید بالای ۳۰۰ هزار تومان', expires: 'بدون محدودیت' },
+  { code: 'OFF20', discount: '۲۰٪ تخفیف ویژه خرید بالای ۱ میلیون تومان', expires: 'بدون محدودیت' },
+  { code: 'SUMMER30', discount: '۳۰٪ تخفیف جشنواره تابستانه برای خرید بالای ۲ میلیون تومان', expires: 'بدون محدودیت' },
+  { code: 'JANEBI100', discount: '۱۰۰,۰۰۰ تومان تخفیف خرید بالای ۵۰۰ هزار تومان', expires: 'بدون محدودیت' },
 ];
 
 export default function VipClubTab() {

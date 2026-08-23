@@ -61,7 +61,9 @@ jobs:
           command_timeout: 15m
           script: |
             echo "🚀 Starting automated deployment for Janebi Store..."
-            cd /var/www/janebi-store || exit 1
+            # NOTE: the VPS checkout lives at ~/Janebi-Store (rsync/git pull),
+            # NOT /var/www — the old path here never existed on the server.
+            cd $HOME/Janebi-Store || exit 1
             
             echo "📥 Fetching latest code from GitHub..."
             git fetch origin main
@@ -76,5 +78,9 @@ jobs:
             
             echo "🧹 Cleaning up unused Docker images..."
             docker image prune -f
+            
+            echo "🩺 Health check:"
+            sleep 5
+            curl -fsS http://127.0.0.1:3000/api/health || echo "⚠️ Health check failed — inspect container logs"
             
             echo "✅ Deployment completed successfully!"
