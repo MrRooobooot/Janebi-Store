@@ -8,12 +8,19 @@ services:
     environment:
       - PORT=3000
       - NODE_ENV=production
-      - DATABASE_URL=${DATABASE_URL:-postgres://postgres:postgres@db:5432/janebi}
-      - JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET:-janebi_secret_access_production_key_2026_secure}
-      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:-janebi_secret_refresh_production_key_2026_secure}
-      - ZARINPAL_MERCHANT_ID=${ZARINPAL_MERCHANT_ID:-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}
+      # SECURITY: no default JWT secrets here on purpose. If .env does not
+      # provide strong values, server/env.ts refuses to boot (fail-fast)
+      # instead of running production with publicly-known signing keys.
+      - JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET:?JWT_ACCESS_SECRET must be set in .env}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:?JWT_REFRESH_SECRET must be set in .env}
+      - DATABASE_URL=${DATABASE_URL:?DATABASE_URL must be set in .env}
+      # Payment gateway: sandbox defaults to true for safety. For real payments
+      # set ZARINPAL_MERCHANT_ID and ZARINPAL_SANDBOX=false explicitly.
+      - ZARINPAL_MERCHANT_ID=${ZARINPAL_MERCHANT_ID:-}
       - ZARINPAL_SANDBOX=${ZARINPAL_SANDBOX:-true}
-      - APP_URL=${APP_URL:-http://45.82.137.67}
+      # Public base URL used to build the ZarinPal callback URL — must be the
+      # real domain, not an IP, or the payment callback will break.
+      - APP_URL=${APP_URL:?APP_URL must be set to the public site URL in .env}
     ports:
       - "127.0.0.1:3000:3000"
     volumes:
@@ -30,7 +37,7 @@ services:
       POSTGRES_USER: postgres
       # Must match the credentials embedded in DATABASE_URL above.
       # Override both via .env (POSTGRES_PASSWORD / DATABASE_URL) in production.
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}
       POSTGRES_DB: janebi
     ports:
       - "127.0.0.1:5432:5432"

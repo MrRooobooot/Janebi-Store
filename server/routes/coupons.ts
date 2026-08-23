@@ -24,6 +24,15 @@ const handleCouponValidation = async (req: any, res: any) => {
       });
     }
 
+    // Optional expiry: an ISO timestamp in the past invalidates the coupon.
+    if (coupon.expiresAt && new Date(coupon.expiresAt).getTime() < Date.now()) {
+      return res.status(400).json({
+        valid: false,
+        error: 'کد تخفیف منقضی شده است',
+        message: 'کد تخفیف منقضی شده است'
+      });
+    }
+
     if (cartTotal < coupon.minTotal) {
       return res.status(400).json({ 
         valid: false, 

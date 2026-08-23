@@ -58,7 +58,9 @@ router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
   const { items, recipient, shippingMethod, paymentMethod, couponCode, useVipPoints } = req.body;
 
   try {
-    const orderId = `ORD-${Math.floor(100000 + Math.random() * 900000)}`;
+    // Collision-resistant order id: ORD-<base36 timestamp>-<4 random chars>.
+    // The old 6-digit random number had a ~1-in-900k birthday collision risk.
+    const orderId = `ORD-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
     const today = new Date();
     const dateStr = new Intl.DateTimeFormat("fa-IR", { year: "numeric", month: "long", day: "numeric" }).format(today);
     
@@ -123,7 +125,12 @@ router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
         if (!coupon || !coupon.active) {
           throw new Error("کد تخفیف نامعتبر است یا منقضی شده است");
         }
-        
+
+        // Optional expiry: an ISO timestamp in the past invalidates the coupon.
+        if (coupon.expiresAt && new Date(coupon.expiresAt).getTime() < Date.now()) {
+          throw new Error("کد تخفیف منقضی شده است");
+        }
+
         if (realSubtotal < coupon.minTotal) {
           throw new Error(`حداقل مبلغ خرید برای این کد ${coupon.minTotal.toLocaleString()} تومان است`);
         }
@@ -264,6 +271,25 @@ router.post("/:id/cancel", async (req: AuthRequest, res) => {
         await tx.update(products)
           .set({ stockQuantity: sql`${products.stockQuantity} + ${item.qty}` })
           .where(eq(products.id, item.productId));
+      }
+
+      // Data integrity: refund VIP points the user spent at checkout and claw
+      // back any points that were earned by this order, so a cancellation
+      // leaves loyalty balances exactly as if the order never existed.
+      const pointsUsedByOrder = Number(order.vipPointsUsed) || 0;
+      if (pointsUsedByOrder > 0) {
+        await tx.update(users)
+          .set({ vipPoints: sql`${users.vipPoints} + ${pointsUsedByOrder}` })
+          .where(eq(users.id, userId));
+      }
+      // Earned points are only credited once the order actually reached
+      // "processing" (COD creation, or a verified online payment). A
+      // pending_payment order was never credited, so don't claw those back.
+      const pointsEarnedByOrder = order.status === "processing" ? Number(order.vipPointsEarned) || 0 : 0;
+      if (pointsEarnedByOrder > 0) {
+        await tx.update(users)
+          .set({ vipPoints: sql`${users.vipPoints} - ${pointsEarnedByOrder}` })
+          .where(eq(users.id, userId));
       }
 
       await tx.update(orders)

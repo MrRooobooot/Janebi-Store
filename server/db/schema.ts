@@ -103,7 +103,9 @@ export const coupons = sqliteTable('coupons', {
   amount: integer('amount'),
   minTotal: integer('minTotal').notNull(),
   label: text('label').notNull(),
-  active: integer('active', { mode: 'boolean' }).default(true)
+  active: integer('active', { mode: 'boolean' }).default(true),
+  // Optional ISO-8601 expiry timestamp; null = never expires.
+  expiresAt: text('expiresAt')
 });
 
 export const cartItems = sqliteTable('cart_items', {

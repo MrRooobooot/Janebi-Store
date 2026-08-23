@@ -20,6 +20,7 @@ import wishlistRoutes from "./routes/wishlist.js";
 import contactRoutes from "./routes/contact.js";
 import paymentRoutes from "./routes/payment.js";
 import adminRoutes from "./routes/admin.js";
+import { isPostgres, pool, sqlite } from "./db/index.js";
 
 export const app = express();
 
@@ -132,6 +133,38 @@ app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/admin", adminRoutes);
+
+// Health / readiness probe — verifies the process is up AND the database
+// answers a real query. Uses the raw connection per dialect (pool for PG,
+// better-sqlite3 handle otherwise) so it works on both deployments.
+app.get("/api/health", async (req, res) => {
+  const startedAt = Date.now();
+  try {
+    if (isPostgres) {
+      await pool!.query("SELECT 1");
+    } else {
+      sqlite!.prepare("SELECT 1").get();
+    }
+    res.json({
+      status: "ok",
+      database: "ok",
+      latencyMs: Date.now() - startedAt,
+      uptimeSeconds: Math.round(process.uptime()),
+      requestId: req.id,
+    });
+  } catch (error: any) {
+    console.error("Health check DB failure:", error?.message);
+    res.status(503).json({
+      status: "error",
+      database: "unreachable",
+      error: {
+        code: "UNHEALTHY",
+        message: "database unreachable",
+        requestId: req.id || "unknown-request-id",
+      },
+    });
+  }
+});
 
 // 404 catch-all — unmatched API routes get the standardized error envelope.
 // Scoped to /api ONLY: non-API requests must fall through to the serving layer

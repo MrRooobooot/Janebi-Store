@@ -40,14 +40,25 @@ router.post('/request', authenticate, async (req: AuthRequest, res) => {
     const baseUrl = env.APP_URL || `${req.headers['x-forwarded-proto'] || req.protocol}://${req.headers.host}`;
     const callbackUrl = `${baseUrl.replace(/\/+$/, "")}/api/payment/verify`;
 
-    // Fallback for demo/testing/sandbox when real ZarinPal gateway is not configured or in test mode
-    const isDummyMerchant = !env.ZARINPAL_MERCHANT_ID || 
-      MERCHANT_ID === 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' || 
+    // Fallback for demo/testing/sandbox when real ZarinPal gateway is not configured or in test mode.
+    // SECURITY: the dummy gateway MUST never activate in production — a misconfigured
+    // merchant id would otherwise let anyone "pay" for orders without money moving.
+    const isDummyMerchant =
+      !env.ZARINPAL_MERCHANT_ID ||
+      MERCHANT_ID === 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' ||
       MERCHANT_ID.startsWith('00000000') ||
       env.ZARINPAL_SANDBOX ||
       env.NODE_ENV === 'test';
 
     if (isDummyMerchant) {
+      if (env.NODE_ENV === 'production') {
+        console.error(
+          `Payment request rejected for order ${orderId}: dummy payment gateway is not allowed in production. Configure a real ZARINPAL_MERCHANT_ID and set ZARINPAL_SANDBOX=false.`
+        );
+        return res.status(503).json({
+          error: 'درگاه پرداخت پیکربندی نشده است. لطفاً بعداً تلاش کنید.',
+        });
+      }
       const dummyAuthority = `DUMMY_AUTH_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
       await db.update(orders)
         .set({ authority: dummyAuthority })
@@ -123,15 +134,25 @@ router.get('/verify', async (req, res) => {
     }
 
     // Portable async transaction helper: works on both dialects.
+    // Cancels the order, restocks items, and refunds any VIP points that were
+    // spent at checkout so a failed payment never leaves the user out of pocket.
     const restockOrder = async (tx: any, orderId: string) => {
+      const failedOrderList = await tx.select().from(orders).where(eq(orders.id, orderId));
+      const failedOrder = failedOrderList[0];
+      const pointsToRefund = Number(failedOrder?.vipPointsUsed) || 0;
       const itemsToRestock = await tx.select().from(orderItems).where(eq(orderItems.orderId, orderId));
       for (const item of itemsToRestock) {
         await tx.update(products)
           .set({ stockQuantity: sql`${products.stockQuantity} + ${item.qty}` })
           .where(eq(products.id, item.productId));
       }
+      if (pointsToRefund > 0 && failedOrder?.userId) {
+        await tx.update(users)
+          .set({ vipPoints: sql`${users.vipPoints} + ${pointsToRefund}` })
+          .where(eq(users.id, failedOrder.userId));
+      }
       await tx.update(orders)
-        .set({ status: 'cancelled', statusText: 'لغو شده (پرداخت ناموفق)' })
+        .set({ status: 'cancelled', statusText: 'لغو شده (پرداخت ناموفق)', vipPointsUsed: 0 })
         .where(eq(orders.id, orderId));
     };
 
@@ -201,6 +222,11 @@ router.get('/verify', async (req, res) => {
             refId: refId
           })
           .where(eq(orders.id, order.id));
+        // Award earned VIP points on successful verified payment — mirrors the
+        // dummy-gateway path so both flows grant identical loyalty benefits.
+        if (order.vipPointsEarned && order.vipPointsEarned > 0 && order.userId) {
+          await tx.update(users).set({ vipPoints: sql`${users.vipPoints} + ${order.vipPointsEarned}` }).where(eq(users.id, order.userId));
+        }
       });
       
       return res.redirect(`/checkout/callback?status=success&orderId=${order.id}&ref_id=${refId}`);
