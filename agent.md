@@ -113,8 +113,11 @@
 ## Next Action
 Commit فیکس‌های Wave 1 → ادامه Audit (auth/users/cart routes + فرانت Checkout/Cart + admin persistence) → Wave 2 fixes → دیپلوی و Verification زنده.
 
-## Verification Evidence (Fix Wave 1)
-- `npm test` → **Test Files 28 passed (28), Tests 272 passed (272)** (شامل ۷ تست جدید launch-readiness)
+> **به‌روزرسانی:** Wave 1 و 2 کامیت و push شدند (`05d8975`، `941a994`، `c5b2131`). گام بعدی: **دیپلوی به VPS + Verification زنده** — نیازمند SSH credentials از کاربر (طبق D2 قبل از هر mutation بکاپ گرفته می‌شود).
+
+## Verification Evidence (Fix Waves 1+2)
+- `npm test` → **Test Files 29 passed (29), Tests 276 passed (276)** (۷ تست launch-readiness + ۴ تست contact-persistence جدید)
 - `npm run lint` → tsc --noEmit تمیز
-- `npm run build` → vite + esbuild موفق (dist/server.cjs = 155.2kb)
-- تست جدید `tests/api/launch-readiness.test.ts` پوشش می‌دهد: کوپن منقضی (validate + order)، فرمت شناسه سفارش جدید، refund/pawback امتیاز در لغو، health endpoint، refund امتیاز در شکست پرداخت آنلاین
+- `npm run build` → vite + esbuild موفق
+- تست `launch-readiness.test.ts`: کوپن منقضی (validate + order)، فرمت شناسه سفارش جدید، refund/clawback امتیاز در لغو، health endpoint، refund امتیاز در شکست پرداخت آنلاین
+- تست `contact-persistence.test.ts`: ذخیره پیام تماس (status=unread)، رد فیلد ناقص، idempotent بودن خبرنامه، رد ایمیل نامعتبر
