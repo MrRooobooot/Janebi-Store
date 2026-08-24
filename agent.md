@@ -122,9 +122,10 @@
 ## Next Action
 Commit فیکس‌های Wave 1 → ادامه Audit (auth/users/cart routes + فرانت Checkout/Cart + admin persistence) → Wave 2 fixes → دیپلوی و Verification زنده.
 
-> **به‌روزرسانی:** Wave 1+2 دیپلوی شد. E2E زنده روی janebiarena.ir سبز (ثبت‌نام→سفارش→گارد پرداخت→لغو). داده تست پاکسازی شد. گام بعدی: merchant واقعی زرین‌پال + Final Forensic Audit.
+> **به‌روزرسانی:** Wave 1+2+3 دیپلوی و زنده‌وری شد. Wave 3 (پایداری تنظیمات ادمین در DB + محاسبه امتیاز نظرات + گارد موجودی سبد) روی janebiarena.ir تست و تأیید شد — restart کانتینر تنظیمات را حفظ کرد. داده تست پاکسازی شد.
 
 ## Verification Evidence (Fix Waves 1+2)
+- **Wave 3 (commit `90f7ece`)**: 282/282 تست، lint/build سبز. دیپلوی + زنده‌وری: جدول store_settings ساخته شد، PUT/GET تنظیمات با کاربر admin واقعی پاس شد، **restart کانتینر تنظیمات را حفظ کرد** (persistence اثبات). cleanup کامل.
 - `npm test` → **Test Files 29 passed (29), Tests 276 passed (276)** (۷ تست launch-readiness + ۴ تست contact-persistence جدید)
 - `npm run lint` → tsc --noEmit تمیز
 - `npm run build` → vite + esbuild موفق
