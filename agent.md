@@ -122,7 +122,15 @@
 ## Next Action
 Commit فیکس‌های Wave 1 → ادامه Audit (auth/users/cart routes + فرانت Checkout/Cart + admin persistence) → Wave 2 fixes → دیپلوی و Verification زنده.
 
-> **به‌روزرسانی:** Wave 1+2+3 دیپلوی و زنده‌وری شد. Wave 3 (پایداری تنظیمات ادمین در DB + محاسبه امتیاز نظرات + گارد موجودی سبد) روی janebiarena.ir تست و تأیید شد — restart کانتینر تنظیمات را حفظ کرد. داده تست پاکسازی شد.
+> **به‌روزرسانی نهایی:** Final Forensic Audit کامل شد. نقص Data Integrity لغو ادمین (`bed0bc2`) فیکس، دیپلوی و **زنده روی production اثبات شد** (موجودی ۹→۸→۹ پس از سفارش+لغو ادمین). همه گیت‌ها: **284/284 تست + lint + build**. cleanup کامل. تنها مورد باز برای Launch واقعی: merchant زرین‌پال (نیازمند حساب کاربر).
+
+## Final Forensic Audit — جمع‌بندی (2026-08-23)
+- گیت‌های محلی: 284/284 تست (31 فایل)، tsc تمیز، build سالم
+- زنده janebiarena.ir: health ok، محصولات 200، SPA fallback 200، کوپن واقعی کارا، security headers فعال
+- امنیت: admin بدون توکن 401/کاربر عادی 403، IDOR خواندن/لغو سفارش دیگران بلاک (404/403)، OTP debugCode در production نشت نمی‌کند، rate limit auth فعال (429 بعد از چند تلاش)، validation فارسی با جزئیات
+- Data Integrity: چهار مسیر امتیاز VIP (COD create / online verify success / payment failure refund / user cancel) همگی سازگار؛ مسیر پنجم (admin cancel) کشف و فیکس شد — حالا restock + unwind امتیاز + idempotent + رد لغو shipped/delivered
+- تست قدیمی admin.test.ts که رفتار باگ‌دار (لغو کالای تحویل‌شده) را انتظار داشت اصلاح شد — نه تضعیف کد
+- منابع سرور: CPU ~0%, mem 39MB, disk 60% — سالم
 
 ## Verification Evidence (Fix Waves 1+2)
 - **Wave 3 (commit `90f7ece`)**: 282/282 تست، lint/build سبز. دیپلوی + زنده‌وری: جدول store_settings ساخته شد، PUT/GET تنظیمات با کاربر admin واقعی پاس شد، **restart کانتینر تنظیمات را حفظ کرد** (persistence اثبات). cleanup کامل.
