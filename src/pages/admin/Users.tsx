@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
-import { Search, Shield, User as UserIcon } from 'lucide-react';
+import { Search, Shield, User as UserIcon, KeyRound } from 'lucide-react';
 
 export default function AdminUsers() {
   const token = localStorage.getItem('token');
@@ -54,6 +54,36 @@ export default function AdminUsers() {
     }
   };
 
+  const resetPassword = async (userId: string, userName: string) => {
+    const newPassword = window.prompt(
+      `رمز عبور جدید برای «${userName}» را وارد کنید (حداقل ۶ کاراکتر):`
+    );
+    if (!newPassword) return;
+    if (newPassword.length < 6) {
+      addToast('رمز عبور باید حداقل ۶ کاراکتر باشد', 'error');
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/admin/users/${userId}/password`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ newPassword })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        addToast(data.message || 'رمز عبور کاربر تغییر کرد', 'success');
+      } else {
+        addToast(data.message || 'خطا در تغییر رمز عبور', 'error');
+      }
+    } catch {
+      addToast('خطا در برقراری ارتباط با سرور', 'error');
+    }
+  };
+
   const filteredUsers = users.filter(u => 
     u.name.includes(search) || 
     u.phone.includes(search) || 
@@ -88,11 +118,12 @@ export default function AdminUsers() {
                 <th className="p-4 font-medium">امتیاز VIP</th>
                 <th className="p-4 font-medium">تاریخ عضویت</th>
                 <th className="p-4 font-medium text-center">نقش</th>
+                <th className="p-4 font-medium text-center">عملیات رمز</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
               {loading ? (
-                <tr><td colSpan={5} className="text-center p-8">در حال بارگذاری...</td></tr>
+                <tr><td colSpan={6} className="text-center p-8">در حال بارگذاری...</td></tr>
               ) : filteredUsers.map(user => (
                 <tr key={user.id} className="text-sm hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                   <td className="p-4">
@@ -112,11 +143,11 @@ export default function AdminUsers() {
                   <td className="p-4 font-bold text-orange-500">{user.vipPoints} امتیاز</td>
                   <td className="p-4 text-gray-600 dark:text-gray-300">{user.joinedDate}</td>
                   <td className="p-4 text-center">
-                    <button 
+                    <button
                       onClick={() => toggleRole(user.id, user.role)}
                       className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
-                        user.role === 'admin' 
-                          ? 'bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-500/20 dark:text-purple-400' 
+                        user.role === 'admin'
+                          ? 'bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-500/20 dark:text-purple-400'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300'
                       }`}
                     >
@@ -124,11 +155,20 @@ export default function AdminUsers() {
                       {user.role === 'admin' ? 'مدیر سیستم' : 'کاربر عادی'}
                     </button>
                   </td>
+                  <td className="p-4 text-center">
+                    <button
+                      onClick={() => resetPassword(user.id, user.name)}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-orange-50 text-orange-600 hover:bg-orange-100 dark:bg-orange-500/10 dark:text-orange-400 transition-colors"
+                    >
+                      <KeyRound className="w-3.5 h-3.5" />
+                      ریست رمز
+                    </button>
+                  </td>
                 </tr>
               ))}
               {filteredUsers.length === 0 && !loading && (
                 <tr>
-                  <td colSpan={5} className="p-8 text-center text-gray-500 dark:text-gray-400">کاربری یافت نشد</td>
+                  <td colSpan={6} className="p-8 text-center text-gray-500 dark:text-gray-400">کاربری یافت نشد</td>
                 </tr>
               )}
             </tbody>

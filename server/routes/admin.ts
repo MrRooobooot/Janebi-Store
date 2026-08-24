@@ -181,6 +181,36 @@ router.get('/users', async (req, res) => {
   }
 });
 
+// Admin password reset for any user — standard panel capability. Used as
+// the recovery path while no SMS provider is wired up (the public OTP flow
+// cannot deliver codes in production yet).
+router.put('/users/:id/password', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { newPassword } = req.body;
+
+    if (!newPassword || typeof newPassword !== 'string' || newPassword.length < 6) {
+      return res.status(400).json({ error: 'رمز عبور جدید باید حداقل ۶ کاراکتر باشد', message: 'رمز عبور جدید باید حداقل ۶ کاراکتر باشد' });
+    }
+
+    const bcrypt = (await import('bcrypt')).default;
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const [updated] = await db.update(users)
+      .set({ password: hashedPassword })
+      .where(eq(users.id, id))
+      .returning();
+
+    if (!updated) {
+      return res.status(404).json({ error: 'کاربر یافت نشد', message: 'کاربر یافت نشد' });
+    }
+
+    res.json({ message: `رمز عبور کاربر ${updated.name} با موفقیت تغییر کرد` });
+  } catch (error) {
+    console.error('Admin password reset error:', error);
+    res.status(500).json({ message: 'خطای سرور در تغییر رمز عبور کاربر' });
+  }
+});
+
 router.put('/users/:id/role', async (req, res) => {
   try {
     const { role } = req.body;
