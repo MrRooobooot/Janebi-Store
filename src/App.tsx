@@ -71,6 +71,8 @@ export default function App() {
                         <Route index element={<Home />} />
                         <Route path="products" element={<Products />} />
                         <Route path="products/:id" element={<ProductDetail />} />
+                        {/* Singular alias: ProductCard / HeaderSearch link to /product/:id */}
+                        <Route path="product/:id" element={<ProductDetail />} />
                         <Route path="cart" element={<Cart />} />
                         <Route path="checkout" element={<Checkout />} />
                         <Route path="checkout/callback" element={<CheckoutCallback />} />
