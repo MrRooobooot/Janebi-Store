@@ -1,12 +1,52 @@
+# Dependencies
 node_modules/
+
+# Build outputs
 build/
 dist/
+server.js
+
+# Test coverage
 coverage/
+
+# OS junk
 .DS_Store
+Thumbs.db
+
+# Logs
 *.log
-.env*
+logs/
+
+# Environment & secrets — NEVER commit real values
+.env
+.env.*
 !.env.example
+
+# Local databases (production data lives on the VPS; local dev DBs are disposable)
 data/*.db
 data/*.db-journal
 data/*.db-wal
 data/*.db-shm
+data/*.sqlite
+*.sqlite3
+
+# Backups
+backups/
+*.bak
+*.dump
+
+# Editor / AI tool droppings
+.idea/
+.vscode/
+*.swp
+.agents/
+.agent/
+.Jules/
+.antigravity/
+.firebase/
+.claude/
+.cursor/
+
+# Temp
+/tmp/
+*.tmp
