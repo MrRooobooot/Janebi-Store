@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
+import SmartImage from '../components/SmartImage';
 import { ProductCardSkeleton, CategoryCardSkeleton } from '../components/Skeletons';
 import FAQ from '../components/FAQ';
 import Testimonials from '../components/Testimonials';
@@ -163,10 +164,12 @@ export default function Home() {
           className="md:w-1/2 mt-10 md:mt-0 flex justify-end w-full relative"
         >
           <div className="w-full max-w-md aspect-4/3 relative rounded-3xl overflow-hidden shadow-2xl border border-white/30 dark:border-gray-800 group">
-            <img 
-              src="https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=800&q=80" 
-              alt="لوازم جانبی اورجینال" 
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+            <SmartImage
+              src="https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=800&q=80"
+              alt="لوازم جانبی اورجینال"
+              priority
+              fallbackIcon={Smartphone}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
             

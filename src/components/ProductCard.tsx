@@ -7,6 +7,7 @@ import { useToast } from '../contexts/ToastContext';
 import { useCart } from '../contexts/CartContext';
 import { motion } from 'motion/react';
 import { Product } from '../types';
+import SmartImage from './SmartImage';
 import { useState, memo } from 'react';
 
 // ⚡ Bolt: Wrapped in React.memo to prevent unnecessary re-renders when parent grids/lists re-render
@@ -62,7 +63,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
       {/* Product Image */}
       <Link to={`/product/${product.id}`} className="block mb-3 relative shrink-0 overflow-hidden rounded-xl">
         <div className="aspect-square w-full relative overflow-hidden rounded-xl bg-gray-50/80 dark:bg-gray-800/40 p-2 flex items-center justify-center">
-          <img
+          <SmartImage
             src={product.image}
             alt={product.title}
             className="object-contain w-full h-full group-hover:scale-105 transition-transform duration-500"

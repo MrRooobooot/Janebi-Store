@@ -6,6 +6,7 @@ import { useCompare } from '../contexts/CompareContext';
 import { useToast } from '../contexts/ToastContext';
 import { useCart } from '../contexts/CartContext';
 import { ProductDetailSkeleton } from '../components/Skeletons';
+import SmartImage from '../components/SmartImage';
 import ProductReviews from '../components/ProductReviews';
 import RecentlyViewed from '../components/RecentlyViewed';
 import { addRecentlyViewed } from '../lib/recentlyViewed';
@@ -123,9 +124,10 @@ export default function ProductDetail() {
                   {toPersianDigits(product.discount)}٪ تخفیف
                 </div>
               )}
-              <img
+              <SmartImage
                 src={galleryImages[selectedImageIndex] || product.image}
                 alt={product.title}
+                priority
                 className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-500"
               />
             </motion.div>
