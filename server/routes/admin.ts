@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { db } from '../db/index.js';
-import { users, products, orders, reviews, coupons, productFeatures, cartItems, wishlistItems, storeSettings } from '../db/schema.js';
+import { users, products, orders, orderItems, reviews, coupons, productFeatures, cartItems, wishlistItems, storeSettings } from '../db/schema.js';
 import { appCache } from '../utils/cache.js';
 import { eq, desc, sql } from 'drizzle-orm';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
@@ -320,10 +320,67 @@ router.put('/orders/:id/status', async (req, res) => {
   try {
     const { id } = req.params;
     const { status, statusText } = req.body;
-    
+
     const allowedStatuses = ['pending_payment', 'processing', 'shipped', 'delivered', 'cancelled'];
     if (!status || !allowedStatuses.includes(status)) {
       return res.status(400).json({ error: 'وضعیت سفارش نامعتبر است', message: 'وضعیت سفارش نامعتبر است' });
+    }
+
+    // Cancelling from the admin panel must have the same data-integrity
+    // effects as a user-initiated cancellation: restock items and unwind
+    // VIP points (refund used, claw back earned — earned only when the
+    // order actually reached "processing").
+    if (status === 'cancelled') {
+      const updated = await db.transaction(async (tx) => {
+        const orderList = await tx.select().from(orders).where(eq(orders.id, id));
+        const order = orderList[0];
+        if (!order) return null;
+        if (order.status === 'cancelled') {
+          return order; // already cancelled — idempotent
+        }
+        if (order.status !== 'pending_payment' && order.status !== 'processing') {
+          throw Object.assign(new Error('فقط سفارش‌های در انتظار پرداخت یا در حال پردازش قابل لغو هستند'), { status: 400 });
+        }
+
+        const items = await tx.select().from(orderItems).where(eq(orderItems.orderId, id));
+        for (const item of items) {
+          await tx.update(products)
+            .set({ stockQuantity: sql`${products.stockQuantity} + ${item.qty}` })
+            .where(eq(products.id, item.productId));
+        }
+
+        const pointsUsedByOrder = Number(order.vipPointsUsed) || 0;
+        if (pointsUsedByOrder > 0 && order.userId) {
+          await tx.update(users)
+            .set({ vipPoints: sql`${users.vipPoints} + ${pointsUsedByOrder}` })
+            .where(eq(users.id, order.userId));
+        }
+        const pointsEarnedByOrder = order.status === 'processing' ? Number(order.vipPointsEarned) || 0 : 0;
+        if (pointsEarnedByOrder > 0 && order.userId) {
+          await tx.update(users)
+            .set({ vipPoints: sql`${users.vipPoints} - ${pointsEarnedByOrder}` })
+            .where(eq(users.id, order.userId));
+        }
+
+        const defaultStatusTexts: Record<string, string> = {
+          pending_payment: 'در انتظار پرداخت',
+          processing: 'در حال پردازش',
+          shipped: 'ارسال شده',
+          delivered: 'تحویل داده شده',
+          cancelled: 'لغو شده'
+        };
+        const [row] = await tx.update(orders)
+          .set({ status, statusText: statusText || defaultStatusTexts[status] || status })
+          .where(eq(orders.id, id))
+          .returning();
+        return row;
+      });
+
+      if (updated === null) {
+        return res.status(404).json({ error: 'سفارش یافت نشد', message: 'سفارش یافت نشد' });
+      }
+      appCache.invalidate('products');
+      return res.json(updated);
     }
 
     const defaultStatusTexts: Record<string, string> = {
@@ -345,7 +402,10 @@ router.put('/orders/:id/status', async (req, res) => {
     }
     
     res.json(updated);
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.status === 400) {
+      return res.status(400).json({ error: error.message, message: error.message });
+    }
     res.status(500).json({ message: 'خطای سرور در تغییر وضعیت سفارش' });
   }
 });

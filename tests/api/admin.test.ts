@@ -449,11 +449,10 @@ describe('Admin API', () => {
   });
 
   it('PUT /api/admin/orders/:id/status successfully transitions across all valid status states', async () => {
-    const statuses: Array<'pending_payment' | 'processing' | 'shipped' | 'delivered' | 'cancelled'> = [
+    const statuses: Array<'processing' | 'shipped' | 'delivered'> = [
       'processing',
       'shipped',
-      'delivered',
-      'cancelled'
+      'delivered'
     ];
 
     for (const st of statuses) {
@@ -465,5 +464,15 @@ describe('Admin API', () => {
       expect(res.status).toBe(200);
       expect(res.body.status).toBe(st);
     }
+
+    // Business rule (data integrity): a DELIVERED order can no longer be
+    // cancelled from the panel — restocking sold goods and clawing back
+    // earned points on a completed sale would corrupt inventory/loyalty.
+    const cancelDelivered = await request(app)
+      .put(`/api/admin/orders/${testOrderId}/status`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ status: 'cancelled' });
+    expect(cancelDelivered.status).toBe(400);
+    expect(cancelDelivered.body.status ?? cancelDelivered.body.message).toBeDefined();
   });
 });
