@@ -11,12 +11,14 @@ export default function Login() {
   const { addToast } = useToast();
   const navigate = useNavigate();
 
-  const [mode, setMode] = useState<"password" | "otp">("password");
+  const [mode, setMode] = useState<"password" | "otp" | "forgot">("password");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [otpCode, setOtpCode] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [otpCountdown, setOtpCountdown] = useState(0);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -54,6 +56,56 @@ export default function Login() {
         addToast(data.message || "کد تایید ارسال شد", "success");
       } else {
         addToast(data.message || "خطا در ارسال کد تایید", "error");
+      }
+    } catch {
+      addToast("خطا در برقراری ارتباط با سرور", "error");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const normalizedPhone = normalizeIranianMobile(phone);
+    if (!isValidIranianMobile(normalizedPhone)) {
+      addToast("لطفاً شماره موبایل معتبر وارد کنید", "error");
+      return;
+    }
+    if (!otpSent) {
+      addToast("ابتدا کد تایید را دریافت کنید", "error");
+      return;
+    }
+    if (!otpCode || otpCode.length !== 5) {
+      addToast("کد تایید باید ۵ رقم باشد", "error");
+      return;
+    }
+    if (!newPassword || newPassword.length < 6) {
+      addToast("رمز عبور جدید باید حداقل ۶ کاراکتر باشد", "error");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      addToast("رمز عبور و تکرار آن یکسان نیستند", "error");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const res = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: normalizedPhone, code: otpCode, newPassword }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        addToast(data.message || "رمز عبور با موفقیت تغییر کرد", "success");
+        setMode("password");
+        setPassword("");
+        setOtpCode("");
+        setOtpSent(false);
+        setNewPassword("");
+        setConfirmPassword("");
+      } else {
+        addToast(data.message || "خطا در تغییر رمز عبور", "error");
       }
     } catch {
       addToast("خطا در برقراری ارتباط با سرور", "error");
@@ -112,10 +164,12 @@ export default function Login() {
             <LogIn className="h-7 w-7" />
           </div>
           <h1 className="text-2xl font-black text-gray-900 dark:text-gray-100">
-            ورود به حساب کاربری
+            {mode === "forgot" ? "بازیابی رمز عبور" : "ورود به حساب کاربری"}
           </h1>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1.5 font-medium">
-            خوش آمدید! برای مدیریت سفارش‌ها وارد شوید.
+            {mode === "forgot"
+              ? "شماره موبایل و کد تایید را وارد و رمز جدید بگذارید."
+              : "خوش آمدید! برای مدیریت سفارش‌ها وارد شوید."}
           </p>
         </div>
 
@@ -145,7 +199,10 @@ export default function Login() {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form
+          onSubmit={mode === "forgot" ? handleResetPassword : handleSubmit}
+          className="space-y-4"
+        >
           <div>
             <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
               شماره موبایل *
@@ -164,7 +221,80 @@ export default function Login() {
             </div>
           </div>
 
-          {mode === "password" ? (
+          {mode === "forgot" ? (
+            <>
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-bold text-gray-700 dark:text-gray-300">
+                    کد تایید پیامک‌شده *
+                  </label>
+                  {otpSent && (
+                    <span className="text-[11px] text-orange-600 dark:text-orange-400 font-mono">
+                      {otpCountdown > 0 ? `${otpCountdown} ثانیه تا ارسال مجدد` : "کد منقضی شد"}
+                    </span>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <input
+                      type="text"
+                      dir="ltr"
+                      maxLength={5}
+                      value={otpCode}
+                      onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
+                      placeholder="12345"
+                      className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3.5 px-4 pl-10 text-center tracking-widest text-sm font-mono font-bold text-gray-900 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
+                    />
+                    <KeyRound className="h-4 w-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleSendOtp}
+                    disabled={isLoading || otpCountdown > 0}
+                    className="px-4 py-3.5 rounded-2xl bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 text-xs font-extrabold hover:bg-orange-200 transition-all disabled:opacity-50"
+                  >
+                    {otpSent ? "ارسال مجدد" : "دریافت کد"}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
+                  رمز عبور جدید *
+                </label>
+                <div className="relative">
+                  <input
+                    type="password"
+                    dir="ltr"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="حداقل ۶ کاراکتر"
+                    className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3.5 px-4 pl-10 text-left text-xs font-mono font-bold text-gray-900 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
+                    required
+                  />
+                  <Lock className="h-4 w-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
+                  تکرار رمز عبور جدید *
+                </label>
+                <div className="relative">
+                  <input
+                    type="password"
+                    dir="ltr"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="تکرار رمز جدید"
+                    className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3.5 px-4 pl-10 text-left text-xs font-mono font-bold text-gray-900 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
+                    required
+                  />
+                  <Lock className="h-4 w-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
+              </div>
+            </>
+          ) : mode === "password" ? (
             <div>
               <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
                 رمز عبور *
@@ -231,9 +361,34 @@ export default function Login() {
             disabled={isLoading}
             className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-extrabold py-4 px-6 rounded-2xl shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 transition-all active:scale-98 text-sm mt-6 disabled:opacity-60"
           >
-            <span>{mode === "otp" ? "تایید و ورود" : "ورود به حساب"}</span>
+            <span>{mode === "otp" ? "تایید و ورود" : mode === "forgot" ? "تغییر رمز عبور" : "ورود به حساب"}</span>
             <ArrowLeft className="h-4 w-4" />
           </button>
+
+          {mode === "password" && (
+            <button
+              type="button"
+              onClick={() => {
+                setMode("forgot");
+                setOtpCode("");
+                setOtpSent(false);
+                setNewPassword("");
+                setConfirmPassword("");
+              }}
+              className="w-full text-center text-xs font-bold text-gray-500 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
+            >
+              رمز عبور خود را فراموش کرده‌اید؟
+            </button>
+          )}
+          {mode === "forgot" && (
+            <button
+              type="button"
+              onClick={() => setMode("password")}
+              className="w-full text-center text-xs font-bold text-gray-500 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
+            >
+              بازگشت به ورود
+            </button>
+          )}
         </form>
 
         <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 text-center text-xs font-medium text-gray-500">

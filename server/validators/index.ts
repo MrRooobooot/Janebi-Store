@@ -135,3 +135,11 @@ export const otpVerifySchema = z.object({
     name: z.string().optional()
   })
 });
+
+export const resetPasswordSchema = z.object({
+  body: z.object({
+    phone: z.string().regex(/^09\d{9}$/, "شماره موبایل معتبر نیست"),
+    code: z.string().regex(/^\d{5}$/, "کد تایید باید ۵ رقم باشد"),
+    newPassword: z.string().min(6, "رمز عبور جدید باید حداقل ۶ کاراکتر باشد")
+  })
+});

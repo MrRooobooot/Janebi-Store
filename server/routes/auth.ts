@@ -2,7 +2,7 @@ import { Router } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { validate } from "../middleware/validate.js";
-import { registerSchema, loginSchema, otpSendSchema, otpVerifySchema } from "../validators/index.js";
+import { registerSchema, loginSchema, otpSendSchema, otpVerifySchema, resetPasswordSchema } from "../validators/index.js";
 import { db } from "../db/index.js";
 import { users, addresses } from "../db/schema.js";
 import { eq } from "drizzle-orm";
@@ -138,6 +138,49 @@ router.post("/refresh", async (req, res) => {
 router.post("/logout", (req, res) => {
   clearAuthCookies(res, env.NODE_ENV === "production");
   res.json({ message: "با موفقیت خارج شدید" });
+});
+
+// Forgot-password: verify the same OTP used for login, then set a new
+// password. Reuses otpStore (send via /otp/send first). Rate-limited by
+// the OTP attempts counter; single-use because verification deletes the code.
+router.post("/reset-password", validate(resetPasswordSchema), async (req, res) => {
+  const { phone, code, newPassword } = req.body;
+
+  const entry = otpStore.get(phone);
+  if (!entry) {
+    return res.status(400).json({ message: "کد تاییدی برای این شماره ثبت نشده است یا منقضی شده. ابتدا کد دریافت کنید." });
+  }
+  if (Date.now() > entry.expiresAt) {
+    otpStore.delete(phone);
+    return res.status(400).json({ message: "کد تایید منقضی شده است. لطفاً مجدداً درخواست دهید." });
+  }
+  if (entry.attempts >= 5) {
+    otpStore.delete(phone);
+    return res.status(429).json({ message: "تعداد دفعات اشتباه بیش از حد مجاز بود. کد جدید دریافت کنید." });
+  }
+  if (entry.code !== code) {
+    entry.attempts++;
+    return res.status(400).json({ message: "کد تایید وارد شده نامعتبر است" });
+  }
+
+  try {
+    const user = await db.query.users.findFirst({ where: eq(users.phone, phone) });
+    if (!user) {
+      // Don't reveal whether the account exists — generic message.
+      otpStore.delete(phone);
+      return res.status(400).json({ message: "کد تایید وارد شده نامعتبر است" });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await db.update(users).set({ password: hashedPassword }).where(eq(users.id, user.id));
+
+    otpStore.delete(phone); // single-use
+
+    res.json({ message: "رمز عبور با موفقیت تغییر کرد. اکنون می‌توانید وارد شوید." });
+  } catch (error) {
+    console.error("Reset password error:", error);
+    res.status(500).json({ message: "خطای سرور در تغییر رمز عبور" });
+  }
 });
 
 router.get("/me", authenticate, async (req: AuthRequest, res) => {
