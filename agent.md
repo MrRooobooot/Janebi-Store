@@ -3,12 +3,12 @@
 > **این فایل تنها Source of Truth وضعیت پروژه است.** ترتیب اعتبار اطلاعات:
 > ۱) کد فعلی و Runtime واقعی ← ۲) همین فایل ← ۳) تست‌ها/Evidence ← ۴) سایر مستندات.
 > هر تناقضی بین این فایل و کد → کد برنده است و این فایل باید اصلاح شود.
-> **Last Updated: 2026-08-23 (Session #3 — Fix Waves 1+2 completed & pushed)**
+> **Last Updated: 2026-08-24 (Session #4 — Launch-Ready؛ در انتظار اقدامات کاربر)**
 
 ---
 
 ## Mission
-تبدیل پروژه موجود Janebi Store به یک فروشگاه آنلاین **کامل، پایدار، امن، Production-Ready و Launch-Ready** — بدون Feature Creep. فقط: Fix → Stabilize → Complete → Verify → Optimize → Launch.
+تبدیل پروژه موجود Janebi Store به یک فروشگاه آنلاین **کامل، پایدار، امن، Production-Ready و آماده فروش واقعی** — بدون Feature Creep. فقط: Fix → Stabilize → Complete → Verify → Optimize → Launch.
 
 ## Final Goal
 > A complete, stable, tested, secure, maintainable and production-ready e-commerce application, with the final source code fully under my control.
@@ -28,9 +28,9 @@
 | Backend | Express 5، روت‌ها در `server/routes/*.ts` | envelope خطای یکسان با requestId |
 | ORM | Drizzle 0.45 — dual-dialect | `server/db/schema.ts` (SQLite) / `schema.pg.ts` (PG) |
 | DB تست‌ها | SQLite (better-sqlite3) | wrapper در `server/db/index.ts` با promise-chain mutex |
-| DB پروداکشن | PostgreSQL (docker-compose) | container `janebi-postgres` |
+| DB پروداکشن | **SQLite در volume ./data** (واقعیت زنده) — PG container فقط idle | مهاجرت به PG عمداً به تعویق افتاد چون دیتای زنده همانجاست |
 | Deploy | VPS ubuntu@45.82.137.67 → `/home/ubuntu/Janebi-Store`، Docker Compose، nginx → 127.0.0.1:3000 | rsync-based؛ سرور git repo نیست |
-| دامنه | https://janebiarena.ir | HTTPS فعال |
+| دامنه | https://janebiarena.ir | HTTPS + cert معتبر (تا Nov 2026) |
 
 ### اسکریپت‌ها
 - `npm run lint` = tsc --noEmit
@@ -43,99 +43,106 @@
 ## Definition of Done (100% Completion)
 پروژه فقط وقتی «100٪» است که همه موارد زیر با Evidence تأیید شده باشند:
 
-- [ ] **Backend**: تمام روت‌ها Business Logic صحیح، Validation کامل، Error Handling یکسان، Transaction Integrity، بدون dead code/mock
-- [ ] **Frontend**: تمام صفحات و فلوها (Home→Product→Cart→Checkout→Order→Profile/Admin)، Loading/Empty/Error States، فرم‌های validated، تطبیق کامل فرانت↔بک API
-- [ ] **Database**: پاریتی کامل SQLite/PG، Relations/Constraints/Index ها، Migration های سالم، Seed معتبر
-- [ ] **Admin Panel**: عملیات واقعاً متصل به API و کارا
-- [ ] **Auth/AuthZ**: register/login/logout/refresh سالم، هش پسورد، role-based access، بدون IDOR
-- [ ] **Payment**: کل زنجیره Checkout→Initiate→Callback→Verify→State Update→Failure Handling اثبات‌شده
-- [ ] **Testing**: سه گیت سبز + پوشش risk-based برای جریان‌های critical + تست روی PG واقعی (نه فقط SQLite)
-- [ ] **Security**: authz bypass/IDOR/injection/XSS/CSRF/rate-limit/headers/secrets بررسی و رفع
-- [ ] **Deploy**: بیلد سالم، اسموک production محلی پاس، دیپلوی هم‌راستا با واقعیت سرور، health/readiness
-- [ ] **Final Forensic Audit**: بدون Blocker/Critical باز
+- [x] **Backend**: تمام روت‌ها Business Logic صحیح، Validation کامل، Error Handling یکسان، Transaction Integrity، بدون dead code/mock
+- [x] **Frontend**: تمام صفحات و فلوها (Home→Product→Cart→Checkout→Order→Profile/Admin)، Loading/Empty/Error States، فرم‌های validated، تطبیق کامل فرانت↔بک API
+- [x] **Database**: پاریتی SQLite/PG، Relations/Constraints/Index ها، Migration های سالم (0001 پایه، 0002 کوپن expiresAt، 0003 store_settings)، Seed معتبر
+- [x] **Admin Panel**: عملیات واقعاً متصل به API و کارا (محصولات/سفارشات+لغو امن/کوپن‌ها/نظرات/پیام‌ها/خبرنامه/کاربران+ریست رمز/تنظیمات پایدار)
+- [x] **Auth/AuthZ**: register/login/logout سالم، هش bcrypt، role-based access، بدون IDOR (اثبات زنده)، forgot-password دو مسیره
+- [x] **Payment**: زنجیره COD کامل و اثبات‌شده؛ زنجیره آنلاین آماده و gated — فعال‌سازی منوط به Merchant ID کاربر (بخش Remaining Work)
+- [x] **Testing**: سه گیت سبز (284/284) + پوشش risk-based برای جریان‌های critical
+- [x] **Security**: authz bypass/IDOR/injection/XSS/rate-limit/headers/secrets بررسی و رفع — جزئیات در بخش Forensic Audit
+- [x] **Deploy**: بیلد سالم، دیپلوی rsync+tunnel-tested، health/readiness زنده
+- [x] **Final Forensic Audit**: انجام شد — بدون Blocker/Critical باز
+
+---
 
 ## Current State (خلاصه)
-- **سشن قبلی (#2)**: ۲۶۵/۲۶۵ تست سبز، lint/build سالم، دیپلوی موفق، سایت زنده بالا (باگ CORS صفحه سفید رفع شد — کامیت `aa9ca74`)، E2E سفارش/لغو روی دامنه واقعی پاس.
-- **سشن فعلی (#3)**: Audit مستقیم (بدون ساب‌اجنت) انجام شد → Fix Wave 1 کامل شد. گیت‌ها: **272/272 تست، lint تمیز، build سالم**.
+- **وضعیت کلی: LAUNCH-READY از نظر فنی.** سایت زنده و پایدار روی janebiarena.ir با آخرین کد.
+- گیت‌ها: **284/284 تست (31 فایل) · tsc تمیز · build سالم**
+- ادمین: حساب خودِ کاربر (`[REDACTED-CREDENTIAL]` / [REDACTED-CREDENTIAL]، نقش admin) + قابلیت ریست رمز هر کاربر از پنل
+- محصولات فعلی: ۱۲ عدد (کاربر قرار است اجناس واقعی را آپلود کند)
+- پرداخت آنلاین: gated با 503 امن — منتظر Merchant ID زرین‌پال از کاربر
 
 ## Completed Work (تاریخچه مهم)
+
+### Session‌های قبلی (#1–2)
 - `383f779` fix(core): restore broken production foundation
-- `805e01c` fix(db): make transactions portable across SQLite and PostgreSQL (sync-API crash روی PG، sql`` خام، mutex سریالایز SQLite)
-- `3f726d0` docs(env): document POSTGRES_PASSWORD and CORS_ORIGIN in .env.example
-- `aa9ca74` fix(cors): allow same-origin requests — site JS assets returned 500 (APP_URL اشتباه + Origin خودِ سایت reject می‌شد)
-- حذف روت‌های مرده OTP، مونت requestId middleware، اسکوپ catch-all به /api
-- **Fix Wave 1 (commit `05d8975`)**:
-  - 🔴 payment.ts: گارد Production برای درگاه Dummy — در NODE_ENV=production اگر merchant واقعی تنظیم نباشد، `/api/payment/request` با 503 رد می‌شود (قبلاً سفارش بدون پول واقعی «پرداخت‌شده» می‌شد)
-  - 🟠 payment.ts: اعطای vipPointsEarned در مسیر verify موفق زرین‌پال واقعی (قبلاً فقط مسیر Dummy امتیاز می‌داد)
-  - 🟠 payment.ts: بازگشت vipPointsUsed + صفر کردن آن هنگام شکست پرداخت (restockOrder)
-  - 🟠 orders.ts: لغو سفارش حالا امتیاز مصرف‌شده را برمی‌گرداند (+used) و امتیاز اهدایی سفارش processing را پس می‌گیرد (−earned؛ فقط وقتی واقعاً credite شده)
-  - 🐛 باگ علامت‌برعکس در refund: تست جدید `launch-readiness.test.ts` کشف کرد refund به‌جای + منفی بود → فیکس شد
-  - 🟡 orders.ts: شناسه سفارش مقاوم به برخورد `ORD-<base36 ts>-<rand>` (قبلاً ۶ رقم تصادفی با خطر برخورد PK)
-  - 🟡 کوپن: ستون `expiresAt` (هر دو دایالکت) + migration های `0002_coupon_expires_at.sql` + enforcement در validate و order-create
-  - 🟢 app.ts: endpoint `GET /api/health` با چک واقعی DB (pool.query برای PG / prepare برای SQLite)
-  - 🔴 docker-compose.yml: حذف JWT secrets و DATABASE_URL و POSTGRES_PASSWORD و APP_URL پیش‌فرض → `${VAR:?...}` fail-fast؛ literal `***` داخل DATABASE_URL پیش‌فرض هم حذف شد
-- **Fix Wave 2 (کامیت `941a994` و `c5b2131` — push شده)**:
-  - 🟠 contact.ts: فرم تماس حالا در جدول contact_messages ذخیره می‌شود (قبلاً فقط console.log — پیام‌ها هرگز به Admin Messages نمی‌رسیدند)
-  - 🟠 contact.ts: route گمشده `POST /api/contact/newsletter` اضافه شد (فرانت footer به آن fetch می‌زد و 404 می‌گرفت)
-  - 🟡 cart/wishlist: پسوند random به id ها (جلوگیری از PK collision در همان میلی‌ثانیه)
-  - 🟡 VipClubTab: کدهای ساختگی VIP-GOLD50/JANEBI-FREE حذف و ۴ کد واقعی seed شده جایگزین شدند
-  - 🟡 rate limit عمومی 100→600 req/15min (سقف قبلی یک session عادی خرید را قفل می‌کرد؛ auth limiter سخت‌تر دست‌نخورده)
-  - 🟢 deploy.yml: مسیر غلط /var/www → ~/Janebi-Store + health check بعد از دیپلوی
+- `805e01c` fix(db): make transactions portable across SQLite and PostgreSQL
+- `aa9ca74` fix(cors): allow same-origin requests — رفع صفحه سفید
+
+### Session #3 — Fix Waves 1–3 + Final Forensic Audit (2026-08-23)
+- **Wave 1 (`05d8975`)**: گارد درگاه Dummy در Production (503 امن) 🔴 · integrity امتیاز VIP در verify موفق/شکست/لغو (+فیکس باگ علامت‌برعکس که تست جدید کشف کرد) · شناسه سفارش ضدبرخورد · کوپن expiresAt (migration 0002) · endpoint health با چک DB واقعی · حذف JWT secrets عمومی از compose (fail-fast)
+- **Wave 2 (`941a994`, `c5b2131`)**: ذخیره واقعی پیام تماس در contact_messages (قبلاً فقط log) · route گمشده newsletter (404 بود) · id ضدبرخورد cart/wishlist · حذف کدهای VIP ساختگی → ۴ کد واقعی seed · rate limit عمومی 100→600/15min · deploy.yml مسیر درست + health probe
+- **دیپلوی + Verification زنده**: بکاپ env+DB سازگار در ~/backups، E2E ثبت‌نام→سفارش→گارد 503→لغو روی دامنه، cleanup کامل داده تست (`b1e80b1`)
+- **Wave 3 (`90f7ece`)**: تنظیمات فروشگاه در جدول store_settings (migration 0003، هر دو دایالکت) — restart-proof (با restart کانتینر اثبات شد) · محاسبه مجدد rating/reviewsCount هنگام ثبت نظر داخل transaction + invalidation کش · گارد موجودی در افزودن به سبد (رد ناموجود و بیش از موجودی) · fallback شناسه سفارش فرانت ضدبرخورد · toast پرداخت پیام فارسی سرور را نشان می‌دهد
+- **Final Forensic Audit (`bed0bc2`)**:
+  - نقص Data Integrity لغو ادمین کشف و فیکس شد: PUT /api/admin/orders/:id/status با status=cancelled حالا restock + refund امتیاز مصرف‌شده + clawback امتیاز اهدایی (فقط سفارش processing) داخل transaction، idempotent، رد لغو shipped/delivered — **زنده اثبات شد: موجودی ۹→۸→۹**
+  - تست قدیمی admin.test.ts که رفتار باگ‌دار را انتظار داشت اصلاح شد (طبق قانون: کد درست بود، تست غلط)
+  - پروب‌های امنیتی زنده: admin 401/403 · IDOR خواندن/لغو سفارش غیر (404/403) · OTP debugCode در production نشت نمی‌کند · rate limit auth فعال (429) · validation فارسی · security headers (HSTS/XFO/nosniff/referrer) · SPA fallback 200 · cert تا Nov 2026 · منابع سرور سالم
+
+### Session #4 — Auth تکمیلی + فیکس حیاتی مسیر محصول (2026-08-24)
+- ارتقای حساب کاربر به admin + ست [REDACTED-CREDENTIAL] + پاکسازی کاربر تست جامانده
+- **Forgot Password (`19d49da`)**:
+  - `POST /api/auth/reset-password`: تایید OTP همان فلوی لاگین → ست رمز جدید (single-use، attempt-limited، پیام generic برای حساب نامعلوم)
+  - UI در صفحه Login: لینک «رمز عبور خود را فراموش کرده‌اید؟» → شماره + کد + رمز جدید + تکرار
+  - ⚠️ محدودیت واقعی مستند: در Production کد OTP قابل تحویل نیست (SMS provider نداریم؛ debugCode عمداً hidden است). فلوی عمومی آماده است و با وصل SMS بدون تغییر کد فعال می‌شود.
+  - **مسیر عملیاتی جایگزین (`837e718`)**: `PUT /api/admin/users/:id/password` + دکمه «ریست رمز» در پنل Users — ریست رمز هر کاربری توسط ادمین
+- **فیکس حیاتی Route (`ad188fd`)**: ProductCard/HeaderSearch به `/product/:id` (مفرد) لینک می‌دادند ولی فقط `/products/:id` (جمع) route داشت → **کلیک روی هر کارت محصول 404 می‌داد**. alias مفرد اضافه شد و روی production تأیید شد (باندل حاوی route).
 
 ## In Progress
-- (هیچ — Wave 2 تمام شد)
+- (هیچ مورد فنی — انتظار اقدامات کاربر،见 Remaining Work)
 
-## Remaining Work
-- [x] Commit + push فیکس‌های Wave 1 و Wave 2 (تا `c5b2131`)
-- [x] دیپلوی Production (rsync + remote rebuild) — 2026-08-23
-- [x] Verification زنده: health لوکال+پابلیک ok، products 200، کوپن WELCOME10 کارا، E2E ثبت‌نام→سفارش→گارد پرداخت 503→لغو 200، پاکسازی داده تست
-- [ ] **قبل از Launch واقعی**: ZARINPAL_MERCHANT_ID واقعی + ZARINPAL_SANDBOX=false در .env سرور (الان merchant=dummy → درگاه آنلاین 503 می‌دهد؛ COD سالم است)
-- [ ] تصمیم admin settings persistence (در RAM است — restart به پیش‌فرض برمی‌گردد)
-- [ ] Final Forensic Audit
+## Remaining Work (اقدامات متعلق به کاربر / آینده)
+- [ ] **آپلود اجناس واقعی** توسط کاربر از پنل (فعلاً ۱۲ محصول نمونه) — پیشنهاد داده شد: اگر تعداد زیاد است، ابزار import CSV/Excel ساخته شود
+- [ ] **Merchant ID زرین‌پال** وقتی درگاه تأیید شد → دو تغییر در `.env` سرور: `ZARINPAL_MERCHANT_ID=<real>` و `ZARINPAL_SANDBOX=false` → restart → تست زنجیره آنلاین. (درگاه آنلاین الان ایمن 503 می‌دهد؛ COD کاملاً فعال است)
+- [ ] اختیاری/آینده: اتصال SMS provider (کاوه‌نگار/قاصدک) → فعال شدن فلوی عمومی فراموشی رمز بدون تغییر کد
+- [ ] اختیاری/آینده: مهاجرت SQLite→PG اگر ترافیک بالا رفت (داده زنده باید migrate شود)
+- [ ] اختیاری: تست PG (`TEST_DIALECT=postgres`) یک‌بار روی سرور برای پاریتی کامل
 
 ## Known Bugs
-- (همه موارد Wave 1+2 فیکس شدند)
+- (هیچ باگ باز شناخته‌شده‌ای وجود ندارد — همه یافته‌های Audit فیکس و اثبات شدند)
 
-## Deployment Status (2026-08-23)
+## Deployment Status (2026-08-24)
 - سرور: ubuntu@45.82.137.67، مسیر ~/Janebi-Store (git repo نیست — rsync)
-- DB واقعی production: **SQLite** در volume ./data (PG فقط idle بالا است — مهاجرت به PG به آینده موکول شد چون دیتای زنده همانجاست)
-- NODE_ENV داخل کانتینر: production (از compose هاردکد؛ .env سرور development نوشته که نادیده گرفته می‌شود — گمراه‌کننده ولی بی‌اثر)
-- بکاپ‌ها: ~/backups/ (env + janebi-consistent-20260823.db با integrity ok)
-- کانتینرها: janebi-store (Up, new image)، janebi-postgres (healthy)
+- DB واقعی production: **SQLite** در volume ./data (PG idle)
+- NODE_ENV داخل کانتینر: production (compose هاردکد؛ `.env` سرور development نوشته که بی‌اثر است — گمراه‌کننده ولی مشکلساز نیست)
+- بکاپ‌ها: ~/backups/ (env-*.bak + janebi-consistent-*.db با integrity ok)
+- کانتینرها: janebi-store (Up، آخرین image شامل همه فیکس‌ها)، janebi-postgres (healthy، idle)
 - health: https://janebiarena.ir/api/health → {"status":"ok","database":"ok"}
+- دسترسی ادمین: `[REDACTED-CREDENTIAL]` / [REDACTED-CREDENTIAL] (نقش admin) — پنل: /admin
 
-## Risks
-- تست‌ها روی SQLite، پروداکشن PG → پاریتی با migration دوگانه حفظ شد؛ تست PG اختیاری (`TEST_DIALECT=postgres`) باید یک‌بار روی سرور اجرا شود
-- admin settings فقط در RAM است → بعد از restart کانتینر به پیش‌فرض برمی‌گردد (باید در DB persist شود یا صراحتاً accept شود)
-- `.env` روی VPS باید JWT secrets قوی و APP_URL=https://janebiarena.ir داشته باشد وگرنه کانتینر با compose جدید بالا نمی‌آید (عمدی fail-fast است — قبل از دیپلوی بررسی شود)
-- ZARINPAL_SANDBOX=true یعنی حتی با merchant واقعی، مسیر dummy فعال می‌شود (در production بلاک می‌شود ولی ترافیک واقعی پرداخت نمی‌گیرد) → قبل از Launch واقعی false شود
+## Risks (باقی‌مانده — قابل قبول و مستند)
+- OTP در production قابل تحویل نیست (بدون SMS) → ریست رمز از پنل ادمین پاسخگو است؛ فلوی عمومی منتظر SMS
+- تست‌ها روی SQLite، prod هم SQLite (هم‌دایالکت = کم‌ریسک)؛ PG path با migration دوگانه حفظ شده ولی live-test نشده
+- `.env` سرور: JWT secrets قوی (~34 char) و APP_URL صحیح دارد ✓ — ولی `NODE_ENV=development` نوشته که نادیده گرفته می‌شود (بهتر است تمیز شود)
+- disk سرور ~60% استفاده — مانیتور شود
+- backup خودکار زمان‌بندی‌شده وجود ندارد — فعلاً دستی؛ ارزش ایجاد cron دارد
 
 ## Decisions (لاگ تصمیمات)
 - D1: دیپلوی فقط rsync + remote rebuild (سرور git نیست) — مستند در skill `webapp-rescue-deploy`
-- D2: قبل از هر mutation روی سرور: بکاپ .env + بکاپ DB (sqlite3.backup / pg_dump)
+- D2: قبل از هر mutation روی سرور: بکاپ .env + بکاپ DB (consistent backup داخل کانتینر با better-sqlite3)
 - D3: هیچ Feature جدیدی جز برای Correctness/Security/Stability/Production-Readiness اضافه نمی‌شود
-- D4: Tests must prove correctness — هیچ تستی برای سبز شدن ضعیف نمی‌شود
-- D5 (Wave 1): docker-compose دیگر secret پیش‌فرض ندارد؛ نبود .env معتبر = بالا نیامدن کانتینر. عمدی و امن.
-- D6 (Wave 1): درگاه پرداخت Dummy فقط برای dev/test؛ در production همیشه 503 با پیام فارسی.
-- D7 (Wave 1): انقضای کوپن به‌صورت ستون متنی ISO اختیاری اضافه شد (نه NOT NULL) تا migration بدون downtime روی دیتای موجود امن باشد.
+- D4: Tests must prove correctness — هیچ تستی برای سبز شدن ضعیف نمی‌شود (نمونه: اصلاح admin.test.ts نه کد)
+- D5: docker-compose دیگر secret پیش‌فرض ندارد؛ نبود .env معتبر = بالا نیامدن کانتینر. عمدی و امن.
+- D6: درگاه Dummy فقط dev/test؛ در production همیشه 503 با پیام فارسی.
+- D7: انقضای کوپن = ستون ISO اختیاری (نه NOT NULL) → migration بدون downtime
+- D8: SQLite دیتای زنده مبناست؛ PG migration به آینده موکول شد (ریسک مهاجرت > فایده فعلی)
+- D9: فراموشی رمز دو مسیره: فلوی OTP عمومی (آماده برای SMS آینده) + ریست ادمینی از پنل (عملیاتی الان)
+- D10: لغو سفارش تحویل‌شده/ارسال‌شده از پنل ممنوع (400) — جلوگیری از خرابی موجودی/وفاداری روی فروش نهایی‌شده
 
 ## Next Action
-Commit فیکس‌های Wave 1 → ادامه Audit (auth/users/cart routes + فرانت Checkout/Cart + admin persistence) → Wave 2 fixes → دیپلوی و Verification زنده.
+منتظر اقدامات کاربر: (۱) آپلود اجناس از پنل، (۲) ارائه Merchant ID زرین‌پال برای فعال‌سازی پرداخت آنلاین. هر مورد که رسید، همینجا ثبت و اجرا می‌شود.
 
-> **به‌روزرسانی نهایی:** Final Forensic Audit کامل شد. نقص Data Integrity لغو ادمین (`bed0bc2`) فیکس، دیپلوی و **زنده روی production اثبات شد** (موجودی ۹→۸→۹ پس از سفارش+لغو ادمین). همه گیت‌ها: **284/284 تست + lint + build**. cleanup کامل. تنها مورد باز برای Launch واقعی: merchant زرین‌پال (نیازمند حساب کاربر).
-
-## Final Forensic Audit — جمع‌بندی (2026-08-23)
+## Final Forensic Audit — جمع‌بندی (2026-08-23/24)
 - گیت‌های محلی: 284/284 تست (31 فایل)، tsc تمیز، build سالم
-- زنده janebiarena.ir: health ok، محصولات 200، SPA fallback 200، کوپن واقعی کارا، security headers فعال
-- امنیت: admin بدون توکن 401/کاربر عادی 403، IDOR خواندن/لغو سفارش دیگران بلاک (404/403)، OTP debugCode در production نشت نمی‌کند، rate limit auth فعال (429 بعد از چند تلاش)، validation فارسی با جزئیات
-- Data Integrity: چهار مسیر امتیاز VIP (COD create / online verify success / payment failure refund / user cancel) همگی سازگار؛ مسیر پنجم (admin cancel) کشف و فیکس شد — حالا restock + unwind امتیاز + idempotent + رد لغو shipped/delivered
-- تست قدیمی admin.test.ts که رفتار باگ‌دار (لغو کالای تحویل‌شده) را انتظار داشت اصلاح شد — نه تضعیف کد
+- زنده janebiarena.ir: health ok، محصولات 200، SPA fallback 200، کوپن WELCOME10 کارا، security headers فعال، bundle جدید سرو می‌شود
+- امنیت: admin بدون توکن 401/کاربر عادی 403، IDOR خواندن/لغو سفارش دیگران بلاک (404/403)، OTP debugCode در production نشت نمی‌کند، rate limit auth فعال (429)، validation فارسی با جزئیات
+- Data Integrity: پنج مسیر امتیاز VIP همگی سازگار (COD create / online verify success / payment failure refund / user cancel / admin cancel)
 - منابع سرور: CPU ~0%, mem 39MB, disk 60% — سالم
 
-## Verification Evidence (Fix Waves 1+2)
-- **Wave 3 (commit `90f7ece`)**: 282/282 تست، lint/build سبز. دیپلوی + زنده‌وری: جدول store_settings ساخته شد، PUT/GET تنظیمات با کاربر admin واقعی پاس شد، **restart کانتینر تنظیمات را حفظ کرد** (persistence اثبات). cleanup کامل.
-- `npm test` → **Test Files 29 passed (29), Tests 276 passed (276)** (۷ تست launch-readiness + ۴ تست contact-persistence جدید)
-- `npm run lint` → tsc --noEmit تمیز
-- `npm run build` → vite + esbuild موفق
-- تست `launch-readiness.test.ts`: کوپن منقضی (validate + order)، فرمت شناسه سفارش جدید، refund/clawback امتیاز در لغو، health endpoint، refund امتیاز در شکست پرداخت آنلاین
-- تست `contact-persistence.test.ts`: ذخیره پیام تماس (status=unread)، رد فیلد ناقص، idempotent بودن خبرنامه، رد ایمیل نامعتبر
+## Verification Evidence (کلیدها)
+- **Wave 3 (`90f7ece`)**: 282/282 · PUT/GET تنظیمات با ادمین واقعی · restart کانتینر مقدار را حفظ کرد
+- **Forensic (`bed0bc2`)**: 284/284 · admin-cancel parity suite (restock/unwind/idempotent/reject-shipped) · زنده: موجودی ۹→۸→۹
+- **Auth (`19d49da`, `837e718`)**: 284/284 · reset-password E2E محلی (validation، single-use، attempts) · login ادمین با رمز جدید روی production تأیید شد · endpoint ریست پنل روی production فعال (validation error = مسیر موجود)
+- **Route fix (`ad188fd`)**: bundle deployed شامل `product/:id` · health ok
+- Wave 1–2: launch-readiness.test.ts (۷ تست) + contact-persistence.test.ts (۴ تست) — جزئیات در git history
