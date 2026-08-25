@@ -3,7 +3,7 @@
 > **این فایل تنها Source of Truth وضعیت پروژه است.** ترتیب اعتبار اطلاعات:
 > ۱) کد فعلی و Runtime واقعی ← ۲) همین فایل ← ۳) تست‌ها/Evidence ← ۴) سایر مستندات.
 > هر تناقضی بین این فایل و کد → کد برنده است و این فایل باید اصلاح شود.
-> **Last Updated: 2026-08-24 (Session #4 — Launch-Ready؛ در انتظار اقدامات کاربر)**
+> **Last Updated: 2026-08-25 (Session #5 — Full Re-Audit، همه‌چیز سبز)**
 
 ---
 
@@ -91,6 +91,14 @@
 
 ## In Progress
 - (هیچ مورد فنی — انتظار اقدامات کاربر،见 Remaining Work)
+
+### Session #5 — Full Re-Audit (2026-08-25): همه‌چیز از نو اثبات شد
+گواهی سشن #۴ منقضی فرض شد و کل زنجیره دوباره اجرا شد — نتیجه: **بدون هیچ باگ بازي جدید**.
+- گیت‌ها (تازه): tsc تمیز · **284/284 تست (31 فایل)** · build سالم
+- کد: گارد dummy-payment در production سالم (`payment.ts:50` → 503 امن)؛ `verify` با Authority جعلی DUMMY رد می‌کند (زنده: redirect failed)؛ endpoint پرداخت authenticate دارد (401 بدون توکن)؛ admin router یک `router.use(authenticate, requireAdmin)` سراسری (401 زنده)؛ state ماژول‌سطح در روت‌ها = صفر (همه در store_settings)
+- زنده janebiarena.ir: health ok+db ok · products 200 · deep-link جمع/مفرد 200/200 · security headers کامل (HSTS/XFO/nosniff/referrer) · admin unauth 401
+- سرور: هر دو کانتینر Up؛ SmartImage روی remote sync است (کامیت f7e7bc9 دیپلوی شده)؛ DB integrity=ok و ۱۲ محصول؛ disk 61% / mem سالم
+- بکاپ خودکار cron (۲:۳۰ بامداد): امروز ۱۴:۰۴ نصب شده و هنوز به اولین window نرسیده — اسکریپت دستی OK (integrity=ok 124K). اولین تأیید خودکار: فردا صبح.
 
 ## Remaining Work (اقدامات متعلق به کاربر / آینده)
 - [ ] **آپلود اجناس واقعی** توسط کاربر از پنل (فعلاً ۱۲ محصول نمونه) — پیشنهاد داده شد: اگر تعداد زیاد است، ابزار import CSV/Excel ساخته شود
