@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Tag, Sparkles, ArrowLeft, ShieldCheck } from 'lucide-react';
 import { formatPrice } from '../../lib/utils';
+import { SHIPPING_FEES } from '../../lib/constants';
 
 interface CartSummaryCardProps {
   cartTotal: number;
@@ -88,7 +89,7 @@ export default function CartSummaryCard({
             <span className="font-bold text-emerald-600 dark:text-emerald-400">رایگان</span>
           ) : (
             <span className="font-bold text-gray-900 dark:text-gray-100">
-              {formatPrice(49000)}
+              {formatPrice(SHIPPING_FEES.standard)}
             </span>
           )}
         </div>
@@ -97,7 +98,7 @@ export default function CartSummaryCard({
           <span className="font-extrabold text-gray-900 dark:text-gray-100">مبلغ قابل پرداخت</span>
           <div className="text-right">
             <div className="font-black text-xl text-orange-600 dark:text-orange-400">
-              {formatPrice(finalTotal + (isFreeShipping ? 0 : 49000))}
+              {formatPrice(finalTotal + (isFreeShipping ? 0 : SHIPPING_FEES.standard))}
             </div>
           </div>
         </div>

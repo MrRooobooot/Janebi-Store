@@ -100,7 +100,11 @@ export default function ProductDetail() {
     }
   };
 
-  const galleryImages = [product.image, product.image, product.image];
+  // Real gallery: show the actual product image once (fake duplicate
+  // thumbnails of the same image looked broken and misled users).
+  const galleryImages = product.image ? [product.image] : [];
+  const hasRating = !!product.rating && product.rating > 0;
+  const outOfStock = typeof product.stockQuantity === 'number' && product.stockQuantity <= 0;
 
   return (
     <>
@@ -164,19 +168,21 @@ export default function ProductDetail() {
             </h1>
 
             <div className="flex items-center gap-6 mb-6 pb-6 border-b border-gray-100 dark:border-gray-800 text-xs sm:text-sm">
-              <div className="flex items-center gap-1 text-yellow-500">
+              <div className={`flex items-center gap-1 ${hasRating ? 'text-yellow-500' : 'text-gray-400 dark:text-gray-500'}`}>
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
                     className={`h-4 w-4 ${
-                      i < Math.floor(product.rating || 5)
+                      hasRating && i < Math.floor(product.rating ?? 0)
                         ? 'fill-current'
                         : 'text-gray-300 dark:text-gray-600'
                     }`}
                   />
                 ))}
                 <span className="text-gray-600 dark:text-gray-300 mr-2 text-xs font-bold">
-                  ({toPersianDigits(product.reviewsCount || 0)} نظر ثبت شده)
+                  {hasRating
+                    ? `(${toPersianDigits(product.rating ?? 0)} از ۵ — ${toPersianDigits(product.reviewsCount || 0)} نظر)`
+                    : '(هنوز نظری ثبت نشده — اولین نفر باشید)'}
                 </span>
               </div>
               {product.sku && (
@@ -243,13 +249,18 @@ export default function ProductDetail() {
             <div ref={actionsRef} className="mt-auto flex gap-4">
               <button
                 onClick={handleAddToCart}
+                disabled={outOfStock}
                 className={`flex-1 font-extrabold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg active:scale-98 text-sm ${
-                  addedToCart
+                  outOfStock
+                    ? 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed shadow-none'
+                    : addedToCart
                     ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/20'
                     : 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 shadow-orange-500/25'
                 } text-white`}
               >
-                {addedToCart ? (
+                {outOfStock ? (
+                  'ناموجود'
+                ) : addedToCart ? (
                   <>
                     <CheckCircle2 className="h-5 w-5" />
                     اضافه شد!
@@ -320,13 +331,19 @@ export default function ProductDetail() {
                   : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-800 dark:hover:text-gray-100'
               }`}
             >
-              نظرات کاربران ({toPersianDigits(product.reviewsCount || 10)})
+              نظرات کاربران ({toPersianDigits(product.reviewsCount || 0)})
             </button>
           </div>
 
           {activeTab === 'description' && (
             <div className="max-w-none text-gray-700 dark:text-gray-200 leading-loose text-sm font-medium">
-              <p>{product.description}</p>
+              {product.description ? (
+                <p>{product.description}</p>
+              ) : (
+                <p className="text-gray-500 dark:text-gray-400 italic">
+                  توضیحاتی برای این محصول ثبت نشده است. برای اطلاعات بیشتر با پشتیبانی تماس بگیرید.
+                </p>
+              )}
             </div>
           )}
 
@@ -365,8 +382,8 @@ export default function ProductDetail() {
           {activeTab === 'reviews' && (
             <ProductReviews
               productId={product.id}
-              initialRating={product.rating || 4.7}
-              initialReviewsCount={product.reviewsCount || 10}
+              initialRating={product.rating || 0}
+              initialReviewsCount={product.reviewsCount || 0}
             />
           )}
         </div>

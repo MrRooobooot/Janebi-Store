@@ -2,6 +2,7 @@ import { Router } from "express";
 import { validate } from "../middleware/validate.js";
 import { orderSubmitSchema } from "../validators/index.js";
 import { db } from "../db/index.js";
+import { FREE_SHIPPING_THRESHOLD, SHIPPING_FEES } from "../../src/lib/constants.js";
 import { orders, orderItems, products, cartItems, coupons, users } from "../db/schema.js";
 import { desc, eq, and, inArray, sql } from "drizzle-orm";
 import { appCache } from "../utils/cache.js";
@@ -165,7 +166,16 @@ router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
       }
 
       const totalDiscount = couponDiscount + vipDiscount;
-      const realShippingFee = shippingMethod === "express" ? 50000 : 35000;
+      // Shipping fee: single source of truth shared with the client (src/lib/constants.ts).
+      // Free shipping applies at/above FREE_SHIPPING_THRESHOLD of subtotal —
+      // previously this was promised everywhere in the UI but never enforced here,
+      // so customers were charged MORE than the displayed total.
+      const realShippingFee =
+        realSubtotal >= FREE_SHIPPING_THRESHOLD
+          ? 0
+          : shippingMethod === "express"
+            ? SHIPPING_FEES.express
+            : SHIPPING_FEES.standard;
       const realTotal = Math.max(0, realSubtotal + realShippingFee - totalDiscount);
 
       // Earn 1 VIP Point for every 100,000 Tomans paid

@@ -105,6 +105,35 @@ describe('Orders API', () => {
     expect(p?.stockQuantity).toBe(3); // 5 - 2
   });
 
+  it('should waive shipping fee at/above the free-shipping threshold', async () => {
+    // Raise stock so a threshold-crossing order is possible, then order
+    // 25 × 100,000 = 2,500,000 (>= 2M threshold) → shipping must be free.
+    await db.update(products).set({ stockQuantity: 50 }).where(eq(products.id, productId));
+    const payload = {
+      items: [{ id: productId, quantity: 25 }],
+      recipient: {
+        name: 'Free Ship',
+        phone: '09123456789',
+        address: 'Test Addr'
+      },
+      paymentMethod: 'cod',
+      shippingMethod: 'express'
+    };
+
+    const res = await request(app)
+      .post('/api/orders')
+      .set('Authorization', `Bearer ${testToken}`)
+      .send(payload);
+    if (res.status !== 201) console.log(res.body);
+    expect(res.status).toBe(201);
+    expect(res.body.order.subtotal).toBe(2500000);
+    expect(res.body.order.shippingFee).toBe(0); // FREE — was charged before the fix
+    expect(res.body.order.total).toBe(2500000);
+
+    // Restore the stock level later tests depend on (5 - 2 = 3).
+    await db.update(products).set({ stockQuantity: 3 }).where(eq(products.id, productId));
+  });
+
   it('should fail if stock is insufficient', async () => {
     const payload = {
       items: [{ id: productId, quantity: 10 }], // only 3 left

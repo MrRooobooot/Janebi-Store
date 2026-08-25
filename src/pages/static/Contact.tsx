@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { MapPin, Phone, Mail, Clock, Send, MessageSquare, Sparkles } from 'lucide-react';
 import { useToast } from '../../contexts/ToastContext';
+import { useStoreSettings } from '../../hooks/useStoreSettings';
 import { motion } from 'motion/react';
 
 export default function Contact() {
   const { addToast } = useToast();
+  const settings = useStoreSettings();
   const [formData, setFormData] = useState({ name: '', contactInfo: '', subject: '', message: '' });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -75,7 +77,7 @@ export default function Contact() {
             <div>
               <h4 className="font-bold text-gray-900 dark:text-gray-100 text-sm mb-1">آدرس فروشگاه</h4>
               <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
-                تهران، خیابان جمهوری، مجتمع تجاری علاءالدین، طبقه دوم، پلاک ۲۰۰
+                {settings.address}
               </p>
             </div>
           </div>
@@ -87,7 +89,7 @@ export default function Contact() {
             <div>
               <h4 className="font-bold text-gray-900 dark:text-gray-100 text-sm mb-1">تلفن پشتیبانی</h4>
               <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed dir-ltr text-right">
-                ۰۲۱ - ۱۲۳۴ ۵۶۷۸
+                {settings.phone}
               </p>
               <p className="text-[11px] text-gray-500 mt-1">خط ویژه سفارشات تلفنی</p>
             </div>
@@ -100,7 +102,7 @@ export default function Contact() {
             <div>
               <h4 className="font-bold text-gray-900 dark:text-gray-100 text-sm mb-1">پست الکترونیک</h4>
               <p className="text-xs text-gray-600 dark:text-gray-400 dir-ltr text-right">
-                info@janebiarena.com
+                {settings.email}
               </p>
             </div>
           </div>
@@ -112,8 +114,7 @@ export default function Contact() {
             <div>
               <h4 className="font-bold text-gray-900 dark:text-gray-100 text-sm mb-1">ساعات کاری</h4>
               <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
-                شنبه تا پنجشنبه: ۹:۰۰ الی ۲۱:۰۰<br />
-                جمعه‌ها و ایام تعطیل: ۱۰:۰۰ الی ۱۵:۰۰
+                {settings.supportHours}
               </p>
             </div>
           </div>

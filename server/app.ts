@@ -19,6 +19,8 @@ import cartRoutes from "./routes/cart.js";
 import wishlistRoutes from "./routes/wishlist.js";
 import contactRoutes from "./routes/contact.js";
 import paymentRoutes from "./routes/payment.js";
+import settingsRoutes from "./routes/settings.js";
+import reviewsRoutes from "./routes/reviews.js";
 import adminRoutes from "./routes/admin.js";
 import { isPostgres, pool, sqlite } from "./db/index.js";
 
@@ -135,6 +137,8 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/payment", paymentRoutes);
+app.use("/api/settings", settingsRoutes);
+app.use("/api/reviews", reviewsRoutes);
 app.use("/api/admin", adminRoutes);
 
 // Health / readiness probe — verifies the process is up AND the database

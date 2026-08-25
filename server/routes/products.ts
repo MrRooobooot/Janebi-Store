@@ -76,6 +76,15 @@ router.get("/", validate(productQuerySchema), async (req, res) => {
       case "popular":
         orderBy = desc(products.rating);
         break;
+      case "rating-desc":
+        orderBy = desc(products.rating);
+        break;
+      case "reviews-desc":
+        orderBy = desc(products.reviewsCount);
+        break;
+      case "discount-desc":
+        orderBy = desc(products.discount);
+        break;
       case "newest":
       default:
         orderBy = desc(products.id);

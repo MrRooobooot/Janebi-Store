@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MessageCircle, X, Send, Bot, Sparkles, User, RefreshCw, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { FREE_SHIPPING_THRESHOLD, SHIPPING_FEES } from '../lib/constants';
+import { useStoreSettings } from '../hooks/useStoreSettings';
 
 interface Message {
   id: string;
@@ -20,6 +22,7 @@ const QUICK_QUESTIONS = [
 
 export default function ChatWidget() {
   const location = useLocation();
+  const settings = useStoreSettings();
   const isProductDetail = location.pathname.startsWith('/product/');
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -51,7 +54,7 @@ export default function ChatWidget() {
       return 'برای پیگیری سفارش می‌توانید به صفحه «سفارش‌های من» در پروفایل خود مراجعه کنید یا کد پیگیری سفارش (مثلاً ORD-123456) را برای من بفرستید.';
     }
     if (text.includes('ارسال') || text.includes('پست') || text.includes('رایگان')) {
-      return 'سفارش‌های بالای ۲,۰۰۰,۰۰۰ تومان کاملاً رایگان ارسال می‌شوند! برای سفارش‌های کمتر، هزینه ارسال پیشتاز ۶۹,۰۰۰ تومان است.';
+      return `سفارش‌های بالای ${FREE_SHIPPING_THRESHOLD.toLocaleString('fa-IR')} تومان کاملاً رایگان ارسال می‌شوند! برای سفارش‌های کمتر، هزینه پست پیشتاز ${SHIPPING_FEES.express.toLocaleString('fa-IR')} و پست سفارشی ${SHIPPING_FEES.standard.toLocaleString('fa-IR')} تومان است.`;
     }
     if (text.includes('تخفیف') || text.includes('کوپن') || text.includes('کد')) {
       return 'کد تخفیف WELCOME10 برای ۱۰٪ تخفیف خرید اول و کد OFF20 برای تخفیف‌های ویژه هم‌اکنون فعال هستند!';
@@ -60,7 +63,7 @@ export default function ChatWidget() {
       return 'تمامی محصولات جانبی آرنا دارای ۷ روز مهلت تست و ضمانت اصالت کالا هستند. در صورت وجود هرگونه مشکل فنی می‌توانید کالا را مرجوع کنید.';
     }
     if (text.includes('ساعت') || text.includes('تماس') || text.includes('پشتیبانی')) {
-      return 'پشتیبانی تلفنی ما همه‌روزه از ساعت ۹ صبح الی ۲۱ شب پاسخگوی شماست (تلفن: ۰۲۱-۸۸۸۸۹۹۹۹).';
+      return `پشتیبانی ما ${settings.supportHours} پاسخگوی شماست (تلفن: ${settings.phone}).`;
     }
     
     return 'پیام شما دریافت شد. کارشناسان پشتیبانی ما هم‌اکنون پیام شما را بررسی می‌کنند. آیا سوال دیگری درباره مشخصات محصولات یا ثبت سفارش دارید؟';

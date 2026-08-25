@@ -85,7 +85,9 @@ export default function Home() {
     },
   ];
 
-  const categoryTabs = ['همه', 'قاب و کاور', 'شارژر', 'کابل', 'هندزفری', 'پاوربانک'];
+  // Dynamic tabs from real categories (deduped) — hardcoded lists went stale
+  // the moment the operator added a category like "audio".
+  const categoryTabs = ['همه', ...Array.from(new Set(categories.map((c: any) => c.title)))];
 
   const filteredProducts = activeCategoryTab === 'همه'
     ? products.slice(0, 8)
@@ -108,7 +110,7 @@ export default function Home() {
 
         <div className="z-10 md:w-1/2 text-right">
            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-100 dark:bg-orange-950/70 text-orange-700 dark:text-orange-300 text-xs font-extrabold mb-5 border border-orange-200/60 dark:border-orange-800/60 shadow-xs">
-             <Sparkles className="h-4 w-4 text-orange-600 dark:text-orange-400 animate-spin" style={{ animationDuration: '6s' }} /> מרجع تخصصی لوازم جانبی اورجینال
+             <Sparkles className="h-4 w-4 text-orange-600 dark:text-orange-400 animate-spin" style={{ animationDuration: '6s' }} /> مرجع تخصصی لوازم جانبی اورجینال
            </div>
            
            <motion.h1 

@@ -20,6 +20,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
   const inCompare = isInCompare(product.id);
   const navigate = useNavigate();
   const [added, setAdded] = useState(false);
+  const outOfStock = typeof product.stockQuantity === 'number' && product.stockQuantity <= 0;
 
   const handleAddToCart = () => {
     addToCart(product);
@@ -54,9 +55,14 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
       </div>
 
       {/* Discount badge */}
-      {product.discount && (
+      {product.discount && !outOfStock && (
         <div className="absolute top-3 right-3 bg-gradient-to-r from-orange-600 to-amber-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-10 shadow-xs">
           {product.discount}٪ تخفیف
+        </div>
+      )}
+      {outOfStock && (
+        <div className="absolute top-3 right-3 bg-gray-700/90 text-white text-[10px] font-bold px-2.5 py-1 rounded-full z-10">
+          ناموجود
         </div>
       )}
 
@@ -104,13 +110,18 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
       {/* Add to Cart Button */}
       <button
         onClick={handleAddToCart}
+        disabled={outOfStock}
         className={`w-full mt-4 flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all duration-300 font-medium text-[13px] group/btn border active:scale-[0.98] ${
-          added
+          outOfStock
+            ? 'bg-gray-100 dark:bg-gray-800/60 text-gray-400 dark:text-gray-500 border-gray-200/50 dark:border-gray-700/50 cursor-not-allowed'
+            : added
             ? 'bg-emerald-500 dark:bg-emerald-600 text-white border-transparent'
             : 'bg-gray-100/80 dark:bg-gray-800 hover:bg-orange-600 dark:hover:bg-orange-600 text-gray-800 dark:text-gray-200 hover:text-white dark:hover:text-white border-gray-200/50 dark:border-gray-700/50 hover:border-transparent'
         }`}
       >
-        {added ? (
+        {outOfStock ? (
+          'ناموجود'
+        ) : added ? (
           <>
             <CheckCircle2 className="h-4 w-4" />
             اضافه شد!

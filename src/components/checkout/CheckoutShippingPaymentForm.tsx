@@ -2,6 +2,7 @@ import React from 'react';
 import { Truck, CreditCard, Wallet } from 'lucide-react';
 import { CheckoutFormData } from '../../hooks/useCheckoutForm';
 import { formatPrice } from '../../lib/utils';
+import { SHIPPING_FEES } from '../../lib/constants';
 
 interface CheckoutShippingPaymentFormProps {
   formData: CheckoutFormData;
@@ -41,7 +42,7 @@ export default function CheckoutShippingPaymentForm({
                 تحویل ۲۴ تا ۴۸ ساعت کاری
               </div>
               <div className="font-extrabold text-xs text-orange-600 dark:text-orange-400 mt-1">
-                {isFreeShipping ? 'رایگان' : formatPrice(69000)}
+                {isFreeShipping ? 'رایگان' : formatPrice(SHIPPING_FEES.express)}
               </div>
             </div>
           </label>
@@ -63,7 +64,7 @@ export default function CheckoutShippingPaymentForm({
                 تحویل ۳ تا ۵ روز کاری
               </div>
               <div className="font-extrabold text-xs text-orange-600 dark:text-orange-400 mt-1">
-                {isFreeShipping ? 'رایگان' : formatPrice(39000)}
+                {isFreeShipping ? 'رایگان' : formatPrice(SHIPPING_FEES.standard)}
               </div>
             </div>
           </label>

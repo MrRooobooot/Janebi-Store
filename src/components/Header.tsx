@@ -8,7 +8,7 @@ import { useCart } from '../contexts/CartContext';
 import { useCompare } from '../contexts/CompareContext';
 import { AnimatePresence, motion } from 'motion/react';
 import HeaderSearch from './HeaderSearch';
-import { FREE_SHIPPING_THRESHOLD } from '../lib/constants';
+import { useStoreSettings } from '../hooks/useStoreSettings';
 
 import AuthModal from './auth/AuthModal';
 
@@ -21,6 +21,7 @@ export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const settings = useStoreSettings();
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
 
@@ -30,9 +31,7 @@ export default function Header() {
       {/* Top Banner */}
       <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 dark:from-black dark:via-gray-900 dark:to-black text-white text-xs text-center py-2 px-4 flex items-center justify-center gap-2 border-b border-gray-800">
         <Sparkles className="h-3.5 w-3.5 text-amber-400 animate-pulse shrink-0" />
-        <span className="font-medium">ارسال رایگان برای تمامی سفارش‌های بالای {FREE_SHIPPING_THRESHOLD.toLocaleString('fa-IR')} تومان</span>
-        <span className="hidden sm:inline text-gray-400">|</span>
-        <span className="hidden sm:inline text-amber-300 font-bold">کد تخفیف: WELCOME10</span>
+        <span className="font-medium">{settings.announcement}</span>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

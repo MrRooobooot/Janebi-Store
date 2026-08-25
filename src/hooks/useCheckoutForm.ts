@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useToast } from '../contexts/ToastContext';
 import { isValidIranianMobile, normalizeIranianMobile, toEnglishDigits } from '../lib/utils';
-import { FREE_SHIPPING_THRESHOLD } from '../lib/constants';
+import { FREE_SHIPPING_THRESHOLD, SHIPPING_FEES } from '../lib/constants';
 
 export interface CheckoutFormData {
   name: string;
@@ -37,11 +37,12 @@ export function useCheckoutForm() {
   const [submitting, setSubmitting] = useState(false);
 
   const isFreeShipping = cartTotal >= FREE_SHIPPING_THRESHOLD;
+  // Mirror the server exactly (server/routes/orders.ts) — never invent different numbers here.
   const shippingFee = isFreeShipping
     ? 0
     : formData.shippingMethod === 'express'
-    ? 69000
-    : 39000;
+    ? SHIPPING_FEES.express
+    : SHIPPING_FEES.standard;
   const finalPayable = cartTotal + shippingFee;
 
   const updateField = (field: keyof CheckoutFormData, value: string) => {
@@ -62,6 +63,13 @@ export function useCheckoutForm() {
       return;
     }
 
+    // Optional field, but if filled it must be a valid 10-digit Iranian postal code.
+    const postal = toEnglishDigits(formData.postalCode.trim());
+    if (postal && !/^\d{10}$/.test(postal)) {
+      addToast('کد پستی باید ۱۰ رقم باشد (یا خالی بگذارید)', 'error');
+      return;
+    }
+
     setSubmitting(true);
 
     const orderPayload = {
@@ -74,7 +82,7 @@ export function useCheckoutForm() {
         name: formData.name.trim(),
         phone: normalizedPhone,
         address: `${formData.province}، ${formData.city}، ${formData.address.trim()}`,
-        postalCode: toEnglishDigits(formData.postalCode.trim()),
+        postalCode: postal,
         notes: formData.notes,
       },
       items: cart.map((item) => ({

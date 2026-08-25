@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { FREE_SHIPPING_THRESHOLD, SHIPPING_FEES } from '../lib/constants';
 
 const faqs = [
   {
@@ -16,7 +17,7 @@ const faqs = [
   },
   {
     question: 'هزینه ارسال چقدر است؟',
-    answer: 'ارسال برای خریدهای بالای ۷۵۰ هزار تومان رایگان است. برای سفارش‌های کمتر از این مبلغ، هزینه پست پیشتاز ۶۹ هزار تومان محاسبه می‌شود.',
+    answer: `ارسال برای خریدهای بالای ${FREE_SHIPPING_THRESHOLD.toLocaleString('fa-IR')} تومان رایگان است. برای سفارش‌های کمتر از این مبلغ، هزینه پست پیشتاز ${SHIPPING_FEES.express.toLocaleString('fa-IR')} و پست سفارشی ${SHIPPING_FEES.standard.toLocaleString('fa-IR')} تومان محاسبه می‌شود.`,
   },
 ];
 
