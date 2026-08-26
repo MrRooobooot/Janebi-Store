@@ -20,6 +20,7 @@ export function useProductFilters() {
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryParam = searchParams.get('category');
   const searchParam = searchParams.get('search');
+  const brandParam = searchParams.get('brand'); // from /products?brand=X links
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -56,6 +57,15 @@ export function useProductFilters() {
       setInPageQuery(searchParam);
     }
   }, [searchParam]);
+
+  // Sync brand param from URL (BrandShowcase/Brands page links)
+  useEffect(() => {
+    if (brandParam) {
+      setSelectedBrands(brandParam.split(',').filter(Boolean));
+    } else {
+      setSelectedBrands([]);
+    }
+  }, [brandParam]);
 
   // Fetch Categories and Brands for sidebar
   useEffect(() => {
