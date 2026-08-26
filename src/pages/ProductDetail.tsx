@@ -7,6 +7,7 @@ import { useToast } from '../contexts/ToastContext';
 import { useCart } from '../contexts/CartContext';
 import { ProductDetailSkeleton } from '../components/Skeletons';
 import SmartImage from '../components/SmartImage';
+import BrandLogo from '../components/BrandLogo';
 import ProductReviews from '../components/ProductReviews';
 import RecentlyViewed from '../components/RecentlyViewed';
 import { addRecentlyViewed } from '../lib/recentlyViewed';
@@ -355,7 +356,7 @@ export default function ProductDetail() {
               <ul className="space-y-3 text-xs sm:text-sm">
                 <li className="flex border-b border-gray-200 dark:border-gray-700/60 pb-2.5">
                   <span className="w-1/3 text-gray-500 dark:text-gray-400 font-bold">برند سازنده</span>
-                  <span className="font-bold text-gray-900 dark:text-gray-100">{product.brand}</span>
+                  <BrandLogo name={product.brand} size="sm" className="justify-start" />
                 </li>
                 <li className="flex border-b border-gray-200 dark:border-gray-700/60 pb-2.5">
                   <span className="w-1/3 text-gray-500 dark:text-gray-400 font-bold">دسته‌بندی</span>

@@ -8,6 +8,7 @@ import { useCart } from '../contexts/CartContext';
 import { motion } from 'motion/react';
 import { Product } from '../types';
 import SmartImage from './SmartImage';
+import BrandLogo from './BrandLogo';
 import { useState, memo } from 'react';
 
 // ⚡ Bolt: Wrapped in React.memo to prevent unnecessary re-renders when parent grids/lists re-render
@@ -85,6 +86,13 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
         >
           {product.title}
         </Link>
+
+        {/* Brand logo — real brand mark, falls back to text */}
+        {product.brand && (
+          <div className="mb-2">
+            <BrandLogo name={product.brand} size="sm" className="justify-start opacity-80" />
+          </div>
+        )}
 
         {/* Warranty */}
         {product.warranty && (
