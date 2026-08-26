@@ -42,6 +42,7 @@ export default function AdminSettings() {
       }
     } catch (err) {
       console.error('Failed to fetch settings', err);
+      addToast('خطا در دریافت تنظیمات فروشگاه', 'error');
     } finally {
       setLoading(false);
     }

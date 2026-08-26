@@ -7,6 +7,7 @@ import { motion } from 'motion/react';
 export default function Offers() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   // Real weekly-deal countdown: ticks down to the end of the current week
   // (Saturday 23:59:59, Persian retail week) instead of a frozen fake string.
   const [remaining, setRemaining] = useState('');
@@ -33,13 +34,16 @@ export default function Offers() {
   }, []);
 
   useEffect(() => {
-    fetch('/api/products')
-      .then(res => res.json())
-      .then(data => {
-        const discounted = data.filter((p: any) => p.discount && p.discount > 0);
-        setProducts(discounted);
-        setLoading(false);
-      });
+    let cancelled = false;
+    fetch('/api/products?hasDiscount=true&sort=discount-desc')
+      .then(async (res) => {
+        if (!res.ok) throw new Error('fetch failed');
+        return res.json();
+      })
+      .then((data) => { if (!cancelled) setProducts(Array.isArray(data) ? data : []); })
+      .catch(() => { if (!cancelled) setError('خطا در دریافت پیشنهادهای ویژه. لطفاً صفحه را دوباره بارگذاری کنید.'); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, []);
 
   return (
@@ -81,6 +85,17 @@ export default function Offers() {
             Array.from({ length: 4 }).map((_, idx) => (
               <ProductCardSkeleton key={idx} />
             ))
+          ) : error ? (
+            <div className="col-span-full bg-white dark:bg-gray-900 border border-red-100 dark:border-red-900/40 rounded-2xl p-8 text-center">
+              <p className="text-sm text-red-600 dark:text-red-400 font-bold">{error}</p>
+              <button onClick={() => window.location.reload()} className="mt-4 px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold transition-colors">
+                تلاش مجدد
+              </button>
+            </div>
+          ) : products.length === 0 ? (
+            <div className="col-span-full bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-8 text-center">
+              <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">در حال حاضر محصول تخفیف‌داری موجود نیست — به‌زودی جشنواره بعدی شروع می‌شود!</p>
+            </div>
           ) : (
             products.map((product) => (
               <ProductCard key={product.id} product={product} />

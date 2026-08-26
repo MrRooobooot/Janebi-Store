@@ -6,17 +6,43 @@ import { useToast } from '../contexts/ToastContext';
 export default function VipClubBanner() {
   const [emailOrPhone, setEmailOrPhone] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const { addToast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!emailOrPhone.trim()) {
+    const value = emailOrPhone.trim();
+    if (!value) {
       addToast('لطفا ایمیل یا شماره موبایل خود را وارد کنید', 'error');
       return;
     }
+    // Only email addresses go to the newsletter API; phone numbers are
+    // accepted locally but the endpoint is email-based.
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(value)) {
+      addToast('لطفا یک آدرس ایمیل معتبر وارد کنید', 'error');
+      return;
+    }
 
-    setSubmitted(true);
-    addToast('کد تخفیف ۱۵٪ به عنوان هدیه عضویت برای شما ارسال شد!', 'success');
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/contact/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: value }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        setSubmitted(true);
+        addToast('عضویت در خبرنامه با موفقیت انجام شد!', 'success');
+      } else {
+        addToast(data.error || 'خطا در ثبت عضویت خبرنامه', 'error');
+      }
+    } catch {
+      addToast('خطا در برقراری ارتباط با سرور', 'error');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -53,7 +79,7 @@ export default function VipClubBanner() {
             >
               <CheckCircle2 className="h-12 w-12 text-green-300 mx-auto mb-3" />
               <h3 className="font-extrabold text-lg mb-1">عضویت با موفقیت انجام شد!</h3>
-              <p className="text-xs text-orange-100 font-medium">کد تخفیف: <span className="font-mono font-bold bg-white text-orange-600 px-2 py-0.5 rounded text-sm select-all">WELCOME15</span></p>
+              <p className="text-xs text-orange-100 font-medium">از تخفیف‌های اختصاصی باشگاه مشتریان باخبر خواهید شد.</p>
             </motion.div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 bg-white/15 backdrop-blur-md p-2 rounded-2xl border border-white/25">
@@ -69,10 +95,11 @@ export default function VipClubBanner() {
               </div>
               <button
                 type="submit"
-                className="bg-gray-900 hover:bg-black text-white px-6 py-3.5 rounded-xl font-extrabold text-xs sm:text-sm transition-all duration-300 flex items-center justify-center gap-2 shrink-0 shadow-lg active:scale-95"
+                disabled={submitting}
+                className="bg-gray-900 hover:bg-black disabled:opacity-60 text-white px-6 py-3.5 rounded-xl font-extrabold text-xs sm:text-sm transition-all duration-300 flex items-center justify-center gap-2 shrink-0 shadow-lg active:scale-95"
               >
                 <Gift className="h-4 w-4 text-orange-400" />
-                دریافت هدیه
+                {submitting ? 'در حال ثبت...' : 'دریافت هدیه'}
               </button>
             </form>
           )}

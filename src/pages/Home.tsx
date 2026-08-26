@@ -23,6 +23,8 @@ export default function Home() {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategoryTab, setActiveCategoryTab] = useState<string>('همه');
+  // Real total product count from the X-Total-Count header (hero stats badge).
+  const [productCount, setProductCount] = useState(0);
 
   const categoryIconMap: Record<string, any> = {
     'قاب و کاور': Smartphone,
@@ -36,7 +38,11 @@ export default function Home() {
   useEffect(() => {
     setLoading(true);
     Promise.all([
-      fetch('/api/products?limit=12').then((res) => res.json()),
+      fetch('/api/products?limit=1').then((res) => {
+        const total = parseInt(res.headers.get('X-Total-Count') || '0', 10);
+        if (!Number.isNaN(total)) setProductCount(total);
+        return res.json();
+      }),
       fetch('/api/categories').then((res) => res.json()),
     ])
       .then(([productsData, categoriesData]) => {
@@ -148,11 +154,11 @@ export default function Home() {
              </Link>
            </motion.div>
 
-           {/* Stats badge counter */}
+           {/* Stats badge — real counts from the API, not invented numbers */}
            <div className="mt-10 pt-6 border-t border-gray-200/60 dark:border-gray-800 flex items-center gap-6 text-xs text-gray-500 dark:text-gray-400 font-semibold">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                <span>بیش از <strong>۵,۰۰۰</strong> مشتری راضی</span>
+                <span><strong>{toPersianDigits(productCount.toLocaleString('fa-IR'))}</strong> کالای اورجینال موجود</span>
               </div>
               <div>•</div>
               <div>ارسال <strong>۱۰۰٪</strong> سریع</div>
@@ -184,7 +190,7 @@ export default function Home() {
                 <p className="text-[11px] text-gray-200 mt-0.5">ضمانت اصالت فیزیکی و تعویض ۷ روزه</p>
               </div>
               <div className="w-10 h-10 rounded-xl bg-orange-500 text-white flex items-center justify-center font-black text-sm shrink-0 shadow-md">
-                ★ 4.9
+                {productCount > 0 ? toPersianDigits(productCount.toLocaleString('fa-IR')) : '★'}
               </div>
             </div>
           </div>

@@ -33,6 +33,7 @@ export default function AdminMessages() {
       }
     } catch (err) {
       console.error('Failed to fetch messages', err);
+      addToast('خطا در دریافت پیام‌ها', 'error');
     } finally {
       setLoading(false);
     }

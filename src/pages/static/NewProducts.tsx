@@ -7,14 +7,19 @@ import { motion } from 'motion/react';
 export default function NewProducts() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    fetch('/api/products')
-      .then(res => res.json())
-      .then(data => {
-        setProducts(data);
-        setLoading(false);
-      });
+    let cancelled = false;
+    fetch('/api/products?sort=newest')
+      .then(async (res) => {
+        if (!res.ok) throw new Error('fetch failed');
+        return res.json();
+      })
+      .then((data) => { if (!cancelled) setProducts(Array.isArray(data) ? data : []); })
+      .catch(() => { if (!cancelled) setError('خطا در دریافت محصولات. لطفاً صفحه را دوباره بارگذاری کنید.'); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, []);
 
   return (
@@ -49,6 +54,17 @@ export default function NewProducts() {
             Array.from({ length: 4 }).map((_, idx) => (
               <ProductCardSkeleton key={idx} />
             ))
+          ) : error ? (
+            <div className="col-span-full bg-white dark:bg-gray-900 border border-red-100 dark:border-red-900/40 rounded-2xl p-8 text-center">
+              <p className="text-sm text-red-600 dark:text-red-400 font-bold">{error}</p>
+              <button onClick={() => window.location.reload()} className="mt-4 px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold transition-colors">
+                تلاش مجدد
+              </button>
+            </div>
+          ) : products.length === 0 ? (
+            <div className="col-span-full bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-8 text-center">
+              <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">در حال حاضر محصولی برای نمایش وجود ندارد.</p>
+            </div>
           ) : (
             products.map((product) => (
               <ProductCard key={product.id} product={product} />

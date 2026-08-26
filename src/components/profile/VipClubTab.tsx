@@ -1,26 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Gift, Award, Sparkles, Copy, Check } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
 import { toPersianDigits } from '../../lib/utils';
-import { useState } from 'react';
 
-// Only codes that actually exist in the database (seed-data VALID_COUPONS).
-// Showing fake codes here sent users to checkout with invalid coupons.
-const COUPONS = [
-  { code: 'WELCOME10', discount: '۱۰٪ تخفیف خوش‌آمدگویی برای خرید بالای ۳۰۰ هزار تومان', expires: 'بدون محدودیت' },
-  { code: 'OFF20', discount: '۲۰٪ تخفیف ویژه خرید بالای ۱ میلیون تومان', expires: 'بدون محدودیت' },
-  { code: 'SUMMER30', discount: '۳۰٪ تخفیف جشنواره تابستانه برای خرید بالای ۲ میلیون تومان', expires: 'بدون محدودیت' },
-  { code: 'JANEBI100', discount: '۱۰۰,۰۰۰ تومان تخفیف خرید بالای ۵۰۰ هزار تومان', expires: 'بدون محدودیت' },
-];
+// Live active coupons from GET /api/coupons-active (DB-driven). The previous
+// hardcoded list drifted from the admin coupon table.
+interface ActiveCoupon {
+  code: string;
+  label: string;
+  minTotal: number;
+  expiresAt: string | null;
+}
 
 export default function VipClubTab() {
   const { user } = useAuth();
   const { addToast } = useToast();
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [coupons, setCoupons] = useState<ActiveCoupon[]>([]);
+  const [loadingCoupons, setLoadingCoupons] = useState(true);
 
-  const points = user?.vipPoints || 1250;
-  const targetPoints = 2000;
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/coupons-active')
+      .then(async (res) => (res.ok ? res.json() : []))
+      .then((rows) => { if (!cancelled) setCoupons(Array.isArray(rows) ? rows : []); })
+      .catch(() => {})
+      .finally(() => { if (!cancelled) setLoadingCoupons(false); });
+    return () => { cancelled = true; };
+  }, []);
+
+  // Real VIP points only — no invented fallback of 1250 when the user has none.
+  const points = user?.vipPoints ?? 0;
+  const targetPoints = Math.max(2000, points);
   const progressPercent = Math.min(100, Math.round((points / targetPoints) * 100));
 
   const handleCopy = (code: string) => {
@@ -74,7 +86,15 @@ export default function VipClubTab() {
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {COUPONS.map((cp) => (
+          {loadingCoupons && [...Array(2)].map((_, i) => (
+            <div key={i} className="p-4 rounded-2xl bg-orange-50/50 dark:bg-orange-500/10 border-2 border-dashed border-orange-200 dark:border-orange-500/20 animate-pulse h-28" />
+          ))}
+          {!loadingCoupons && coupons.length === 0 && (
+            <p className="text-xs text-gray-500 dark:text-gray-400 font-medium col-span-full">
+              در حال حاضر کد تخفیف فعالی وجود ندارد — به‌محض فعال شدن کوپن جدید، اینجا نمایش داده می‌شود.
+            </p>
+          )}
+          {coupons.map((cp) => (
             <div
               key={cp.code}
               className="p-4 rounded-2xl bg-orange-50/50 dark:bg-orange-500/10 border-2 border-dashed border-orange-200 dark:border-orange-500/20 flex flex-col justify-between gap-4"
@@ -84,10 +104,10 @@ export default function VipClubTab() {
                   <span className="font-black text-sm text-orange-600 dark:text-orange-400 tracking-wider">
                     {cp.code}
                   </span>
-                  <span className="text-[10px] font-bold text-gray-400">اعتبار: {cp.expires}</span>
+                  <span className="text-[10px] font-bold text-gray-400">اعتبار: {cp.expiresAt ? new Date(cp.expiresAt).toLocaleDateString('fa-IR') : 'بدون محدودیت'}</span>
                 </div>
                 <p className="text-xs font-bold text-gray-700 dark:text-gray-300">
-                  {cp.discount}
+                  {cp.label} (حداقل خرید: {toPersianDigits(cp.minTotal.toLocaleString('fa-IR'))} تومان)
                 </p>
               </div>
 

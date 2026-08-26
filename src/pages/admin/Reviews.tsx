@@ -40,6 +40,7 @@ export default function AdminReviews() {
       }
     } catch (err) {
       console.error('Failed to fetch reviews', err);
+      addToast('خطا در دریافت نظرات', 'error');
     } finally {
       setLoading(false);
     }

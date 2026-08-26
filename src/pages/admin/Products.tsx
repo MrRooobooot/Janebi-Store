@@ -220,6 +220,8 @@ export default function AdminProducts() {
             <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
               {loading ? (
                 <tr><td colSpan={6} className="text-center p-8 text-gray-400">در حال بارگذاری...</td></tr>
+              ) : filteredProducts.length === 0 ? (
+                <tr><td colSpan={6} className="text-center p-8 text-gray-500 dark:text-gray-400 font-medium">محصولی یافت نشد — فیلترها را تغییر دهید یا محصول جدیدی اضافه کنید.</td></tr>
               ) : filteredProducts.map(p => {
                 const qty = p.stockQuantity ?? 0;
                 return (

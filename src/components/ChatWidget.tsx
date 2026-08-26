@@ -50,14 +50,17 @@ export default function ChatWidget() {
   const generateBotResponse = (userText: string) => {
     const text = userText.trim().toLowerCase();
     
+    if (/ord[- ]?\d+/i.test(text)) {
+      return 'کد سفارش شما دریافت شد! برای مشاهده وضعیت لحظه‌ای سفارش، به بخش «سفارش‌های من» در پروفایل خود مراجعه کنید.';
+    }
     if (text.includes('سفارش') || text.includes('پیگیری') || text.includes('کد پیگیری')) {
       return 'برای پیگیری سفارش می‌توانید به صفحه «سفارش‌های من» در پروفایل خود مراجعه کنید یا کد پیگیری سفارش (مثلاً ORD-123456) را برای من بفرستید.';
     }
     if (text.includes('ارسال') || text.includes('پست') || text.includes('رایگان')) {
       return `سفارش‌های بالای ${FREE_SHIPPING_THRESHOLD.toLocaleString('fa-IR')} تومان کاملاً رایگان ارسال می‌شوند! برای سفارش‌های کمتر، هزینه پست پیشتاز ${SHIPPING_FEES.express.toLocaleString('fa-IR')} و پست سفارشی ${SHIPPING_FEES.standard.toLocaleString('fa-IR')} تومان است.`;
     }
-    if (text.includes('تخفیف') || text.includes('کوپن') || text.includes('کد')) {
-      return 'کد تخفیف WELCOME10 برای ۱۰٪ تخفیف خرید اول و کد OFF20 برای تخفیف‌های ویژه هم‌اکنون فعال هستند!';
+    if (text.includes('تخفیف') || text.includes('کوپن') || text.includes('کد تخفیف')) {
+      return 'برای مشاهده کد تخفیف‌های فعال، کد خود را در مرحله پرداخت وارد کنید — کدهای نامعتبر به‌طور خودکار رد می‌شوند. برای اطلاع از کوپن‌های اختصاصی، عضو خبرنامه شوید.';
     }
     if (text.includes('بازگشت') || text.includes('مرجوع') || text.includes('گارانتی')) {
       return 'تمامی محصولات جانبی آرنا دارای ۷ روز مهلت تست و ضمانت اصالت کالا هستند. در صورت وجود هرگونه مشکل فنی می‌توانید کالا را مرجوع کنید.';

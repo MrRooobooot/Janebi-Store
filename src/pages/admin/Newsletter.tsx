@@ -25,6 +25,7 @@ export default function AdminNewsletter() {
       }
     } catch (err) {
       console.error('Failed to fetch subscribers', err);
+      addToast('خطا در دریافت مشترکین خبرنامه', 'error');
     } finally {
       setLoading(false);
     }

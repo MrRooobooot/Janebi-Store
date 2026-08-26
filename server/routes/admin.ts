@@ -26,8 +26,11 @@ router.get('/stats', async (req, res) => {
 
     const totalOrders = (await db.select({ count: sql<number>`count(*)` }).from(orders))[0].count;
 
-    // Status breakdown
-    const allOrdersList = await db.select({ status: orders.status }).from(orders);
+    // Status breakdown as a GROUP BY aggregate (was: load every order row).
+    const statusRows = await db
+      .select({ status: orders.status, count: sql<number>`count(*)` })
+      .from(orders)
+      .groupBy(orders.status);
     const statusCounts: Record<string, number> = {
       pending_payment: 0,
       processing: 0,
@@ -35,14 +38,19 @@ router.get('/stats', async (req, res) => {
       delivered: 0,
       cancelled: 0,
     };
-    for (const o of allOrdersList) {
-      if (statusCounts[o.status] !== undefined) {
-        statusCounts[o.status]++;
+    for (const r of statusRows) {
+      if (statusCounts[r.status] !== undefined) {
+        statusCounts[r.status] = Number(r.count);
       }
     }
 
     // Low stock products (stock <= 5) — column ref keeps PG quoting correct
     const lowStockProducts = await db.select().from(products).where(sql`${products.stockQuantity} <= 5`).limit(8);
+    const lowStockCountRows = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(products)
+      .where(sql`${products.stockQuantity} <= 5`);
+    const lowStockCount = Number(lowStockCountRows[0]?.count ?? 0);
 
     // Recent orders
     const recentOrders = await db.query.orders.findMany({
@@ -57,7 +65,7 @@ router.get('/stats', async (req, res) => {
         totalProducts,
         totalRevenue,
         totalOrders,
-        lowStockCount: lowStockProducts.length
+        lowStockCount
       },
       statusCounts,
       lowStockProducts,

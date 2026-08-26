@@ -13,33 +13,29 @@ interface Brand {
   count: number;
 }
 
-const DEFAULT_BRANDS: Brand[] = [
-  { name: 'Anker', faName: 'انکر', count: 24 },
-  { name: 'Apple', faName: 'اپل', count: 35 },
-  { name: 'Samsung', faName: 'سامسونگ', count: 28 },
-  { name: 'Xiaomi', faName: 'شیائومی', count: 30 },
-  { name: 'Baseus', faName: 'بیسوس', count: 42 },
-  { name: 'Nillkin', faName: 'نیلکین', count: 18 },
-  { name: 'Sony', faName: 'سونی', count: 15 },
-  { name: 'JBL', faName: 'جی‌بی‌ال', count: 12 },
-];
+// No fake defaults: counts render only from the live /api/brands response,
+// so the showcase never shows numbers the DB doesn't back.
+const DEFAULT_BRANDS: Brand[] = [];
 
 export default function BrandShowcase() {
   const [brands, setBrands] = useState<Brand[]>(DEFAULT_BRANDS);
 
   useEffect(() => {
+    let cancelled = false;
     fetch('/api/brands')
       .then((res) => res.json())
       .then((data) => {
+        if (cancelled) return;
         if (Array.isArray(data) && data.length > 0) {
           setBrands(data.map((b: any) => ({
             name: typeof b === 'string' ? b : (b.name || b.title),
             faName: b.faName || b.nameFa || b.name,
-            count: b.count || 10
+            count: Number(b.count) || 0
           })));
         }
       })
       .catch(() => {});
+    return () => { cancelled = true; };
   }, []);
 
   return (

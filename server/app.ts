@@ -12,6 +12,7 @@ import productsRoutes from "./routes/products.js";
 import categoriesRoutes from "./routes/categories.js";
 import brandsRoutes from "./routes/brands.js";
 import couponsRoutes from "./routes/coupons.js";
+import couponsActiveRoutes from "./routes/coupons-active.js";
 import ordersRoutes from "./routes/orders.js";
 import authRoutes from "./routes/auth.js";
 import usersRoutes from "./routes/users.js";
@@ -21,6 +22,7 @@ import contactRoutes from "./routes/contact.js";
 import paymentRoutes from "./routes/payment.js";
 import settingsRoutes from "./routes/settings.js";
 import reviewsRoutes from "./routes/reviews.js";
+import blogRoutes from "./routes/blog.js";
 import adminRoutes from "./routes/admin.js";
 import { isPostgres, pool, sqlite } from "./db/index.js";
 
@@ -130,6 +132,7 @@ app.use("/api/products", productsRoutes);
 app.use("/api/categories", categoriesRoutes);
 app.use("/api/brands", brandsRoutes);
 app.use("/api/coupons", couponsRoutes);
+app.use("/api/coupons-active", couponsActiveRoutes);
 app.use("/api/orders", ordersRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", usersRoutes);
@@ -139,6 +142,7 @@ app.use("/api/contact", contactRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/reviews", reviewsRoutes);
+app.use("/api/blog", blogRoutes);
 app.use("/api/admin", adminRoutes);
 
 // Health / readiness probe — verifies the process is up AND the database

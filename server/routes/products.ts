@@ -106,8 +106,13 @@ router.get("/", validate(productQuerySchema), async (req, res) => {
     }
   });
 
-  const allMatch = await db.query.products.findMany({ where: finalCondition });
-  const total = allMatch.length;
+  // COUNT as a real SQL aggregate — the previous full findMany just to read
+  // .length scanned every matching row per page request.
+  const countRows = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(products)
+    .where(finalCondition);
+  const total = Number(countRows[0]?.count ?? 0);
   const totalPages = Math.ceil(total / pageSize);
 
   const customHeaders: Record<string, string> = {

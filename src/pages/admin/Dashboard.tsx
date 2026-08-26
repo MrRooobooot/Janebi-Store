@@ -69,7 +69,17 @@ export default function Dashboard() {
   }
 
   if (error || !stats) {
-    return <div className="text-red-500 text-center p-4 bg-red-50 dark:bg-red-900/20 rounded-xl">{error}</div>;
+    return (
+      <div className="text-red-500 text-center p-4 bg-red-50 dark:bg-red-900/20 rounded-xl space-y-3">
+        <p>{error}</p>
+        <button
+          onClick={() => { setError(""); setLoading(true); fetchStats(); }}
+          className="px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold transition-colors"
+        >
+          تلاش مجدد
+        </button>
+      </div>
+    );
   }
 
   const { metrics, recentOrders } = stats;

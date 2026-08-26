@@ -146,6 +146,20 @@ export const storeSettings = sqliteTable('store_settings', {
   value: text('value').notNull()
 });
 
+// Blog posts — editable by the admin, served publicly via GET /api/blog.
+export const blogPosts = sqliteTable('blog_posts', {
+  id: text('id').primaryKey(),
+  title: text('title').notNull(),
+  excerpt: text('excerpt').notNull(),
+  body: text('body').notNull(), // paragraphs separated by \n\n
+  image: text('image'),
+  category: text('category').default('مقالات').notNull(),
+  author: text('author').default('تیم جانبی آرنا').notNull(),
+  readTime: text('readTime'),
+  published: integer('published', { mode: 'boolean' }).default(true).notNull(),
+  createdAt: text('created_at').notNull()
+});
+
 // RELATIONS
 export const productsRelations = relations(products, ({ many }) => ({
   features: many(productFeatures),
