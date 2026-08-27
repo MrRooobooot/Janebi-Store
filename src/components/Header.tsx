@@ -101,11 +101,12 @@ export default function Header() {
 
             {/* Dark Mode Switcher */}
             <button
-              aria-label={isDarkMode ? "حالت روشن" : "حالت تاریک"}
+              aria-label={isDarkMode ? "تغییر به حالت روز" : "تغییر به حالت شب"}
+              title={isDarkMode ? "حالت روز (روشن)" : "حالت شب (تاریک)"}
               onClick={toggleTheme}
-              className="p-2 text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              className="p-2 text-zinc-600 dark:text-zinc-300 hover:text-orange-600 dark:hover:text-orange-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-white/[0.06] transition-colors"
             >
-              {isDarkMode ? <Sun className="h-5 w-5 text-amber-400" /> : <Moon className="h-5 w-5" />}
+              {isDarkMode ? <Sun className="h-5 w-5 text-amber-400" /> : <Moon className="h-5 w-5 text-zinc-600" />}
             </button>
 
             {/* Compare Badge */}
@@ -211,10 +212,10 @@ export default function Header() {
             ) : (
               <button
                 onClick={() => setAuthModalOpen(true)}
-                className="flex items-center gap-1 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-orange-600 dark:hover:bg-orange-500 dark:hover:text-white px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition-colors shadow-xs"
+                className="flex items-center gap-1.5 bg-orange-600 hover:bg-orange-500 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-black transition-all shadow-sm shadow-orange-600/25 cursor-pointer active:scale-95"
               >
                 <LogIn className="h-4 w-4" />
-                <span className="hidden xs:inline">ورود / ثبت‌نام</span>
+                <span className="hidden xs:inline">ورود / عضویت</span>
               </button>
             )}
           </div>

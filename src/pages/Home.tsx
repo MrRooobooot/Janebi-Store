@@ -230,19 +230,19 @@ export default function Home() {
 
       {/* 2. Wholesale / B2B Banner Strip */}
       <section className="w-full">
-        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-600/20 via-orange-600/20 to-amber-600/20 border border-amber-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/15 to-amber-500/10 dark:from-amber-600/20 dark:via-orange-600/20 dark:to-amber-600/20 border border-amber-500/30 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
           <div className="flex items-center gap-3 text-right">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
               <PackageCheck className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-xs sm:text-sm font-black text-white">فروش عمده، کارتنی و همکاران سراسر ایران</h3>
-              <p className="text-[11px] text-zinc-300 mt-0.5">قیمت همکاری ویژه برای مغازه‌داران و خریداران عمده هولدر، قاب، گلس و کابل</p>
+              <h3 className="text-xs sm:text-sm font-black text-zinc-900 dark:text-white">فروش عمده، کارتنی و همکاران سراسر ایران</h3>
+              <p className="text-[11px] text-zinc-600 dark:text-zinc-300 mt-0.5">قیمت همکاری ویژه برای مغازه‌داران و خریداران عمده هولدر، قاب، گلس و کابل</p>
             </div>
           </div>
           <Link
             to="/contact?type=wholesale"
-            className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-black text-xs transition-all shadow-md shadow-amber-500/20 shrink-0"
+            className="px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-black text-xs transition-all shadow-md shadow-orange-600/25 shrink-0 cursor-pointer"
           >
             استعلام لیست قیمت عمده
           </Link>
