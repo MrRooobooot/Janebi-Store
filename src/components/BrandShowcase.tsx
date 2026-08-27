@@ -65,46 +65,41 @@ export default function BrandShowcase() {
         </Link>
       </div>
 
-      {/* Modern Grid Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 sm:gap-4">
-        {brands.slice(0, 8).map((brand, idx) => {
-          const displayName = brand.faName || brand.name;
-          return (
-            <motion.div
-              key={brand.name}
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.04, duration: 0.3 }}
-            >
-              <Link
-                to={`/products?brand=${encodeURIComponent(brand.name)}`}
-                className="group relative flex flex-col items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-gray-800/80 border border-gray-100 dark:border-gray-700/60 hover:border-orange-500/40 dark:hover:border-orange-500/40 shadow-xs hover:shadow-lg hover:shadow-orange-500/5 dark:hover:shadow-orange-500/10 hover:-translate-y-1 transition-all duration-300 h-full"
-              >
-                {/* Logo Frame */}
-                <div className="w-full h-14 rounded-xl bg-gray-50/80 dark:bg-gray-700/40 group-hover:bg-orange-50/50 dark:group-hover:bg-orange-950/20 border border-gray-100/80 dark:border-gray-700/40 flex items-center justify-center p-2 transition-colors duration-300">
-                  <BrandLogo name={brand.name} size="md" />
-                </div>
-
-                {/* Info */}
-                <div className="mt-3 text-center w-full">
-                  <div className="font-extrabold text-xs text-gray-900 dark:text-gray-100 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors truncate">
-                    {displayName}
+          <div className="flex justify-end mb-3">
+            <div className="inline-flex rounded-md border border-gray-200 dark:border-gray-700 overflow-hidden">
+               {/* Controls would go here if needed later */}
+            </div>
+          </div>
+          <div className="logo-carousel relative">
+            <div className="logo-carousel-track" style={{ animation: `logo-scroll 30s linear infinite` }}>
+              {[...brands, ...brands].map((brand, idx) => {
+                const displayName = brand.faName || brand.name;
+                return (
+                  <div key={`${brand.name}-${idx}`} className="w-36 shrink-0 mx-4">
+                    <Link
+                      to={`/products?brand=${encodeURIComponent(brand.name)}`}
+                      className="group relative flex flex-col items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-gray-800/80 border border-gray-100 dark:border-gray-700/60 hover:border-orange-500/40 dark:hover:border-orange-500/40 shadow-xs hover:shadow-lg hover:-translate-y-1 transition-all duration-300 h-full"
+                    >
+                      {/* Logo Frame */}
+                      <div className="w-full h-14 rounded-xl bg-gray-50/80 dark:bg-gray-700/40 group-hover:bg-orange-50/50 dark:group-hover:bg-orange-950/20 border border-gray-100/80 dark:border-gray-700/40 flex items-center justify-center p-2 transition-colors duration-300">
+                        <BrandLogo name={brand.name} size="md" />
+                      </div>
+      
+                      {/* Info */}
+                      <div className="mt-3 text-center w-full">
+                        <div className="font-extrabold text-xs text-gray-900 dark:text-gray-100 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors truncate">
+                          {displayName}
+                        </div>
+                        <div className="text-[10px] font-medium text-gray-400 dark:text-gray-500 mt-0.5">
+                          {toPersianDigits(brand.count)} محصول
+                        </div>
+                      </div>
+                    </Link>
                   </div>
-                  <div className="text-[10px] font-medium text-gray-400 dark:text-gray-500 mt-0.5">
-                    {toPersianDigits(brand.count)} محصول
-                  </div>
-                </div>
-
-                {/* Subtle indicator dot */}
-                <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span className="w-1.5 h-1.5 rounded-full bg-orange-500 block" />
-                </div>
-              </Link>
-            </motion.div>
-          );
-        })}
-      </div>
+                );
+              })}
+            </div>
+          </div>
     </section>
   );
 }

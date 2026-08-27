@@ -120,3 +120,25 @@ body {
 .persian-nums {
   font-feature-settings: "ss01" on;
 }
+
+/* ── Logo Carousel ────────────────────────────────────── */
+.logo-carousel {
+  overflow: hidden;
+  width: 100%;
+}
+
+.logo-carousel-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  will-change: transform;
+}
+
+@keyframes logo-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-50%)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-carousel-track { animation: none; }
+}
