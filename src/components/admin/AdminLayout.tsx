@@ -121,7 +121,7 @@ export default function AdminLayout() {
       {/* Admin User Info Card */}
       <div className="p-3.5 mx-3 my-3 rounded-2xl bg-gray-50/80 dark:bg-gray-800/40 border border-gray-100 dark:border-gray-800 flex items-center gap-3">
         <img 
-          src={user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=f97316&color=fff`} 
+          src={user.avatar || '/avatar.svg'} 
           alt={user.name} 
           className="w-10 h-10 rounded-xl border border-orange-500/30 object-cover shrink-0"
         />

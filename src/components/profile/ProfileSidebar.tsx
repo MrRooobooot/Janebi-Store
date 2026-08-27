@@ -33,7 +33,7 @@ export default function ProfileSidebar({
       <div className="flex items-center gap-4 pb-6 border-b border-gray-100 dark:border-gray-800">
         <div className="relative shrink-0">
           <img
-            src={user.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'}
+            src={user.avatar || '/avatar.svg'}
             alt={user.name}
             className="w-14 h-14 rounded-2xl object-cover border-2 border-orange-500 shadow-md"
           />

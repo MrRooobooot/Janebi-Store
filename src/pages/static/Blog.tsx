@@ -16,7 +16,7 @@ interface Article {
   author: string;
 }
 
-const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=600&q=80';
+const FALLBACK_IMAGE = '/products/cas-4.svg';
 
 export default function Blog() {
   const [articles, setArticles] = useState<Article[]>([]);

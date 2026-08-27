@@ -1,8 +1,33 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ── Local Self-Hosted High Performance Persian Fonts ────────────── */
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('/fonts/Vazirmatn-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('/fonts/Vazirmatn-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('/fonts/Vazirmatn-Black.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
-  --font-sans: "Vazirmatn", system-ui, sans-serif;
+  --font-sans: "Vazirmatn", system-ui, -apple-system, sans-serif;
   --color-primary-50: #fff7ed;
   --color-primary-100: #ffedd5;
   --color-primary-500: #f97316;
@@ -18,7 +43,7 @@ body {
   font-family: var(--font-sans);
   background-color: #f8fafc;
   color: #0f172a;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .dark body {
@@ -26,21 +51,16 @@ body {
   color: #f8fafc;
 }
 
-/* ── Dark Mode: Minimum Contrast Enforcement ──────────────────────
-   Ensures muted/secondary text meets WCAG AA (4.5:1) in dark mode.
-   gray-400 (#9ca3af) on gray-900 fails; gray-300 (#d1d5db) passes.
-   We override secondary text globally for dark mode.
-──────────────────────────────────────────────────────────────────── */
+/* ── Dark Mode: Minimum Contrast Enforcement ────────────────────── */
 .dark .text-gray-400 {
-  color: #d1d5db; /* gray-300 — WCAG AA compliant on dark-900 */
-}
-.dark .text-gray-500 {
-  color: #9ca3af; /* gray-400 — slightly better than gray-500 */
+  color: #d1d5db;
 }
 
-/* ── Focus Ring System ────────────────────────────────────────────
-   Consistent keyboard focus outline across all interactive elements
-──────────────────────────────────────────────────────────────────── */
+.dark .text-gray-500 {
+  color: #9ca3af;
+}
+
+/* ── Focus Ring System ──────────────────────────────────────────── */
 :focus-visible {
   outline: 2px solid #ea580c;
   outline-offset: 2px;
@@ -48,52 +68,10 @@ body {
 }
 
 .dark :focus-visible {
-  outline-color: #fb923c;
+  outline-color: #f97316;
 }
 
-/* Suppress focus ring for mouse interactions */
-:focus:not(:focus-visible) {
-  outline: none;
+/* ── Persian Digit Rendering ────────────────────────────────────── */
+.persian-nums {
+  font-feature-settings: "ss01" on;
 }
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 9999px;
-}
-
-.dark ::-webkit-scrollbar-thumb {
-  background: #334155;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
-
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
-}
-
-@media print {
-  header, footer, nav, .print\:hidden {
-    display: none !important;
-  }
-  
-  body {
-    background-color: white;
-  }
-
-  .print-receipt {
-    display: block !important;
-  }
-}
-

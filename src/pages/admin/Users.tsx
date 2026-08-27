@@ -185,7 +185,7 @@ export default function AdminUsers() {
                   <tr key={u.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors">
                     <td className="p-4 flex items-center gap-3">
                       <img 
-                        src={u.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.name)}&background=f97316&color=fff`} 
+                        src={u.avatar || '/avatar.svg'} 
                         alt={u.name} 
                         className="w-10 h-10 rounded-full border border-gray-200 dark:border-gray-700 object-cover shrink-0"
                       />
