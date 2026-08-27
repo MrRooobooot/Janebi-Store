@@ -48,7 +48,7 @@ export default function Footer() {
             </div>
             <div>
               <h4 className="font-bold text-gray-900 dark:text-gray-100 text-xs sm:text-sm mb-0.5">ارسال سریع و رایگان</h4>
-              <p className="text-[11px] text-gray-500 dark:text-gray-400">سفارش‌های بالای {FREE_SHIPPING_THRESHOLD.toLocaleString('fa-IR')} تومان</p>
+              <p className="text-[11px] text-gray-500 dark:text-gray-400">سفارش‌های بالای {settings.freeShippingThreshold.toLocaleString('fa-IR')} تومان</p>
             </div>
           </div>
 

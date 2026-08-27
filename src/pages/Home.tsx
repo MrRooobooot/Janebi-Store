@@ -38,38 +38,39 @@ export default function Home() {
     return () => clearInterval(timer);
   }, []);
 
-  const heroSlides = [
+  // 100% Dynamic Hero Slides connected to Admin Store Settings
+  const heroSlides = useMemo(() => [
     {
       id: 1,
       tag: 'تخصصی‌ترین مرجع شارژ در ایران',
-      title: 'فست‌شارژهای هوشمند با محافظت ولتاژ',
-      subtitle: 'شارژرهای اورجینال انکر، باسئوس و مک‌دودو مجهز به فناوری GaN و قطع‌کن خودکار برای سلامت باتری گوشی',
+      title: settings.heroSlide1Title || 'فست‌شارژهای هوشمند با محافظت ولتاژ',
+      subtitle: settings.heroSlide1Subtitle || 'شارژرهای اورجینال انکر، باسئوس و مک‌دودو مجهز به فناوری GaN و قطع‌کن خودکار برای سلامت باتری گوشی',
       buttonText: 'مشاهده شارژرها و آداپتورها',
-      buttonLink: '/products?category=شارژر',
-      badge: 'گارانتی تعویض ۶ ماهه',
+      buttonLink: settings.heroSlide1Link || '/products?category=شارژر',
+      badge: settings.heroSlide1Badge || 'گارانتی تعویض ۶ ماهه',
       theme: 'from-orange-600 to-amber-700',
     },
     {
       id: 2,
       tag: 'محافظت ۱۰۰٪ از نمایشگر و بدنه',
-      title: 'کاورهای مگ‌سیف و گلس‌های ضدضربه سوپردی',
-      subtitle: 'تنوع بی‌نظیر قاب‌های ضدضربه، شفاف و چرمی سازگار با شارژ بیسیم برای تمامی مدل‌های آیفون، سامسونگ و شیائومی',
+      title: settings.heroSlide2Title || 'کاورهای مگ‌سیف و گلس‌های ضدضربه سوپردی',
+      subtitle: settings.heroSlide2Subtitle || 'تنوع بی‌نظیر قاب‌های ضدضربه، شفاف و چرمی سازگار با شارژ بیسیم برای تمامی مدل‌های آیفون، سامسونگ و شیائومی',
       buttonText: 'انتخاب قاب و محافظ صفحه',
-      buttonLink: '/products?category=قاب و کاور',
-      badge: 'تست فیزیکی قبل از ارسال',
+      buttonLink: settings.heroSlide2Link || '/products?category=قاب و کاور',
+      badge: settings.heroSlide2Badge || 'تست فیزیکی قبل از ارسال',
       theme: 'from-zinc-800 to-zinc-950',
     },
     {
       id: 3,
       tag: 'تجربه صدای عمیق و بی‌سیم',
-      title: 'ایرپادها و هندزفری‌های مجهز به نویز کنسلینگ',
-      subtitle: 'مکالمه بدون نویز محیطی، درایورهای بیس تقویت‌شده و ماندگاری باتری تا ۳۰ ساعت برای مکالمه و موسیقی',
+      title: settings.heroSlide3Title || 'ایرپادها و هندزفری‌های مجهز به نویز کنسلینگ',
+      subtitle: settings.heroSlide3Subtitle || 'مکالمه بدون نویز محیطی، درایورهای بیس تقویت‌شده و ماندگاری باتری تا ۳۰ ساعت برای مکالمه و موسیقی',
       buttonText: 'مشاهده هدفون و هندزفری',
-      buttonLink: '/products?category=هندزفری',
-      badge: 'مهلت تست ۷ روزه',
+      buttonLink: settings.heroSlide3Link || '/products?category=هندزفری',
+      badge: settings.heroSlide3Badge || 'مهلت تست ۷ روزه',
       theme: 'from-blue-700 to-indigo-900',
     },
-  ];
+  ], [settings]);
 
   // Auto slide
   useEffect(() => {
