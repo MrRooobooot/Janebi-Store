@@ -38,8 +38,8 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-t border-gray-200/80 dark:border-gray-800 mt-16 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <footer className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border-t border-zinc-200/80 dark:border-zinc-800 mt-16 transition-colors duration-300 w-full overflow-hidden">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Value Propositions */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-12 border-b border-gray-100 dark:border-gray-800 pb-12">
           <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-gray-50/80 dark:bg-gray-800/40 border border-gray-100/80 dark:border-gray-800">

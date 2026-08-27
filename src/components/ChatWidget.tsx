@@ -101,7 +101,7 @@ export default function ChatWidget() {
   };
 
   return (
-    <div className={`fixed ${isProductDetail ? 'bottom-[148px] sm:bottom-6' : 'bottom-20 sm:bottom-6'} right-6 z-50 print:hidden flex flex-col items-end transition-all duration-300`}>
+    <div className={`fixed ${isProductDetail ? 'bottom-[148px] sm:bottom-6' : 'bottom-20 sm:bottom-6'} right-3 sm:right-6 z-50 print:hidden flex flex-col items-end transition-all duration-300`}>
       <AnimatePresence>
         {isOpen && (
           <motion.div 

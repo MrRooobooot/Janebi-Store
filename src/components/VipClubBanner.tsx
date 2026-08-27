@@ -70,7 +70,7 @@ export default function VipClubBanner() {
           </p>
         </div>
 
-        <div className="w-full lg:w-auto min-w-[320px] sm:min-w-[420px]">
+        <div className="w-full lg:w-96 max-w-full">
           {submitted ? (
             <motion.div 
               initial={{ scale: 0.9, opacity: 0 }}

@@ -127,6 +127,10 @@ export default function DynamicBreadcrumbs() {
     });
   }
 
+  if (location.pathname === '/' || items.length <= 1) {
+    return null;
+  }
+
   return (
     <>
       {/* SEO Schema markup for BreadcrumbList */}

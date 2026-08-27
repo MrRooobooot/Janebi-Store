@@ -37,17 +37,17 @@ export default function Header() {
   ];
 
   return (
-    <header className="bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-40 transition-colors duration-200">
+    <header className="bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-40 transition-colors duration-200 w-full overflow-x-clip">
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
       
-      {/* Top Announcement Bar */}
-      <div className="bg-zinc-900 text-zinc-100 text-xs py-1.5 px-4 flex items-center justify-between border-b border-zinc-800">
-        <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
-          <div className="flex items-center gap-2 text-[11px] font-medium text-amber-400">
+      {/* Top Announcement Bar — Strict Overflow Control */}
+      <div className="bg-zinc-900 text-zinc-100 text-xs py-1.5 px-3 sm:px-4 border-b border-zinc-800 w-full overflow-hidden">
+        <div className="max-w-7xl mx-auto w-full flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5 text-[11px] font-medium text-amber-400 min-w-0">
             <Sparkles className="h-3.5 w-3.5 animate-pulse shrink-0" />
-            <span className="text-zinc-200">{settings.announcement}</span>
+            <span className="text-zinc-200 truncate">{settings.announcement}</span>
           </div>
-          <div className="hidden md:flex items-center gap-4 text-[11px] text-zinc-400 font-medium">
+          <div className="hidden md:flex items-center gap-4 text-[11px] text-zinc-400 font-medium shrink-0">
             <span>تلفن پشتیبانی: {settings.phone}</span>
             <span className="h-3 w-px bg-zinc-700" />
             <span>ساعت کاری: {settings.supportHours}</span>
@@ -56,28 +56,28 @@ export default function Header() {
       </div>
 
       {/* Main Navbar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-18 gap-4">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 w-full">
+        <div className="flex items-center justify-between h-16 sm:h-18 gap-2 sm:gap-4">
           
           {/* Logo & Mobile Menu Toggle */}
-          <div className="shrink-0 flex items-center gap-3">
+          <div className="shrink-0 flex items-center gap-2 sm:gap-3">
             <button
               aria-label={mobileMenuOpen ? "بستن منو" : "باز کردن منو"}
-              className="lg:hidden p-2 text-zinc-700 dark:text-zinc-300 hover:text-orange-600 dark:hover:text-orange-400 focus:outline-none rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              className="lg:hidden p-1.5 sm:p-2 text-zinc-700 dark:text-zinc-300 hover:text-orange-600 dark:hover:text-orange-400 focus:outline-none rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {mobileMenuOpen ? <X className="h-5 w-5 sm:h-6 sm:w-6" /> : <Menu className="h-5 w-5 sm:h-6 sm:w-6" />}
             </button>
 
-            <Link to="/" className="flex items-center gap-2.5 group">
-              <div className="w-10 h-10 rounded-xl bg-orange-600 text-white flex items-center justify-center shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform duration-200">
-                <Smartphone className="h-5 w-5 stroke-[2.2]" />
+            <Link to="/" className="flex items-center gap-2 group">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-orange-600 text-white flex items-center justify-center shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform duration-200 shrink-0">
+                <Smartphone className="h-4 w-4 sm:h-5 sm:w-5 stroke-[2.2]" />
               </div>
               <div className="flex flex-col">
-                <span className="text-xl font-black text-zinc-900 dark:text-white tracking-tight">
+                <span className="text-base sm:text-xl font-black text-zinc-900 dark:text-white tracking-tight">
                   جانبی <span className="text-orange-600 dark:text-orange-400">آرنا</span>
                 </span>
-                <span className="text-[9px] text-zinc-400 dark:text-zinc-500 -mt-1 font-bold tracking-widest uppercase">Janebi Arena</span>
+                <span className="text-[8px] sm:text-[9px] text-zinc-400 dark:text-zinc-500 -mt-1 font-bold tracking-widest uppercase">Janebi Arena</span>
               </div>
             </Link>
           </div>
@@ -88,11 +88,11 @@ export default function Header() {
           </div>
 
           {/* User Controls & Quick Badges */}
-          <div className="flex items-center gap-2 sm:gap-2.5">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             {/* Mobile Search Button */}
             <button
               aria-label="جستجو"
-              className="md:hidden p-2.5 text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              className="md:hidden p-2 text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800"
               onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
             >
               <Search className="h-5 w-5" />
@@ -102,7 +102,7 @@ export default function Header() {
             <button
               aria-label={isDarkMode ? "حالت روشن" : "حالت تاریک"}
               onClick={toggleTheme}
-              className="p-2.5 text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              className="p-2 text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
             >
               {isDarkMode ? <Sun className="h-5 w-5 text-amber-400" /> : <Moon className="h-5 w-5" />}
             </button>
@@ -110,12 +110,12 @@ export default function Header() {
             {/* Compare Badge */}
             <Link
               to="/compare"
-              className="p-2.5 text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors relative hidden sm:flex items-center"
+              className="p-2 text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors relative hidden sm:flex items-center"
               title="مقایسه کالاها"
             >
               <ArrowLeftRight className="h-5 w-5" />
               {compareItems.length > 0 && (
-                <span className="absolute top-1.5 right-1.5 bg-zinc-800 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                <span className="absolute top-1 right-1 bg-zinc-800 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                   {toPersianDigits(compareItems.length)}
                 </span>
               )}
@@ -124,12 +124,12 @@ export default function Header() {
             {/* Wishlist Badge */}
             <Link
               to="/wishlist"
-              className="p-2.5 text-zinc-600 dark:text-zinc-400 hover:text-rose-600 dark:hover:text-rose-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors relative hidden sm:flex items-center"
+              className="p-2 text-zinc-600 dark:text-zinc-400 hover:text-rose-600 dark:hover:text-rose-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors relative hidden sm:flex items-center"
               title="علاقه‌مندی‌ها"
             >
               <Heart className="h-5 w-5" />
               {wishlist.length > 0 && (
-                <span className="absolute top-1.5 right-1.5 bg-rose-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                <span className="absolute top-1 right-1 bg-rose-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                   {toPersianDigits(wishlist.length)}
                 </span>
               )}
@@ -138,12 +138,12 @@ export default function Header() {
             {/* Cart Button */}
             <Link
               to="/cart"
-              className="flex items-center gap-2 bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 hover:bg-orange-600 hover:text-white dark:hover:bg-orange-600 dark:hover:text-white border border-orange-200 dark:border-orange-900/50 px-3.5 py-2 rounded-xl transition-all duration-200 shadow-xs"
+              className="flex items-center gap-1.5 bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 hover:bg-orange-600 hover:text-white dark:hover:bg-orange-600 dark:hover:text-white border border-orange-200 dark:border-orange-900/50 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl transition-all duration-200 shadow-xs"
             >
               <div className="relative">
-                <ShoppingCart className="h-5 w-5" />
+                <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-orange-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center border-2 border-white dark:border-zinc-900">
+                  <span className="absolute -top-2 -right-2 bg-orange-600 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border-2 border-white dark:border-zinc-900">
                     {toPersianDigits(cartCount)}
                   </span>
                 )}
@@ -156,10 +156,10 @@ export default function Header() {
               <div className="relative">
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  className="flex items-center gap-1.5 p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-xs font-bold transition-colors"
+                  className="flex items-center gap-1.5 p-1.5 sm:p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-xs font-bold transition-colors"
                 >
                   <User className="h-4 w-4 text-orange-600" />
-                  <span className="max-w-[90px] truncate hidden sm:inline">{user?.name || 'حساب کاربری'}</span>
+                  <span className="max-w-[80px] sm:max-w-[100px] truncate">{user?.name || 'حساب کاربری'}</span>
                   <ChevronDown className="h-3.5 w-3.5 text-zinc-400" />
                 </button>
 
@@ -210,10 +210,10 @@ export default function Header() {
             ) : (
               <button
                 onClick={() => setAuthModalOpen(true)}
-                className="flex items-center gap-1.5 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-orange-600 dark:hover:bg-orange-500 dark:hover:text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-colors shadow-xs"
+                className="flex items-center gap-1 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-orange-600 dark:hover:bg-orange-500 dark:hover:text-white px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition-colors shadow-xs"
               >
                 <LogIn className="h-4 w-4" />
-                <span>ورود / ثبت‌نام</span>
+                <span className="hidden xs:inline">ورود / ثبت‌نام</span>
               </button>
             )}
           </div>
@@ -221,7 +221,7 @@ export default function Header() {
 
         {/* Mobile Search Expanding Input */}
         {mobileSearchOpen && (
-          <div className="md:hidden py-3 border-t border-zinc-200 dark:border-zinc-800">
+          <div className="md:hidden py-2.5 border-t border-zinc-200 dark:border-zinc-800">
             <HeaderSearch autoFocus onSearchSubmit={() => setMobileSearchOpen(false)} />
           </div>
         )}
