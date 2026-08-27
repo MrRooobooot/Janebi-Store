@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Product } from '../types';
 
@@ -16,75 +16,72 @@ export const PRICE_PRESETS: PricePreset[] = [
   { label: 'بالای ۵ میلیون تومان', min: 5000000, max: '' },
 ];
 
+// In-memory client cache to instantly switch between filtered tabs/pages
+const clientFilterCache = new Map<string, { products: Product[]; total: number; totalPages: number }>();
+
 export function useProductFilters() {
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryParam = searchParams.get('category');
   const searchParam = searchParams.get('search');
-  const brandParam = searchParams.get('brand'); // from /products?brand=X links
+  const brandParam = searchParams.get('brand');
 
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // Filter States
-  const [selectedCategory, setSelectedCategory] = useState<string>('همه');
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>(categoryParam || 'همه');
+  const [selectedBrands, setSelectedBrands] = useState<string[]>(brandParam ? brandParam.split(',').filter(Boolean) : []);
   const [minPrice, setMinPrice] = useState<number | ''>('');
   const [maxPrice, setMaxPrice] = useState<number | ''>('');
   const [onlyDiscounted, setOnlyDiscounted] = useState<boolean>(false);
   const [onlyInStock, setOnlyInStock] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<string>('default');
-  const [inPageQuery, setInPageQuery] = useState<string>('');
+  const [inPageQuery, setInPageQuery] = useState<string>(searchParam || '');
+  const [debouncedQuery, setDebouncedQuery] = useState<string>(searchParam || '');
   const [mobileFilterOpen, setMobileFilterOpen] = useState<boolean>(false);
 
-  const [categories, setCategories] = useState<{name: string; count: number}[]>([]);
-  const [brands, setBrands] = useState<{name: string; count: number}[]>([]);
+  const [categories, setCategories] = useState<{ name: string; count: number }[]>([]);
+  const [brands, setBrands] = useState<{ name: string; count: number }[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
 
+  // Debounce in-page text search by 250ms
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(inPageQuery);
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [inPageQuery]);
+
   // Sync category param from URL
   useEffect(() => {
-    if (categoryParam) {
-      setSelectedCategory(categoryParam);
-    } else {
-      setSelectedCategory('همه');
-    }
+    setSelectedCategory(categoryParam || 'همه');
   }, [categoryParam]);
 
-  // Sync search param from URL
-  useEffect(() => {
-    if (searchParam) {
-      setInPageQuery(searchParam);
-    }
-  }, [searchParam]);
-
-  // Sync brand param from URL (BrandShowcase/Brands page links)
+  // Sync brand param from URL
   useEffect(() => {
     if (brandParam) {
       setSelectedBrands(brandParam.split(',').filter(Boolean));
-    } else {
-      setSelectedBrands([]);
     }
   }, [brandParam]);
 
-  // Fetch Categories and Brands for sidebar
+  // Fetch Categories and Brands once
   useEffect(() => {
     Promise.all([
-      fetch('/api/categories').then(res => res.json()),
-      fetch('/api/brands').then(res => res.json())
+      fetch('/api/categories').then((res) => res.json()),
+      fetch('/api/brands').then((res) => res.json())
     ]).then(([catsData, brandsData]) => {
       setCategories(Array.isArray(catsData) ? catsData.map((c: any) => ({ name: c.title || c.name, count: c.count || 0 })) : []);
       setBrands(Array.isArray(brandsData) ? brandsData.map((b: any) => ({ name: typeof b === 'string' ? b : (b.name || b.title || 'Unknown'), count: b.count || 0 })) : []);
-    }).catch(err => console.error("Error fetching filter metadata", err));
+    }).catch(() => {});
   }, []);
 
-  // Fetch filtered products
+  // Fetch filtered products with instant Client Cache
   useEffect(() => {
-    setLoading(true);
-    
     const params = new URLSearchParams();
     if (selectedCategory && selectedCategory !== 'همه') params.append('category', selectedCategory);
-    if (inPageQuery) params.append('search', inPageQuery);
+    if (debouncedQuery) params.append('search', debouncedQuery);
     if (selectedBrands.length > 0) params.append('brands', selectedBrands.join(','));
     if (minPrice !== '') params.append('minPrice', minPrice.toString());
     if (maxPrice !== '') params.append('maxPrice', maxPrice.toString());
@@ -94,44 +91,55 @@ export function useProductFilters() {
     params.append('page', page.toString());
     params.append('limit', '20');
 
-    fetch(`/api/products?${params.toString()}`)
+    const cacheKey = params.toString();
+    if (clientFilterCache.has(cacheKey)) {
+      const cached = clientFilterCache.get(cacheKey)!;
+      setProducts(cached.products);
+      setTotalProducts(cached.total);
+      setTotalPages(cached.totalPages);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    let cancelled = false;
+
+    fetch(`/api/products?${cacheKey}`)
       .then(async (res) => {
         const total = res.headers.get('X-Total-Count');
         const tPages = res.headers.get('X-Total-Pages');
-        if (total) setTotalProducts(parseInt(total));
-        if (tPages) setTotalPages(parseInt(tPages));
-        return res.json();
+        const count = total ? parseInt(total) : 0;
+        const pages = tPages ? parseInt(tPages) : 1;
+        const data = await res.json();
+        return { data: Array.isArray(data) ? data : [], count, pages };
       })
-      .then((data) => {
+      .then(({ data, count, pages }) => {
+        if (cancelled) return;
+        clientFilterCache.set(cacheKey, { products: data, total: count, totalPages: pages });
         setProducts(data);
-        setLoading(false);
+        setTotalProducts(count);
+        setTotalPages(pages);
       })
       .catch(() => {
-        setProducts([]);
-        setLoading(false);
+        if (!cancelled) setProducts([]);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
       });
-  }, [selectedCategory, inPageQuery, selectedBrands, minPrice, maxPrice, onlyInStock, onlyDiscounted, sortBy, page]);
 
-  const filteredProducts = products; // Already filtered on backend
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedCategory, debouncedQuery, selectedBrands, minPrice, maxPrice, onlyInStock, onlyDiscounted, sortBy, page]);
+
+  const filteredProducts = products;
 
   // Actions
   const toggleBrand = (brand: string) => {
-    setPage(1); // Reset page on filter change
+    setPage(1);
     setSelectedBrands((prev) =>
       prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]
     );
-  };
-
-  const handlePricePreset = (preset: PricePreset) => {
-    setPage(1);
-    setMinPrice(preset.min);
-    setMaxPrice(preset.max);
-  };
-
-  const handleCustomPrice = (min: number | '', max: number | '') => {
-    setPage(1);
-    setMinPrice(min);
-    setMaxPrice(max);
   };
 
   const resetAllFilters = () => {
@@ -143,21 +151,21 @@ export function useProductFilters() {
     setOnlyInStock(false);
     setSortBy('default');
     setInPageQuery('');
+    setDebouncedQuery('');
     setPage(1);
+    setSearchParams({});
   };
 
-  const clearSearch = () => {
-    setInPageQuery('');
-    setPage(1);
-  };
-
-  const activeFiltersCount =
-    (selectedCategory !== 'همه' ? 1 : 0) +
-    selectedBrands.length +
-    (minPrice !== '' || maxPrice !== '' ? 1 : 0) +
-    (onlyDiscounted ? 1 : 0) +
-    (onlyInStock ? 1 : 0) +
-    (inPageQuery ? 1 : 0);
+  const activeFiltersCount = useMemo(() => {
+    let count = 0;
+    if (selectedCategory !== 'همه') count++;
+    if (selectedBrands.length > 0) count += selectedBrands.length;
+    if (minPrice !== '' || maxPrice !== '') count++;
+    if (onlyDiscounted) count++;
+    if (onlyInStock) count++;
+    if (inPageQuery) count++;
+    return count;
+  }, [selectedCategory, selectedBrands, minPrice, maxPrice, onlyDiscounted, onlyInStock, inPageQuery]);
 
   return {
     products,
@@ -168,13 +176,12 @@ export function useProductFilters() {
     selectedCategory,
     setSelectedCategory,
     selectedBrands,
-    setSelectedBrands,
     toggleBrand,
+    setSelectedBrands,
     minPrice,
     setMinPrice,
     maxPrice,
     setMaxPrice,
-    applyPricePreset: handlePricePreset,
     onlyDiscounted,
     setOnlyDiscounted,
     onlyInStock,
