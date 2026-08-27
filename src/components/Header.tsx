@@ -28,12 +28,13 @@ export default function Header() {
   const navLinks = [
     { label: 'صفحه اصلی', to: '/' },
     { label: 'تمام محصولات', to: '/products' },
-    { label: 'شارژر و آداپتور', to: '/products?category=شارژر' },
+    { label: 'هولدر و پایه', to: '/products?category=هولدر و پایه' },
+    { label: 'قاب و کاور', to: '/products?category=قاب و کاور' },
+    { label: 'گلس و محافظ', to: '/products?category=گلس' },
     { label: 'کابل و تبدیل', to: '/products?category=کابل' },
-    { label: 'قاب و گلس', to: '/products?category=قاب و کاور' },
-    { label: 'هندزفری و ایرپاد', to: '/products?category=هندزفری' },
-    { label: 'تخفیف‌های ویژه', to: '/offers' },
-    { label: 'برندها', to: '/brands' },
+    { label: 'محافظ کابل', to: '/products?category=محافظ کابل' },
+    { label: 'شارژرها', to: '/products?category=شارژر' },
+    { label: 'خرید عمده و همکاران', to: '/contact?type=wholesale', highlight: true },
   ];
 
   return (
@@ -235,7 +236,11 @@ export default function Header() {
                 key={link.to}
                 to={link.to}
                 className={`hover:text-orange-600 dark:hover:text-orange-400 transition-colors py-1 ${
-                  isActive ? 'text-orange-600 dark:text-orange-400 font-black' : ''
+                  (link as any).highlight 
+                    ? 'text-amber-500 dark:text-amber-400 font-black px-2.5 py-0.5 rounded-lg bg-amber-500/10 border border-amber-500/25'
+                    : isActive 
+                      ? 'text-orange-600 dark:text-orange-400 font-black' 
+                      : ''
                 }`}
               >
                 {link.label}

@@ -11,15 +11,19 @@ import { Product } from '../../types';
 import { toEnglishDigits, toPersianDigits, formatPrice } from '../../lib/utils';
 
 const CATEGORY_DEFAULT_IMAGES: Record<string, string> = {
+  'هولدر و پایه': '/products/hld-13.svg',
   'قاب و کاور': '/products/cas-4.svg',
   'گلس': '/products/gls-3.svg',
-  'شارژر': '/products/chg-2.svg',
   'کابل': '/products/cbl-1.svg',
+  'محافظ کابل': '/products/cpr-14.svg',
+  'شارژر': '/products/chg-2.svg',
   'هندزفری': '/products/ear-6.svg',
   'پاوربانک': '/products/pb-7.svg',
 };
 
 const PRESET_GALLERY = [
+  { id: 'hld-13', category: 'هولدر و پایه', brand: 'Baseus', label: 'هولدر مگنتی مگ‌سیف MagPro', url: '/products/hld-13.svg' },
+  { id: 'cpr-14', category: 'محافظ کابل', brand: 'Baseus', label: 'محافظ کابل سیلیکونی فنری', url: '/products/cpr-14.svg' },
   { id: 'ear-6', category: 'هندزفری', brand: 'Samsung', label: 'هندزفری TWS بلوتوثی Pro', url: '/products/ear-6.svg' },
   { id: 'ear-10', category: 'هندزفری', brand: 'Xiaomi', label: 'هندزفری In-Ear ارگونومیک', url: '/products/ear-10.svg' },
   { id: 'chg-2', category: 'شارژر', brand: 'Anker', label: 'شارژر فست GaN 20W', url: '/products/chg-2.svg' },
@@ -530,11 +534,13 @@ export default function AdminProducts() {
                     onChange={(e) => handleCategoryChange(e.target.value)}
                     className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500 cursor-pointer"
                   >
-                    <option value="هندزفری">هندزفری</option>
-                    <option value="شارژر">شارژر</option>
-                    <option value="کابل">کابل</option>
+                    <option value="هولدر و پایه">هولدر و پایه</option>
                     <option value="قاب و کاور">قاب و کاور</option>
                     <option value="گلس">گلس</option>
+                    <option value="کابل">کابل</option>
+                    <option value="محافظ کابل">محافظ کابل</option>
+                    <option value="شارژر">شارژر</option>
+                    <option value="هندزفری">هندزفری</option>
                     <option value="پاوربانک">پاوربانک</option>
                   </select>
                 </div>

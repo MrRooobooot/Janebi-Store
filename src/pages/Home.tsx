@@ -9,7 +9,7 @@ import VipClubBanner from '../components/VipClubBanner';
 import { 
   Sparkles, ArrowLeft, Smartphone, Shield, Zap, Cable, Headphones, 
   BatteryCharging, Truck, ShieldCheck, RefreshCw, Headset, Flame, Star, 
-  Clock, TrendingUp, Award, CheckCircle2
+  Clock, TrendingUp, Award, CheckCircle2, Navigation, Layers, ShieldAlert, PackageCheck
 } from 'lucide-react';
 import { Product } from '../types';
 import { toPersianDigits, formatPrice, getAssetUrl } from '../lib/utils';
@@ -19,7 +19,7 @@ export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'all' | 'chargers' | 'audio' | 'covers'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'holders' | 'cables' | 'cases' | 'protectors'>('all');
   const [activeSlide, setActiveSlide] = useState(0);
   const settings = useStoreSettings();
 
@@ -41,37 +41,37 @@ export default function Home() {
   const heroSlides = useMemo(() => [
     {
       id: 1,
-      tag: 'تخصصی‌ترین مرجع شارژ در ایران',
-      title: settings.heroSlide1Title || 'فست‌شارژهای هوشمند با محافظت ولتاژ',
-      subtitle: settings.heroSlide1Subtitle || 'شارژرهای اورجینال انکر، باسئوس و مک‌دودو مجهز به فناوری GaN و قطع‌کن خودکار برای سلامت باتری گوشی',
-      buttonText: 'مشاهده شارژرها و آداپتورها',
-      buttonLink: settings.heroSlide1Link || '/products?category=شارژر',
-      badge: settings.heroSlide1Badge || 'گارانتی تعویض ۶ ماهه',
-      image: '/products/chg-2.svg',
+      tag: 'مرجع تخصصی هولدر و استند موبایل',
+      title: settings.heroSlide1Title && !settings.heroSlide1Title.includes('فست') ? settings.heroSlide1Title : 'هولدرهای مگنتی خودرو و پایه‌های رومیزی ضدلغزش',
+      subtitle: settings.heroSlide1Subtitle && !settings.heroSlide1Subtitle.includes('انکر') ? settings.heroSlide1Subtitle : 'هولدرهای آهنربایی قدرتمند N52 سازگار با مگ‌سیف آیفون و انواع گوشی‌ها، مناسب رانندگی شهری و اسنپ بدون لغزش و تکان',
+      buttonText: 'مشاهده انواع هولدر و استند',
+      buttonLink: settings.heroSlide1Link || '/products?category=هولدر و پایه',
+      badge: settings.heroSlide1Badge || 'فروش تکی و عمده کارتنی',
+      image: '/products/hld-13.svg',
       borderColor: 'border-orange-500/40',
       badgeBg: 'bg-orange-500/20 text-orange-300 border-orange-500/40',
     },
     {
       id: 2,
-      tag: 'محافظت ۱۰۰٪ از نمایشگر و بدنه',
-      title: settings.heroSlide2Title || 'کاورهای مگ‌سیف و گلس‌های ضدضربه سوپردی',
-      subtitle: settings.heroSlide2Subtitle || 'تنوع بی‌نظیر قاب‌های ضدضربه، شفاف و چرمی سازگار با شارژ بیسیم برای تمامی مدل‌های آیفون، سامسونگ و شیائومی',
+      tag: 'محافظت ۱۰۰٪ از بدنه، لنز و صفحه نمایش',
+      title: settings.heroSlide2Title || 'قاب‌های مگ‌سیف و گلس‌های سوپردی فول‌چسب',
+      subtitle: settings.heroSlide2Subtitle || 'تنوع بیش از ۵۰۰ مدل کاور سیلیکونی پاک‌کنی، قاب‌های ضدضربه و گلس‌های نشکن برای انواع مدل‌های آیفون، سامسونگ و شیائومی',
       buttonText: 'انتخاب قاب و محافظ صفحه',
       buttonLink: settings.heroSlide2Link || '/products?category=قاب و کاور',
-      badge: settings.heroSlide2Badge || 'تست فیزیکی قبل از ارسال',
+      badge: settings.heroSlide2Badge || 'تخفیف ویژه سفارش‌های پک و تعدادی',
       image: '/products/cas-4.svg',
       borderColor: 'border-blue-500/40',
       badgeBg: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
     },
     {
       id: 3,
-      tag: 'تجربه صدای عمیق و بدون نویز',
-      title: settings.heroSlide3Title || 'ایرپادها و هندزفری‌های مجهز به نویز کنسلینگ',
-      subtitle: settings.heroSlide3Subtitle || 'مکالمه بدون نویز محیطی، درایورهای بیس تقویت‌شده و ماندگاری باتری تا ۳۰ ساعت برای مکالمه و موسیقی',
-      buttonText: 'مشاهده هدفون و هندزفری',
-      buttonLink: settings.heroSlide3Link || '/products?category=هندزفری',
-      badge: settings.heroSlide3Badge || 'مهلت تست ۷ روزه',
-      image: '/products/ear-6.svg',
+      tag: 'کابل‌های فست و محافظ‌های ضدقطعی',
+      title: settings.heroSlide3Title || 'کابل‌های کنفی تقویت‌شده و محافظ‌های فنری کابل',
+      subtitle: settings.heroSlide3Subtitle || 'کابل‌های تایپ‌سی، لایتنینگ و محافظ‌های سیلیکونی سر کابل برای جلوگیری از پارگی و افزایش چندبرابری طول عمر شارژر',
+      buttonText: 'مشاهده کابل‌ها و محافظ‌ها',
+      buttonLink: settings.heroSlide3Link || '/products?category=کابل',
+      badge: settings.heroSlide3Badge || 'تضمین سلامت فیزیکی ۱۰۰٪',
+      image: '/products/cbl-1.svg',
       borderColor: 'border-purple-500/40',
       badgeBg: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
     },
@@ -86,10 +86,12 @@ export default function Home() {
   }, [heroSlides.length]);
 
   const categoryIconMap: Record<string, any> = {
+    'هولدر و پایه': Navigation,
     'قاب و کاور': Smartphone,
     'گلس': Shield,
-    'شارژر': Zap,
     'کابل': Cable,
+    'محافظ کابل': Layers,
+    'شارژر': Zap,
     'هندزفری': Headphones,
     'پاوربانک': BatteryCharging,
   };
@@ -118,34 +120,35 @@ export default function Home() {
   }, [products]);
 
   const filteredProducts = useMemo(() => {
-    if (activeTab === 'chargers') return products.filter((p) => p.category === 'شارژر' || p.category === 'کابل').slice(0, 8);
-    if (activeTab === 'audio') return products.filter((p) => p.category === 'هندزفری').slice(0, 8);
-    if (activeTab === 'covers') return products.filter((p) => p.category === 'قاب و کاور' || p.category === 'گلس').slice(0, 8);
+    if (activeTab === 'holders') return products.filter((p) => p.category === 'هولدر و پایه');
+    if (activeTab === 'cables') return products.filter((p) => p.category === 'کابل' || p.category === 'محافظ کابل');
+    if (activeTab === 'cases') return products.filter((p) => p.category === 'قاب و کاور');
+    if (activeTab === 'protectors') return products.filter((p) => p.category === 'گلس' || p.category === 'محافظ کابل');
     return products.slice(0, 8);
   }, [products, activeTab]);
 
   const valueProps = [
     {
-      title: 'ارسال فوری پیشتاز',
-      desc: 'تحویل سریع در بسته‌بندی ایمن به تمام نقاط کشور',
-      icon: Truck,
+      title: 'فروش تک و عمده همکاران',
+      desc: 'قیمت رقابتی بازار و ارسال کارتنی برای فروشگاه‌ها',
+      icon: PackageCheck,
       color: 'text-orange-500 bg-orange-500/15 border-orange-500/30',
     },
     {
-      title: 'ضمانت اصالت ۱۰۰٪',
-      desc: 'تضمین اصالت کالا و مهلت تست سلامت فیزیکی',
-      icon: ShieldCheck,
+      title: 'ارسال فوری پیشتاز',
+      desc: 'تحویل سریع در بسته‌بندی ضدضربه به سراسر کشور',
+      icon: Truck,
       color: 'text-emerald-500 bg-emerald-500/15 border-emerald-500/30',
     },
     {
-      title: '۷ روز بازگشت وجه',
-      desc: 'امکان مرجوعی بدون قید و شرط در صورت مغایرت',
-      icon: RefreshCw,
+      title: 'تضمین سلامت فیزیکی',
+      desc: 'مهلت تست ۷ روزه و امکان تعویض در صورت مغایرت',
+      icon: ShieldCheck,
       color: 'text-blue-500 bg-blue-500/15 border-blue-500/30',
     },
     {
-      title: 'مشاوره تخصصی خرید',
-      desc: 'راهنمایی انتخاب توان، پورت و مدل متناسب با گوشی',
+      title: 'مشاوره خرید هولدر و قاب',
+      desc: 'راهنمایی انتخاب مدل متناسب با خودرو و مدل گوشی',
       icon: Headset,
       color: 'text-purple-500 bg-purple-500/15 border-purple-500/30',
     },
@@ -177,7 +180,7 @@ export default function Home() {
                 {currentSlide.title}
               </h1>
 
-              <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-normal">
+              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-normal">
                 {currentSlide.subtitle}
               </p>
 
@@ -225,7 +228,28 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 2. Value Propositions Bar */}
+      {/* 2. Wholesale / B2B Banner Strip */}
+      <section className="w-full">
+        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-600/20 via-orange-600/20 to-amber-600/20 border border-amber-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3 text-right">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0">
+              <PackageCheck className="h-5 w-5" />
+            </div>
+            <div>
+              <h3 className="text-xs sm:text-sm font-black text-white">فروش عمده، کارتنی و همکاران سراسر ایران</h3>
+              <p className="text-[11px] text-zinc-300 mt-0.5">قیمت همکاری ویژه برای مغازه‌داران و خریداران عمده هولدر، قاب، گلس و کابل</p>
+            </div>
+          </div>
+          <Link
+            to="/contact?type=wholesale"
+            className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-black text-xs transition-all shadow-md shadow-amber-500/20 shrink-0"
+          >
+            استعلام لیست قیمت عمده
+          </Link>
+        </div>
+      </section>
+
+      {/* 3. Value Propositions Bar */}
       <section className="w-full">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {valueProps.map((item, i) => {
@@ -233,7 +257,7 @@ export default function Home() {
             return (
               <div 
                 key={i} 
-                className="flex items-center gap-3.5 p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xs hover:border-orange-500/40 transition-colors"
+                className="flex items-center gap-3.5 p-4 rounded-2xl bg-white dark:bg-[#0d121c] border border-zinc-200/80 dark:border-zinc-800/80 shadow-xs hover:border-orange-500/40 transition-colors"
               >
                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border ${item.color}`}>
                   <Icon className="h-6 w-6 stroke-[2]" />
@@ -248,7 +272,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3. Amazing Deals Section */}
+      {/* 4. Amazing Deals Section */}
       <section className="w-full">
         <div className="bg-gradient-to-br from-[#121827] via-[#0b0f19] to-[#06080e] rounded-3xl p-5 sm:p-8 text-white border border-orange-500/30 shadow-2xl relative overflow-hidden">
           
@@ -327,7 +351,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. Category Visual Circles */}
+      {/* 5. Category Visual Circles */}
       <section className="w-full">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -347,9 +371,9 @@ export default function Home() {
               <Link
                 key={idx}
                 to={`/products?category=${encodeURIComponent(cat.title)}`}
-                className="flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 transition-colors group text-center shadow-xs"
+                className="flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-[#0d121c] border border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 transition-colors group text-center shadow-xs"
               >
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-700 dark:text-zinc-200 group-hover:bg-orange-600 group-hover:text-white transition-all mb-2">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800/80 flex items-center justify-center text-zinc-700 dark:text-zinc-200 group-hover:bg-orange-600 group-hover:text-white transition-all mb-2">
                   <Icon className="h-5 w-5 sm:h-6 sm:w-6 stroke-[1.8]" />
                 </div>
                 <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
@@ -364,7 +388,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 5. Trending Products Tabs */}
+      {/* 6. Trending Products Tabs Focus on Core Categories */}
       <section className="w-full">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-zinc-200 dark:border-zinc-800 pb-3">
           <div className="flex items-center gap-2">
@@ -372,13 +396,14 @@ export default function Home() {
             <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white">کالاهای برگزیده بازار</h2>
           </div>
 
-          {/* Category Tabs */}
+          {/* Core Category Tabs */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
             {[
               { id: 'all', label: 'همه محصولات' },
-              { id: 'chargers', label: 'شارژر و کابل' },
-              { id: 'audio', label: 'صوتی و هندزفری' },
-              { id: 'covers', label: 'قاب و محافظ' },
+              { id: 'holders', label: 'هولدر و پایه' },
+              { id: 'cases', label: 'قاب و کاور' },
+              { id: 'protectors', label: 'گلس و محافظ کابل' },
+              { id: 'cables', label: 'کابل و شارژر' },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -409,16 +434,16 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 6. VIP Loyalty Club Banner */}
+      {/* 7. VIP Loyalty Club Banner */}
       <VipClubBanner />
 
-      {/* 7. Brands Showcase */}
+      {/* 8. Brands Showcase */}
       <BrandShowcase />
 
-      {/* 8. FAQ Section */}
+      {/* 9. FAQ Section */}
       <FAQ />
 
-      {/* 9. Recently Viewed */}
+      {/* 10. Recently Viewed */}
       <RecentlyViewed />
     </div>
   );

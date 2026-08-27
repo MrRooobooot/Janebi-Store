@@ -7,7 +7,9 @@ import { motion } from 'motion/react';
 export default function Contact() {
   const { addToast } = useToast();
   const settings = useStoreSettings();
-  const [formData, setFormData] = useState({ name: '', contactInfo: '', subject: '', message: '' });
+  const searchParams = new URLSearchParams(window.location.search);
+  const initialSubject = searchParams.get('type') === 'wholesale' ? 'استعلام قیمت و خرید عمده (همکاران)' : '';
+  const [formData, setFormData] = useState({ name: '', contactInfo: '', subject: initialSubject, message: '' });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 

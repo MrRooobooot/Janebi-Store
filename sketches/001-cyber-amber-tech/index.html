@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Variant 1: Cyber Amber Tech | جانبی آرنا</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @font-face {
+      font-family: 'Vazirmatn';
+      src: url('/fonts/Vazirmatn-Regular.woff2') format('woff2');
+      font-weight: 400;
+    }
+    @font-face {
+      font-family: 'Vazirmatn';
+      src: url('/fonts/Vazirmatn-Bold.woff2') format('woff2');
+      font-weight: 700;
+    }
+    body {
+      font-family: 'Vazirmatn', -apple-system, sans-serif;
+      background-color: #080b11;
+      color: #f1f5f9;
+    }
+    .neon-border {
+      border: 1px solid rgba(255, 106, 0, 0.35);
+      box-shadow: 0 0 25px rgba(255, 106, 0, 0.12);
+    }
+    .neon-glow {
+      box-shadow: 0 0 35px rgba(255, 106, 0, 0.25);
+    }
+  </style>
+</head>
+<body class="min-h-screen p-4 sm:p-8 flex flex-col items-center">
+  <!-- Header Bar -->
+  <header class="w-full max-w-6xl flex items-center justify-between p-4 rounded-2xl bg-[#0e131f]/90 border border-orange-500/20 backdrop-blur-xl mb-8">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-orange-600/40">
+        ⚡
+      </div>
+      <div>
+        <h1 class="text-lg font-black text-white">جانبی <span class="text-orange-500">آرنا</span></h1>
+        <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Cyber Amber Edition</p>
+      </div>
+    </div>
+
+    <!-- Live Filter Buttons -->
+    <div class="flex gap-2">
+      <button onclick="filterCategory('all')" id="btn-all" class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-orange-600 text-white transition-all shadow-md shadow-orange-600/30">همه</button>
+      <button onclick="filterCategory('charger')" id="btn-charger" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[#141b2d] text-zinc-400 hover:text-white border border-zinc-700/60 transition-all">شارژرها</button>
+      <button onclick="filterCategory('audio')" id="btn-audio" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[#141b2d] text-zinc-400 hover:text-white border border-zinc-700/60 transition-all">هدفون و ایرپاد</button>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="w-full max-w-6xl space-y-8">
+    <section class="rounded-3xl bg-gradient-to-br from-[#121929] via-[#0b0f19] to-[#06080e] p-8 sm:p-12 neon-border relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
+      <div class="space-y-4 max-w-xl text-right">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-500/10 text-orange-400 text-xs font-black border border-orange-500/30">
+          🔥 پیشنهاد سایبر هفته
+        </span>
+        <h2 class="text-3xl sm:text-5xl font-black text-white leading-tight">
+          فست‌شارژهای نسل جدید <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-300">GaN 65W Pro</span>
+        </h2>
+        <p class="text-sm text-zinc-300 leading-relaxed">
+          حداکثر توان خروجی، خنک‌کنندگی سه‌بعدی نیترید گالیوم و محافظت چندلایه باتری برای تمام پرچمداران اپل و سامسونگ.
+        </p>
+        <div class="pt-2 flex items-center gap-4">
+          <button onclick="alert('انتقال به خرید کالا')" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-500 hover:to-amber-400 text-white font-black text-sm shadow-xl shadow-orange-600/30 transition-all active:scale-95 cursor-pointer">
+            خرید آنی با تخفیف ۳۵٪
+          </button>
+          <span class="text-xs text-zinc-400 font-bold border-r-2 border-zinc-700 pr-3">ضمانت اصالت و گارانتی تعویض</span>
+        </div>
+      </div>
+
+      <div class="w-64 h-64 sm:w-80 sm:h-80 rounded-3xl bg-[#141c2e]/60 border border-orange-500/30 p-6 flex items-center justify-center neon-glow">
+        <img src="/products/chg-2.svg" alt="Charger" class="w-full h-full object-contain drop-shadow-[0_15px_25px_rgba(255,106,0,0.35)]">
+      </div>
+    </section>
+
+    <!-- Product Showcase Grid -->
+    <section>
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-black text-white">کالاهای برگزیده</h3>
+        <span class="text-xs text-orange-400 font-bold">نمایش ۴ محصول برتر</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="product-grid">
+        <!-- Card 1 -->
+        <div class="product-card charger rounded-3xl bg-[#0e1422] border border-zinc-800/80 p-5 hover:border-orange-500/60 hover:shadow-xl hover:shadow-orange-600/10 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between">
+          <div>
+            <div class="aspect-square rounded-2xl bg-[#141b2c] p-4 flex items-center justify-center mb-4 border border-zinc-800">
+              <img src="/products/chg-2.svg" class="w-full h-full object-contain">
+            </div>
+            <span class="text-[11px] font-bold text-orange-400">شارژر GaN</span>
+            <h4 class="font-black text-sm text-white mt-1">شارژر ۲۰ وات دیواری انکر Nano Pro</h4>
+          </div>
+          <div class="mt-4 pt-3 border-t border-zinc-800/80 flex items-center justify-between">
+            <span class="text-base font-black text-orange-400">۷۸۰,۰۰۰ تومان</span>
+            <button class="px-3.5 py-1.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white text-xs font-black">خرید</button>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="product-card audio rounded-3xl bg-[#0e1422] border border-zinc-800/80 p-5 hover:border-orange-500/60 hover:shadow-xl hover:shadow-orange-600/10 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between">
+          <div>
+            <div class="aspect-square rounded-2xl bg-[#141b2c] p-4 flex items-center justify-center mb-4 border border-zinc-800">
+              <img src="/products/ear-6.svg" class="w-full h-full object-contain">
+            </div>
+            <span class="text-[11px] font-bold text-orange-400">هندزفری TWS</span>
+            <h4 class="font-black text-sm text-white mt-1">هندزفری بی‌سیم سامسونگ Galaxy Buds2 Pro</h4>
+          </div>
+          <div class="mt-4 pt-3 border-t border-zinc-800/80 flex items-center justify-between">
+            <span class="text-base font-black text-orange-400">۴,۵۰۰,۰۰۰ تومان</span>
+            <button class="px-3.5 py-1.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white text-xs font-black">خرید</button>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="product-card audio rounded-3xl bg-[#0e1422] border border-zinc-800/80 p-5 hover:border-orange-500/60 hover:shadow-xl hover:shadow-orange-600/10 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between">
+          <div>
+            <div class="aspect-square rounded-2xl bg-[#141b2c] p-4 flex items-center justify-center mb-4 border border-zinc-800">
+              <img src="/products/ear-10.svg" class="w-full h-full object-contain">
+            </div>
+            <span class="text-[11px] font-bold text-orange-400">ایرپاد شیائومی</span>
+            <h4 class="font-black text-sm text-white mt-1">هندزفری بلوتوثی شیائومی Redmi Buds 5 Pro</h4>
+          </div>
+          <div class="mt-4 pt-3 border-t border-zinc-800/80 flex items-center justify-between">
+            <span class="text-base font-black text-orange-400">۲,۱۵۰,۰۰۰ تومان</span>
+            <button class="px-3.5 py-1.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white text-xs font-black">خرید</button>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="product-card charger rounded-3xl bg-[#0e1422] border border-zinc-800/80 p-5 hover:border-orange-500/60 hover:shadow-xl hover:shadow-orange-600/10 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between">
+          <div>
+            <div class="aspect-square rounded-2xl bg-[#141b2c] p-4 flex items-center justify-center mb-4 border border-zinc-800">
+              <img src="/products/chg-9.svg" class="w-full h-full object-contain">
+            </div>
+            <span class="text-[11px] font-bold text-orange-400">وایرلس مگ‌سیف</span>
+            <h4 class="font-black text-sm text-white mt-1">پد شارژر مغناطیسی اپل MagSafe اصلی</h4>
+          </div>
+          <div class="mt-4 pt-3 border-t border-zinc-800/80 flex items-center justify-between">
+            <span class="text-base font-black text-orange-400 ۱,۶۰۰,۰۰۰ تومان</span>
+            <button class="px-3.5 py-1.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white text-xs font-black">خرید</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function filterCategory(cat) {
+      document.querySelectorAll('.product-card').forEach(el => {
+        if (cat === 'all' || el.classList.contains(cat)) {
+          el.style.display = 'flex';
+        } else {
+          el.style.display = 'none';
+        }
+      });
+      document.querySelectorAll('header button').forEach(b => {
+        b.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[#141b2d] text-zinc-400 hover:text-white border border-zinc-700/60 transition-all";
+      });
+      document.getElementById('btn-' + cat).className = "px-3.5 py-1.5 rounded-xl text-xs font-black bg-orange-600 text-white transition-all shadow-md shadow-orange-600/30";
+    }
+  </script>
+</body>
+</html>
