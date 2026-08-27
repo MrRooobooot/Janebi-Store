@@ -73,8 +73,8 @@ export function useProductFilters() {
       fetch('/api/categories').then(res => res.json()),
       fetch('/api/brands').then(res => res.json())
     ]).then(([catsData, brandsData]) => {
-      setCategories([{ name: 'همه', count: 0 }, ...catsData.map((c: any) => ({ name: c.title || c.name, count: c.count || 0 }))]);
-      setBrands(brandsData.map((b: any) => ({ name: typeof b === 'string' ? b : (b.name || b.title || 'Unknown'), count: b.count || 0 })));
+      setCategories(Array.isArray(catsData) ? catsData.map((c: any) => ({ name: c.title || c.name, count: c.count || 0 })) : []);
+      setBrands(Array.isArray(brandsData) ? brandsData.map((b: any) => ({ name: typeof b === 'string' ? b : (b.name || b.title || 'Unknown'), count: b.count || 0 })) : []);
     }).catch(err => console.error("Error fetching filter metadata", err));
   }, []);
 
