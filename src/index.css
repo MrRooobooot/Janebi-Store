@@ -70,16 +70,24 @@ body {
   flex-direction: column;
 }
 
+/* ── Linear / Raycast Precision Dark Canvas (#08090a) ────────────── */
 .dark body {
-  background-color: #06090e;
-  color: #f8fafc;
+  background-color: #08090a;
+  color: #f7f8f8;
 }
 
-/* ── Dark Mode Modern Glassmorphism & High-End Card Surfaces ─────── */
-.dark .bg-surface-card {
-  background-color: rgba(13, 18, 28, 0.85);
-  backdrop-filter: blur(16px);
-  border-color: rgba(255, 255, 255, 0.08);
+/* ── Glassmorphic Luminance Stepping ────────────────────────────── */
+.dark .linear-card {
+  background-color: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 8px 24px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+}
+
+.dark .linear-card:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 106, 0, 0.35);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 12px 32px rgba(0, 0, 0, 0.6);
 }
 
 .dark .text-zinc-400,
@@ -90,6 +98,11 @@ body {
 .dark .text-zinc-300,
 .dark .text-gray-300 {
   color: #cbd5e1 !important;
+}
+
+/* ── Raycast macOS-Native Inset Button Shadow ────────────────────── */
+.raycast-btn {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -1px 0 rgba(0, 0, 0, 0.2), 0 4px 12px rgba(240, 84, 0, 0.25);
 }
 
 /* ── Focus Ring System ──────────────────────────────────────────── */

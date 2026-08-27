@@ -31,7 +31,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
   };
 
   return (
-    <div className="bg-white dark:bg-[#0d121c] rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 p-4 hover:shadow-2xl dark:hover:shadow-black/70 hover:border-orange-500/50 dark:hover:border-orange-500/40 transition-all duration-300 relative flex flex-col justify-between h-full group select-none hover:-translate-y-1">
+    <div className="linear-card bg-white dark:bg-white/[0.025] rounded-3xl border border-zinc-200/80 dark:border-white/[0.08] p-4.5 hover:shadow-2xl transition-all duration-300 relative flex flex-col justify-between h-full group select-none hover:-translate-y-1">
       
       {/* 1. Header Badges & Quick Action Floating Buttons */}
       <div>
@@ -46,7 +46,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
                 {toPersianDigits(product.discount)}٪ تخفیف
               </span>
             ) : (
-              <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800/60 px-2 py-0.5 rounded-lg border border-zinc-200/60 dark:border-zinc-700/50">
+              <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-white/[0.04] px-2.5 py-0.5 rounded-lg border border-zinc-200/60 dark:border-white/[0.06]">
                 {product.brand || 'اورجینال'}
               </span>
             )}
@@ -59,7 +59,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
               className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${
                 inWishlist 
                   ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-500 border border-rose-200 dark:border-rose-800' 
-                  : 'bg-zinc-50 dark:bg-zinc-800/80 text-zinc-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 border border-zinc-200/40 dark:border-zinc-700/40'
+                  : 'bg-zinc-50 dark:bg-white/[0.03] text-zinc-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 border border-zinc-200/40 dark:border-white/[0.05]'
               }`}
               title="علاقه‌مندی‌ها"
             >
@@ -71,7 +71,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
               className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${
                 inCompare 
                   ? 'bg-orange-50 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-800' 
-                  : 'bg-zinc-50 dark:bg-zinc-800/80 text-zinc-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-950/30 border border-zinc-200/40 dark:border-zinc-700/40'
+                  : 'bg-zinc-50 dark:bg-white/[0.03] text-zinc-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-950/30 border border-zinc-200/40 dark:border-white/[0.05]'
               }`}
               title="مقایسه مشخصات"
             >
@@ -82,7 +82,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
 
         {/* 2. Visual Product Image Container */}
         <Link to={`/product/${product.id}`} className="block group-hover:opacity-95 transition-opacity">
-          <div className="relative aspect-square w-full rounded-2xl bg-gradient-to-b from-zinc-50 to-zinc-100/60 dark:from-zinc-900/90 dark:to-zinc-900/40 border border-zinc-100 dark:border-zinc-800/60 p-4 flex items-center justify-center overflow-hidden mb-3.5 group-hover:border-orange-500/30 transition-colors">
+          <div className="relative aspect-square w-full rounded-2xl bg-gradient-to-b from-zinc-50 to-zinc-100/60 dark:from-white/[0.03] dark:to-white/[0.01] border border-zinc-100 dark:border-white/[0.06] p-4 flex items-center justify-center overflow-hidden mb-3.5 group-hover:border-orange-500/30 transition-colors">
             
             {/* Ambient Radial Accent */}
             <div className="absolute inset-0 bg-radial from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -104,14 +104,14 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
           </div>
 
           {/* 4. Product Title */}
-          <h3 className="font-black text-xs sm:text-sm text-zinc-900 dark:text-zinc-100 line-clamp-2 leading-relaxed min-h-[40px] group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+          <h3 className="font-black text-xs sm:text-sm text-zinc-900 dark:text-[#f7f8f8] line-clamp-2 leading-relaxed min-h-[40px] group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
             {product.title}
           </h3>
         </Link>
       </div>
 
       {/* 5. Footer: Price & Add-To-Cart CTA */}
-      <div className="mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800/70">
+      <div className="mt-4 pt-3 border-t border-zinc-100 dark:border-white/[0.06]">
         <div className="flex items-end justify-between gap-2">
           
           {/* Price Stack */}
@@ -126,17 +126,17 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
             </div>
           </div>
 
-          {/* Primary Action Button */}
+          {/* Primary Action Button with Raycast Inset Shadow */}
           <button
             type="button"
             disabled={outOfStock}
             onClick={handleAddToCart}
-            className={`h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl flex items-center justify-center gap-1.5 text-xs font-black transition-all duration-200 cursor-pointer shadow-md ${
+            className={`raycast-btn h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl flex items-center justify-center gap-1.5 text-xs font-black transition-all duration-200 cursor-pointer ${
               outOfStock 
                 ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400 cursor-not-allowed shadow-none'
                 : added 
                   ? 'bg-emerald-600 text-white shadow-emerald-600/30'
-                  : 'bg-orange-600 hover:bg-orange-500 active:scale-95 text-white shadow-orange-600/25 hover:shadow-orange-600/40'
+                  : 'bg-gradient-to-b from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 active:scale-95 text-white'
             }`}
             title="افزودن به سبد خرید"
           >
@@ -156,7 +156,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
 
         {/* 6. Guarantee Micro-Badge */}
         {product.warranty && (
-          <div className="mt-2.5 flex items-center gap-1.5 text-[10px] text-zinc-500 dark:text-zinc-400 font-medium bg-zinc-50 dark:bg-zinc-800/40 px-2 py-1 rounded-lg border border-zinc-200/40 dark:border-zinc-700/30">
+          <div className="mt-2.5 flex items-center gap-1.5 text-[10px] text-zinc-500 dark:text-zinc-400 font-medium bg-zinc-50 dark:bg-white/[0.02] px-2 py-1 rounded-lg border border-zinc-200/40 dark:border-white/[0.04]">
             <ShieldCheck className="h-3 w-3 text-emerald-500 shrink-0" />
             <span className="truncate">{product.warranty}</span>
           </div>
