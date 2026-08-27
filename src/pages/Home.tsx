@@ -9,7 +9,7 @@ import VipClubBanner from '../components/VipClubBanner';
 import { 
   Sparkles, ArrowLeft, Smartphone, Shield, Zap, Cable, Headphones, 
   BatteryCharging, Truck, ShieldCheck, RefreshCw, Headset, Flame, Star, 
-  Clock, TrendingUp, Award
+  Clock, TrendingUp, Award, CheckCircle2
 } from 'lucide-react';
 import { Product } from '../types';
 import { toPersianDigits, formatPrice } from '../lib/utils';
@@ -48,8 +48,8 @@ export default function Home() {
       buttonLink: settings.heroSlide1Link || '/products?category=شارژر',
       badge: settings.heroSlide1Badge || 'گارانتی تعویض ۶ ماهه',
       image: '/products/chg-2.svg',
-      borderColor: 'border-orange-500/30',
-      badgeBg: 'bg-orange-500/15 text-orange-400 border-orange-500/30',
+      borderColor: 'border-orange-500/40',
+      badgeBg: 'bg-orange-500/20 text-orange-300 border-orange-500/40',
     },
     {
       id: 2,
@@ -60,8 +60,8 @@ export default function Home() {
       buttonLink: settings.heroSlide2Link || '/products?category=قاب و کاور',
       badge: settings.heroSlide2Badge || 'تست فیزیکی قبل از ارسال',
       image: '/products/cas-4.svg',
-      borderColor: 'border-blue-500/30',
-      badgeBg: 'bg-blue-500/15 text-blue-400 border-blue-500/30',
+      borderColor: 'border-blue-500/40',
+      badgeBg: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
     },
     {
       id: 3,
@@ -72,8 +72,8 @@ export default function Home() {
       buttonLink: settings.heroSlide3Link || '/products?category=هندزفری',
       badge: settings.heroSlide3Badge || 'مهلت تست ۷ روزه',
       image: '/products/ear-6.svg',
-      borderColor: 'border-purple-500/30',
-      badgeBg: 'bg-purple-500/15 text-purple-400 border-purple-500/30',
+      borderColor: 'border-purple-500/40',
+      badgeBg: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
     },
   ], [settings]);
 
@@ -129,69 +129,69 @@ export default function Home() {
       title: 'ارسال فوری پیشتاز',
       desc: 'تحویل سریع در بسته‌بندی ایمن به تمام نقاط کشور',
       icon: Truck,
-      color: 'text-orange-500 bg-orange-500/10 border-orange-500/20',
+      color: 'text-orange-500 bg-orange-500/15 border-orange-500/30',
     },
     {
       title: 'ضمانت اصالت ۱۰۰٪',
       desc: 'تضمین اصالت کالا و مهلت تست سلامت فیزیکی',
       icon: ShieldCheck,
-      color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20',
+      color: 'text-emerald-500 bg-emerald-500/15 border-emerald-500/30',
     },
     {
       title: '۷ روز بازگشت وجه',
       desc: 'امکان مرجوعی بدون قید و شرط در صورت مغایرت',
       icon: RefreshCw,
-      color: 'text-blue-500 bg-blue-500/10 border-blue-500/20',
+      color: 'text-blue-500 bg-blue-500/15 border-blue-500/30',
     },
     {
       title: 'مشاوره تخصصی خرید',
       desc: 'راهنمایی انتخاب توان، پورت و مدل متناسب با گوشی',
       icon: Headset,
-      color: 'text-purple-500 bg-purple-500/10 border-purple-500/20',
+      color: 'text-purple-500 bg-purple-500/15 border-purple-500/30',
     },
   ];
 
   const currentSlide = heroSlides[activeSlide];
 
   return (
-    <div className="space-y-8 sm:space-y-12 pb-16 w-full max-w-full overflow-hidden">
+    <div className="space-y-8 sm:space-y-12 pb-16 w-full max-w-full overflow-hidden box-border">
       
-      {/* 1. Hero Showcase Section — Fully Symmetric Responsive Padding */}
-      <section className="w-full">
-        <div className={`relative rounded-3xl overflow-hidden bg-gradient-to-b from-zinc-900 via-zinc-900 to-black border ${currentSlide.borderColor} shadow-2xl p-5 sm:p-8 lg:p-10 transition-all duration-700 min-h-[340px] sm:min-h-[400px] flex flex-col justify-between`}>
+      {/* 1. Hero Showcase Section */}
+      <section className="w-full box-border">
+        <div className={`relative rounded-3xl overflow-hidden bg-gradient-to-b from-zinc-900 via-zinc-900 to-black border ${currentSlide.borderColor} shadow-2xl p-6 sm:p-8 lg:p-10 transition-all duration-700 min-h-[360px] sm:min-h-[420px] flex flex-col justify-between`}>
           
           {/* Subtle Ambient Dot Grid */}
-          <div className="absolute inset-0 bg-[radial-gradient(#ffffff08_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" />
 
           {/* Grid: Text Column & Graphic Column */}
           <div className="relative z-10 w-full grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
             
             {/* Text & Actions */}
-            <div className="md:col-span-7 space-y-3.5 sm:space-y-4 text-right">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-800/90 border border-zinc-700/80 text-amber-400 text-xs font-black shadow-xs">
+            <div className="md:col-span-7 space-y-4 text-right">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-800/90 border border-zinc-700 text-amber-400 text-xs font-black shadow-xs">
                 <Sparkles className="h-3.5 w-3.5 animate-pulse text-amber-400 shrink-0" />
-                <span className="truncate">{currentSlide.tag}</span>
+                <span>{currentSlide.tag}</span>
               </div>
 
               <h1 className="text-xl sm:text-3xl lg:text-4xl font-black text-white leading-snug tracking-tight">
                 {currentSlide.title}
               </h1>
 
-              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-normal">
+              <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-normal">
                 {currentSlide.subtitle}
               </p>
 
-              <div className="pt-2 flex flex-wrap items-center gap-2.5 sm:gap-3">
+              <div className="pt-2 flex flex-wrap items-center gap-3">
                 <Link
                   to={currentSlide.buttonLink}
-                  className="bg-orange-600 hover:bg-orange-500 text-white font-black px-5 sm:px-6 py-2.5 sm:py-3 rounded-2xl text-xs sm:text-sm transition-all duration-200 shadow-md shadow-orange-600/30 flex items-center gap-2 group active:scale-95"
+                  className="bg-orange-600 hover:bg-orange-500 text-white font-black px-6 py-3 rounded-2xl text-xs sm:text-sm transition-all duration-200 shadow-lg shadow-orange-600/30 flex items-center gap-2 group active:scale-95"
                 >
                   <span>{currentSlide.buttonText}</span>
                   <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                 </Link>
 
-                <div className={`text-[11px] sm:text-xs font-bold px-3 py-2 rounded-2xl border ${currentSlide.badgeBg} flex items-center gap-1.5`}>
-                  <Award className="h-3.5 w-3.5 shrink-0" />
+                <div className={`text-xs font-black px-4 py-2.5 rounded-2xl border ${currentSlide.badgeBg} flex items-center gap-2`}>
+                  <Award className="h-4 w-4 shrink-0" />
                   <span>{currentSlide.badge}</span>
                 </div>
               </div>
@@ -199,24 +199,24 @@ export default function Home() {
 
             {/* Visual 3D Asset Showcase Column (Desktop/Tablet) */}
             <div className="hidden md:flex md:col-span-5 items-center justify-center relative">
-              <div className="relative w-56 h-56 lg:w-72 lg:h-72 rounded-3xl p-5 bg-zinc-800/40 border border-zinc-700/40 backdrop-blur-md flex items-center justify-center shadow-xl group">
+              <div className="relative w-64 h-64 lg:w-80 lg:h-80 rounded-3xl p-6 bg-zinc-800/60 border border-zinc-700/60 backdrop-blur-md flex items-center justify-center shadow-2xl group">
                 <img
                   src={currentSlide.image}
                   alt={currentSlide.title}
-                  className="w-full h-full object-contain drop-shadow-[0_16px_24px_rgba(0,0,0,0.5)] group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.6)] group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
             </div>
           </div>
 
-          {/* Slide Indicator Dots */}
-          <div className="relative z-10 flex items-center gap-2 mt-4 pt-2">
+          {/* Slide Indicator Dots (Centered) */}
+          <div className="relative z-10 flex items-center justify-center gap-2 mt-6 pt-3 border-t border-zinc-800/80">
             {heroSlides.map((slide, idx) => (
               <button
                 key={slide.id}
                 onClick={() => setActiveSlide(idx)}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  activeSlide === idx ? 'w-7 bg-orange-500' : 'w-2 bg-zinc-600 hover:bg-zinc-400'
+                className={`h-2.5 rounded-full transition-all duration-300 ${
+                  activeSlide === idx ? 'w-8 bg-orange-500 shadow-md shadow-orange-500/50' : 'w-2.5 bg-zinc-700 hover:bg-zinc-500'
                 }`}
                 aria-label={`اسلاید ${idx + 1}`}
               />
@@ -233,14 +233,14 @@ export default function Home() {
             return (
               <div 
                 key={i} 
-                className="flex items-center gap-3.5 p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 shadow-xs hover:border-orange-500/40 transition-colors"
+                className="flex items-center gap-3.5 p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xs hover:border-orange-500/40 transition-colors"
               >
-                <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border ${item.color}`}>
-                  <Icon className="h-5 w-5 stroke-[2.2]" />
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border ${item.color}`}>
+                  <Icon className="h-6 w-6 stroke-[2]" />
                 </div>
                 <div className="min-w-0">
                   <h4 className="text-xs sm:text-sm font-black text-zinc-900 dark:text-zinc-100">{item.title}</h4>
-                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 leading-snug">{item.desc}</p>
+                  <p className="text-xs text-zinc-600 dark:text-zinc-300 mt-0.5 leading-snug">{item.desc}</p>
                 </div>
               </div>
             );
@@ -260,14 +260,14 @@ export default function Home() {
               </div>
               <div>
                 <h2 className="text-lg sm:text-2xl font-black text-white">پیشنهادات شگفت‌انگیز روز</h2>
-                <p className="text-xs text-zinc-400 mt-0.5">تخفیف‌های محدود با تضمین کمترین قیمت بازار</p>
+                <p className="text-xs text-zinc-300 mt-0.5">تخفیف‌های محدود با تضمین کمترین قیمت بازار</p>
               </div>
             </div>
 
             {/* Countdown Clock */}
             <div className="flex items-center gap-2 bg-zinc-800/90 border border-zinc-700/80 px-3.5 py-1.5 rounded-2xl text-xs font-bold font-mono">
               <Clock className="h-4 w-4 text-orange-400 shrink-0" />
-              <span className="text-zinc-300">فرصت باقی‌مانده:</span>
+              <span className="text-zinc-200">فرصت باقی‌مانده:</span>
               <div className="flex items-center gap-1 text-sm font-black text-orange-400">
                 <span className="bg-zinc-900 px-1.5 py-0.5 rounded-lg border border-zinc-700">{toPersianDigits(timeLeft.hours.toString().padStart(2, '0'))}</span>
                 <span>:</span>
@@ -302,13 +302,13 @@ export default function Home() {
                     </span>
                   </div>
 
-                  <h3 className="text-xs font-bold line-clamp-2 leading-relaxed min-h-[36px] text-zinc-200 group-hover:text-orange-400 transition-colors">
+                  <h3 className="text-xs font-bold line-clamp-2 leading-relaxed min-h-[36px] text-zinc-100 group-hover:text-orange-400 transition-colors">
                     {p.title}
                   </h3>
 
                   <div className="mt-3 pt-2 border-t border-zinc-700/50 flex flex-col items-end">
                     {p.originalPrice && p.originalPrice > p.price && (
-                      <span className="text-[10px] text-zinc-500 line-through">
+                      <span className="text-[10px] text-zinc-400 line-through">
                         {formatPrice(p.originalPrice)}
                       </span>
                     )}
@@ -319,7 +319,7 @@ export default function Home() {
                 </Link>
               ))
             ) : (
-              <div className="col-span-full py-8 text-center text-sm font-medium text-zinc-400">
+              <div className="col-span-full py-8 text-center text-sm font-medium text-zinc-300">
                 در حال حاضر تمام شگفت‌انگیزها به پایان رسیده‌اند.
               </div>
             )}
@@ -332,9 +332,9 @@ export default function Home() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white">دسته‌بندی‌های تخصصی</h2>
-            <p className="text-xs text-zinc-500 mt-0.5">انتخاب تجهیزات بر اساس دسته‌بندی</p>
+            <p className="text-xs text-zinc-600 dark:text-zinc-300 mt-0.5">انتخاب تجهیزات بر اساس دسته‌بندی</p>
           </div>
-          <Link to="/products" className="text-xs font-bold text-orange-600 dark:text-orange-400 hover:underline flex items-center gap-1">
+          <Link to="/products" className="text-xs font-black text-orange-600 dark:text-orange-400 hover:underline flex items-center gap-1">
             <span>مشاهده کاتالوگ کامل</span>
             <ArrowLeft className="h-3.5 w-3.5" />
           </Link>
@@ -347,15 +347,15 @@ export default function Home() {
               <Link
                 key={idx}
                 to={`/products?category=${encodeURIComponent(cat.title)}`}
-                className="flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 transition-colors group text-center shadow-xs"
+                className="flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 transition-colors group text-center shadow-xs"
               >
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center text-zinc-700 dark:text-zinc-300 group-hover:bg-orange-600 group-hover:text-white transition-all mb-2">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-700 dark:text-zinc-200 group-hover:bg-orange-600 group-hover:text-white transition-all mb-2">
                   <Icon className="h-5 w-5 sm:h-6 sm:w-6 stroke-[1.8]" />
                 </div>
                 <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
                   {cat.title}
                 </span>
-                <span className="text-[10px] text-zinc-400 dark:text-zinc-500 mt-0.5">
+                <span className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">
                   {toPersianDigits(cat.count || 0)} کالا
                 </span>
               </Link>
@@ -386,7 +386,7 @@ export default function Home() {
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-colors shrink-0 ${
                   activeTab === tab.id
                     ? 'bg-orange-600 text-white shadow-xs'
-                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700'
                 }`}
               >
                 {tab.label}
@@ -402,7 +402,7 @@ export default function Home() {
           ) : filteredProducts.length > 0 ? (
             filteredProducts.map((p) => <ProductCard key={p.id} product={p} />)
           ) : (
-            <div className="col-span-full py-12 text-center text-sm text-zinc-500">
+            <div className="col-span-full py-12 text-center text-sm text-zinc-400">
               کالایی در این دسته‌بندی یافت نشد.
             </div>
           )}
