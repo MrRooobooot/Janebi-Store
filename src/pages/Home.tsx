@@ -12,7 +12,7 @@ import {
   Clock, TrendingUp, Award, CheckCircle2
 } from 'lucide-react';
 import { Product } from '../types';
-import { toPersianDigits, formatPrice } from '../lib/utils';
+import { toPersianDigits, formatPrice, getAssetUrl } from '../lib/utils';
 import { useStoreSettings } from '../hooks/useStoreSettings';
 
 export default function Home() {
@@ -201,7 +201,7 @@ export default function Home() {
             <div className="hidden md:flex md:col-span-5 items-center justify-center relative">
               <div className="relative w-64 h-64 lg:w-80 lg:h-80 rounded-3xl p-6 bg-zinc-800/60 border border-zinc-700/60 backdrop-blur-md flex items-center justify-center shadow-2xl group">
                 <img
-                  src={currentSlide.image}
+                  src={getAssetUrl(currentSlide.image)}
                   alt={currentSlide.title}
                   className="w-full h-full object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.6)] group-hover:scale-105 transition-transform duration-500"
                 />
@@ -293,7 +293,7 @@ export default function Home() {
                 >
                   <div className="relative aspect-square rounded-xl bg-zinc-900/80 p-3 mb-3 flex items-center justify-center overflow-hidden">
                     <img 
-                      src={p.image} 
+                      src={getAssetUrl(p.image)} 
                       alt={p.title} 
                       className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
                     />

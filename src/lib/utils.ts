@@ -91,3 +91,16 @@ export function formatPersianDate(dateInput: string | Date | number, includeTime
     return String(dateInput);
   }
 }
+
+/**
+ * Cache-busting helper for local vector and image assets.
+ * Ensures the browser immediately downloads the newest centered SVGs without stale cache.
+ */
+export function getAssetUrl(path: string | null | undefined): string {
+  if (!path) return '/products/cas-4.svg';
+  if (path.startsWith('/products/') || path.startsWith('/brands/')) {
+    const sep = path.includes('?') ? '&' : '?';
+    return `${path}${sep}v=3.2.0`;
+  }
+  return path;
+}

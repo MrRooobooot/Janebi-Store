@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getAssetUrl } from '../lib/utils';
 
 interface SmartImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   /** Image URL — if it fails to load, the SVG fallback is shown instead */
@@ -11,11 +12,7 @@ interface SmartImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
 }
 
 /**
- * SmartImage — resilient image with graceful fallback.
- *
- * Iranian users cannot reach foreign image CDNs (Unsplash et al. are DNS-sinkholed),
- * so every remote image must degrade to a branded local placeholder instead of
- * rendering a broken-image icon. Also enforces native lazy loading by default.
+ * SmartImage — resilient image with graceful fallback and versioned cache-busting.
  */
 export default function SmartImage({
   src,
@@ -31,6 +28,8 @@ export default function SmartImage({
   useEffect(() => {
     setFailed(false);
   }, [src]);
+
+  const versionedSrc = getAssetUrl(src);
 
   if (failed) {
     return (
@@ -53,7 +52,7 @@ export default function SmartImage({
 
   return (
     <img
-      src={src}
+      src={versionedSrc}
       alt={alt}
       loading={priority ? 'eager' : 'lazy'}
       decoding="async"
