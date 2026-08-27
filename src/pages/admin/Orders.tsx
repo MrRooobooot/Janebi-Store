@@ -2,7 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
-import { Search, ChevronDown, CheckCircle, Package, Truck, XCircle, Eye, X, MapPin, Phone, User, Calendar, CreditCard } from 'lucide-react';
+import { 
+  Search, ChevronDown, CheckCircle, Package, Truck, XCircle, Eye, X, 
+  MapPin, Phone, User, Calendar, CreditCard, Printer, Download, Share2, Copy 
+} from 'lucide-react';
 import { toPersianDigits, formatPrice } from '../../lib/utils';
 
 export default function AdminOrders() {
@@ -102,6 +105,43 @@ export default function AdminOrders() {
     }
   };
 
+  const handleExportCSV = () => {
+    if (orders.length === 0) {
+      addToast('سفارشی برای خروجی وجود ندارد', 'error');
+      return;
+    }
+
+    const headers = ['شناسه سفارش', 'مشتری', 'موبایل', 'آدرس', 'کد پستی', 'مبلغ (تومان)', 'روش پرداخت', 'وضعیت', 'کد رهگیری پستی', 'تاریخ'];
+    const rows = orders.map(o => [
+      o.id,
+      `"${o.recipient?.name || o.userName || '-'}"`,
+      `"${o.recipient?.phone || '-'}"`,
+      `"${o.recipient?.address || '-'}"`,
+      `"${o.recipient?.postalCode || '-'}"`,
+      o.total,
+      `"${o.paymentMethod || 'آنلاین'}"`,
+      `"${o.statusText || o.status}"`,
+      `"${o.refId || '-'}"`,
+      `"${o.date || '-'}"`
+    ]);
+
+    const csvContent = 'data:text/csv;charset=utf-8,\uFEFF' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `orders-report-${new Date().toLocaleDateString('fa-IR').replace(/\//g, '-')}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    addToast('گزارش اکسل/CSV سفارشات با موفقیت دانلود شد', 'success');
+  };
+
+  const handleCopySMS = (order: any) => {
+    const text = `مشتری گرامی ${order.recipient?.name || 'عزیز'}،\nسفارش شما در جانبی آرنا با شماره پیگیری ${order.id} تحویل شرکت پست گردید.\nکد رهگیری مرسوله پستی: ${order.refId || '-'}\nرهگیری در: tracking.post.ir\nبا تشکر، جانبی آرنا`;
+    navigator.clipboard.writeText(text);
+    addToast('متن پیامک آماده با موفقیت در کلیپ‌بورد کپی شد', 'success');
+  };
+
   const handlePrintInvoice = (order: any) => {
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
@@ -196,9 +236,17 @@ export default function AdminOrders() {
     <div className="space-y-6 text-right">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-gray-900 dark:text-white mb-1">مدیریت سفارشات مشتریان</h1>
-          <p className="text-xs text-gray-500 dark:text-gray-400">بررسی، چاپ فاکتور، انتساب کد رهگیری پستی و تغییر وضعیت سفارشات</p>
+          <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mb-1">مدیریت سفارشات مشتریان</h1>
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">بررسی، چاپ فاکتور، انتساب کد رهگیری پستی و تغییر وضعیت سفارشات</p>
         </div>
+
+        <button
+          onClick={handleExportCSV}
+          className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-4 py-2.5 rounded-2xl text-xs shadow-md shadow-emerald-500/20 transition-all cursor-pointer self-start sm:self-auto"
+        >
+          <Download className="h-4 w-4" />
+          <span>خروجی اکسل / CSV</span>
+        </button>
       </div>
 
       {/* Status Filter Tabs */}
@@ -430,14 +478,26 @@ export default function AdminOrders() {
               </div>
             </div>
 
-            <div className="pt-4 flex items-center justify-between gap-2 border-t border-gray-100 dark:border-gray-700">
-              <button
-                type="button"
-                onClick={() => handlePrintInvoice(selectedOrder)}
-                className="px-4 py-2.5 rounded-xl bg-gray-900 hover:bg-black dark:bg-gray-700 dark:hover:bg-gray-600 text-white text-xs font-bold transition-colors flex items-center gap-1.5 shadow-sm"
-              >
-                چاپ فاکتور رسمی فروش 🖨️
-              </button>
+            <div className="pt-4 flex flex-wrap items-center justify-between gap-2 border-t border-gray-100 dark:border-gray-700">
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handlePrintInvoice(selectedOrder)}
+                  className="px-4 py-2.5 rounded-xl bg-gray-900 hover:bg-black dark:bg-gray-700 dark:hover:bg-gray-600 text-white text-xs font-bold transition-colors flex items-center gap-2 shadow-sm cursor-pointer"
+                >
+                  <Printer className="h-4 w-4 text-orange-400" />
+                  <span>چاپ فاکتور فروش</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleCopySMS(selectedOrder)}
+                  className="px-4 py-2.5 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 text-xs font-bold transition-colors flex items-center gap-2 cursor-pointer border border-blue-200 dark:border-blue-800"
+                >
+                  <Copy className="h-4 w-4" />
+                  <span>کپی پیامک پستی برای مشتری</span>
+                </button>
+              </div>
 
               <button
                 onClick={() => setSelectedOrder(null)}

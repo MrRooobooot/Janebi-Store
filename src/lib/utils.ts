@@ -1,8 +1,8 @@
 /**
  * Formats numbers into Persian digits (e.g. 123 -> ۱۲۳)
  */
-export function toPersianDigits(n: number | string): string {
-  if (n === null || n === undefined) return '';
+export function toPersianDigits(n: number | string | null | undefined): string {
+  if (n === null || n === undefined || n === '') return '';
   const farsiDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
   return n
     .toString()
@@ -56,7 +56,38 @@ export function isValidIranianMobile(phone: string): boolean {
 /**
  * Formats prices in Tomans with Persian digits and localized separators
  */
-export function formatPrice(price: number): string {
-  return `${price.toLocaleString('fa-IR')} تومان`;
+export function formatPrice(price: number | string | null | undefined): string {
+  if (price === null || price === undefined || price === '') return '۰ تومان';
+  const num = typeof price === 'string' ? parseFloat(toEnglishDigits(price)) : price;
+  if (isNaN(num)) return '۰ تومان';
+  return `${toPersianDigits(num.toLocaleString('fa-IR'))} تومان`;
 }
 
+/**
+ * Formats raw amount to Persian digits with thousands separator without currency suffix
+ */
+export function formatTomanNumber(amount: number | string | null | undefined): string {
+  if (amount === null || amount === undefined || amount === '') return '۰';
+  const num = typeof amount === 'string' ? parseFloat(toEnglishDigits(amount)) : amount;
+  if (isNaN(num)) return '۰';
+  return toPersianDigits(num.toLocaleString('fa-IR'));
+}
+
+/**
+ * Formats ISO or timestamp date string to Persian Jalali calendar format
+ */
+export function formatPersianDate(dateInput: string | Date | number, includeTime: boolean = false): string {
+  if (!dateInput) return '';
+  try {
+    const d = new Date(dateInput);
+    if (isNaN(d.getTime())) return String(dateInput);
+    return new Intl.DateTimeFormat('fa-IR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      ...(includeTime ? { hour: '2-digit', minute: '2-digit' } : {})
+    }).format(d);
+  } catch {
+    return String(dateInput);
+  }
+}

@@ -1,16 +1,46 @@
-import React, { useState } from 'react';
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Outlet, NavLink, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import { 
   LayoutDashboard, Package, ShoppingCart, Users, LogOut, ArrowRight, 
-  ShieldAlert, Tag, Mail, MessageSquare, MailCheck, Settings, Menu, X 
+  ShieldAlert, Tag, Mail, MessageSquare, MailCheck, Settings, Menu, X,
+  Sun, Moon, ExternalLink, AlertTriangle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function AdminLayout() {
   const { user, logout } = useAuth();
+  const { isDarkMode, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [counts, setCounts] = useState({
+    pendingOrders: 0,
+    lowStock: 0,
+    totalProducts: 0,
+    totalUsers: 0,
+  });
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const headers: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
+    
+    // Fetch live synchronized admin statistics
+    fetch('/api/admin/stats', { headers, credentials: 'include' })
+      .then(res => res.json())
+      .then(data => {
+        if (data?.metrics || data?.statusCounts) {
+          const pending = (data.statusCounts?.pending_payment || 0) + (data.statusCounts?.processing || 0);
+          setCounts({
+            pendingOrders: pending,
+            lowStock: data.metrics?.lowStockCount || 0,
+            totalProducts: data.metrics?.totalProducts || 0,
+            totalUsers: data.metrics?.totalUsers || 0,
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   if (!user || user.role !== 'admin') {
     return (
@@ -35,45 +65,77 @@ export default function AdminLayout() {
   }
 
   const navItems = [
-    { to: "/admin", icon: LayoutDashboard, label: "داشبورد", exact: true },
-    { to: "/admin/products", icon: Package, label: "محصولات و انبار" },
-    { to: "/admin/orders", icon: ShoppingCart, label: "سفارشات مشتریان" },
+    { to: "/admin", icon: LayoutDashboard, label: "داشبورد و آمار کلان", exact: true },
+    { 
+      to: "/admin/products", 
+      icon: Package, 
+      label: "مدیریت محصولات و انبار", 
+      badge: counts.lowStock > 0 ? `${counts.lowStock} کم‌موجود` : null,
+      badgeColor: 'bg-amber-500'
+    },
+    { 
+      to: "/admin/orders", 
+      icon: ShoppingCart, 
+      label: "سفارشات مشتریان", 
+      badge: counts.pendingOrders > 0 ? `${counts.pendingOrders} در انتظار` : null,
+      badgeColor: 'bg-rose-500'
+    },
     { to: "/admin/reviews", icon: MessageSquare, label: "نظرات کاربران" },
-    { to: "/admin/users", icon: Users, label: "کاربران سیستم" },
-    { to: "/admin/coupons", icon: Tag, label: "کدهای تخفیف" },
-    { to: "/admin/messages", icon: Mail, label: "پیام‌های تماس" },
-    { to: "/admin/newsletter", icon: MailCheck, label: "اعضای خبرنامه" },
+    { to: "/admin/users", icon: Users, label: "کاربران و مشتریان VIP" },
+    { to: "/admin/coupons", icon: Tag, label: "کدهای تخفیف و پروموشن" },
+    { to: "/admin/messages", icon: Mail, label: "پیام‌های تماس و پشتیبانی" },
+    { to: "/admin/newsletter", icon: MailCheck, label: "لیست اعضای خبرنامه" },
     { to: "/admin/settings", icon: Settings, label: "تنظیمات فروشگاه" },
   ];
 
   const sidebarContent = (
-    <div className="flex flex-col h-full bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700">
-      <div className="p-5 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-xl font-black text-orange-500">جانبی‌آرنا</span>
-          <span className="text-xs bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-300 font-bold px-2 py-0.5 rounded-md">پنل مدیریت</span>
+    <div className="flex flex-col h-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-l border-gray-200/80 dark:border-gray-800">
+      {/* Brand Header */}
+      <div className="p-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+        <Link to="/admin" className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-orange-600 to-amber-500 text-white font-black text-base flex items-center justify-center shadow-md shadow-orange-500/20">
+            J
+          </div>
+          <div>
+            <span className="text-base font-black text-gray-900 dark:text-gray-100">جانبی‌آرنا</span>
+            <span className="block text-[10px] text-orange-600 dark:text-orange-400 font-bold">پنل مدیریت هوشمند</span>
+          </div>
+        </Link>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-xl text-gray-500 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            title={isDarkMode ? 'حالت روز' : 'حالت شب'}
+          >
+            {isDarkMode ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4 text-indigo-500" />}
+          </button>
+          <button 
+            onClick={() => setMobileOpen(false)} 
+            className="lg:hidden p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-200"
+          >
+            <X className="h-5 w-5" />
+          </button>
         </div>
-        <button 
-          onClick={() => setMobileOpen(false)} 
-          className="lg:hidden p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-200"
-        >
-          <X className="h-5 w-5" />
-        </button>
       </div>
       
-      <div className="p-4 flex items-center gap-3 border-b border-gray-200 dark:border-gray-700">
+      {/* Admin User Info Card */}
+      <div className="p-3.5 mx-3 my-3 rounded-2xl bg-gray-50/80 dark:bg-gray-800/40 border border-gray-100 dark:border-gray-800 flex items-center gap-3">
         <img 
-          src={user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`} 
+          src={user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=f97316&color=fff`} 
           alt={user.name} 
-          className="w-10 h-10 rounded-full border-2 border-orange-500/20"
+          className="w-10 h-10 rounded-xl border border-orange-500/30 object-cover shrink-0"
         />
-        <div className="overflow-hidden">
+        <div className="overflow-hidden grow">
           <div className="font-bold text-gray-900 dark:text-white text-xs truncate">{user.name}</div>
-          <div className="text-[10px] text-orange-600 dark:text-orange-400 font-medium">مدیر ارشد فروشگاه</div>
+          <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            مدیر سیستم (آنلاین)
+          </div>
         </div>
       </div>
 
-      <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
+      {/* Navigation Links */}
+      <nav className="flex-1 px-3 py-2 space-y-1 overflow-y-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
           return (
@@ -83,43 +145,55 @@ export default function AdminLayout() {
               end={item.exact}
               onClick={() => setMobileOpen(false)}
               className={({ isActive }) => 
-                `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
                   isActive 
-                    ? 'bg-orange-500 text-white shadow-md shadow-orange-500/20' 
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50'
+                    ? 'bg-gradient-to-r from-orange-600 to-amber-600 text-white shadow-md shadow-orange-500/25' 
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-gray-100'
                 }`
               }
             >
-              <Icon className="h-4 w-4 shrink-0" />
-              <span>{item.label}</span>
+              <div className="flex items-center gap-3">
+                <Icon className="h-4 w-4 shrink-0" />
+                <span>{item.label}</span>
+              </div>
+              {item.badge && (
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold text-white shadow-xs ${item.badgeColor || 'bg-rose-500'}`}>
+                  {item.badge}
+                </span>
+              )}
             </NavLink>
           );
         })}
       </nav>
 
-      <div className="p-3 border-t border-gray-200 dark:border-gray-700 space-y-1">
-        <button
-          onClick={() => navigate('/')}
-          className="flex items-center gap-2.5 w-full px-3.5 py-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 rounded-xl text-xs font-bold transition-all"
+      {/* Footer Utility Actions */}
+      <div className="p-3 border-t border-gray-100 dark:border-gray-800 space-y-1.5">
+        <Link
+          to="/"
+          target="_blank"
+          className="flex items-center justify-between w-full px-3.5 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl text-xs font-bold transition-all"
         >
-          <ArrowRight className="h-4 w-4" />
-          مشاهده فروشگاه
-        </button>
+          <div className="flex items-center gap-2">
+            <ExternalLink className="h-4 w-4 text-orange-500" />
+            <span>مشاهده فروشگاه</span>
+          </div>
+          <ArrowRight className="h-3.5 w-3.5 text-gray-400" />
+        </Link>
         <button
           onClick={() => { logout(); navigate('/'); }}
-          className="flex items-center gap-2.5 w-full px-3.5 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl text-xs font-bold transition-all"
+          className="flex items-center gap-2 w-full px-3.5 py-2 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl text-xs font-bold transition-all"
         >
           <LogOut className="h-4 w-4" />
-          خروج از حساب
+          <span>خروج از پنل</span>
         </button>
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen flex bg-gray-50 dark:bg-gray-900 text-right">
+    <div className="min-h-screen flex bg-gray-50/70 dark:bg-gray-950 text-right transition-colors duration-300">
       {/* Desktop Sidebar */}
-      <aside className="w-64 hidden lg:block fixed inset-y-0 right-0 z-20">
+      <aside className="w-64 hidden lg:block fixed inset-y-0 right-0 z-30 shadow-xs">
         {sidebarContent}
       </aside>
 
@@ -139,7 +213,7 @@ export default function AdminLayout() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 250 }}
-              className="fixed inset-y-0 right-0 w-72 z-50 lg:hidden"
+              className="fixed inset-y-0 right-0 w-72 z-50 lg:hidden shadow-2xl"
             >
               {sidebarContent}
             </motion.div>
@@ -150,25 +224,31 @@ export default function AdminLayout() {
       {/* Main Content Area */}
       <div className="flex-1 lg:mr-64 flex flex-col min-w-0">
         {/* Mobile Header Bar */}
-        <header className="lg:hidden bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 flex items-center justify-between sticky top-0 z-30 shadow-xs">
+        <header className="lg:hidden bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-b border-gray-200/80 dark:border-gray-800 p-3.5 flex items-center justify-between sticky top-0 z-20 shadow-xs">
           <button
             onClick={() => setMobileOpen(true)}
-            className="p-2 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200"
+            className="p-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200"
           >
             <Menu className="h-5 w-5" />
           </button>
           <div className="flex items-center gap-2">
-            <span className="text-base font-black text-orange-500">جانبی‌آرنا</span>
+            <span className="text-sm font-black text-gray-900 dark:text-white">جانبی‌آرنا</span>
             <span className="text-[10px] bg-orange-100 dark:bg-orange-900/40 text-orange-600 font-bold px-2 py-0.5 rounded-md">مدیریت</span>
           </div>
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-xl text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
+          >
+            {isDarkMode ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4" />}
+          </button>
         </header>
 
-        <main className="p-4 sm:p-6 lg:p-8 flex-1">
+        <main className="p-4 sm:p-6 lg:p-8 flex-1 max-w-7xl w-full mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
+            transition={{ duration: 0.2 }}
           >
             <Outlet />
           </motion.div>
@@ -177,4 +257,3 @@ export default function AdminLayout() {
     </div>
   );
 }
-

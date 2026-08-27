@@ -1,5 +1,5 @@
 import React from 'react';
-import { Package, MapPin, Heart, Gift, Clock, ShieldCheck, ArrowLeft } from 'lucide-react';
+import { Package, MapPin, Heart, Gift, Clock, ShieldCheck, ArrowLeft, Sparkles } from 'lucide-react';
 import { UserProfile } from '../../contexts/AuthContext';
 import { Order } from '../../types';
 import { toPersianDigits, formatPrice } from '../../lib/utils';
@@ -27,8 +27,9 @@ export default function DashboardOverviewTab({
         <div className="absolute top-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none" />
         <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div>
-            <h2 className="text-xl sm:text-2xl font-black mb-2">
-              سلام {user.name} عزیز، خوش آمدید! 👋
+            <h2 className="text-xl sm:text-2xl font-black mb-2 flex items-center gap-2">
+              <span>سلام {user.name} عزیز، خوش آمدید!</span>
+              <Sparkles className="h-5 w-5 text-amber-300 animate-pulse" />
             </h2>
             <p className="text-xs sm:text-sm text-orange-100 font-medium max-w-xl leading-relaxed">
               از این بخش می‌توانید سفارش‌ها، آدرس‌های ارسال و تنظیمات حساب خود را به راحتی مدیریت کنید.

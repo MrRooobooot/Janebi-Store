@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MessageSquare, Star, Trash2, Search, Filter, ThumbsUp, CheckCircle, AlertCircle } from 'lucide-react';
+import { MessageSquare, Star, Trash2, Search, Filter, ThumbsUp, ThumbsDown, CheckCircle, AlertCircle } from 'lucide-react';
 import { useToast } from '../../contexts/ToastContext';
 
 interface ReviewItem {
@@ -242,12 +242,22 @@ export default function AdminReviews() {
               </div>
 
               <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
-                <div className="text-[11px] text-gray-500">
-                  {selectedReview.recommend ? '✅ خرید این محصول را پیشنهاد می‌کند' : '❌ خرید این محصول را پیشنهاد نمی‌کند'}
+                <div className="text-xs font-semibold flex items-center gap-1.5">
+                  {selectedReview.recommend ? (
+                    <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                      <ThumbsUp className="h-4 w-4" />
+                      <span>خرید این محصول را پیشنهاد می‌کند</span>
+                    </span>
+                  ) : (
+                    <span className="text-rose-600 dark:text-rose-400 flex items-center gap-1">
+                      <ThumbsDown className="h-4 w-4" />
+                      <span>خرید این محصول را پیشنهاد نمی‌کند</span>
+                    </span>
+                  )}
                 </div>
                 <button
                   onClick={() => handleDeleteReview(selectedReview.id)}
-                  className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold transition-all"
+                  className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold transition-all text-xs cursor-pointer"
                 >
                   حذف این نظر
                 </button>

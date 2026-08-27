@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Search, X, Tag, Sparkles, Check, DollarSign, RotateCcw } from 'lucide-react';
+import { Search, X, Tag, Sparkles, Check, DollarSign, RotateCcw, Flame, PackageCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { PRICE_PRESETS, PricePreset } from '../../hooks/useProductFilters';
 
@@ -278,7 +278,8 @@ export default function ProductFilterSidebar({
         {/* Discounted only toggle */}
         <label className="flex items-center justify-between cursor-pointer group bg-gray-50 dark:bg-gray-800/50 p-3 rounded-2xl hover:bg-orange-50 dark:hover:bg-orange-500/5 transition-colors border border-transparent hover:border-orange-100 dark:hover:border-orange-500/10">
           <span className="text-xs font-bold text-gray-800 dark:text-gray-200 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors flex items-center gap-2">
-            <span className="text-lg">🔥</span> فقط کالاهای تخفیف‌دار
+            <Flame className="h-4 w-4 text-orange-500" />
+            <span>فقط کالاهای تخفیف‌دار</span>
           </span>
           <div
             role="switch"
@@ -306,7 +307,8 @@ export default function ProductFilterSidebar({
         {/* In stock toggle */}
         <label className="flex items-center justify-between cursor-pointer group bg-gray-50 dark:bg-gray-800/50 p-3 rounded-2xl hover:bg-emerald-50 dark:hover:bg-emerald-500/5 transition-colors border border-transparent hover:border-emerald-100 dark:hover:border-emerald-500/10">
           <span className="text-xs font-bold text-gray-800 dark:text-gray-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors flex items-center gap-2">
-            <span className="text-lg">📦</span> فقط کالاهای موجود
+            <PackageCheck className="h-4 w-4 text-emerald-500" />
+            <span>فقط کالاهای موجود</span>
           </span>
           <div
             role="switch"

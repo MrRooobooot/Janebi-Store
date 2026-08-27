@@ -238,6 +238,32 @@ router.put('/users/:id/role', async (req, res) => {
   }
 });
 
+// Admin modify VIP loyalty points for any user
+router.put('/users/:id/points', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { vipPoints } = req.body;
+
+    if (vipPoints === undefined || isNaN(Number(vipPoints)) || Number(vipPoints) < 0) {
+      return res.status(400).json({ error: 'مقدار امتیاز نامعتبر است' });
+    }
+
+    const [updated] = await db.update(users)
+      .set({ vipPoints: Number(vipPoints) })
+      .where(eq(users.id, id))
+      .returning();
+
+    if (!updated) {
+      return res.status(404).json({ error: 'کاربر یافت نشد' });
+    }
+
+    res.json({ message: 'امتیاز VIP کاربر با موفقیت بروزرسانی شد', vipPoints: updated.vipPoints });
+  } catch (error) {
+    console.error('Admin update points error:', error);
+    res.status(500).json({ message: 'خطای سرور در تغییر امتیاز کاربر' });
+  }
+});
+
 // ---------------------------------------------------------
 // PRODUCTS MANAGEMENT
 // ---------------------------------------------------------
@@ -684,6 +710,31 @@ router.put('/settings', async (req, res) => {
   } catch (error) {
     console.error('Update settings error:', error);
     res.status(500).json({ message: 'خطای سرور در ذخیره تنظیمات' });
+  }
+});
+
+// ---------------------------------------------------------
+// DATABASE BACKUP DOWNLOAD
+// ---------------------------------------------------------
+router.get('/backup', async (req, res) => {
+  try {
+    const fs = await import('fs');
+    const path = await import('path');
+    const dbPath = path.resolve(process.cwd(), 'data', 'janebi.db');
+
+    if (!fs.existsSync(dbPath)) {
+      return res.status(404).json({ error: 'فایل پایگاه داده یافت نشد' });
+    }
+
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    res.setHeader('Content-Disposition', `attachment; filename="janebi-backup-${timestamp}.db"`);
+    res.setHeader('Content-Type', 'application/x-sqlite3');
+    
+    const filestream = fs.createReadStream(dbPath);
+    filestream.pipe(res);
+  } catch (error) {
+    console.error('Backup download error:', error);
+    res.status(500).json({ message: 'خطا در ایجاد خروجی بک‌آپ' });
   }
 });
 

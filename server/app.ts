@@ -151,16 +151,37 @@ app.use("/api/admin", adminRoutes);
 app.get("/api/health", async (req, res) => {
   const startedAt = Date.now();
   try {
+    let dbSize: number | null = null;
     if (isPostgres) {
       await pool!.query("SELECT 1");
     } else {
       sqlite!.prepare("SELECT 1").get();
+      try {
+        const fs = await import("fs");
+        const path = await import("path");
+        const dbPath = path.resolve(process.cwd(), "data", "janebi.db");
+        if (fs.existsSync(dbPath)) {
+          dbSize = fs.statSync(dbPath).size;
+        }
+      } catch {
+        // ignore size check failure
+      }
     }
+
+    const mem = process.memoryUsage();
+
     res.json({
       status: "ok",
       database: "ok",
       latencyMs: Date.now() - startedAt,
       uptimeSeconds: Math.round(process.uptime()),
+      databaseSizeBytes: dbSize,
+      memory: {
+        rssMb: Math.round(mem.rss / 1024 / 1024),
+        heapUsedMb: Math.round(mem.heapUsed / 1024 / 1024),
+        heapTotalMb: Math.round(mem.heapTotal / 1024 / 1024),
+      },
+      nodeVersion: process.version,
       requestId: req.id,
     });
   } catch (error: any) {

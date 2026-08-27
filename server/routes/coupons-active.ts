@@ -7,7 +7,7 @@ const router = Router();
 
 // Public list of currently-active coupons for the VIP club tab / chat widget.
 // Only code, label and terms are exposed — never internal usage data.
-router.get("/active", async (_req, res) => {
+router.get("/", async (_req, res) => {
   try {
     const now = Date.now();
     const rows = await db.select().from(coupons).where(eq(coupons.active, true));

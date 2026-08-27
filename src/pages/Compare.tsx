@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCompare } from '../contexts/CompareContext';
 import { useCart } from '../contexts/CartContext';
-import { Trash2, ShoppingCart, Check, X, ShieldCheck, Tag, Info } from 'lucide-react';
+import { Trash2, ShoppingCart, Check, X, ShieldCheck, Tag, Info, ArrowLeftRight, Scale } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import EmptyState from '../components/EmptyState';
 import { formatPrice, toPersianDigits } from '../lib/utils';
@@ -20,7 +20,11 @@ export default function Compare() {
         transition={{ duration: 0.5, ease: 'easeOut' }}
       >
         <EmptyState
-          icon={<div className="text-5xl md:text-6xl mb-4 drop-shadow-md">⚖️</div>}
+          icon={
+            <div className="w-16 h-16 rounded-2xl bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 flex items-center justify-center mx-auto mb-4 border border-orange-100 dark:border-orange-800/60 shadow-inner">
+              <Scale className="h-8 w-8" />
+            </div>
+          }
           title="لیست مقایسه خالی است!"
           description="شما هنوز محصولی را برای مقایسه انتخاب نکرده‌اید. با افزودن محصولات به لیست مقایسه می‌توانید راحت‌تر تصمیم‌گیری کنید."
           actionText="مشاهده محصولات"

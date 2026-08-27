@@ -1,5 +1,5 @@
 import React from 'react';
-import { Truck, CheckCircle2 } from 'lucide-react';
+import { Truck, CheckCircle2, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
 import { FREE_SHIPPING_THRESHOLD } from '../../lib/constants';
 import { formatPrice } from '../../lib/utils';
@@ -45,7 +45,8 @@ export default function FreeShippingBar({
             {isFreeShipping ? (
               <div>
                 <h3 className="font-black text-emerald-900 dark:text-emerald-300 text-lg md:text-xl flex items-center gap-2">
-                  ارسال رایگان شامل سفارش شما شد! 🎉
+                  <span>ارسال رایگان شامل سفارش شما شد!</span>
+                  <Sparkles className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                 </h3>
                 <p className="text-xs md:text-sm text-emerald-700 dark:text-emerald-400/80 mt-1 font-medium">
                   سفارش شما حد نصاب {formatPrice(FREE_SHIPPING_THRESHOLD)} را گذرانده و بدون هزینه ارسال تحویل داده می‌شود.

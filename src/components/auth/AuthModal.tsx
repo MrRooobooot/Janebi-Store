@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { X, User, Phone, Lock, Eye, EyeOff, LogIn, UserPlus, Sparkles, ArrowLeft } from 'lucide-react';
+import { X, User, Phone, Lock, Eye, EyeOff, LogIn, UserPlus, Sparkles, ArrowLeft, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
@@ -233,7 +233,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
               className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-extrabold py-3.5 px-6 rounded-2xl shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] text-sm mt-6 disabled:opacity-60 cursor-pointer"
             >
               {loading ? (
-                <span className="inline-block animate-spin">⏳</span>
+                <Loader2 className="h-5 w-5 animate-spin" />
               ) : (
                 <>
                   <span>{mode === 'login' ? 'ورود به حساب کاربری' : 'تکمیل ثبت‌نام و ورود'}</span>

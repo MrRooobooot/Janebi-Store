@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, CheckCircle2, Clock, Search, Eye, Filter } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { 
+  Mail, CheckCircle2, Clock, Search, Eye, Filter, Phone, User, 
+  MessageSquare, ArrowLeft, X, Check, Trash2, Send
+} from 'lucide-react';
 import { useToast } from '../../contexts/ToastContext';
+import { toPersianDigits } from '../../lib/utils';
 
 interface ContactMessage {
   id: string;
@@ -59,7 +64,7 @@ export default function AdminMessages() {
         if (selectedMessage && selectedMessage.id === id) {
           setSelectedMessage(prev => prev ? { ...prev, status: newStatus } : null);
         }
-        addToast('وضعیت پیام با موفقیت بروز شد', 'success');
+        addToast('وضعیت پیام با موفقیت بروزرسانی شد', 'success');
       }
     } catch {
       addToast('خطا در بروزرسانی وضعیت', 'error');
@@ -68,177 +73,216 @@ export default function AdminMessages() {
 
   const filteredMessages = messages.filter(m => {
     const matchesFilter = filterStatus === 'all' || m.status === filterStatus;
-    const matchesSearch = !searchQuery || 
-      m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      m.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    const matchesSearch = (m.name && m.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (m.email && m.email.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (m.phone && m.phone.includes(searchQuery)) ||
       (m.subject && m.subject.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      m.message.toLowerCase().includes(searchQuery.toLowerCase());
+      (m.message && m.message.toLowerCase().includes(searchQuery.toLowerCase()));
     return matchesFilter && matchesSearch;
   });
 
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'unread':
+        return <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-rose-100 dark:bg-rose-950/40 text-rose-600 border border-rose-200">خوانده نشده</span>;
+      case 'read':
+        return <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-blue-100 dark:bg-blue-950/40 text-blue-600 border border-blue-200">خوانده شده</span>;
+      case 'resolved':
+        return <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 border border-emerald-200">پاسخ‌داده‌شده</span>;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="space-y-6 text-right">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-black text-gray-900 dark:text-white flex items-center gap-2">
-            <Mail className="h-6 w-6 text-orange-500" />
-            پیام‌های تماس با ما
-          </h1>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            مدیریت و پاسخگویی به پیام‌های ارسالی کاربران از فرم تماس
-          </p>
-        </div>
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mb-1">پیام‌های تماس و پشتیبانی</h1>
+        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">بررسی سوالات کاربران، پیگیری نظرات و ارتباط مستقیم با مشتریان</p>
       </div>
 
-      {/* Filters and Search */}
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-100 dark:border-gray-700/60 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
-        <div className="relative w-full sm:w-72">
+      {/* Filter Tabs & Search */}
+      <div className="bg-white dark:bg-gray-800 p-4 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-xs flex flex-col md:flex-row items-center justify-between gap-3">
+        {/* Search Input */}
+        <div className="relative flex-1 w-full">
           <input
             type="text"
-            placeholder="جستجو در پیام‌ها..."
+            placeholder="جستجوی نام فرستنده، شماره، ایمیل یا موضوع..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl py-2 px-3.5 pr-9 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500"
+            className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl pr-10 pl-4 py-2.5 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500"
           />
-          <Search className="h-4 w-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <Search className="h-4 w-4 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2" />
         </div>
 
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <Filter className="h-4 w-4 text-gray-400" />
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl py-2 px-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500"
-          >
-            <option value="all">همه وضعیت‌ها</option>
-            <option value="unread">خوانده نشده</option>
-            <option value="read">خوانده شده</option>
-            <option value="resolved">پاسخ داده شده</option>
-          </select>
+        {/* Status Tabs */}
+        <div className="flex items-center gap-1.5 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
+          {[
+            { id: 'all', label: 'همه پیام‌ها', count: messages.length },
+            { id: 'unread', label: 'خوانده نشده', count: messages.filter(m => m.status === 'unread').length },
+            { id: 'read', label: 'در دست بررسی', count: messages.filter(m => m.status === 'read').length },
+            { id: 'resolved', label: 'تکمیل‌شده', count: messages.filter(m => m.status === 'resolved').length },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setFilterStatus(tab.id)}
+              className={`px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1 cursor-pointer ${
+                filterStatus === tab.id
+                  ? 'bg-orange-600 text-white shadow-xs'
+                  : 'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100'
+              }`}
+            >
+              <span>{tab.label}</span>
+              <span className="text-[10px] opacity-80">({toPersianDigits(tab.count)})</span>
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Messages List */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700/60 shadow-xs overflow-hidden">
+      {/* Messages Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {loading ? (
-          <div className="p-12 text-center text-gray-400 text-xs">در حال بارگذاری پیام‌ها...</div>
+          <div className="col-span-full p-12 text-center text-gray-400">در حال دریافت پیام‌ها...</div>
         ) : filteredMessages.length === 0 ? (
-          <div className="p-12 text-center text-gray-400 text-xs">پیامی یافت نشد.</div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs text-right">
-              <thead className="bg-gray-50 dark:bg-gray-700/30 text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700/60">
-                <tr>
-                  <th className="p-3.5 font-bold">فرستنده</th>
-                  <th className="p-3.5 font-bold">موضوع / ایمیل</th>
-                  <th className="p-3.5 font-bold">تاریخ</th>
-                  <th className="p-3.5 font-bold">وضعیت</th>
-                  <th className="p-3.5 font-bold">عملیات</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-700/40">
-                {filteredMessages.map((msg) => (
-                  <tr key={msg.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/20 transition-colors">
-                    <td className="p-3.5">
-                      <div className="font-bold text-gray-900 dark:text-gray-100">{msg.name}</div>
-                      {msg.phone && <div className="text-[11px] text-gray-400 font-mono">{msg.phone}</div>}
-                    </td>
-                    <td className="p-3.5">
-                      <div className="font-medium text-gray-800 dark:text-gray-200">{msg.subject || 'بدون موضوع'}</div>
-                      <div className="text-[11px] text-gray-400 font-mono">{msg.email}</div>
-                    </td>
-                    <td className="p-3.5 text-gray-500 dark:text-gray-400 text-[11px]">
-                      {msg.createdAt}
-                    </td>
-                    <td className="p-3.5">
-                      <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
-                        msg.status === 'unread' 
-                          ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300'
-                          : msg.status === 'read'
-                          ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
-                          : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300'
-                      }`}>
-                        {msg.status === 'unread' ? 'خوانده نشده' : msg.status === 'read' ? 'خوانده شده' : 'پاسخ داده شده'}
-                      </span>
-                    </td>
-                    <td className="p-3.5">
-                      <button
-                        onClick={() => {
-                          setSelectedMessage(msg);
-                          if (msg.status === 'unread') {
-                            handleUpdateStatus(msg.id, 'read');
-                          }
-                        }}
-                        className="p-1.5 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:text-orange-600 hover:bg-orange-50 transition-colors"
-                        title="مشاهده متن کامل"
-                      >
-                        <Eye className="h-4 w-4" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="col-span-full p-12 bg-white dark:bg-gray-800 rounded-3xl text-center text-gray-400 border border-gray-100 dark:border-gray-700 shadow-xs">
+            هیچ پیامی در این دسته‌بندی یافت نشد.
           </div>
+        ) : (
+          filteredMessages.map((msg) => (
+            <div
+              key={msg.id}
+              onClick={() => setSelectedMessage(msg)}
+              className="bg-white dark:bg-gray-800 rounded-3xl p-5 border border-gray-100 dark:border-gray-700 shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group"
+            >
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  {getStatusBadge(msg.status)}
+                  <span className="text-[10px] text-gray-400 font-medium">{msg.createdAt}</span>
+                </div>
+
+                <h3 className="font-extrabold text-sm text-gray-900 dark:text-white mb-1 group-hover:text-orange-600 transition-colors line-clamp-1">
+                  {msg.subject || 'بدون موضوع'}
+                </h3>
+
+                <p className="text-xs text-gray-600 dark:text-gray-300 line-clamp-2 leading-relaxed mb-4">
+                  {msg.message}
+                </p>
+              </div>
+
+              <div className="pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between text-xs text-gray-500">
+                <div className="flex items-center gap-1.5 truncate max-w-[160px]">
+                  <User className="h-3.5 w-3.5 text-orange-500 shrink-0" />
+                  <span className="font-bold text-gray-800 dark:text-gray-200 truncate">{msg.name}</span>
+                </div>
+
+                <span className="text-[11px] text-orange-600 dark:text-orange-400 font-bold flex items-center gap-1">
+                  <span>مشاهده پیام</span>
+                  <ArrowLeft className="h-3 w-3" />
+                </span>
+              </div>
+            </div>
+          ))
         )}
       </div>
 
-      {/* Message Detail Modal */}
-      {selectedMessage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative">
-            <div className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-800 mb-4">
-              <h3 className="text-base font-black text-gray-900 dark:text-gray-100">جزئیات پیام کاربر</h3>
-              <button
-                onClick={() => setSelectedMessage(null)}
-                className="text-gray-400 hover:text-gray-600 text-xs font-bold"
-              >
-                بستن
+      {/* Message View Modal */}
+      {selectedMessage && createPortal(
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/65 backdrop-blur-md">
+          <div className="bg-white dark:bg-gray-800 rounded-3xl max-w-xl w-full p-6 shadow-2xl border border-gray-100 dark:border-gray-700 text-right animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-700 mb-5">
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-xl bg-orange-100 dark:bg-orange-950/60 text-orange-600">
+                  <Mail className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-black text-gray-900 dark:text-white text-base">جزئیات پیام ارسالی</h3>
+                  <span className="text-[11px] text-gray-400">{selectedMessage.createdAt}</span>
+                </div>
+              </div>
+              <button onClick={() => setSelectedMessage(null)} className="p-2 text-gray-400 hover:text-gray-600">
+                <X className="h-5 w-5" />
               </button>
             </div>
 
-            <div className="space-y-3 text-xs">
-              <div className="grid grid-cols-2 gap-2 p-3 rounded-xl bg-gray-50 dark:bg-gray-800/60">
-                <div><span className="text-gray-400">نام:</span> <span className="font-bold text-gray-800 dark:text-gray-200">{selectedMessage.name}</span></div>
-                <div><span className="text-gray-400">تاریخ:</span> <span className="font-mono text-gray-800 dark:text-gray-200">{selectedMessage.createdAt}</span></div>
-                <div><span className="text-gray-400">ایمیل:</span> <span className="font-mono text-gray-800 dark:text-gray-200">{selectedMessage.email}</span></div>
-                <div><span className="text-gray-400">تلفن:</span> <span className="font-mono text-gray-800 dark:text-gray-200">{selectedMessage.phone || '-'}</span></div>
+            {/* Sender Info Grid */}
+            <div className="grid grid-cols-2 gap-3 bg-gray-50 dark:bg-gray-900/60 p-4 rounded-2xl border border-gray-100 dark:border-gray-700 mb-4 text-xs">
+              <div>
+                <span className="text-gray-400 block mb-0.5">نام فرستنده:</span>
+                <strong className="text-gray-900 dark:text-white">{selectedMessage.name}</strong>
               </div>
 
               <div>
-                <span className="text-gray-400 block mb-1">موضوع:</span>
-                <div className="font-bold text-gray-900 dark:text-gray-100 p-2.5 rounded-xl bg-gray-50 dark:bg-gray-800/40">
+                <span className="text-gray-400 block mb-0.5">وضعیت:</span>
+                <div>{getStatusBadge(selectedMessage.status)}</div>
+              </div>
+
+              <div>
+                <span className="text-gray-400 block mb-0.5">شماره تماس:</span>
+                {selectedMessage.phone ? (
+                  <a href={`tel:${selectedMessage.phone}`} className="font-mono font-bold text-orange-600 hover:underline flex items-center gap-1">
+                    <Phone className="h-3.5 w-3.5" />
+                    <span>{selectedMessage.phone}</span>
+                  </a>
+                ) : (
+                  <span className="text-gray-400">ثبت نشده</span>
+                )}
+              </div>
+
+              <div>
+                <span className="text-gray-400 block mb-0.5">ایمیل فرستنده:</span>
+                <a href={`mailto:${selectedMessage.email}`} className="font-mono text-orange-600 hover:underline truncate block">
+                  {selectedMessage.email}
+                </a>
+              </div>
+            </div>
+
+            {/* Subject & Message */}
+            <div className="space-y-3 mb-6">
+              <div>
+                <span className="text-xs font-bold text-gray-400 block mb-1">موضوع پیام:</span>
+                <div className="font-extrabold text-sm text-gray-900 dark:text-white">
                   {selectedMessage.subject || 'بدون موضوع'}
                 </div>
               </div>
 
               <div>
-                <span className="text-gray-400 block mb-1">متن پیام:</span>
-                <div className="p-3.5 rounded-xl bg-gray-50 dark:bg-gray-800/40 text-gray-800 dark:text-gray-200 leading-relaxed max-h-48 overflow-y-auto whitespace-pre-wrap">
+                <span className="text-xs font-bold text-gray-400 block mb-1">متن کامل پیام:</span>
+                <div className="p-4 rounded-2xl bg-gray-50 dark:bg-gray-900/60 text-gray-800 dark:text-gray-200 text-xs leading-relaxed max-h-48 overflow-y-auto whitespace-pre-wrap border border-gray-100 dark:border-gray-700">
                   {selectedMessage.message}
                 </div>
               </div>
-
-              <div className="pt-4 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between gap-2">
-                <span className="text-gray-500 font-medium">تغییر وضعیت:</span>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleUpdateStatus(selectedMessage.id, 'read')}
-                    className="px-3 py-1.5 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-300 font-bold hover:bg-blue-100 transition-colors"
-                  >
-                    خوانده شده
-                  </button>
-                  <button
-                    onClick={() => handleUpdateStatus(selectedMessage.id, 'resolved')}
-                    className="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-300 font-bold hover:bg-emerald-100 transition-colors"
-                  >
-                    پاسخ داده شد
-                  </button>
-                </div>
-              </div>
             </div>
+
+            {/* Status Change & Action Footer */}
+            <div className="pt-4 border-t border-gray-100 dark:border-gray-700 flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs font-bold text-gray-500">تغییر وضعیت:</span>
+                <button
+                  onClick={() => handleUpdateStatus(selectedMessage.id, 'read')}
+                  className="px-2.5 py-1.5 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 text-xs font-bold"
+                >
+                  در دست بررسی
+                </button>
+                <button
+                  onClick={() => handleUpdateStatus(selectedMessage.id, 'resolved')}
+                  className="px-2.5 py-1.5 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 text-xs font-bold"
+                >
+                  پاسخ داده شد
+                </button>
+              </div>
+
+              <button
+                onClick={() => setSelectedMessage(null)}
+                className="px-5 py-2 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-xs font-bold"
+              >
+                بستن
+              </button>
+            </div>
+
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

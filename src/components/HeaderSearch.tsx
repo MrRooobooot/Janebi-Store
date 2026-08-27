@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, X, ArrowLeft, Clock, TrendingUp, Tag, Sparkles, LoaderCircle } from 'lucide-react';
+import { 
+  Search, X, ArrowLeft, Clock, TrendingUp, Tag, Sparkles, LoaderCircle, Command,
+  Smartphone, Shield, Zap, Cable, Headphones, BatteryCharging, SearchX
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { SearchItemSkeleton } from './Skeletons';
@@ -22,12 +25,12 @@ interface HeaderSearchProps {
 }
 
 const POPULAR_CATEGORIES = [
-  { name: 'قاب و کاور', icon: '📱' },
-  { name: 'گلس', icon: '🛡️' },
-  { name: 'شارژر', icon: '⚡' },
-  { name: 'کابل', icon: '🔌' },
-  { name: 'هندزفری', icon: '🎧' },
-  { name: 'پاوربانک', icon: '🔋' },
+  { name: 'قاب و کاور', icon: Smartphone },
+  { name: 'گلس', icon: Shield },
+  { name: 'شارژر', icon: Zap },
+  { name: 'کابل', icon: Cable },
+  { name: 'هندزفری', icon: Headphones },
+  { name: 'پاوربانک', icon: BatteryCharging },
 ];
 
 export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus = false }: HeaderSearchProps) {
@@ -41,6 +44,19 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+
+  // Listen for Global Cmd+K / Ctrl+K
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsOpen(true);
+        inputRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, []);
 
   // Load recent searches on mount
   useEffect(() => {
@@ -185,7 +201,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
             onFocus={() => setIsOpen(true)}
             onKeyDown={handleKeyDown}
             placeholder="جست‌وجوی محصول، برند یا مدل گوشی..."
-            className="w-full bg-gray-100 dark:bg-gray-800/80 border border-gray-200/80 dark:border-gray-700/60 text-gray-900 dark:text-gray-100 text-sm rounded-full pl-11 pr-11 py-3 focus:outline-none focus:bg-white dark:focus:bg-gray-900 focus:border-orange-500/50 focus:ring-4 focus:ring-orange-500/10 transition-all duration-200 shadow-inner dark:shadow-none placeholder-gray-400 dark:placeholder-gray-500"
+            className="w-full bg-gray-100 dark:bg-gray-800/80 border border-gray-200/80 dark:border-gray-700/60 text-gray-900 dark:text-gray-100 text-xs sm:text-sm rounded-2xl pl-16 pr-11 py-3 focus:outline-none focus:bg-white dark:focus:bg-gray-900 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all duration-200 shadow-inner dark:shadow-none placeholder-gray-400 dark:placeholder-gray-500"
           />
 
           {/* Right Icon: Search */}
@@ -195,15 +211,15 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
             className="absolute right-3.5 flex items-center justify-center text-gray-400 hover:text-orange-600 transition-colors"
             title="جستجو"
           >
-            <Search className="h-5 w-5" />
+            <Search className="h-4 sm:h-5 w-4 sm:w-5" />
           </button>
 
-          {/* Left Actions: Clear / Spinner */}
-          <div className="absolute left-3.5 flex items-center gap-1.5">
+          {/* Left Actions: Cmd+K Badge or Clear / Spinner */}
+          <div className="absolute left-3 flex items-center gap-1.5">
             {loading && (
               <LoaderCircle className="h-4 w-4 animate-spin text-orange-600" />
             )}
-            {query && !loading && (
+            {query && !loading ? (
               <button
                 type="button"
                 aria-label="پاک کردن"
@@ -217,6 +233,11 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
               >
                 <X className="h-4 w-4" />
               </button>
+            ) : (
+              <div className="hidden sm:flex items-center gap-0.5 px-2 py-0.5 rounded-lg bg-gray-200/70 dark:bg-gray-700/70 text-[10px] text-gray-500 dark:text-gray-400 font-mono">
+                <Command className="h-3 w-3" />
+                <span>K</span>
+              </div>
             )}
           </div>
         </div>
@@ -230,7 +251,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.98 }}
             transition={{ duration: 0.18, ease: 'easeOut' }}
-            className="absolute right-0 left-0 mt-2 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-3xl border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden z-50 divide-y divide-gray-100 dark:divide-gray-800/60 max-h-[75vh] flex flex-col"
+            className="absolute right-0 left-0 mt-2 bg-white/98 dark:bg-gray-900/98 backdrop-blur-2xl rounded-3xl border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden z-50 divide-y divide-gray-100 dark:divide-gray-800/60 max-h-[75vh] flex flex-col"
           >
             {/* Case 1: Query is entered and has results */}
             {query.trim().length > 0 && results.length > 0 && (
@@ -241,7 +262,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
                     پیشنهادات آنی ({results.length.toLocaleString('fa-IR')} محصول)
                   </span>
                   <span className="text-[11px] hidden sm:inline text-gray-400">
-                    با کلیدهای جهت‌نما انتخـاب کنید
+                    با کلیدهای جهت‌نما یا کلیک انتخـاب کنید
                   </span>
                 </div>
 
@@ -328,8 +349,8 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
             {/* Case 3: Query entered, no results found */}
             {query.trim().length > 0 && !loading && results.length === 0 && (
               <div className="p-8 text-center space-y-3">
-                <div className="w-12 h-12 bg-orange-50 dark:bg-orange-950/50 text-orange-600 rounded-full flex items-center justify-center mx-auto text-xl">
-                  🔍
+                <div className="w-12 h-12 bg-orange-50 dark:bg-orange-950/50 text-orange-600 rounded-2xl flex items-center justify-center mx-auto">
+                  <SearchX className="h-6 w-6" />
                 </div>
                 <h4 className="font-bold text-sm text-gray-900 dark:text-gray-100">
                   هیچ محصولی با عنوان «{query}» پیدا نشد!
@@ -406,18 +427,23 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
                     </span>
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    {POPULAR_CATEGORIES.map((cat, idx) => (
-                      <div
-                        key={idx}
-                        onClick={() => handleSelectCategory(cat.name)}
-                        className="flex items-center gap-2 p-2 rounded-xl bg-gray-50 dark:bg-gray-800/60 hover:bg-orange-50 dark:hover:bg-orange-950/40 border border-gray-100 dark:border-gray-700/40 cursor-pointer transition-all group"
-                      >
-                        <span className="text-sm">{cat.icon}</span>
-                        <span className="text-xs font-medium text-gray-800 dark:text-gray-200 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
-                          {cat.name}
-                        </span>
-                      </div>
-                    ))}
+                    {POPULAR_CATEGORIES.map((cat, idx) => {
+                      const CategoryIcon = cat.icon;
+                      return (
+                        <div
+                          key={idx}
+                          onClick={() => handleSelectCategory(cat.name)}
+                          className="flex items-center gap-2.5 p-2.5 rounded-xl bg-gray-50 dark:bg-gray-800/60 hover:bg-orange-50 dark:hover:bg-orange-950/40 border border-gray-100 dark:border-gray-700/40 cursor-pointer transition-all group"
+                        >
+                          <div className="p-1.5 rounded-lg bg-orange-100/70 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 group-hover:scale-110 transition-transform">
+                            <CategoryIcon className="h-4 w-4" />
+                          </div>
+                          <span className="text-xs font-semibold text-gray-800 dark:text-gray-200 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                            {cat.name}
+                          </span>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>

@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useToast } from '../../contexts/ToastContext';
-import { Plus, Trash2, Tag, Percent, DollarSign } from 'lucide-react';
-import { toEnglishDigits } from '../../lib/utils';
+import { 
+  Plus, Trash2, Tag, Percent, DollarSign, Copy, CheckCircle2, 
+  X, Calendar, Sparkles, AlertCircle, ToggleLeft, ToggleRight
+} from 'lucide-react';
+import { toEnglishDigits, toPersianDigits, formatPrice } from '../../lib/utils';
 
 export default function AdminCoupons() {
   const token = localStorage.getItem('token');
@@ -56,10 +59,15 @@ export default function AdminCoupons() {
     const cleanMinTotal = toEnglishDigits(formData.minTotal);
     const parsedVal = parseInt(cleanValue, 10);
 
+    if (isNaN(parsedVal) || parsedVal <= 0) {
+      addToast('مقدار تخفیف را به درستی وارد کنید', 'error');
+      return;
+    }
+
     const payload = {
       code: formData.code.trim().toUpperCase(),
-      percent: formData.type === 'percent' ? (isNaN(parsedVal) ? undefined : parsedVal) : undefined,
-      amount: formData.type === 'amount' ? (isNaN(parsedVal) ? undefined : parsedVal) : undefined,
+      percent: formData.type === 'percent' ? parsedVal : undefined,
+      amount: formData.type === 'amount' ? parsedVal : undefined,
       minTotal: parseInt(cleanMinTotal, 10) || 0,
       label: formData.label.trim(),
       active: formData.active
@@ -77,7 +85,7 @@ export default function AdminCoupons() {
 
       if (!res.ok) throw new Error();
 
-      addToast('کد تخفیف جدید اضافه شد', 'success');
+      addToast('کد تخفیف جدید با موفقیت اضافه شد', 'success');
       setIsModalOpen(false);
       setFormData({ code: '', type: 'percent', value: '', minTotal: '', label: '', active: true });
       fetchCoupons();
@@ -87,124 +95,224 @@ export default function AdminCoupons() {
   };
 
   const handleDelete = async (code: string) => {
-    if (!window.confirm(`آیا از حذف کد تخفیف ${code} اطمینان دارید؟`)) return;
+    if (!window.confirm(`آیا از حذف کد تخفیف «${code}» اطمینان دارید؟`)) return;
     try {
       const res = await fetch(`/api/admin/coupons/${code}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (!res.ok) throw new Error();
-      addToast('کد تخفیف حذف شد', 'success');
+      addToast('کد تخفیف با موفقیت حذف شد', 'success');
       fetchCoupons();
     } catch (err) {
       addToast('خطا در حذف کد تخفیف', 'error');
     }
   };
 
+  const handleCopyCode = (code: string) => {
+    navigator.clipboard.writeText(code);
+    addToast(`کد تخفیف ${code} کپی شد`, 'success');
+  };
+
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 text-right">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-gray-900 dark:text-white mb-1">مدیریت کدهای تخفیف</h1>
-          <p className="text-gray-500 dark:text-gray-400">تعریف، فعال‌سازی و حذف کوپن‌های تخفیف</p>
+          <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mb-1">مدیریت کدهای تخفیف و پروموشن</h1>
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">تعریف کوپن‌های درصدی و نقدی با حداقل خرید و مدیریت فعال/غیرفعال‌سازی</p>
         </div>
-        <button 
+
+        <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2.5 rounded-xl font-bold transition-colors flex items-center gap-2 shadow-lg shadow-orange-500/20"
+          className="flex items-center gap-2 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-extrabold px-5 py-3 rounded-2xl text-xs shadow-lg shadow-orange-500/25 transition-all cursor-pointer self-start sm:self-auto hover:scale-105 active:scale-95"
         >
-          <Plus className="w-5 h-5" />
-          افزودن کد تخفیف
+          <Plus className="h-4 w-4" />
+          <span>افزودن کد تخفیف جدید</span>
         </button>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-4">
-        <div className="overflow-x-auto">
-          <table className="w-full text-right">
-            <thead>
-              <tr className="bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 text-sm border-b border-gray-100 dark:border-gray-700">
-                <th className="p-4 font-medium">کد تخفیف</th>
-                <th className="p-4 font-medium">عنوان / توضیحات</th>
-                <th className="p-4 font-medium">مقدار تخفیف</th>
-                <th className="p-4 font-medium">حداقل خرید</th>
-                <th className="p-4 font-medium text-center">وضعیت</th>
-                <th className="p-4 font-medium text-center">عملیات</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-              {loading ? (
-                <tr><td colSpan={6} className="text-center p-8">در حال بارگذاری...</td></tr>
-              ) : coupons.map(c => (
-                <tr key={c.code} className="text-sm hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                  <td className="p-4 font-bold text-gray-900 dark:text-white dir-ltr text-left w-max inline-block uppercase">
-                    <span className="bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 px-3 py-1 rounded-lg border border-orange-200 dark:border-orange-800">
-                      {c.code}
-                    </span>
-                  </td>
-                  <td className="p-4 font-medium text-gray-800 dark:text-gray-200">{c.label}</td>
-                  <td className="p-4 font-bold text-gray-900 dark:text-white">
-                    {c.percent ? `${c.percent}%` : `${c.amount?.toLocaleString()} تومان`}
-                  </td>
-                  <td className="p-4 text-gray-600 dark:text-gray-300">{c.minTotal ? `${c.minTotal.toLocaleString()} تومان` : 'بدون حداقل'}</td>
-                  <td className="p-4 text-center">
-                    {c.active ? (
-                      <span className="bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 px-2.5 py-1 rounded-full text-xs font-bold">فعال</span>
-                    ) : (
-                      <span className="bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400 px-2.5 py-1 rounded-full text-xs font-bold">غیرفعال</span>
-                    )}
-                  </td>
-                  <td className="p-4 text-center">
-                    <button onClick={() => handleDelete(c.code)} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {coupons.length === 0 && !loading && (
-                <tr><td colSpan={6} className="text-center p-8 text-gray-500">کد تخفیفی تعریف نشده است</td></tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      {/* Coupons Grid Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {loading ? (
+          <div className="col-span-full p-12 text-center text-gray-400">در حال دریافت کدهای تخفیف...</div>
+        ) : coupons.length === 0 ? (
+          <div className="col-span-full p-12 bg-white dark:bg-gray-800 rounded-3xl text-center text-gray-400 border border-gray-100 dark:border-gray-700 shadow-xs">
+            هیچ کد تخفیف فعالی یافت نشد. می‌توانید با دکمه بالا اولین کد را بسازید.
+          </div>
+        ) : (
+          coupons.map((coupon) => (
+            <div 
+              key={coupon.code}
+              className="bg-white dark:bg-gray-800 rounded-3xl p-5 border border-gray-100 dark:border-gray-700 shadow-xs hover:shadow-md transition-all relative overflow-hidden flex flex-col justify-between"
+            >
+              {/* Ticket Top Notch */}
+              <div className="flex items-center justify-between gap-3 mb-4">
+                <span className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold ${
+                  coupon.active !== false
+                    ? 'bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 border border-emerald-200 dark:border-emerald-900/40'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-400'
+                }`}>
+                  {coupon.active !== false ? 'فعال و معتبر' : 'غیرفعال'}
+                </span>
 
-      {isModalOpen && createPortal(
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white dark:bg-gray-800 rounded-3xl w-full max-w-md shadow-2xl p-6">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">افزودن کد تخفیف جدید</h2>
-            
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">کد (انگلیسی) *</label>
-                <input required type="text" placeholder="مثال: OFF50" value={formData.code} onChange={e => setFormData({...formData, code: e.target.value})} className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 uppercase text-left font-mono" dir="ltr" />
+                <span className="text-[10px] text-gray-400 font-bold">
+                  {coupon.percent ? 'تخفیف درصدی' : 'تخفیف نقدی'}
+                </span>
               </div>
 
+              {/* Coupon Code Block */}
+              <div className="bg-gray-50 dark:bg-gray-900/60 p-4 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 flex items-center justify-between mb-4">
+                <div>
+                  <span className="font-mono text-lg font-black text-orange-600 dark:text-orange-400 tracking-wider">
+                    {coupon.code}
+                  </span>
+                  <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5 font-bold truncate max-w-[180px]">
+                    {coupon.label || 'کد تخفیف اختصاصی'}
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => handleCopyCode(coupon.code)}
+                  className="p-2.5 rounded-xl bg-white dark:bg-gray-800 hover:bg-orange-50 text-gray-500 hover:text-orange-600 border border-gray-200 dark:border-gray-700 transition-all cursor-pointer shadow-xs"
+                  title="کپی کردن کد"
+                >
+                  <Copy className="h-4 w-4" />
+                </button>
+              </div>
+
+              {/* Specs and rules */}
+              <div className="space-y-2 text-xs mb-4">
+                <div className="flex justify-between py-1 border-b border-gray-50 dark:border-gray-700/60">
+                  <span className="text-gray-400">میزان تخفیف:</span>
+                  <span className="font-black text-gray-900 dark:text-white">
+                    {coupon.percent ? `${toPersianDigits(coupon.percent)}٪` : `${toPersianDigits(coupon.amount?.toLocaleString('fa-IR'))} تومان`}
+                  </span>
+                </div>
+                <div className="flex justify-between py-1">
+                  <span className="text-gray-400">حداقل خرید:</span>
+                  <span className="font-bold text-gray-700 dark:text-gray-300">
+                    {coupon.minTotal > 0 ? `${toPersianDigits(coupon.minTotal.toLocaleString('fa-IR'))} تومان` : 'بدون حداقل خرید'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-end">
+                <button
+                  onClick={() => handleDelete(coupon.code)}
+                  className="p-2 rounded-xl text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                  <span>حذف کد</span>
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Modern Add Coupon Modal */}
+      {isModalOpen && createPortal(
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/65 backdrop-blur-md">
+          <div className="bg-white dark:bg-gray-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-gray-100 dark:border-gray-700 text-right animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-700 mb-5">
+              <h3 className="font-black text-gray-900 dark:text-white text-base flex items-center gap-2">
+                <Tag className="h-5 w-5 text-orange-500" />
+                <span>تعریف کد تخفیف جدید</span>
+              </h3>
+              <button onClick={() => setIsModalOpen(false)} className="p-2 text-gray-400 hover:text-gray-600">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4 text-xs font-bold">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">عنوان / نشان *</label>
-                <input required type="text" placeholder="مثال: تخفیف ویژه ۵۰ درصدی" value={formData.label} onChange={e => setFormData({...formData, label: e.target.value})} className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900" />
+                <label className="block text-gray-700 dark:text-gray-300 mb-1.5 font-black">
+                  کد تخفیف (لاتین و انگلیسی) *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.code}
+                  onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
+                  placeholder="مثال: OFF20 یا JANEBI100"
+                  className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 font-mono font-black text-sm text-orange-600 dark:text-orange-400 focus:outline-none focus:border-orange-500 text-left dir-ltr"
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">نوع تخفیف</label>
-                  <select value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})} className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 cursor-pointer">
-                    <option value="percent">درصدی (%)</option>
+                  <label className="block text-gray-700 dark:text-gray-300 mb-1.5">نوع تخفیف *</label>
+                  <select
+                    value={formData.type}
+                    onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                    className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500 cursor-pointer"
+                  >
+                    <option value="percent">درصدی (٪)</option>
                     <option value="amount">مبلغ ثابت (تومان)</option>
                   </select>
                 </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">مقدار *</label>
-                  <input required type="text" dir="ltr" placeholder={formData.type === 'percent' ? 'مثال: 20' : 'مثال: 50000'} value={formData.value} onChange={e => setFormData({...formData, value: e.target.value})} className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-left font-mono" />
+                  <label className="block text-gray-700 dark:text-gray-300 mb-1.5">
+                    {formData.type === 'percent' ? 'درصد تخفیف (۱ تا ۹۹) *' : 'مبلغ تخفیف (تومان) *'}
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min={1}
+                    max={formData.type === 'percent' ? 99 : undefined}
+                    value={formData.value}
+                    onChange={(e) => setFormData({ ...formData, value: e.target.value })}
+                    placeholder={formData.type === 'percent' ? '20' : '100000'}
+                    className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs font-mono font-bold text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500 text-left dir-ltr"
+                  />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">حداقل مبلغ سفارش (تومان)</label>
-                <input type="text" dir="ltr" placeholder="مثال: 200000" value={formData.minTotal} onChange={e => setFormData({...formData, minTotal: e.target.value})} className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-left font-mono" />
+                <label className="block text-gray-700 dark:text-gray-300 mb-1.5">حداقل مبلغ سفارش (تومان)</label>
+                <input
+                  type="text"
+                  value={formData.minTotal}
+                  onChange={(e) => setFormData({ ...formData, minTotal: e.target.value })}
+                  placeholder="500000 (اختیاری)"
+                  className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs font-mono text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500 text-left dir-ltr"
+                />
+                {formData.minTotal ? (
+                  <span className="text-[10px] text-gray-400 mt-1 block">
+                    معادل: {toPersianDigits(parseInt(formData.minTotal || '0').toLocaleString('fa-IR'))} تومان
+                  </span>
+                ) : null}
+              </div>
+
+              <div>
+                <label className="block text-gray-700 dark:text-gray-300 mb-1.5">عنوان / توضیح کد</label>
+                <input
+                  type="text"
+                  value={formData.label}
+                  onChange={(e) => setFormData({ ...formData, label: e.target.value })}
+                  placeholder="مثال: ۲۰٪ تخفیف ویژه خرید بالای ۵۰۰ هزار تومان"
+                  className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500"
+                />
               </div>
 
               <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-700">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="px-5 py-2 text-gray-600 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">انصراف</button>
-                <button type="submit" className="px-5 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold shadow-md shadow-orange-500/20 cursor-pointer">ذخیره کد تخفیف</button>
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-5 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold"
+                >
+                  انصراف
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 text-white font-extrabold shadow-md shadow-orange-500/20"
+                >
+                  ایجاد کد تخفیف
+                </button>
               </div>
             </form>
           </div>

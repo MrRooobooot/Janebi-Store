@@ -39,12 +39,13 @@ export interface OrderItem {
 export interface Order {
   id: string;
   date: string;
-  status: 'processing' | 'delivered' | 'cancelled' | string;
+  status: 'processing' | 'shipped' | 'delivered' | 'cancelled' | string;
   statusText: string;
   total: number;
   subtotal?: number;
   shippingFee?: number;
   paymentMethod?: string;
+  trackingCode?: string;
   recipient: OrderRecipient;
   items: OrderItem[];
 }

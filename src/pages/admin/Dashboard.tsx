@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Users, Package, ShoppingCart, DollarSign, Award, TrendingUp, Sparkles } from "lucide-react";
+import { Users, Package, ShoppingCart, DollarSign, Award, TrendingUp, Sparkles, Tag } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface DashboardStats {
@@ -95,8 +95,33 @@ export default function Dashboard() {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-gray-900 dark:text-white mb-2">داشبورد مدیریت و تحلیل</h1>
-          <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm">نمای کلی از عملکرد مالی، کاتالوگ و باشگاه وفاداری کاربران</p>
+          <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mb-1">داشبورد مدیریت و تحلیل</h1>
+          <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm">نمای کلی از عملکرد فروشگاه، کاتالوگ انبار و باشگاه وفاداری کاربران</p>
+        </div>
+        
+        {/* Quick Shortcut Buttons */}
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            to="/admin/products"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold transition-all shadow-sm"
+          >
+            <Package className="h-3.5 w-3.5" />
+            <span>مدیریت کالاها</span>
+          </Link>
+          <Link
+            to="/admin/orders"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 text-xs font-bold transition-all shadow-xs"
+          >
+            <ShoppingCart className="h-3.5 w-3.5 text-blue-500" />
+            <span>سفارشات جدید</span>
+          </Link>
+          <Link
+            to="/admin/coupons"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 text-xs font-bold transition-all shadow-xs"
+          >
+            <Tag className="h-3.5 w-3.5 text-emerald-500" />
+            <span>کد تخفیف</span>
+          </Link>
         </div>
       </div>
 

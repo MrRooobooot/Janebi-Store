@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, Save, Phone, Mail, MapPin, Clock, Truck, Megaphone, Check } from 'lucide-react';
+import { Settings, Save, Phone, Mail, MapPin, Clock, Truck, Megaphone, Check, Loader2, Database, Download } from 'lucide-react';
 import { useToast } from '../../contexts/ToastContext';
 
 interface StoreSettingsData {
@@ -211,6 +211,28 @@ export default function AdminSettings() {
           </div>
         </div>
 
+        {/* Database Backup & Maintenance Card */}
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-800/60 p-6 rounded-2xl border border-blue-100 dark:border-gray-700 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 font-extrabold text-sm mb-1">
+              <Database className="h-4 w-4" />
+              <span>پشتیبان‌گیری و ایمنی پایگاه داده (Database Backup)</span>
+            </div>
+            <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+              دانلود یکپارچه و مستقیم فایل دیتابیس فروشگاه (شامل تمام محصولات، کاربران، سفارش‌ها و تنظیمات).
+            </p>
+          </div>
+
+          <a
+            href="/api/admin/backup"
+            download
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md shadow-blue-500/20 transition-all shrink-0 self-start sm:self-auto"
+          >
+            <Download className="h-4 w-4" />
+            <span>دانلود فایل پشتیبان (janebi.db)</span>
+          </a>
+        </div>
+
         {/* Save Button */}
         <div className="flex justify-end">
           <button
@@ -219,7 +241,7 @@ export default function AdminSettings() {
             className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-bold text-xs shadow-lg shadow-orange-500/25 transition-all disabled:opacity-60 cursor-pointer"
           >
             {saving ? (
-              <span className="inline-block animate-spin">⏳</span>
+              <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               <>
                 <Save className="h-4 w-4" />
