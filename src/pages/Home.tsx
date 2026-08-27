@@ -158,7 +158,7 @@ export default function Home() {
       
       {/* 1. Hero Showcase Section */}
       <section className="w-full box-border">
-        <div className={`relative rounded-3xl overflow-hidden bg-gradient-to-b from-zinc-900 via-zinc-900 to-black border ${currentSlide.borderColor} shadow-2xl p-6 sm:p-8 lg:p-10 transition-all duration-700 min-h-[360px] sm:min-h-[420px] flex flex-col justify-between`}>
+        <div className={`relative rounded-3xl overflow-hidden bg-gradient-to-b from-[#0e1422] via-[#090d16] to-[#05070c] border ${currentSlide.borderColor} shadow-2xl p-6 sm:p-8 lg:p-10 transition-all duration-700 min-h-[360px] sm:min-h-[420px] flex flex-col justify-between`}>
           
           {/* Subtle Ambient Dot Grid */}
           <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" />
@@ -250,7 +250,7 @@ export default function Home() {
 
       {/* 3. Amazing Deals Section */}
       <section className="w-full">
-        <div className="bg-gradient-to-br from-zinc-900 via-zinc-900 to-black rounded-3xl p-5 sm:p-8 text-white border border-orange-500/30 shadow-xl relative overflow-hidden">
+        <div className="bg-gradient-to-br from-[#121827] via-[#0b0f19] to-[#06080e] rounded-3xl p-5 sm:p-8 text-white border border-orange-500/30 shadow-2xl relative overflow-hidden">
           
           {/* Section Header */}
           <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-zinc-800">

@@ -30,9 +30,9 @@
   --font-sans: "Vazirmatn", system-ui, -apple-system, sans-serif;
   --color-primary-50: #fff7ed;
   --color-primary-100: #ffedd5;
-  --color-primary-500: #f97316;
-  --color-primary-600: #ea580c;
-  --color-primary-700: #c2410c;
+  --color-primary-500: #ff6a00;
+  --color-primary-600: #f05400;
+  --color-primary-700: #d04000;
 }
 
 :root {
@@ -58,7 +58,7 @@ body {
   background-color: #f8fafc;
   color: #0f172a;
   box-sizing: border-box;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 #root {
@@ -71,30 +71,36 @@ body {
 }
 
 .dark body {
-  background-color: #0b0f17;
+  background-color: #06090e;
   color: #f8fafc;
 }
 
-/* ── Dark Mode: Minimum Contrast Enforcement (WCAG AAA) ──────────── */
-.dark .text-zinc-400,
-.dark .text-gray-400 {
-  color: #cbd5e1 !important;
+/* ── Dark Mode Modern Glassmorphism & High-End Card Surfaces ─────── */
+.dark .bg-surface-card {
+  background-color: rgba(13, 18, 28, 0.85);
+  backdrop-filter: blur(16px);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
-.dark .text-zinc-500,
-.dark .text-gray-500 {
+.dark .text-zinc-400,
+.dark .text-gray-400 {
   color: #94a3b8 !important;
+}
+
+.dark .text-zinc-300,
+.dark .text-gray-300 {
+  color: #cbd5e1 !important;
 }
 
 /* ── Focus Ring System ──────────────────────────────────────────── */
 :focus-visible {
-  outline: 2px solid #ea580c;
+  outline: 2px solid #f05400;
   outline-offset: 2px;
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
 .dark :focus-visible {
-  outline-color: #f97316;
+  outline-color: #ff6a00;
 }
 
 /* ── Persian Digit Rendering ────────────────────────────────────── */

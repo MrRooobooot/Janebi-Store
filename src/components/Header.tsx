@@ -37,7 +37,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-40 transition-colors duration-200 w-full overflow-x-clip">
+    <header className="bg-white/95 dark:bg-[#080d15]/90 backdrop-blur-xl border-b border-zinc-200/80 dark:border-zinc-800/80 sticky top-0 z-40 transition-colors duration-200 w-full overflow-x-clip">
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
       
       {/* Top Announcement Bar — Strict Overflow Control */}
