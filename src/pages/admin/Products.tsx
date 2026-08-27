@@ -4,24 +4,34 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
 import { 
   Plus, Edit2, Trash2, Search, X, Filter, Image as ImageIcon, 
-  CheckCircle, AlertTriangle, Package, Sparkles, Tag, DollarSign, Calculator, Upload
+  CheckCircle, AlertTriangle, Package, Sparkles, Tag, DollarSign, Calculator, Upload,
+  Smartphone, Shield, Zap, Cable, Headphones, BatteryCharging, Wand2
 } from 'lucide-react';
 import { Product } from '../../types';
 import { toEnglishDigits, toPersianDigits, formatPrice } from '../../lib/utils';
 
+const CATEGORY_DEFAULT_IMAGES: Record<string, string> = {
+  'قاب و کاور': '/products/cas-4.svg',
+  'گلس': '/products/gls-3.svg',
+  'شارژر': '/products/chg-2.svg',
+  'کابل': '/products/cbl-1.svg',
+  'هندزفری': '/products/ear-6.svg',
+  'پاوربانک': '/products/pb-7.svg',
+};
+
 const PRESET_GALLERY = [
-  { id: 'chg-2', category: 'شارژر', brand: 'Anker', label: 'شارژر دیواری ۲۰ وات انکر', url: '/products/chg-2.svg' },
-  { id: 'chg-5', category: 'شارژر', brand: 'Samsung', label: 'شارژر ۲۵ وات سامسونگ', url: '/products/chg-5.svg' },
-  { id: 'chg-9', category: 'شارژر', brand: 'Apple', label: 'شارژر مگ‌سیف بی‌سیم', url: '/products/chg-9.svg' },
-  { id: 'cbl-1', category: 'کابل', brand: 'Anker', label: 'کابل تایپ‌سی فست', url: '/products/cbl-1.svg' },
-  { id: 'cbl-11', category: 'کابل', brand: 'Anker', label: 'کابل لایتنینگ MFi', url: '/products/cbl-11.svg' },
-  { id: 'cas-4', category: 'قاب و کاور', brand: 'Apple', label: 'قاب سیلیکونی مگ‌سیف', url: '/products/cas-4.svg' },
-  { id: 'cas-8', category: 'قاب و کاور', brand: 'Nillkin', label: 'قاب ضدضربه نیلکین', url: '/products/cas-8.svg' },
-  { id: 'gls-3', category: 'گلس', brand: 'Samsung', label: 'گلس شیشه‌ای S24 Ultra', url: '/products/gls-3.svg' },
-  { id: 'gls-12', category: 'گلس', brand: 'Baseus', label: 'گلس سرامیکی ۱۵ پرو مکس', url: '/products/gls-12.svg' },
-  { id: 'ear-6', category: 'هندزفری', brand: 'Samsung', label: 'Galaxy Buds2 Pro', url: '/products/ear-6.svg' },
-  { id: 'ear-10', category: 'هندزفری', brand: 'Xiaomi', label: 'Redmi Buds 5 Pro', url: '/products/ear-10.svg' },
-  { id: 'pb-7', category: 'پاوربانک', brand: 'Baseus', label: 'پاوربانک ۶۵ وات Adaman', url: '/products/pb-7.svg' },
+  { id: 'ear-6', category: 'هندزفری', brand: 'Samsung', label: 'هندزفری TWS بلوتوثی Pro', url: '/products/ear-6.svg' },
+  { id: 'ear-10', category: 'هندزفری', brand: 'Xiaomi', label: 'هندزفری In-Ear ارگونومیک', url: '/products/ear-10.svg' },
+  { id: 'chg-2', category: 'شارژر', brand: 'Anker', label: 'شارژر فست GaN 20W', url: '/products/chg-2.svg' },
+  { id: 'chg-5', category: 'شارژر', brand: 'Samsung', label: 'شارژر سوپرفست 25W', url: '/products/chg-5.svg' },
+  { id: 'chg-9', category: 'شارژر', brand: 'Apple', label: 'پد شارژر وایرلس مگ‌سیف', url: '/products/chg-9.svg' },
+  { id: 'cbl-1', category: 'کابل', brand: 'Anker', label: 'کابل فست Type-C به Type-C', url: '/products/cbl-1.svg' },
+  { id: 'cbl-11', category: 'کابل', brand: 'Apple', label: 'کابل فست لایتنینگ MFi', url: '/products/cbl-11.svg' },
+  { id: 'cas-4', category: 'قاب و کاور', brand: 'Apple', label: 'کاور سیلیکونی مگ‌سیف', url: '/products/cas-4.svg' },
+  { id: 'cas-8', category: 'قاب و کاور', brand: 'Nillkin', label: 'قاب آرمور ضدضربه CamShield', url: '/products/cas-8.svg' },
+  { id: 'gls-3', category: 'گلس', brand: 'Samsung', label: 'گلس شیشه‌ای فول چسب 9H', url: '/products/gls-3.svg' },
+  { id: 'gls-12', category: 'گلس', brand: 'Baseus', label: 'گلس سرامیکی انعطاف‌پذیر', url: '/products/gls-12.svg' },
+  { id: 'pb-7', category: 'پاوربانک', brand: 'Baseus', label: 'پاوربانک 65W با نمایشگر دیجیتال', url: '/products/pb-7.svg' },
 ];
 
 export default function AdminProducts() {
@@ -38,12 +48,12 @@ export default function AdminProducts() {
   // Form State
   const [formData, setFormData] = useState({
     title: '',
-    category: 'قاب و کاور',
+    category: 'هندزفری',
     price: '',
     originalPrice: '',
     discount: '0',
-    image: '/products/cas-4.svg',
-    brand: 'Apple',
+    image: '/products/ear-6.svg',
+    brand: 'Samsung',
     warranty: '۷ روز مهلت تست',
     description: '',
     stockQuantity: '15',
@@ -67,14 +77,82 @@ export default function AdminProducts() {
 
   const fetchProducts = async () => {
     try {
+      setLoading(true);
       const res = await fetch('/api/products');
-      const data = await res.json();
-      setProducts(Array.isArray(data) ? data : data.products || []);
+      if (res.ok) {
+        const data = await res.json();
+        setProducts(data);
+      } else {
+        addToast('خطا در دریافت لیست محصولات', 'error');
+      }
     } catch (err) {
-      addToast('خطا در دریافت لیست محصولات', 'error');
+      addToast('خطا در ارتباط با سرور', 'error');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handlePriceChange = (val: string) => {
+    const rawVal = toEnglishDigits(val).replace(/[^0-9]/g, '');
+    const priceNum = parseInt(rawVal, 10) || 0;
+    const origNum = parseInt(toEnglishDigits(formData.originalPrice).replace(/[^0-9]/g, ''), 10) || 0;
+    
+    let disc = '0';
+    if (origNum > priceNum && origNum > 0) {
+      disc = Math.round(((origNum - priceNum) / origNum) * 100).toString();
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      price: rawVal,
+      discount: disc
+    }));
+  };
+
+  const handleOriginalPriceChange = (val: string) => {
+    const rawVal = toEnglishDigits(val).replace(/[^0-9]/g, '');
+    const origNum = parseInt(rawVal, 10) || 0;
+    const priceNum = parseInt(toEnglishDigits(formData.price).replace(/[^0-9]/g, ''), 10) || 0;
+    
+    let disc = '0';
+    if (origNum > priceNum && origNum > 0) {
+      disc = Math.round(((origNum - priceNum) / origNum) * 100).toString();
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      originalPrice: rawVal,
+      discount: disc
+    }));
+  };
+
+  const handleDiscountChange = (val: string) => {
+    const rawVal = toEnglishDigits(val).replace(/[^0-9]/g, '');
+    const discNum = Math.min(100, parseInt(rawVal, 10) || 0);
+    const origNum = parseInt(toEnglishDigits(formData.originalPrice).replace(/[^0-9]/g, ''), 10) || 0;
+    
+    let calcPrice = formData.price;
+    if (origNum > 0 && discNum >= 0) {
+      const calculated = Math.round(origNum * (1 - discNum / 100));
+      calcPrice = calculated.toString();
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      discount: discNum.toString(),
+      price: calcPrice
+    }));
+  };
+
+  // Smart Category Change: Automatically sets the relevant vector icon!
+  const handleCategoryChange = (newCat: string) => {
+    const defaultImg = CATEGORY_DEFAULT_IMAGES[newCat] || '/products/cas-4.svg';
+    setFormData(prev => ({
+      ...prev,
+      category: newCat,
+      image: defaultImg
+    }));
+    addToast(`تصویر مرتبط با دسته "${newCat}" خودکار انتخاب شد`, 'info');
   };
 
   const openModal = (product?: Product) => {
@@ -83,76 +161,67 @@ export default function AdminProducts() {
       setFormData({
         title: product.title,
         category: product.category,
-        price: product.price.toString(),
-        originalPrice: product.originalPrice?.toString() || '',
-        discount: product.discount?.toString() || '0',
-        image: product.image || '/products/cas-4.svg',
+        price: product.price ? product.price.toString() : '',
+        originalPrice: product.originalPrice ? product.originalPrice.toString() : '',
+        discount: product.discount ? product.discount.toString() : '0',
+        image: product.image || CATEGORY_DEFAULT_IMAGES[product.category] || '/products/cas-4.svg',
         brand: product.brand,
-        warranty: product.warranty || '',
+        warranty: product.warranty || '۷ روز مهلت تست',
         description: product.description || '',
-        stockQuantity: (product.stockQuantity ?? 10).toString(),
-        sku: product.sku || ''
+        stockQuantity: product.stockQuantity ? product.stockQuantity.toString() : '10',
+        sku: (product as any).sku || ''
       });
     } else {
       setEditingProduct(null);
+      const defaultCat = 'هندزفری';
       setFormData({
         title: '',
-        category: 'قاب و کاور',
-        price: '450000',
-        originalPrice: '500000',
-        discount: '10',
-        image: '/products/cas-4.svg',
-        brand: 'Apple',
-        warranty: '۷ روز مهلت تست فیزیکی',
+        category: defaultCat,
+        price: '',
+        originalPrice: '',
+        discount: '0',
+        image: CATEGORY_DEFAULT_IMAGES[defaultCat],
+        brand: 'Samsung',
+        warranty: '۷ روز مهلت تست',
         description: '',
-        stockQuantity: '20',
-        sku: `SKU-${Date.now().toString().slice(-6)}`
+        stockQuantity: '15',
+        sku: ''
       });
     }
     setIsModalOpen(true);
   };
 
-  // Smart Price & Discount calculation
-  const handleOriginalPriceChange = (val: string) => {
-    const orig = parseInt(toEnglishDigits(val)) || 0;
-    const disc = parseInt(toEnglishDigits(formData.discount)) || 0;
-    let newPrice = formData.price;
-    if (orig > 0 && disc > 0) {
-      newPrice = Math.round(orig * (1 - disc / 100)).toString();
-    } else if (orig > 0 && (!formData.price || formData.price === '0')) {
-      newPrice = orig.toString();
-    }
-    setFormData({ ...formData, originalPrice: val, price: newPrice });
-  };
-
-  const handleDiscountChange = (val: string) => {
-    const disc = Math.min(Math.max(parseInt(toEnglishDigits(val)) || 0, 0), 99);
-    const orig = parseInt(toEnglishDigits(formData.originalPrice)) || parseInt(toEnglishDigits(formData.price)) || 0;
-    let newPrice = formData.price;
-    if (orig > 0) {
-      newPrice = Math.round(orig * (1 - disc / 100)).toString();
-    }
-    setFormData({ ...formData, discount: disc.toString(), price: newPrice });
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      const payload = {
-        title: formData.title,
-        category: formData.category,
-        price: parseInt(toEnglishDigits(formData.price)) || 0,
-        originalPrice: formData.originalPrice ? parseInt(toEnglishDigits(formData.originalPrice)) : null,
-        discount: parseInt(toEnglishDigits(formData.discount)) || 0,
-        image: formData.image,
-        brand: formData.brand,
-        warranty: formData.warranty,
-        description: formData.description,
-        stockQuantity: parseInt(toEnglishDigits(formData.stockQuantity)) || 0,
-        sku: formData.sku
-      };
 
-      const url = editingProduct ? `/api/admin/products/${editingProduct.id}` : '/api/admin/products';
+    const priceNum = parseInt(toEnglishDigits(formData.price).replace(/[^0-9]/g, ''), 10);
+    const origNum = parseInt(toEnglishDigits(formData.originalPrice).replace(/[^0-9]/g, ''), 10) || priceNum;
+    const discNum = parseInt(toEnglishDigits(formData.discount).replace(/[^0-9]/g, ''), 10) || 0;
+    const stockNum = parseInt(toEnglishDigits(formData.stockQuantity).replace(/[^0-9]/g, ''), 10) || 0;
+
+    if (!priceNum || priceNum <= 0) {
+      addToast('لطفا قیمت معتبر وارد کنید', 'error');
+      return;
+    }
+
+    const payload = {
+      title: formData.title.trim(),
+      category: formData.category,
+      price: priceNum,
+      originalPrice: origNum,
+      discount: discNum,
+      image: formData.image,
+      brand: formData.brand.trim(),
+      warranty: formData.warranty.trim(),
+      description: formData.description.trim(),
+      stockQuantity: stockNum,
+      sku: formData.sku.trim() || undefined
+    };
+
+    try {
+      const url = editingProduct 
+        ? `/api/admin/products/${editingProduct.id}` 
+        : '/api/admin/products';
       const method = editingProduct ? 'PUT' : 'POST';
 
       const res = await fetch(url, {
@@ -164,13 +233,16 @@ export default function AdminProducts() {
         body: JSON.stringify(payload)
       });
 
-      if (!res.ok) throw new Error();
-
-      addToast(editingProduct ? 'محصول با موفقیت ویرایش شد' : 'محصول جدید با موفقیت اضافه شد', 'success');
-      setIsModalOpen(false);
-      fetchProducts();
+      if (res.ok) {
+        addToast(editingProduct ? 'محصول با موفقیت بروزرسانی شد' : 'محصول با موفقیت ایجاد شد', 'success');
+        setIsModalOpen(false);
+        fetchProducts();
+      } else {
+        const data = await res.json();
+        addToast(data.error || 'خطا در ثبت محصول', 'error');
+      }
     } catch (err) {
-      addToast('خطا در ذخیره اطلاعات محصول', 'error');
+      addToast('خطا در ارتباط با سرور', 'error');
     }
   };
 
@@ -180,21 +252,29 @@ export default function AdminProducts() {
     try {
       const res = await fetch(`/api/admin/products/${id}`, {
         method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
-      if (!res.ok) throw new Error();
-      addToast('محصول با موفقیت حذف شد', 'success');
-      setProducts(products.filter(p => p.id !== id));
+
+      if (res.ok) {
+        addToast('محصول حذف شد', 'success');
+        fetchProducts();
+      } else {
+        const data = await res.json();
+        addToast(data.error || 'خطا در حذف محصول', 'error');
+      }
     } catch (err) {
-      addToast('خطا در حذف محصول', 'error');
+      addToast('خطا در ارتباط با سرور', 'error');
     }
   };
 
-  // Filtered Products List
   const filteredProducts = products.filter(p => {
-    const matchesSearch = p.title.toLowerCase().includes(search.toLowerCase()) || 
-                          (p.brand && p.brand.toLowerCase().includes(search.toLowerCase())) ||
-                          (p.sku && p.sku.toLowerCase().includes(search.toLowerCase()));
+    const q = search.toLowerCase().trim();
+    const matchesSearch = !q || 
+      p.title.toLowerCase().includes(q) || 
+      p.brand.toLowerCase().includes(q) ||
+      ((p as any).sku && (p as any).sku.toLowerCase().includes(q));
     
     const matchesCategory = categoryFilter === 'all' || p.category === categoryFilter;
     
@@ -209,13 +289,20 @@ export default function AdminProducts() {
 
   const categoriesList = Array.from(new Set(products.map(p => p.category)));
 
+  // Sorted Preset Gallery: matches current form category first!
+  const sortedGallery = [...PRESET_GALLERY].sort((a, b) => {
+    if (a.category === formData.category && b.category !== formData.category) return -1;
+    if (a.category !== formData.category && b.category === formData.category) return 1;
+    return 0;
+  });
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mb-1">مدیریت محصولات و موجودی انبار</h1>
-          <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm">افزودن کالا، تنظیم هوشمند قیمت و تخفیف، کنترل موجودی و گارانتی</p>
+          <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm">افزودن کالا، تنظیم هوشمند قیمت و تخفیف، تخصیص خودکار وکتور کالا و کنترل موجودی</p>
         </div>
         <button
           onClick={() => openModal()}
@@ -267,69 +354,98 @@ export default function AdminProducts() {
       {/* Products Table */}
       <div className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
-          <table className="w-full text-right text-xs">
-            <thead className="bg-gray-50/80 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700">
-              <tr>
-                <th className="p-4 font-bold">تصویر و عنوان محصول</th>
-                <th className="p-4 font-bold">دسته‌بندی و برند</th>
-                <th className="p-4 font-bold">قیمت و تخفیف</th>
-                <th className="p-4 font-bold">موجودی انبار</th>
-                <th className="p-4 font-bold">کد SKU</th>
-                <th className="p-4 font-bold text-center">عملیات</th>
+          <table className="w-full text-right border-collapse">
+            <thead>
+              <tr className="border-b border-gray-100 dark:border-gray-700 bg-gray-50/75 dark:bg-gray-800/50 text-[11px] font-black text-gray-500 dark:text-gray-400">
+                <th className="p-4 pr-6">کالا و دسته‌بندی</th>
+                <th className="p-4">برند</th>
+                <th className="p-4">قیمت اصلی</th>
+                <th className="p-4">تخفیف</th>
+                <th className="p-4">قیمت نهایی فروش</th>
+                <th className="p-4">موجودی انبار</th>
+                <th className="p-4 pl-6 text-center">عملیات</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 dark:divide-gray-700/60">
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-700/60 text-xs">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-gray-400">در حال بارگذاری لیست کالاها...</td>
+                  <td colSpan={7} className="p-12 text-center text-gray-400">
+                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-orange-500 border-t-transparent mb-2" />
+                    <p className="font-bold">در حال بارگذاری لیست محصولات...</p>
+                  </td>
                 </tr>
               ) : filteredProducts.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-gray-400">هیچ محصولی با این مشخصات یافت نشد.</td>
+                  <td colSpan={7} className="p-12 text-center text-gray-400">
+                    <Package className="h-12 w-12 mx-auto text-gray-300 dark:text-gray-600 mb-2 stroke-[1.5]" />
+                    <p className="font-bold">هیچ محصولی با این مشخصات یافت نشد.</p>
+                  </td>
                 </tr>
               ) : (
                 filteredProducts.map((p) => {
                   const stock = p.stockQuantity ?? 10;
+                  const hasDiscount = p.discount && p.discount > 0;
                   return (
                     <tr key={p.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors">
-                      <td className="p-4 flex items-center gap-3">
-                        <img 
-                          src={p.image} 
-                          alt={p.title} 
-                          className="w-12 h-12 rounded-xl object-contain bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 p-1 shrink-0 shadow-xs"
-                        />
-                        <div className="truncate max-w-xs">
-                          <div className="font-extrabold text-gray-900 dark:text-white truncate">{p.title}</div>
-                          <div className="text-[10px] text-gray-400 mt-0.5">{p.warranty || 'بدون گارانتی'}</div>
+                      <td className="p-4 pr-6">
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={p.image}
+                            alt={p.title}
+                            className="w-12 h-12 rounded-xl object-contain bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 p-1 shrink-0"
+                          />
+                          <div className="min-w-0">
+                            <h4 className="font-black text-gray-900 dark:text-gray-100 line-clamp-1 leading-snug">{p.title}</h4>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="inline-block px-2 py-0.5 rounded-md text-[10px] font-bold bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 border border-orange-200/50 dark:border-orange-800/40">
+                                {p.category}
+                              </span>
+                              {(p as any).sku && (
+                                <span className="text-[10px] text-gray-400 font-mono">
+                                  SKU: {(p as any).sku}
+                                </span>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </td>
-                      <td className="p-4">
-                        <div className="font-bold text-gray-800 dark:text-gray-200">{p.category}</div>
-                        <div className="text-[10px] text-orange-600 dark:text-orange-400 font-bold">{p.brand}</div>
+                      <td className="p-4 font-bold text-gray-700 dark:text-gray-300">
+                        {p.brand}
+                      </td>
+                      <td className="p-4 font-mono font-bold text-gray-500">
+                        {p.originalPrice && p.originalPrice > p.price ? formatPrice(p.originalPrice) : formatPrice(p.price)}
                       </td>
                       <td className="p-4">
-                        <div className="font-black text-gray-900 dark:text-white">{toPersianDigits(p.price.toLocaleString('fa-IR'))} تومان</div>
-                        {p.discount ? (
-                          <div className="text-[10px] text-rose-500 font-bold">{toPersianDigits(p.discount)}٪ تخفیف</div>
-                        ) : null}
-                      </td>
-                      <td className="p-4">
-                        {stock <= 0 ? (
-                          <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-rose-100 dark:bg-rose-950/40 text-rose-600 border border-rose-200 dark:border-rose-900/40">
-                            اتمام موجودی
-                          </span>
-                        ) : stock <= 5 ? (
-                          <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-amber-100 dark:bg-amber-950/40 text-amber-700 border border-amber-200 dark:border-amber-900/40">
-                            {toPersianDigits(stock)} عدد (بحرانی)
+                        {hasDiscount ? (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/50 dark:border-rose-800/40">
+                            {toPersianDigits(p.discount || 0)}٪
                           </span>
                         ) : (
-                          <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 border border-emerald-200 dark:border-emerald-900/40">
+                          <span className="text-gray-400 text-[11px]">-</span>
+                        )}
+                      </td>
+                      <td className="p-4 font-bold text-orange-600 dark:text-orange-400 font-mono">
+                        {formatPrice(p.price)}
+                      </td>
+                      <td className="p-4">
+                        {stock > 5 ? (
+                          <span className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500" />
                             {toPersianDigits(stock)} عدد موجود
+                          </span>
+                        ) : stock > 0 ? (
+                          <span className="inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-bold">
+                            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                            تنها {toPersianDigits(stock)} عدد باقی‌مانده
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 text-rose-600 dark:text-rose-400 font-bold">
+                            <span className="w-2 h-2 rounded-full bg-rose-500" />
+                            ناموجود
                           </span>
                         )}
                       </td>
-                      <td className="p-4 font-mono text-[11px] text-gray-500 dark:text-gray-400">{p.sku || '-'}</td>
-                      <td className="p-4 text-center">
+                      <td className="p-4 pl-6 text-center">
                         <div className="flex items-center justify-center gap-1.5">
                           <button
                             onClick={() => openModal(p)}
@@ -395,7 +511,7 @@ export default function AdminProducts() {
                   required
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="مثال: شارژر دیواری ۲۰ وات انکر مدل Nano Pro"
+                  placeholder="مثال: هندزفری بی‌سیم سامسونگ Galaxy Buds2 Pro"
                   className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
                 />
               </div>
@@ -403,96 +519,88 @@ export default function AdminProducts() {
               {/* Category & Brand */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-gray-800 dark:text-gray-200 mb-1.5">
-                    دسته‌بندی <span className="text-rose-500">*</span>
+                  <label className="block text-gray-800 dark:text-gray-200 mb-1.5 flex items-center justify-between">
+                    <span>دسته‌بندی <span className="text-rose-500">*</span></span>
+                    <span className="text-[10px] text-orange-600 dark:text-orange-400 flex items-center gap-1 font-bold">
+                      <Wand2 className="h-3 w-3" /> انتخاب خودکار وکتور
+                    </span>
                   </label>
                   <select
                     value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    onChange={(e) => handleCategoryChange(e.target.value)}
                     className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500 cursor-pointer"
                   >
-                    <option value="قاب و کاور">قاب و کاور</option>
-                    <option value="گلس">گلس</option>
+                    <option value="هندزفری">هندزفری</option>
                     <option value="شارژر">شارژر</option>
                     <option value="کابل">کابل</option>
-                    <option value="هندزفری">هندزفری</option>
+                    <option value="قاب و کاور">قاب و کاور</option>
+                    <option value="گلس">گلس</option>
                     <option value="پاوربانک">پاوربانک</option>
                   </select>
                 </div>
+
                 <div>
                   <label className="block text-gray-800 dark:text-gray-200 mb-1.5">
-                    برند سازنده <span className="text-rose-500">*</span>
+                    برند محصول <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="text"
                     required
                     value={formData.brand}
                     onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
-                    placeholder="مثال: Anker, Apple, Samsung, Baseus"
+                    placeholder="مثال: Samsung, Apple, Anker, Xiaomi"
                     className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500"
                   />
                 </div>
               </div>
 
-              {/* Smart Pricing & Discount Box */}
-              <div className="bg-orange-50/60 dark:bg-gray-750 p-4 rounded-3xl border border-orange-100 dark:border-gray-700 space-y-3">
-                <div className="flex items-center gap-1.5 text-orange-600 dark:text-orange-400 font-black text-xs">
-                  <Calculator className="h-4 w-4" />
-                  <span>تنظیم هوشمند قیمت و درصد تخفیف</span>
+              {/* Price Calculation Hub */}
+              <div className="bg-orange-50/50 dark:bg-orange-950/20 p-4 rounded-2xl border border-orange-200/60 dark:border-orange-800/40 space-y-4">
+                <div className="flex items-center gap-2 text-orange-800 dark:text-orange-300 font-black">
+                  <Calculator className="h-4 w-4 text-orange-600" />
+                  <span>محاسبه هوشمند قیمت و تخفیف کالا</span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
-                    <label className="block text-gray-700 dark:text-gray-300 mb-1">قیمت اصلی قبل تخفیف</label>
+                    <label className="block text-gray-700 dark:text-gray-300 mb-1 text-[11px]">قیمت اصلی (قبل تخفیف - تومان)</label>
                     <input
                       type="text"
-                      value={formData.originalPrice}
+                      value={formData.originalPrice ? formatPrice(parseInt(toEnglishDigits(formData.originalPrice), 10) || 0) : ''}
                       onChange={(e) => handleOriginalPriceChange(e.target.value)}
-                      placeholder="600000"
-                      className="w-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl p-2.5 text-xs text-gray-900 dark:text-white font-mono text-left dir-ltr focus:outline-none focus:border-orange-500"
+                      placeholder="مثال: ۱,۲۰۰,۰۰۰"
+                      className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl p-2.5 text-xs font-mono font-bold text-gray-900 dark:text-white focus:outline-none focus:border-orange-500"
                     />
-                    {formData.originalPrice ? (
-                      <span className="text-[10px] text-gray-400 mt-1 block">
-                        {toPersianDigits(parseInt(formData.originalPrice || '0').toLocaleString('fa-IR'))} تومان
-                      </span>
-                    ) : null}
                   </div>
 
                   <div>
-                    <label className="block text-gray-700 dark:text-gray-300 mb-1">درصد تخفیف (٪)</label>
+                    <label className="block text-gray-700 dark:text-gray-300 mb-1 text-[11px]">درصد تخفیف (٪)</label>
                     <input
                       type="number"
                       min={0}
-                      max={99}
+                      max={100}
                       value={formData.discount}
                       onChange={(e) => handleDiscountChange(e.target.value)}
-                      placeholder="10"
-                      className="w-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl p-2.5 text-xs text-rose-600 dark:text-rose-400 font-bold font-mono text-left dir-ltr focus:outline-none focus:border-orange-500"
+                      placeholder="۰"
+                      className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl p-2.5 text-xs font-mono font-bold text-rose-600 dark:text-rose-400 focus:outline-none focus:border-orange-500"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-gray-700 dark:text-gray-300 mb-1">
-                      قیمت نهایی فروش (تومان) <span className="text-rose-500">*</span>
-                    </label>
+                    <label className="block text-gray-700 dark:text-gray-300 mb-1 text-[11px]">قیمت نهایی فروش (تومان) <span className="text-rose-500">*</span></label>
                     <input
                       type="text"
                       required
-                      value={formData.price}
-                      onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                      placeholder="540000"
-                      className="w-full bg-white dark:bg-gray-700 border-2 border-orange-500 rounded-xl p-2.5 text-xs font-black text-orange-600 dark:text-orange-400 font-mono text-left dir-ltr focus:outline-none"
+                      value={formData.price ? formatPrice(parseInt(toEnglishDigits(formData.price), 10) || 0) : ''}
+                      onChange={(e) => handlePriceChange(e.target.value)}
+                      placeholder="مثال: ۹۸۰,۰۰۰"
+                      className="w-full bg-white dark:bg-gray-800 border border-orange-300 dark:border-orange-500 rounded-xl p-2.5 text-xs font-mono font-black text-orange-600 dark:text-orange-400 focus:outline-none focus:border-orange-500"
                     />
-                    {formData.price ? (
-                      <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-1 block">
-                        فروش: {toPersianDigits(parseInt(formData.price || '0').toLocaleString('fa-IR'))} تومان
-                      </span>
-                    ) : null}
                   </div>
                 </div>
               </div>
 
-              {/* Stock & Warranty */}
+              {/* Stock Quantity & Warranty */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-gray-800 dark:text-gray-200 mb-1.5">
@@ -522,8 +630,10 @@ export default function AdminProducts() {
               {/* Visual Vector Asset Gallery Selector */}
               <div>
                 <label className="block text-gray-800 dark:text-gray-200 mb-2 flex items-center justify-between">
-                  <span>تصویر و وکتور کالا (هاست‌شده و بدون باگ)</span>
-                  <span className="text-[11px] text-gray-400 font-normal">کلیک روی هر گزینه برای انتخاب سریع</span>
+                  <span>تصویر و وکتور کالا (کاملاً متقارن و سنتر)</span>
+                  <span className="text-[11px] text-orange-600 dark:text-orange-400 font-bold">
+                    پیشنهاد متناسب با دسته: {formData.category}
+                  </span>
                 </label>
 
                 {/* Selected Preview Box */}
@@ -531,32 +641,41 @@ export default function AdminProducts() {
                   <img 
                     src={formData.image} 
                     alt="Preview" 
-                    className="w-14 h-14 rounded-xl border border-gray-200 dark:border-gray-600 object-contain p-1 bg-white dark:bg-gray-900 shadow-sm shrink-0" 
+                    className="w-16 h-16 rounded-xl border border-gray-200 dark:border-gray-600 object-contain p-1.5 bg-white dark:bg-gray-900 shadow-sm shrink-0" 
                   />
                   <div className="overflow-hidden grow">
-                    <span className="text-[11px] text-gray-500 dark:text-gray-400 block mb-0.5">آدرس فایل تصویر:</span>
+                    <span className="text-[11px] text-gray-500 dark:text-gray-400 block mb-0.5">آدرس فایل تصویر وکتور:</span>
                     <span className="font-mono text-xs text-orange-600 dark:text-orange-400 font-bold truncate block dir-ltr text-left">
                       {formData.image}
+                    </span>
+                    <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold block mt-1">
+                      ✓ بهینه‌سازی‌شده برای بارگذاری محلی و بدون باگ در شبکه ایران
                     </span>
                   </div>
                 </div>
 
                 {/* Visual Grid Selector */}
-                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-36 overflow-y-auto p-1 pr-2">
-                  {PRESET_GALLERY.map((item) => {
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-h-48 overflow-y-auto p-1 pr-2">
+                  {sortedGallery.map((item) => {
                     const isSelected = formData.image === item.url;
+                    const isCategoryMatch = item.category === formData.category;
                     return (
                       <div
                         key={item.id}
                         onClick={() => setFormData({ ...formData, image: item.url })}
-                        className={`flex items-center gap-2 p-2 rounded-xl cursor-pointer transition-all border ${
+                        className={`flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all border ${
                           isSelected 
-                            ? 'bg-orange-500 text-white border-orange-600 shadow-xs' 
-                            : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-gray-200 dark:border-gray-700 hover:border-orange-300'
+                            ? 'bg-orange-500 text-white border-orange-600 shadow-md scale-102' 
+                            : isCategoryMatch
+                              ? 'bg-orange-50/70 dark:bg-orange-950/20 text-gray-800 dark:text-gray-100 border-orange-200 dark:border-orange-800 hover:border-orange-400'
+                              : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-gray-200 dark:border-gray-700 hover:border-gray-400'
                         }`}
                       >
-                        <img src={item.url} alt={item.label} className="w-7 h-7 rounded-lg object-contain bg-white dark:bg-gray-900 p-0.5 shrink-0" />
-                        <span className="text-[10px] font-bold truncate leading-tight">{item.label}</span>
+                        <img src={item.url} alt={item.label} className="w-9 h-9 rounded-lg object-contain bg-white dark:bg-gray-900 p-0.5 shrink-0 shadow-xs" />
+                        <div className="min-w-0">
+                          <span className="text-[11px] font-black truncate block leading-tight">{item.label}</span>
+                          <span className={`text-[9px] block ${isSelected ? 'text-orange-100' : 'text-gray-400'}`}>{item.category}</span>
+                        </div>
                       </div>
                     );
                   })}
@@ -577,27 +696,21 @@ export default function AdminProducts() {
             </form>
 
             {/* Sticky Action Footer */}
-            <div className="p-4 sm:p-5 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between bg-gray-50/90 dark:bg-gray-850/90 backdrop-blur-md shrink-0">
-              <span className="text-xs text-gray-500 dark:text-gray-400">
-                {editingProduct ? 'در حال ویرایش محصول موجود' : 'محصول جدید با SKU خودکار ثبت می‌شود'}
-              </span>
-
-              <div className="flex items-center gap-2.5">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-5 py-2.5 rounded-2xl bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 font-bold hover:bg-gray-100 transition-colors cursor-pointer text-xs"
-                >
-                  انصراف
-                </button>
-                <button
-                  type="submit"
-                  form="product-form"
-                  className="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-black shadow-md shadow-orange-500/25 transition-all cursor-pointer text-xs hover:scale-105 active:scale-95"
-                >
-                  {editingProduct ? 'ذخیره تغییرات کالا' : 'ثبت و انتشار محصول'}
-                </button>
-              </div>
+            <div className="p-4 sm:p-5 border-t border-gray-100 dark:border-gray-700 flex items-center justify-end gap-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shrink-0">
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="px-5 py-2.5 rounded-2xl text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+              >
+                انصراف
+              </button>
+              <button
+                type="submit"
+                form="product-form"
+                className="px-6 py-2.5 rounded-2xl text-xs font-black bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white shadow-md shadow-orange-500/25 transition-all cursor-pointer hover:scale-102 active:scale-95"
+              >
+                {editingProduct ? 'ذخیره تغییرات محصول' : 'ثبت و انتشار محصول'}
+              </button>
             </div>
 
           </div>

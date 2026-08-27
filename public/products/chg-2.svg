@@ -1,49 +1,47 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
   <defs>
-    <linearGradient id="charger_body" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff" />
-      <stop offset="60%" stop-color="#f1f5f9" />
-      <stop offset="100%" stop-color="#cbd5e1" />
+    <linearGradient id="bg_chg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#431407" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#9a3412" stop-opacity="0.2" />
     </linearGradient>
-    <linearGradient id="charger_face" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1e293b" />
-      <stop offset="100%" stop-color="#0f172a" />
+    <linearGradient id="gan_body" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#27272a" />
+      <stop offset="50%" stop-color="#18181b" />
+      <stop offset="100%" stop-color="#09090b" />
     </linearGradient>
-    <linearGradient id="port_glow" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#f97316" />
-      <stop offset="100%" stop-color="#ea580c" />
-    </linearGradient>
-    <filter id="charger_shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#0f172a" flood-opacity="0.25" />
+    <filter id="shadow_chg2" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#f97316" flood-opacity="0.35" />
     </filter>
   </defs>
 
   <!-- Background Base -->
-  <rect width="400" height="400" rx="36" fill="#f8fafc" fill-opacity="0.04" />
+  <rect width="400" height="400" rx="36" fill="url(#bg_chg2)" />
+  <rect x="2" y="2" width="396" height="396" rx="34" fill="none" stroke="#f97316" stroke-opacity="0.25" stroke-width="2" />
 
-  <!-- 3D GaN Fast Charger Body -->
-  <g filter="url(#charger_shadow)">
-    <!-- Main Cube Body -->
-    <rect x="110" y="90" width="180" height="200" rx="32" fill="url(#charger_body)" />
-    
-    <!-- Top Chamfer Accent -->
-    <path d="M120 90 L280 90 A20 20 0 0 1 290 105 L110 105 A20 20 0 0 1 120 90 Z" fill="#ffffff" opacity="0.8" />
-    
-    <!-- Front Port Panel -->
-    <rect x="135" y="125" width="130" height="135" rx="20" fill="url(#charger_face)" />
-    
-    <!-- USB-C Port 1 (GaN 65W) -->
-    <rect x="160" y="145" width="80" height="22" rx="11" fill="#020617" stroke="url(#port_glow)" stroke-width="2" />
-    <rect x="175" y="153" width="50" height="6" rx="3" fill="url(#port_glow)" />
-    <text x="200" y="180" font-family="sans-serif" font-size="10" font-weight="900" fill="#94a3b8" text-anchor="middle">USB-C1 (65W)</text>
+  <circle cx="200" cy="200" r="135" fill="#f97316" opacity="0.08" />
 
-    <!-- USB-C Port 2 (20W) -->
-    <rect x="165" y="195" width="70" height="18" rx="9" fill="#020617" stroke="#38bdf8" stroke-width="1.5" />
-    <rect x="180" y="201" width="40" height="6" rx="3" fill="#38bdf8" />
-    <text x="200" y="226" font-family="sans-serif" font-size="9" font-weight="bold" fill="#64748b" text-anchor="middle">USB-C2 (20W)</text>
+  <!-- GaN Charger (Centered at cx=200, cy=200) -->
+  <g filter="url(#shadow_chg2)">
+    <!-- Plug Pins (Top) -->
+    <rect x="168" y="80" width="12" height="42" rx="6" fill="#a1a1aa" />
+    <rect x="220" y="80" width="12" height="42" rx="6" fill="#a1a1aa" />
 
-    <!-- Base Prong Accent -->
-    <rect x="160" y="290" width="25" height="40" rx="6" fill="#94a3b8" />
-    <rect x="215" y="290" width="25" height="40" rx="6" fill="#94a3b8" />
+    <!-- Pin Neck Transition -->
+    <path d="M 152 118 L 248 118 L 260 142 L 140 142 Z" fill="#27272a" />
+
+    <!-- Main GaN Fast Charger Body -->
+    <rect x="135" y="142" width="130" height="150" rx="30" fill="url(#gan_body)" stroke="#f97316" stroke-width="2.5" />
+
+    <!-- GaN Power Accent Line -->
+    <rect x="155" y="162" width="90" height="24" rx="12" fill="#27272a" stroke="#f97316" stroke-width="1.5" />
+    <text x="200" y="178" font-family="sans-serif" font-size="11" font-weight="900" fill="#f97316" text-anchor="middle">GaN FAST 20W</text>
+
+    <!-- Center Voltage Indicator Ring -->
+    <circle cx="200" cy="215" r="14" fill="#27272a" stroke="#fbbf24" stroke-width="2" />
+    <path d="M 202 206 L 195 216 L 201 216 L 198 224 L 205 214 L 199 214 Z" fill="#fbbf24" />
+
+    <!-- Type-C USB-PD Port (Bottom) -->
+    <rect x="175" y="248" width="50" height="18" rx="9" fill="#09090b" stroke="#f97316" stroke-width="2" />
+    <rect x="187" y="254" width="26" height="6" rx="3" fill="#fbbf24" />
   </g>
 </svg>

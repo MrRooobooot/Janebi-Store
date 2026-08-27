@@ -1,36 +1,54 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
   <defs>
-    <linearGradient id="grad_ear-" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f43f5e" stop-opacity="0.12" />
-      <stop offset="100%" stop-color="#e11d48" stop-opacity="0.22" />
+    <linearGradient id="bg_ear10" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#042f2e" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#0f766e" stop-opacity="0.2" />
     </linearGradient>
-    <linearGradient id="icon_grad_ear-" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f43f5e" />
-      <stop offset="100%" stop-color="#e11d48" />
+    <linearGradient id="stem_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#cbd5e1" />
     </linearGradient>
-    <filter id="shadow_ear-" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#e11d48" flood-opacity="0.25" />
+    <linearGradient id="tip_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14b8a6" />
+      <stop offset="100%" stop-color="#0d9488" />
+    </linearGradient>
+    <filter id="shadow_ear10" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#0d9488" flood-opacity="0.3" />
     </filter>
   </defs>
 
-  <!-- Background Card -->
-  <rect width="400" height="400" rx="36" fill="url(#grad_ear-)" />
-  <rect x="1.5" y="1.5" width="397" height="397" rx="34.5" fill="none" stroke="#f43f5e" stroke-opacity="0.25" stroke-width="2" />
+  <!-- Background Base -->
+  <rect width="400" height="400" rx="36" fill="url(#bg_ear10)" />
+  <rect x="2" y="2" width="396" height="396" rx="34" fill="none" stroke="#14b8a6" stroke-opacity="0.25" stroke-width="2" />
 
-  <!-- Center Circle -->
-  <circle cx="200" cy="175" r="90" fill="white" filter="url(#shadow_ear-)" />
-  <circle cx="200" cy="175" r="76" fill="url(#icon_grad_ear-)" />
+  <!-- Outer Centered Ring -->
+  <circle cx="200" cy="200" r="125" fill="#14b8a6" opacity="0.08" />
+  <circle cx="200" cy="200" r="100" fill="#14b8a6" opacity="0.12" />
 
-  <!-- Inner Device Illustration -->
-  <g transform="translate(160, 135) scale(1.6)" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
-    <line x1="12" y1="18" x2="12.01" y2="18" />
+  <!-- Pair of Earbuds (Symmetric Placement around cx=200, cy=200) -->
+  <g filter="url(#shadow_ear10)">
+    <!-- Left Earbud -->
+    <g transform="translate(145, 140) rotate(-15 40 60)">
+      <!-- Head -->
+      <circle cx="40" cy="35" r="26" fill="url(#stem_grad)" />
+      <!-- Silicone Tip -->
+      <ellipse cx="20" cy="30" rx="14" ry="18" fill="url(#tip_grad)" />
+      <!-- Stem -->
+      <rect x="34" y="45" width="12" height="65" rx="6" fill="url(#stem_grad)" />
+      <!-- Mic Hole -->
+      <circle cx="40" cy="102" r="2" fill="#64748b" />
+    </g>
+
+    <!-- Right Earbud -->
+    <g transform="translate(215, 140) rotate(15 40 60)">
+      <!-- Head -->
+      <circle cx="40" cy="35" r="26" fill="url(#stem_grad)" />
+      <!-- Silicone Tip -->
+      <ellipse cx="60" cy="30" rx="14" ry="18" fill="url(#tip_grad)" />
+      <!-- Stem -->
+      <rect x="34" y="45" width="12" height="65" rx="6" fill="url(#stem_grad)" />
+      <!-- Mic Hole -->
+      <circle cx="40" cy="102" r="2" fill="#64748b" />
+    </g>
   </g>
-
-  <!-- Brand Pill -->
-  <rect x="130" y="285" width="140" height="32" rx="16" fill="white" filter="url(#shadow_ear-)" />
-  <text x="200" y="306" font-family="sans-serif" font-size="14" font-weight="900" fill="#e11d48" text-anchor="middle">XIAOMI</text>
-
-  <!-- Bottom Subtitle -->
-  <text x="200" y="345" font-family="sans-serif" font-size="13" font-weight="bold" fill="#334155" text-anchor="middle">Redmi Buds 5 Pro</text>
 </svg>

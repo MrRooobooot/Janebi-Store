@@ -1,36 +1,48 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
   <defs>
-    <linearGradient id="grad_cbl-" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0284c7" stop-opacity="0.12" />
-      <stop offset="100%" stop-color="#0369a1" stop-opacity="0.22" />
+    <linearGradient id="bg_cbl1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#451a03" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#b45309" stop-opacity="0.2" />
     </linearGradient>
-    <linearGradient id="icon_grad_cbl-" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0284c7" />
-      <stop offset="100%" stop-color="#0369a1" />
+    <linearGradient id="cbl_braid" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ea580c" />
+      <stop offset="50%" stop-color="#f97316" />
+      <stop offset="100%" stop-color="#c2410c" />
     </linearGradient>
-    <filter id="shadow_cbl-" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#0369a1" flood-opacity="0.25" />
+    <linearGradient id="metal_head" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#475569" />
+      <stop offset="50%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <filter id="shadow_cbl1" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#ea580c" flood-opacity="0.3" />
     </filter>
   </defs>
 
-  <!-- Background Card -->
-  <rect width="400" height="400" rx="36" fill="url(#grad_cbl-)" />
-  <rect x="1.5" y="1.5" width="397" height="397" rx="34.5" fill="none" stroke="#0284c7" stroke-opacity="0.25" stroke-width="2" />
+  <!-- Background Base -->
+  <rect width="400" height="400" rx="36" fill="url(#bg_cbl1)" />
+  <rect x="2" y="2" width="396" height="396" rx="34" fill="none" stroke="#f97316" stroke-opacity="0.25" stroke-width="2" />
 
-  <!-- Center Circle -->
-  <circle cx="200" cy="175" r="90" fill="white" filter="url(#shadow_cbl-)" />
-  <circle cx="200" cy="175" r="76" fill="url(#icon_grad_cbl-)" />
+  <!-- Outer Centered Ring -->
+  <circle cx="200" cy="200" r="130" fill="#f97316" opacity="0.08" />
 
-  <!-- Inner Device Illustration -->
-  <g transform="translate(160, 135) scale(1.6)" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
-    <line x1="12" y1="18" x2="12.01" y2="18" />
+  <!-- Cable Coil & Type-C Connector (Centered at cx=200, cy=200) -->
+  <g filter="url(#shadow_cbl1)">
+    <!-- Looped Braided Cable -->
+    <path d="M 120 250 C 100 130, 300 130, 280 250 C 270 300, 130 300, 120 250" fill="none" stroke="url(#cbl_braid)" stroke-width="16" stroke-linecap="round" />
+    
+    <!-- Top Cable Head 1 (Type-C) -->
+    <g transform="translate(180, 110)">
+      <!-- Strain Relief -->
+      <rect x="14" y="60" width="12" height="24" rx="4" fill="#334155" />
+      <!-- Aluminum Housing -->
+      <rect x="8" y="25" width="24" height="40" rx="8" fill="url(#metal_head)" stroke="#f97316" stroke-width="1.5" />
+      <!-- Type-C Tip -->
+      <rect x="12" y="10" width="16" height="18" rx="5" fill="#94a3b8" />
+    </g>
+
+    <!-- Center Lightning/Fast Badge -->
+    <circle cx="200" cy="235" r="24" fill="#1e293b" stroke="#f97316" stroke-width="2" />
+    <path d="M 203 222 L 194 236 L 201 236 L 197 248 L 206 234 L 199 234 Z" fill="#f97316" />
   </g>
-
-  <!-- Brand Pill -->
-  <rect x="130" y="285" width="140" height="32" rx="16" fill="white" filter="url(#shadow_cbl-)" />
-  <text x="200" y="306" font-family="sans-serif" font-size="14" font-weight="900" fill="#0369a1" text-anchor="middle">ANKER</text>
-
-  <!-- Bottom Subtitle -->
-  <text x="200" y="345" font-family="sans-serif" font-size="13" font-weight="bold" fill="#334155" text-anchor="middle">کابل شارژ فست Type-C</text>
 </svg>

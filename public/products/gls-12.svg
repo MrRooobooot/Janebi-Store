@@ -1,36 +1,43 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
   <defs>
-    <linearGradient id="grad_gls-" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#14b8a6" stop-opacity="0.12" />
-      <stop offset="100%" stop-color="#0d9488" stop-opacity="0.22" />
+    <linearGradient id="bg_gls12" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14532d" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#15803d" stop-opacity="0.2" />
     </linearGradient>
-    <linearGradient id="icon_grad_gls-" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#14b8a6" />
-      <stop offset="100%" stop-color="#0d9488" />
+    <linearGradient id="ceramic_surface" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" stop-opacity="0.8" />
+      <stop offset="50%" stop-color="#0f172a" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#1e293b" stop-opacity="0.8" />
     </linearGradient>
-    <filter id="shadow_gls-" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#0d9488" flood-opacity="0.25" />
+    <filter id="shadow_gls12" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#22c55e" flood-opacity="0.3" />
     </filter>
   </defs>
 
-  <!-- Background Card -->
-  <rect width="400" height="400" rx="36" fill="url(#grad_gls-)" />
-  <rect x="1.5" y="1.5" width="397" height="397" rx="34.5" fill="none" stroke="#14b8a6" stroke-opacity="0.25" stroke-width="2" />
+  <!-- Background Base -->
+  <rect width="400" height="400" rx="36" fill="url(#bg_gls12)" />
+  <rect x="2" y="2" width="396" height="396" rx="34" fill="none" stroke="#22c55e" stroke-opacity="0.25" stroke-width="2" />
 
-  <!-- Center Circle -->
-  <circle cx="200" cy="175" r="90" fill="white" filter="url(#shadow_gls-)" />
-  <circle cx="200" cy="175" r="76" fill="url(#icon_grad_gls-)" />
+  <circle cx="200" cy="200" r="135" fill="#22c55e" opacity="0.08" />
 
-  <!-- Inner Device Illustration -->
-  <g transform="translate(160, 135) scale(1.6)" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
-    <line x1="12" y1="18" x2="12.01" y2="18" />
+  <!-- Flexible Ceramic Screen Protector (Centered at cx=200, cy=200) -->
+  <g filter="url(#shadow_gls12)">
+    <!-- Outer Edge -->
+    <rect x="135" y="75" width="130" height="250" rx="28" fill="#022c22" stroke="#22c55e" stroke-width="2" />
+    
+    <!-- Matte Ceramic Coating Surface -->
+    <rect x="140" y="80" width="120" height="240" rx="24" fill="url(#ceramic_surface)" stroke="#86efac" stroke-width="1.5" />
+
+    <!-- Speaker Notch -->
+    <rect x="180" y="88" width="40" height="4" rx="2" fill="#022c22" />
+    <circle cx="200" cy="100" r="3" fill="#022c22" />
+
+    <!-- Anti-Fingerprint Badge (Center) -->
+    <circle cx="200" cy="200" r="28" fill="#14532d" stroke="#4ade80" stroke-width="2" />
+    <text x="200" y="196" font-family="sans-serif" font-size="11" font-weight="bold" fill="#86efac" text-anchor="middle">CERAMIC</text>
+    <text x="200" y="214" font-family="sans-serif" font-size="13" font-weight="900" fill="#ffffff" text-anchor="middle">MATTE</text>
+
+    <!-- Silk Glare -->
+    <path d="M 148 115 Q 200 160 252 115" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.3" />
   </g>
-
-  <!-- Brand Pill -->
-  <rect x="130" y="285" width="140" height="32" rx="16" fill="white" filter="url(#shadow_gls-)" />
-  <text x="200" y="306" font-family="sans-serif" font-size="14" font-weight="900" fill="#0d9488" text-anchor="middle">BASEUS</text>
-
-  <!-- Bottom Subtitle -->
-  <text x="200" y="345" font-family="sans-serif" font-size="13" font-weight="bold" fill="#334155" text-anchor="middle">گلس سرامیکی ۱۵ پرو مکس</text>
 </svg>
