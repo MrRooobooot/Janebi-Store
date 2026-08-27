@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import { ProductCardSkeleton, CategoryCardSkeleton } from '../components/Skeletons';
@@ -6,24 +6,25 @@ import FAQ from '../components/FAQ';
 import RecentlyViewed from '../components/RecentlyViewed';
 import BrandShowcase from '../components/BrandShowcase';
 import VipClubBanner from '../components/VipClubBanner';
-import { motion, AnimatePresence } from 'motion/react';
 import { 
   Sparkles, ArrowLeft, Smartphone, Shield, Zap, Cable, Headphones, 
   BatteryCharging, Truck, ShieldCheck, RefreshCw, Headset, Flame, Star, Award,
-  ChevronLeft, ChevronRight, Clock, Timer
+  ChevronLeft, ChevronRight, Clock, Percent, CheckCircle2, TrendingUp
 } from 'lucide-react';
 import { Product } from '../types';
-import { toPersianDigits } from '../lib/utils';
+import { toPersianDigits, formatPrice } from '../lib/utils';
+import { useStoreSettings } from '../hooks/useStoreSettings';
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeCategoryTab, setActiveCategoryTab] = useState<string>('همه');
+  const [activeTab, setActiveTab] = useState<'all' | 'chargers' | 'audio' | 'covers'>('all');
   const [activeSlide, setActiveSlide] = useState(0);
+  const settings = useStoreSettings();
 
-  // Countdown timer for daily deals (hours, minutes, seconds)
-  const [timeLeft, setTimeLeft] = useState({ hours: 14, minutes: 35, seconds: 20 });
+  // Live timer for deal of the day
+  const [timeLeft, setTimeLeft] = useState({ hours: 16, minutes: 42, seconds: 15 });
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -40,44 +41,41 @@ export default function Home() {
   const heroSlides = [
     {
       id: 1,
-      tag: 'تخفیف ویژه جشنواره لوازم جانبی',
-      title: 'جدیدترین شارژرها و کابل‌های فست‌شارژ',
-      subtitle: 'شارژرهای اورجینال ۲۰ تا ۱۰۰ وات انکر، سامسونگ و مک‌دودو با چیپست محافظ باتری و گارانتی تعویض',
-      buttonText: 'خرید انواع شارژر و کابل',
+      tag: 'تخصصی‌ترین مرجع شارژ در ایران',
+      title: 'فست‌شارژهای هوشمند با محافظت ولتاژ',
+      subtitle: 'شارژرهای اورجینال انکر، باسئوس و مک‌دودو مجهز به فناوری GaN و قطع‌کن خودکار برای سلامت باتری گوشی',
+      buttonText: 'مشاهده شارژرها و آداپتورها',
       buttonLink: '/products?category=شارژر',
-      badge: 'تا ۴۰٪ تخفیف',
-      image: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=1000&q=80',
-      bgColor: 'bg-gradient-to-l from-orange-600 to-amber-700',
+      badge: 'گارانتی تعویض ۶ ماهه',
+      theme: 'from-orange-600 to-amber-700',
     },
     {
       id: 2,
-      tag: 'محافظت ۳۶۰ درجه از گوشی',
-      title: 'کاورهای ضدضربه و گلس‌های سرامیکی',
-      subtitle: 'مجموعه قاب‌های سیلیکونی، چرمی و مگنتیف سازگار با شارژ بیسیم Magsafe برای تمام مدل‌های آیفون و سامسونگ',
-      buttonText: 'مشاهده قاب و گلس',
+      tag: 'محافظت ۱۰۰٪ از نمایشگر و بدنه',
+      title: 'کاورهای مگ‌سیف و گلس‌های ضدضربه سوپردی',
+      subtitle: 'تنوع بی‌نظیر قاب‌های ضدضربه، شفاف و چرمی سازگار با شارژ بیسیم برای تمامی مدل‌های آیفون، سامسونگ و شیائومی',
+      buttonText: 'انتخاب قاب و محافظ صفحه',
       buttonLink: '/products?category=قاب و کاور',
-      badge: 'ضمانت اصالت فیزیکی',
-      image: 'https://images.unsplash.com/photo-1603313011101-320f26a4f6f6?auto=format&fit=crop&w=1000&q=80',
-      bgColor: 'bg-gradient-to-l from-blue-700 to-indigo-900',
+      badge: 'تست فیزیکی قبل از ارسال',
+      theme: 'from-zinc-800 to-zinc-950',
     },
     {
       id: 3,
-      tag: 'صدای شفاف و بی‌نقص',
-      title: 'هندزفری‌های بلوتوثی و ایرپادهای گیمینگ',
-      subtitle: 'حذف نویز فعال (ANC)، باتری پرقدرت تا ۳۰ ساعت پخش مداوم و کیفیت مکالمه استودیویی',
-      buttonText: 'مشاهده هندزفری‌ها',
+      tag: 'تجربه صدای عمیق و بی‌سیم',
+      title: 'ایرپادها و هندزفری‌های مجهز به نویز کنسلینگ',
+      subtitle: 'مکالمه بدون نویز محیطی، درایورهای بیس تقویت‌شده و ماندگاری باتری تا ۳۰ ساعت برای مکالمه و موسیقی',
+      buttonText: 'مشاهده هدفون و هندزفری',
       buttonLink: '/products?category=هندزفری',
-      badge: 'ارسال فوری',
-      image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=1000&q=80',
-      bgColor: 'bg-gradient-to-l from-purple-800 to-rose-800',
+      badge: 'مهلت تست ۷ روزه',
+      theme: 'from-blue-700 to-indigo-900',
     },
   ];
 
-  // Auto slide effect
+  // Auto slide
   useEffect(() => {
     const timer = setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 5500);
+    }, 6000);
     return () => clearInterval(timer);
   }, [heroSlides.length]);
 
@@ -92,374 +90,309 @@ export default function Home() {
 
   useEffect(() => {
     setLoading(true);
-    fetch('/api/products')
-      .then((res) => res.json())
-      .then((data) => {
-        setProducts(Array.isArray(data) ? data : []);
-      })
-      .catch(() => setProducts([]));
-
-    fetch('/api/categories')
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          const mapped = data.map((cat: any) => ({
-            ...cat,
-            icon: categoryIconMap[cat.title] || Smartphone,
-            count: `${toPersianDigits(cat.count)} کالا`,
-          }));
-          setCategories(mapped);
-        }
-      })
-      .catch(() => setCategories([]))
-      .finally(() => setLoading(false));
+    Promise.all([
+      fetch('/api/products').then((r) => r.json()).catch(() => []),
+      fetch('/api/categories').then((r) => r.json()).catch(() => [])
+    ]).then(([prods, cats]) => {
+      setProducts(Array.isArray(prods) ? prods : []);
+      if (Array.isArray(cats)) {
+        setCategories(cats.map((c: any) => ({
+          ...c,
+          icon: categoryIconMap[c.title] || Smartphone,
+        })));
+      }
+    }).finally(() => setLoading(false));
   }, []);
+
+  // Algorithm: In-stock discounted deals for Amazing Deal Section
+  const dealProducts = useMemo(() => {
+    return products
+      .filter((p) => (p.discount || 0) > 0 && (p.stockQuantity || 0) > 0)
+      .sort((a, b) => (b.discount || 0) - (a.discount || 0))
+      .slice(0, 5);
+  }, [products]);
+
+  // Algorithm: Filtered products by tab
+  const filteredProducts = useMemo(() => {
+    if (activeTab === 'chargers') return products.filter((p) => p.category === 'شارژر' || p.category === 'کابل').slice(0, 8);
+    if (activeTab === 'audio') return products.filter((p) => p.category === 'هندزفری').slice(0, 8);
+    if (activeTab === 'covers') return products.filter((p) => p.category === 'قاب و کاور' || p.category === 'گلس').slice(0, 8);
+    return products.slice(0, 8);
+  }, [products, activeTab]);
 
   const valueProps = [
     {
-      title: 'تحویل اکسپرس کشوری',
-      desc: 'ارسال سریع به تمام نقاط ایران با بسته‌بندی ایمن',
+      title: 'ارسال سریع با پست پیشتاز',
+      desc: 'تحویل در کمترین زمان ممکن به سراسر شهرهای کشور',
       icon: Truck,
-      color: 'bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 border-blue-100 dark:border-blue-900/40'
     },
     {
-      title: 'ضمانت ۱۰۰٪ اصالت کالا',
-      desc: 'تضمین سلامت فیزیکی و کالای کاملاً اورجینال',
+      title: 'تضمین سلامت فیزیکی کالا',
+      desc: 'بسته‌بندی ضربه‌گیر استاندارد و تست قبل از ارسال',
       icon: ShieldCheck,
-      color: 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/40'
     },
     {
-      title: '۷ روز ضمانت بازگشت',
-      desc: 'امکان تعویض یا بازگشت بی‌قید و شرط در صورت نارضایتی',
+      title: '۷ روز ضمانت بازگشت وجه',
+      desc: 'امکان مرجوعی کالا در صورت عدم رضایت یا مغایرت',
       icon: RefreshCw,
-      color: 'bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border-amber-100 dark:border-amber-900/40'
     },
     {
-      title: 'مشاوره و پشتیبانی تخصصی',
-      desc: 'راهنمایی تلفنی و آنلاین قبل و بعد از ثبت سفارش',
+      title: 'پشتیبانی فنی و تخصصی',
+      desc: 'مشاوره انتخاب سوکت و توان شارژر با کارشناس',
       icon: Headset,
-      color: 'bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 border-purple-100 dark:border-purple-900/40'
     },
   ];
 
-  const categoryTabs = ['همه', ...Array.from(new Set(categories.map((c: any) => c.title)))];
-
-  const filteredProducts = activeCategoryTab === 'همه'
-    ? products.slice(0, 8)
-    : products.filter(p => p.category === activeCategoryTab).slice(0, 8);
-
-  const discountedProducts = products.filter(p => p.discount && p.discount > 0).slice(0, 6);
-
   return (
-    <div className="space-y-16">
+    <div className="space-y-12 pb-16">
       
-      {/* 1. Clean High-Converting Hero Section */}
-      <section className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
-        
-        {/* Main Slider (8 Columns) */}
-        <div className={`lg:col-span-8 relative rounded-3xl overflow-hidden shadow-lg border border-gray-200/60 dark:border-gray-800 min-h-[380px] sm:min-h-[420px] flex flex-col justify-between ${heroSlides[activeSlide].bgColor} transition-colors duration-700 group`}>
+      {/* 1. Hero Showcase Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+        <div className="relative rounded-3xl overflow-hidden shadow-xl bg-zinc-900 border border-zinc-800 text-white min-h-[380px] md:min-h-[420px] flex items-center">
           
-          {/* Background Photo with soft overlay */}
-          <div className="absolute inset-0 z-0">
-            <img
-              src={heroSlides[activeSlide].image}
-              alt={heroSlides[activeSlide].title}
-              className="w-full h-full object-cover object-center opacity-30 mix-blend-luminosity"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-          </div>
+          {/* Background Gradient & Pattern */}
+          <div className={`absolute inset-0 bg-gradient-to-r ${heroSlides[activeSlide].theme} opacity-90 transition-all duration-700`} />
+          <div className="absolute inset-0 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:24px_24px] opacity-10" />
 
-          {/* Slide Text & Actions */}
-          <div className="relative z-10 p-6 sm:p-10 md:p-12 text-white flex flex-col justify-between h-full">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-white text-xs font-black mb-4 border border-white/30 shadow-xs">
-                <Sparkles className="h-3.5 w-3.5 text-amber-300 animate-pulse" />
-                <span>{heroSlides[activeSlide].tag}</span>
-              </div>
-
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-black mb-3 leading-tight tracking-tight max-w-xl text-white">
-                {heroSlides[activeSlide].title}
-              </h1>
-
-              <p className="text-xs sm:text-sm text-gray-100 font-medium max-w-lg leading-relaxed mb-6 opacity-95">
-                {heroSlides[activeSlide].subtitle}
-              </p>
+          {/* Slide Content */}
+          <div className="relative z-10 max-w-2xl px-6 sm:px-12 py-10 space-y-5">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-amber-300 text-xs font-black">
+              <Sparkles className="h-3.5 w-3.5" />
+              <span>{heroSlides[activeSlide].tag}</span>
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-white/15">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black leading-tight text-white tracking-tight">
+              {heroSlides[activeSlide].title}
+            </h1>
+
+            <p className="text-sm sm:text-base text-zinc-100/90 leading-relaxed max-w-xl font-normal">
+              {heroSlides[activeSlide].subtitle}
+            </p>
+
+            <div className="pt-2 flex flex-wrap items-center gap-3">
               <Link
                 to={heroSlides[activeSlide].buttonLink}
-                className="inline-flex items-center gap-2 bg-white hover:bg-orange-50 text-gray-900 px-6 py-3.5 rounded-2xl font-black text-xs sm:text-sm shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+                className="bg-white text-zinc-900 hover:bg-amber-400 font-black px-6 py-3 rounded-2xl text-sm transition-all duration-200 shadow-lg shadow-black/20 flex items-center gap-2 group"
               >
                 <span>{heroSlides[activeSlide].buttonText}</span>
-                <ArrowLeft className="h-4 w-4 text-orange-600" />
+                <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
               </Link>
-
-              {/* Slider Dots */}
-              <div className="flex items-center gap-2">
-                {heroSlides.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveSlide(idx)}
-                    className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
-                      activeSlide === idx ? 'w-8 bg-white shadow-sm' : 'w-2.5 bg-white/40 hover:bg-white/70'
-                    }`}
-                  />
-                ))}
-              </div>
+              <span className="text-xs text-white/80 font-medium px-3 py-2 rounded-xl bg-black/20 backdrop-blur-xs">
+                {heroSlides[activeSlide].badge}
+              </span>
             </div>
           </div>
 
-          {/* Slider Chevrons */}
-          <button
-            onClick={() => setActiveSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length)}
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-2xl bg-black/40 hover:bg-black/70 text-white backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all z-20 cursor-pointer"
-          >
-            <ChevronLeft className="h-5 w-5" />
-          </button>
-          <button
-            onClick={() => setActiveSlide((prev) => (prev + 1) % heroSlides.length)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-2xl bg-black/40 hover:bg-black/70 text-white backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all z-20 cursor-pointer"
-          >
-            <ChevronRight className="h-5 w-5" />
-          </button>
-        </div>
-
-        {/* Side Banners (4 Columns) */}
-        <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-4">
-          {/* Banner 1: Powerbanks */}
-          <Link
-            to="/products?category=پاوربانک"
-            className="flex-1 relative rounded-3xl overflow-hidden p-6 text-white flex flex-col justify-between group shadow-sm border border-gray-200/60 dark:border-gray-800 bg-gradient-to-br from-amber-600 to-slate-900 min-h-[190px]"
-          >
-            <div className="relative z-10">
-              <span className="text-[10px] font-extrabold bg-amber-400 text-gray-950 px-2.5 py-1 rounded-full mb-2 inline-block shadow-xs">
-                انرژی بی‌پایان
-              </span>
-              <h2 className="text-lg font-black mt-1 text-white">پاوربانک‌های ظرفیت بالا</h2>
-              <p className="text-xs text-amber-100 mt-1 font-medium">فست‌شارژ ۲۰،۰۰۰ و ۳۰،۰۰۰ میلی‌آمپر</p>
-            </div>
-            <div className="relative z-10 flex items-center gap-1.5 text-xs font-bold text-amber-300 group-hover:translate-x-[-4px] transition-transform">
-              <span>خرید انواع پاوربانک</span>
-              <ArrowLeft className="h-3.5 w-3.5" />
-            </div>
-          </Link>
-
-          {/* Banner 2: Wireless Earphones */}
-          <Link
-            to="/products?category=هندزفری"
-            className="flex-1 relative rounded-3xl overflow-hidden p-6 text-white flex flex-col justify-between group shadow-sm border border-gray-200/60 dark:border-gray-800 bg-gradient-to-br from-purple-700 to-slate-950 min-h-[190px]"
-          >
-            <div className="relative z-10">
-              <span className="text-[10px] font-extrabold bg-rose-500 text-white px-2.5 py-1 rounded-full mb-2 inline-block shadow-xs">
-                پیشنهاد برگزیده
-              </span>
-              <h2 className="text-lg font-black mt-1 text-white">هندزفری‌های نویزکنسلینگ</h2>
-              <p className="text-xs text-purple-100 mt-1 font-medium">تفکیک صدای حرفه‌ای و مکالمه شفاف</p>
-            </div>
-            <div className="relative z-10 flex items-center gap-1.5 text-xs font-bold text-rose-300 group-hover:translate-x-[-4px] transition-transform">
-              <span>مشاهده و مقایسه مدل‌ها</span>
-              <ArrowLeft className="h-3.5 w-3.5" />
-            </div>
-          </Link>
+          {/* Slide Navigation Buttons */}
+          <div className="absolute bottom-6 left-6 z-10 flex items-center gap-2">
+            {heroSlides.map((slide, idx) => (
+              <button
+                key={slide.id}
+                onClick={() => setActiveSlide(idx)}
+                className={`h-2.5 rounded-full transition-all duration-300 ${
+                  activeSlide === idx ? 'w-8 bg-amber-400' : 'w-2.5 bg-white/40 hover:bg-white/70'
+                }`}
+                aria-label={`اسلاید ${idx + 1}`}
+              />
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* 2. Incredible Deals Bar with Live Countdown Timer */}
-      {discountedProducts.length > 0 && (
-        <section className="bg-gradient-to-r from-rose-600 via-orange-600 to-amber-600 rounded-3xl p-6 sm:p-8 shadow-xl text-white">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/20">
+      {/* 2. Value Propositions Bar */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {valueProps.map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <div 
+                key={i} 
+                className="flex items-center gap-3.5 p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800/80"
+              >
+                <div className="w-11 h-11 rounded-xl bg-orange-100 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0">
+                  <Icon className="h-5 w-5 stroke-[2.2]" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-xs sm:text-sm font-bold text-zinc-900 dark:text-white truncate">{item.title}</h4>
+                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate mt-0.5">{item.desc}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* 3. Amazing Deals Carousel / Grid */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-gradient-to-r from-orange-600 via-rose-600 to-orange-700 rounded-3xl p-6 sm:p-8 text-white shadow-xl">
+          
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/20">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0 border border-white/30">
+              <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
                 <Flame className="h-6 w-6 text-amber-300 animate-bounce" />
               </div>
               <div>
-                <h2 className="text-xl sm:text-2xl font-black flex items-center gap-2">
-                  <span>پیشنهادهای شگفت‌انگیز روز</span>
-                  <span className="text-xs bg-white text-rose-600 px-2.5 py-0.5 rounded-full font-extrabold">تخفیف ویژه</span>
-                </h2>
-                <p className="text-xs text-rose-100 mt-0.5 font-medium">فرصت محدود خرید لوازم جانبی منتخب با بیشترین تخفیف</p>
+                <h2 className="text-xl sm:text-2xl font-black">پیشنهادات شگفت‌انگیز روز</h2>
+                <p className="text-xs text-orange-100 mt-0.5">تخفیف‌های استثنایی با مهلت خرید محدود</p>
               </div>
             </div>
 
-            {/* Countdown Box */}
-            <div className="flex items-center gap-2 self-start md:self-auto">
-              <div className="flex items-center gap-1.5 bg-black/25 backdrop-blur-md px-3.5 py-2 rounded-2xl border border-white/20 font-mono text-sm font-black">
-                <Timer className="h-4 w-4 text-amber-300 shrink-0 ml-1" />
-                <span className="bg-white/20 px-2 py-0.5 rounded-lg">{toPersianDigits(timeLeft.hours.toString().padStart(2, '0'))}</span>
+            {/* Countdown Clock */}
+            <div className="flex items-center gap-2 bg-black/25 backdrop-blur-md px-4 py-2 rounded-2xl text-xs font-bold font-mono">
+              <Clock className="h-4 w-4 text-amber-300" />
+              <span>فرصت باقی‌مانده:</span>
+              <div className="flex items-center gap-1 text-sm font-black text-amber-300">
+                <span className="bg-black/30 px-2 py-0.5 rounded-lg">{toPersianDigits(timeLeft.hours.toString().padStart(2, '0'))}</span>
                 <span>:</span>
-                <span className="bg-white/20 px-2 py-0.5 rounded-lg">{toPersianDigits(timeLeft.minutes.toString().padStart(2, '0'))}</span>
+                <span className="bg-black/30 px-2 py-0.5 rounded-lg">{toPersianDigits(timeLeft.minutes.toString().padStart(2, '0'))}</span>
                 <span>:</span>
-                <span className="bg-white/20 px-2 py-0.5 rounded-lg">{toPersianDigits(timeLeft.seconds.toString().padStart(2, '0'))}</span>
+                <span className="bg-black/30 px-2 py-0.5 rounded-lg">{toPersianDigits(timeLeft.seconds.toString().padStart(2, '0'))}</span>
               </div>
-
-              <Link
-                to="/offers"
-                className="inline-flex items-center gap-1.5 bg-white/15 hover:bg-white/25 px-4 py-2.5 rounded-2xl text-xs font-extrabold text-white backdrop-blur-md border border-white/20 transition-all cursor-pointer"
-              >
-                <span>مشاهده همه</span>
-                <ArrowLeft className="h-4 w-4" />
-              </Link>
             </div>
           </div>
 
-          {/* Products Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-            {discountedProducts.map((product) => (
-              <Link
-                key={product.id}
-                to={`/product/${product.id}`}
-                className="bg-white dark:bg-gray-900 rounded-2xl p-3 text-gray-900 dark:text-gray-100 flex flex-col justify-between hover:shadow-xl transition-all duration-300 hover:scale-[1.03] group relative overflow-hidden"
-              >
-                <div className="absolute top-2 right-2 bg-rose-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full z-10 shadow-xs">
-                  {toPersianDigits(product.discount || 0)}٪
-                </div>
-                <div className="aspect-square bg-gray-50 dark:bg-gray-800 rounded-xl p-2 mb-2 flex items-center justify-center overflow-hidden">
-                  <img
-                    src={product.image}
-                    alt={product.title}
-                    loading="lazy"
-                    className="w-full h-full object-contain group-hover:scale-108 transition-transform duration-300"
-                  />
-                </div>
-                <div>
-                  <h3 className="text-xs font-bold line-clamp-1 mb-2 group-hover:text-orange-600 transition-colors">
-                    {product.title}
-                  </h3>
-                  <div className="flex flex-col items-end">
-                    {product.originalPrice && (
-                      <span className="text-[10px] text-gray-400 line-through">
-                        {toPersianDigits(product.originalPrice.toLocaleString('fa-IR'))}
-                      </span>
-                    )}
-                    <span className="text-xs sm:text-sm font-black text-rose-600 dark:text-rose-400">
-                      {toPersianDigits(product.price.toLocaleString('fa-IR'))} <span className="text-[9px] font-normal text-gray-500">تومان</span>
+          {/* Deal Cards */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+            {loading ? (
+              Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="h-64 bg-white/10 rounded-2xl animate-pulse" />
+              ))
+            ) : dealProducts.length > 0 ? (
+              dealProducts.map((p) => (
+                <Link
+                  key={p.id}
+                  to={`/product/${p.id}`}
+                  className="bg-white dark:bg-zinc-900 rounded-2xl p-3.5 text-zinc-900 dark:text-white flex flex-col justify-between hover:scale-[1.02] transition-transform duration-200 shadow-md group"
+                >
+                  <div className="relative aspect-square rounded-xl bg-zinc-50 dark:bg-zinc-800 p-2 mb-3 flex items-center justify-center overflow-hidden">
+                    <img 
+                      src={p.image} 
+                      alt={p.title} 
+                      className="max-h-full max-w-full object-contain group-hover:scale-110 transition-transform duration-200" 
+                    />
+                    <span className="absolute top-2 right-2 bg-rose-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded-lg">
+                      {toPersianDigits(p.discount || 0)}٪
                     </span>
                   </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
 
-      {/* 3. Value Proposition Bar (۴ ستون اعتماد و خدمات) */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {valueProps.map((prop, idx) => {
-          const Icon = prop.icon;
-          return (
-            <div
-              key={idx}
-              className="bg-white dark:bg-gray-900 rounded-3xl p-5 border border-gray-100 dark:border-gray-800 flex items-center gap-4 hover:shadow-md transition-all duration-300 group"
-            >
-              <div className={`p-3.5 rounded-2xl border ${prop.color} shrink-0 group-hover:scale-110 transition-transform`}>
-                <Icon className="h-6 w-6" />
+                  <h3 className="text-xs font-bold line-clamp-2 leading-relaxed min-h-[36px]">
+                    {p.title}
+                  </h3>
+
+                  <div className="mt-3 pt-2 border-t border-zinc-100 dark:border-zinc-800 flex flex-col items-end">
+                    {p.originalPrice && p.originalPrice > p.price && (
+                      <span className="text-[10px] text-zinc-400 line-through">
+                        {formatPrice(p.originalPrice)}
+                      </span>
+                    )}
+                    <span className="text-xs font-black text-orange-600 dark:text-orange-400">
+                      {formatPrice(p.price)}
+                    </span>
+                  </div>
+                </Link>
+              ))
+            ) : (
+              <div className="col-span-full py-8 text-center text-sm font-medium text-white/80">
+                در حال حاضر تمام شگفت‌انگیزها به پایان رسیده‌اند.
               </div>
-              <div className="text-right">
-                <h3 className="font-extrabold text-sm text-gray-900 dark:text-gray-100 mb-0.5">{prop.title}</h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium leading-relaxed">{prop.desc}</p>
-              </div>
-            </div>
-          );
-        })}
+            )}
+          </div>
+        </div>
       </section>
 
-      {/* 4. Visual Circular Categories (دسته‌بندی‌های بصری گرد و مدرن) */}
-      <section>
-        <div className="flex items-center justify-between mb-8">
+      {/* 4. Visual Category Circles */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-gray-100 flex items-center gap-2.5 tracking-tight">
-              <span className="w-2.5 h-7 bg-orange-600 rounded-full shadow-xs"></span>
-              دسته‌بندی‌های برگزیده
-            </h2>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">دسترسی مستقیم به کامل‌ترین کاتالوگ لوازم جانبی</p>
+            <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white">دسته‌بندی‌های منتخب</h2>
+            <p className="text-xs text-zinc-500 mt-0.5">جستجو بر اساس نوع لوازم جانبی</p>
           </div>
-          <Link to="/products" className="text-xs sm:text-sm font-bold text-orange-600 dark:text-orange-400 hover:underline flex items-center gap-1">
-            مشاهده تمام کالاها <ArrowLeft className="h-3.5 w-3.5" />
+          <Link to="/products" className="text-xs font-bold text-orange-600 dark:text-orange-400 hover:underline flex items-center gap-1">
+            <span>مشاهده همه</span>
+            <ArrowLeft className="h-3.5 w-3.5" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4">
-          {loading
-            ? Array.from({ length: 6 }).map((_, idx) => (
-                <CategoryCardSkeleton key={idx} />
-              ))
-            : categories.map((cat, idx) => {
-                const CategoryIcon = cat.icon;
-                return (
-                  <Link 
-                    key={idx}
-                    to={`/products?category=${encodeURIComponent(cat.title)}`} 
-                    className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-4 sm:p-5 flex flex-col items-center justify-center hover:shadow-lg dark:hover:shadow-black/40 hover:border-orange-200 dark:hover:border-orange-500/40 hover:-translate-y-1 transition-all duration-300 cursor-pointer group text-center"
-                  >
-                    <div className="w-16 h-16 rounded-2xl p-3.5 mb-3 bg-gradient-to-br from-orange-50 to-amber-50 dark:from-gray-800 dark:to-gray-800/60 text-orange-600 dark:text-orange-400 group-hover:scale-110 transition-transform duration-300 flex items-center justify-center border border-orange-100/60 dark:border-gray-700">
-                      <CategoryIcon className="h-7 w-7" />
-                    </div>
-                    <span className="text-xs sm:text-sm font-extrabold text-gray-800 dark:text-gray-200 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors mb-1">{cat.title}</span>
-                    <span className="text-[11px] font-bold text-gray-400 dark:text-gray-500">{cat.count}</span>
-                  </Link>
-                );
-              })}
+        <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 sm:gap-4">
+          {categories.map((cat, idx) => {
+            const Icon = cat.icon || Smartphone;
+            return (
+              <Link
+                key={idx}
+                to={`/products?category=${encodeURIComponent(cat.title)}`}
+                className="flex flex-col items-center justify-center p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200/70 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 transition-colors group text-center"
+              >
+                <div className="w-14 h-14 rounded-2xl bg-white dark:bg-zinc-800 shadow-xs flex items-center justify-center text-zinc-700 dark:text-zinc-300 group-hover:bg-orange-600 group-hover:text-white transition-colors mb-2.5">
+                  <Icon className="h-6 w-6 stroke-[1.8]" />
+                </div>
+                <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                  {cat.title}
+                </span>
+                <span className="text-[10px] text-zinc-400 dark:text-zinc-500 mt-0.5">
+                  {toPersianDigits(cat.count || 0)} کالا
+                </span>
+              </Link>
+            );
+          })}
         </div>
       </section>
 
-      {/* 5. Best Sellers Section with Dynamic Category Tabs */}
-      <section>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-          <div>
-            <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-gray-100 flex items-center gap-2.5 tracking-tight">
-              <span className="w-2.5 h-7 bg-orange-600 rounded-full shadow-xs"></span>
-              پرفروش‌ترین‌های جانبی آرنا
-            </h2>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">محبوب‌ترین انتخاب‌های خریداران در ماه گذشته</p>
+      {/* 5. Featured Products with Smart Tabs */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-zinc-200 dark:border-zinc-800 pb-3">
+          <div className="flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 text-orange-600" />
+            <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white">کالاهای پرطرفدار و جدید</h2>
           </div>
 
-          {/* Interactive Category Tabs */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-2 sm:pb-0 scrollbar-hide">
-            {categoryTabs.map(tab => (
+          {/* Category Tabs */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+            {[
+              { id: 'all', label: 'همه محصولات' },
+              { id: 'chargers', label: 'شارژر و کابل' },
+              { id: 'audio', label: 'صوتی و هندزفری' },
+              { id: 'covers', label: 'قاب و محافظ' },
+            ].map((tab) => (
               <button
-                key={tab}
-                onClick={() => setActiveCategoryTab(tab)}
-                className={`px-4 py-2 rounded-2xl text-xs font-extrabold whitespace-nowrap transition-all cursor-pointer ${
-                  activeCategoryTab === tab
-                    ? 'bg-gradient-to-r from-orange-600 to-amber-600 text-white shadow-md shadow-orange-600/25 scale-105'
-                    : 'bg-white dark:bg-gray-800/80 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-100 dark:border-gray-700'
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors shrink-0 ${
+                  activeTab === tab.id
+                    ? 'bg-orange-600 text-white'
+                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200'
                 }`}
               >
-                {tab}
+                {tab.label}
               </button>
             ))}
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+        {/* Product Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
           {loading ? (
-            Array.from({ length: 4 }).map((_, idx) => (
-              <ProductCardSkeleton key={idx} />
-            ))
+            Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)
           ) : filteredProducts.length > 0 ? (
-            filteredProducts.map((product: Product) => (
-              <ProductCard key={product.id} product={product} />
-            ))
+            filteredProducts.map((p) => <ProductCard key={p.id} product={p} />)
           ) : (
-            <div className="col-span-full py-12 text-center text-gray-400 font-bold bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800">
-              محصولی در این دسته‌بندی پیدا نشد.
+            <div className="col-span-full py-12 text-center text-sm text-zinc-500">
+              کالایی در این دسته‌بندی یافت نشد.
             </div>
           )}
         </div>
       </section>
 
-      {/* 6. Brand Showcase Carousel */}
-      <BrandShowcase />
-
-      {/* 7. VIP Loyalty Club Banner */}
+      {/* 6. VIP Loyalty Club Banner */}
       <VipClubBanner />
 
-      {/* 8. Recently Viewed Items */}
-      <RecentlyViewed title="آخرین کالاهای بازدیدشده" limit={4} />
+      {/* 7. Brands Showcase */}
+      <BrandShowcase />
 
-      {/* 9. FAQ Section */}
+      {/* 8. FAQ Section */}
       <FAQ />
+
+      {/* 9. Recently Viewed */}
+      <RecentlyViewed />
     </div>
   );
 }
