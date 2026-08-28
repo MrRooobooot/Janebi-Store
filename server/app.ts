@@ -49,6 +49,7 @@ app.use(
           },
         }
       : false,
+    referrerPolicy: { policy: "strict-origin-when-cross-origin" },
     crossOriginEmbedderPolicy: false,
   })
 );
