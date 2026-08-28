@@ -40,8 +40,9 @@
 - [ ] Add preloading hints for LCP brand carousel and hero banner images.
 
 ### Priority 2: Full PWA & Offline Support
-- [ ] Add Web App Manifest and Service Worker caching for domestic offline browsing.
-- [ ] LocalStorage cache for static catalogue with background SWR sync.
+- [x] Add Web App Manifest (`manifest.webmanifest`) with `dir="rtl"`, standalone mode, and responsive vector icons (192px / 512px).
+- [x] Implement Service Worker (`sw.js`) with Stale-While-Revalidate for catalogue APIs, Cache-First for static assets/fonts, and Offline fallback.
+- [x] Registered Service Worker lifecycle in `main.tsx` and linked manifest in `index.html`.
 
 ### Priority 3: Iranian Payment Gateways Auto-Failover
 - [ ] Implement seamless fallback between Zarinpal and Shaparak/Saman gateways on gateway outage.

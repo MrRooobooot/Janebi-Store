@@ -3,6 +3,8 @@
 ## [2026-08-28] - Storefront Accessibility, Design System & UX Hardening
 
 ### Added
+- Progressive Web App (PWA) manifest (`manifest.webmanifest`) with standalone display, Persian metadata, RTL orientation, and vector icons.
+- Service Worker (`sw.js`) providing Cache-First static asset delivery, Stale-While-Revalidate for catalogue APIs, and offline fallback.
 - `<PictureImage>` responsive `<picture>` component with automatic AVIF/WebP resolution, cache-busting, and CLS protection.
 - Standardized `.min-touch-target` class enforcing 44px minimum interactive boundaries for mobile accessibility.
 - Enhanced `EmptyState` component with responsive padding, smooth spring entrance animations, and high-contrast primary CTA buttons.
