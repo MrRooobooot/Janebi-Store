@@ -2,7 +2,7 @@
 
 > **Autonomous Engineering Knowledge Base & Live System Map**
 > **Last Verified & Updated:** 2026-08-29
-> **Status:** Live & Production Ready (35 test suites, 296 passing tests)
+> **Status:** Live & Production Ready (36 test suites, 297 passing tests)
 
 ---
 
@@ -72,6 +72,7 @@
 ## 4. Live Test & Verification Topology (`tests/`)
 
 - `tests/unit/concurrency-invariants.test.ts` (Stock race condition & Persian input invariants).
+- `tests/unit/rate-limiting.test.ts` (Auth, login, reset-password, and OTP endpoint brute-force protection).
 - `tests/unit/picture-image.test.tsx` (Responsive image pipeline, AVIF/WebP srcset and SVG priority rendering).
 - `tests/api/frontend-backend-parity.test.ts` (End-to-End API contract parity for catalogue, user flows, and admin).
 - `tests/unit/payment-failover.test.ts` (Payment gateway timeout switch & Circuit Breaker).

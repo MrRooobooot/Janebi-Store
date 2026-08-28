@@ -127,6 +127,9 @@ const authLimiter = rateLimit({
 });
 app.use("/api/auth/login", authLimiter);
 app.use("/api/auth/register", authLimiter);
+app.use("/api/auth/otp/send", authLimiter);
+app.use("/api/auth/otp/verify", authLimiter);
+app.use("/api/auth/reset-password", authLimiter);
 
 // Routes
 app.use("/api/products", productsRoutes);

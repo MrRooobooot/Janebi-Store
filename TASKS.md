@@ -38,6 +38,7 @@
 - [x] Zero horizontal scroll (CLS/Overflow) verified on all 16 core pages.
 - [x] Fixed interactive ARIA labels and button touch targets across Header, Footer, and ChatWidget.
 - [x] Purged legacy mock/test images from DB and verified vector SVG rendering parity.
+- [x] Strict brute-force rate-limiting on all authentication, reset-password, and SMS OTP endpoints with automated test suite (`tests/unit/rate-limiting.test.ts`).
 
 ### Priority 2: Full PWA & Offline Support
 - [x] Add Web App Manifest (`manifest.webmanifest`) with `dir="rtl"`, standalone mode, and responsive vector icons (192px / 512px).
