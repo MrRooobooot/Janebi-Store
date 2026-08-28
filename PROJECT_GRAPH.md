@@ -65,7 +65,7 @@
    ```bash
    npm run verify
    ```
-   (Runs strict `tsc --noEmit`, all 291 Vitest unit/stress/concurrency tests, and full production build).
+   (Runs strict `tsc --noEmit`, all 297 Vitest unit/stress/concurrency tests, and full production build).
 
 ---
 

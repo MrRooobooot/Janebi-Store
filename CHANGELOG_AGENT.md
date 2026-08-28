@@ -1,5 +1,13 @@
 # CHANGELOG_AGENT.md — Janebi Store Agent Work Log
 
+## [2026-08-29] - Brand Identity Overhaul, E2E Contract Suite & Security Defense Hardening
+- **Brand Identity & Typography:** Upgraded brand logo and typography across Header, Footer, and Admin panel using vibrant orange/amber gradients, hover micro-interactions, and monospace bilingual tags.
+- **Enforced Rate-Limiting:** Secured `/api/auth/otp/send`, `/api/auth/otp/verify`, and `/api/auth/reset-password` against SMS and credential brute-force attacks via rate-limit middleware and automated verification in `tests/unit/rate-limiting.test.ts`.
+- **E2E API Contract Parity:** Created comprehensive test suite `tests/api/frontend-backend-parity.test.ts` verifying all public catalogue, user authenticated flows (cart, wishlist, orders), and admin management endpoints.
+- **Automated Visual & A11y Audit:** Executed full browser audit via `browser_exec` across all 16 core storefront and admin routes; confirmed 0 horizontal overflows (CLS/x-scroll) and standard WCAG AA ARIA labeling on all interactive controls.
+- **High-DPI Responsive Image Pipeline:** Integrated 1x/2x srcset generation in `<PictureImage>` and added asset preloading hints in `index.html` for LCP optimization.
+- **Quality Gates:** 36 test files (297 tests) passing 100% with strict TypeScript validation and successful production deployment to `janebiarena.ir`.
+
 ## [2026-08-29] - Hardcore Adversarial Verification Harness & Invariant Guard
 - Added unified adversarial verification pipeline in `scripts/verify-all.sh` wired to `npm run verify` (`tsc --noEmit` + `vitest run` + client/server production build).
 - Implemented `tests/unit/concurrency-invariants.test.ts` verifying Persian unicode/mobile normalization, invalid edge cases, and zero-negative-stock transactional invariants.
