@@ -33,6 +33,16 @@
   --color-primary-500: #ff6a00;
   --color-primary-600: #f05400;
   --color-primary-700: #d04000;
+  --color-canvas-light: #f8fafc;
+  --color-canvas-dark: #08090a;
+  --color-surface-light: #ffffff;
+  --color-surface-dark: #111317;
+  --color-border-light: rgba(0, 0, 0, 0.08);
+  --color-border-dark: rgba(255, 255, 255, 0.08);
+  --color-text-main-light: #0f172a;
+  --color-text-main-dark: #f7f8f8;
+  --color-text-muted-light: #64748b;
+  --color-text-muted-dark: #94a3b8;
 }
 
 :root {
@@ -55,8 +65,8 @@ body {
   margin: 0 !important;
   padding: 0 !important;
   font-family: var(--font-sans);
-  background-color: #f8fafc;
-  color: #0f172a;
+  background-color: var(--color-canvas-light);
+  color: var(--color-text-main-light);
   box-sizing: border-box;
   transition: background-color 0.25s ease, color 0.25s ease;
 }
@@ -70,10 +80,10 @@ body {
   flex-direction: column;
 }
 
-/* ── Linear / Raycast Precision Dark Canvas (#08090a) ────────────── */
+/* ── Linear / Raycast Precision Dark Canvas ────────────── */
 .dark body {
-  background-color: #08090a;
-  color: #f7f8f8;
+  background-color: var(--color-canvas-dark);
+  color: var(--color-text-main-dark);
 }
 
 /* ── Glassmorphic Luminance Stepping ────────────────────────────── */
@@ -118,11 +128,11 @@ body {
 
 /* ── Accessible Contrast Helpers ────────────────────────────────── */
 .text-muted-readable {
-  color: #64748b;
+  color: var(--color-text-muted-light);
 }
 
 .dark .text-muted-readable {
-  color: #94a3b8;
+  color: var(--color-text-muted-dark);
 }
 
 /* ── Interactive Touch-Target Minimum (44px Rule) ────────────────── */
