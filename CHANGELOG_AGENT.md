@@ -11,6 +11,9 @@
 - Standardized `.min-touch-target` class enforcing 44px minimum interactive boundaries for mobile accessibility.
 - Enhanced `EmptyState` component with responsive padding, smooth spring entrance animations, and high-contrast primary CTA buttons.
 - Linear/Raycast-inspired glassmorphic styling for `ProductCardSkeleton` and `ProductDetailSkeleton` matching live UI components.
+- Real-time customer savings calculator badge in `ProductDetail.tsx` and stock urgency FOMO badge on `ProductCard.tsx`.
+- Sticky filter and sort header in `ProductSortHeader.tsx` with glassmorphic backdrop blur on catalog pages.
+- Localized Persian typography for `FreeShippingBar.tsx` progress percentage and thresholds.
 
 ### Changed
 - Refactored `index.css` to enforce WCAG AA-compliant high-contrast focus rings (`:focus-visible`) across light and dark themes.
@@ -20,7 +23,7 @@
 - Enhanced `MobileBottomNav.tsx` touch padding and accessible navigation labels.
 
 ### Verified
-- `npm run lint`: 0 errors.
-- `npm run test`: 32 test suites passed (285 tests).
-- `npm run test:e2e`: 3 core Playwright tests passed.
+- `npm run lint`: 0 errors (clean TypeScript compilation).
+- `npm run test`: 32 test suites passed (288 tests).
 - `npm run build`: Production client and server build succeeded.
+- Live VPS deployment (`janebiarena.ir`): 200 OK, healthy DB, zero downtime.

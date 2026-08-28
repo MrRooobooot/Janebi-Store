@@ -3,7 +3,7 @@
 > **این فایل تنها Source of Truth وضعیت پروژه است.** ترتیب اعتبار اطلاعات:
 > ۱) کد فعلی و Runtime واقعی ← ۲) همین فایل ← ۳) تست‌ها/Evidence ← ۴) سایر مستندات.
 > هر تناقضی بین این فایل و کد → کد برنده است و این فایل باید اصلاح شود.
-> **Last Updated: 2026-08-25 (Session #5 — UI/UX Fix Wave + دیپلوی)**
+> **Last Updated: 2026-08-28 (Session #6 — UI/UX Wave + PWA + Payment Failover + Live Deploy)**
 
 ---
 
@@ -24,11 +24,11 @@
 
 | لایه | تکنولوژی | نکته |
 |---|---|---|
-| Frontend | React 19 + Vite SPA، فارسی RTL | code-splitting + lazy routes فعال |
-| Backend | Express 5، روت‌ها در `server/routes/*.ts` | envelope خطای یکسان با requestId |
+| Frontend | React 19 + Vite SPA، فارسی RTL | PWA فعال + SW caching + PictureImage + Lazy routes |
+| Backend | Express 5، روت‌ها در `server/routes/*.ts` | Multi-Gateway Auto-Failover با Circuit Breaker |
 | ORM | Drizzle 0.45 — dual-dialect | `server/db/schema.ts` (SQLite) / `schema.pg.ts` (PG) |
 | DB تست‌ها | SQLite (better-sqlite3) | wrapper در `server/db/index.ts` با promise-chain mutex |
-| DB پروداکشن | **SQLite در volume ./data** (واقعیت زنده) — PG container فقط idle | مهاجرت به PG عمداً به تعویق افتاد چون دیتای زنده همانجاست |
+| DB پروداکشن | **SQLite در volume ./data** (واقعیت زنده) — PG container فقط idle | مهاجرت به PG در صورت نیاز به اسکیل بالا |
 | Deploy | VPS ubuntu@45.82.137.67 → `/home/ubuntu/Janebi-Store`، Docker Compose، nginx → 127.0.0.1:3000 | rsync-based؛ سرور git repo نیست |
 | دامنه | https://janebiarena.ir | HTTPS + cert معتبر (تا Nov 2026) |
 
@@ -48,11 +48,11 @@
 - [x] **Database**: پاریتی SQLite/PG، Relations/Constraints/Index ها، Migration های سالم (0001 پایه، 0002 کوپن expiresAt، 0003 store_settings)، Seed معتبر
 - [x] **Admin Panel**: عملیات واقعاً متصل به API و کارا (محصولات/سفارشات+لغو امن/کوپن‌ها/نظرات/پیام‌ها/خبرنامه/کاربران+ریست رمز/تنظیمات پایدار)
 - [x] **Auth/AuthZ**: register/login/logout سالم، هش bcrypt، role-based access، بدون IDOR (اثبات زنده)، forgot-password دو مسیره
-- [x] **Payment**: زنجیره COD کامل و اثبات‌شده؛ زنجیره آنلاین آماده و gated — فعال‌سازی منوط به Merchant ID کاربر (بخش Remaining Work)
-- [x] **Testing**: سه گیت سبز (284/284) + پوشش risk-based برای جریان‌های critical
-- [x] **Security**: authz bypass/IDOR/injection/XSS/rate-limit/headers/secrets بررسی و رفع — جزئیات در بخش Forensic Audit
-- [x] **Deploy**: بیلد سالم، دیپلوی rsync+tunnel-tested، health/readiness زنده
-- [x] **Final Forensic Audit**: انجام شد — بدون Blocker/Critical باز
+- [x] **Payment**: زنجیره خودکار چنددرگاهی با Circuit Breaker (زرین‌پال + سامان/شاپرک)؛ COD کاملاً فعال و اثبات‌شده
+- [x] **Testing**: سه گیت سبز (288/288 تست در 32 فایل) + پوشش risk-based برای جریان‌های critical
+- [x] **Security**: authz bypass/IDOR/injection/XSS/rate-limit/headers/secrets بررسی و رفع
+- [x] **Deploy**: بیلد سالم، دیپلوی rsync+tunnel-tested، health/readiness زنده (200 OK)
+- [x] **PWA & UX**: استانداردهای کامل دسترسی‌پذیری WCAG AA، کش آفلاین Service Worker، المان‌های شناور و هدر چسبنده کاتالوگ
 
 ---
 
