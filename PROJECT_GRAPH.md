@@ -2,7 +2,7 @@
 
 > **Autonomous Engineering Knowledge Base & Live System Map**
 > **Last Verified & Updated:** 2026-08-29
-> **Status:** Live & Production Ready (34 test suites, 293 passing tests)
+> **Status:** Live & Production Ready (35 test suites, 296 passing tests)
 
 ---
 
@@ -73,6 +73,7 @@
 
 - `tests/unit/concurrency-invariants.test.ts` (Stock race condition & Persian input invariants).
 - `tests/unit/picture-image.test.tsx` (Responsive image pipeline, AVIF/WebP srcset and SVG priority rendering).
+- `tests/api/frontend-backend-parity.test.ts` (End-to-End API contract parity for catalogue, user flows, and admin).
 - `tests/unit/payment-failover.test.ts` (Payment gateway timeout switch & Circuit Breaker).
 - `tests/unit/transaction-rollback.test.ts` (Atomic rollback on partial out-of-stock).
 - `tests/concurrency/adversarial-stress.test.ts` (50 parallel shoppers for 1 unit of stock).
