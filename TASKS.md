@@ -34,9 +34,10 @@
 
 ## 🎯 Next Priority Backlog (Phase Next)
 
-### Priority 1: Automated Asset WebP/AVIF Image Pipeline
-- [x] Implement responsive image variants (`<picture>` with `.webp` / `.avif` fallbacks) for high-DPI displays (1x/2x candidates).
-- [x] Add preloading hints for LCP brand carousel and hero banner images in `index.html`.
+- [x] Full automated visual & design audit across all storefront & admin routes via `browser_exec`.
+- [x] Zero horizontal scroll (CLS/Overflow) verified on all 16 core pages.
+- [x] Fixed interactive ARIA labels and button touch targets across Header, Footer, and ChatWidget.
+- [x] Purged legacy mock/test images from DB and verified vector SVG rendering parity.
 
 ### Priority 2: Full PWA & Offline Support
 - [x] Add Web App Manifest (`manifest.webmanifest`) with `dir="rtl"`, standalone mode, and responsive vector icons (192px / 512px).
