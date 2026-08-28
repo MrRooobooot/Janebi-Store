@@ -5,7 +5,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { 
   LayoutDashboard, Package, ShoppingCart, Users, LogOut, ArrowRight, 
   ShieldAlert, Tag, Mail, MessageSquare, MailCheck, Settings, Menu, X,
-  Sun, Moon, ExternalLink, AlertTriangle
+  Sun, Moon, ExternalLink, AlertTriangle, Smartphone
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -92,13 +92,15 @@ export default function AdminLayout() {
     <div className="flex flex-col h-full bg-[var(--color-surface-light)]/95 dark:bg-[var(--color-surface-dark)]/95 backdrop-blur-xl border-l border-gray-200/80 dark:border-[var(--color-border-dark)]">
       {/* Brand Header */}
       <div className="p-5 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex items-center justify-between">
-        <Link to="/admin" className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-orange-600 to-amber-500 text-white font-black text-base flex items-center justify-center shadow-md shadow-orange-500/20">
-            J
+        <Link to="/admin" className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-orange-600 via-orange-500 to-amber-500 text-white flex items-center justify-center shadow-md shadow-orange-600/30 border border-orange-400/40">
+            <Smartphone className="h-5 w-5 stroke-[2.4]" />
           </div>
           <div>
-            <span className="text-base font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">جانبی‌آرنا</span>
-            <span className="block text-[10px] text-orange-600 dark:text-orange-400 font-bold">پنل مدیریت هوشمند</span>
+            <span className="text-sm font-black text-[var(--color-text-main-light)] dark:text-white">
+              جانبی <span className="text-orange-500">آرنا</span>
+            </span>
+            <span className="block text-[9px] text-zinc-400 dark:text-zinc-500 font-bold uppercase tracking-widest font-mono">ADMIN PANEL</span>
           </div>
         </Link>
         <div className="flex items-center gap-1">
@@ -232,8 +234,13 @@ export default function AdminLayout() {
             <Menu className="h-5 w-5" />
           </button>
           <div className="flex items-center gap-2">
-            <span className="text-sm font-black text-[var(--color-text-main-light)] dark:text-white">جانبی‌آرنا</span>
-            <span className="text-[10px] bg-orange-100 dark:bg-orange-900/40 text-orange-600 font-bold px-2 py-0.5 rounded-md">مدیریت</span>
+            <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-orange-600 to-amber-500 text-white flex items-center justify-center shadow-xs">
+              <Smartphone className="h-3.5 w-3.5 stroke-[2.4]" />
+            </div>
+            <span className="text-xs font-black text-[var(--color-text-main-light)] dark:text-white">
+              جانبی <span className="text-orange-500">آرنا</span>
+            </span>
+            <span className="text-[9px] bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 font-black px-2 py-0.5 rounded-md border border-orange-200 dark:border-orange-900/50">مدیریت</span>
           </div>
           <button
             onClick={toggleTheme}

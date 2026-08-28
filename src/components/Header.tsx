@@ -70,15 +70,23 @@ export default function Header() {
               {mobileMenuOpen ? <X className="h-5 w-5 sm:h-6 sm:w-6" /> : <Menu className="h-5 w-5 sm:h-6 sm:w-6" />}
             </button>
 
-            <Link to="/" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-orange-600 text-white flex items-center justify-center shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform duration-200 shrink-0">
-                <Smartphone className="h-4 w-4 sm:h-5 sm:w-5 stroke-[2.2]" />
+            <Link to="/" className="flex items-center gap-3 group focus:outline-none">
+              <div className="relative w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-orange-600 via-orange-500 to-amber-500 text-white flex items-center justify-center shadow-lg shadow-orange-600/30 group-hover:scale-105 group-hover:shadow-orange-600/50 transition-all duration-300 shrink-0 border border-orange-400/40">
+                <Smartphone className="h-5 w-5 sm:h-6 sm:w-6 stroke-[2.4] drop-shadow-xs group-hover:-rotate-6 transition-transform duration-300" />
+                <div className="absolute inset-0 rounded-2xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
               </div>
-              <div className="flex flex-col">
-                <span className="text-base sm:text-xl font-black text-zinc-900 dark:text-white tracking-tight">
-                  جانبی <span className="text-orange-600 dark:text-orange-400">آرنا</span>
+              <div className="flex flex-col text-right">
+                <div className="flex items-center gap-1">
+                  <span className="text-base sm:text-xl font-black tracking-tight text-zinc-900 dark:text-white group-hover:text-zinc-800 dark:group-hover:text-zinc-100 transition-colors">
+                    جانبی
+                  </span>
+                  <span className="text-base sm:text-xl font-black tracking-tight bg-gradient-to-l from-orange-600 to-amber-500 bg-clip-text text-transparent">
+                    آرنا
+                  </span>
+                </div>
+                <span className="text-[8px] sm:text-[9px] text-zinc-400 dark:text-zinc-500 -mt-0.5 font-black tracking-[0.18em] uppercase font-mono">
+                  JANEBI ARENA
                 </span>
-                <span className="text-[8px] sm:text-[9px] text-zinc-400 dark:text-zinc-500 -mt-1 font-bold tracking-widest uppercase">Janebi Arena</span>
               </div>
             </Link>
           </div>
