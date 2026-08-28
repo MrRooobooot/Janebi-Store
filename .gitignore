@@ -6,8 +6,10 @@ build/
 dist/
 server.js
 
-# Test coverage
+# Test coverage & artifacts
 coverage/
+playwright-report/
+test-results/
 
 # OS junk
 .DS_Store

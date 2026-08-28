@@ -112,12 +112,13 @@ export default function Header() {
             {/* Compare Badge */}
             <Link
               to="/compare"
-              className="p-2 text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors relative hidden sm:flex items-center"
+              aria-label="مشاهده لیست مقایسه کالاها"
+              className="p-2 text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors relative hidden sm:flex items-center min-touch-target"
               title="مقایسه کالاها"
             >
               <ArrowLeftRight className="h-5 w-5" />
               {compareItems.length > 0 && (
-                <span className="absolute top-1 right-1 bg-zinc-800 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                <span className="absolute top-1 right-1 bg-zinc-800 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center" aria-label={`${compareItems.length} مورد در مقایسه`}>
                   {toPersianDigits(compareItems.length)}
                 </span>
               )}

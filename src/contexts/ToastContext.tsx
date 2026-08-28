@@ -32,14 +32,16 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         {toasts.map((toast) => (
           <div
             key={toast.id}
-            className={`px-4 py-3 rounded-lg shadow-lg text-white font-medium text-sm transition-all transform pointer-events-auto ${
+            role="alert"
+            aria-live="assertive"
+            className={`px-4 py-3 rounded-2xl shadow-xl border text-white font-medium text-sm transition-all transform pointer-events-auto flex items-center gap-2 backdrop-blur-md ${
               toast.type === 'success'
-                ? 'bg-green-600'
+                ? 'bg-emerald-600/95 dark:bg-emerald-700/95 border-emerald-500/30'
                 : toast.type === 'error'
-                ? 'bg-red-600'
+                ? 'bg-rose-600/95 dark:bg-rose-700/95 border-rose-500/30'
                 : toast.type === 'warning'
-                ? 'bg-amber-600'
-                : 'bg-blue-600'
+                ? 'bg-amber-600/95 dark:bg-amber-700/95 border-amber-500/30'
+                : 'bg-blue-600/95 dark:bg-blue-700/95 border-blue-500/30'
             }`}
           >
             {toast.message}
