@@ -3,6 +3,7 @@
 ## [2026-08-28] - Storefront Accessibility, Design System & UX Hardening
 
 ### Added
+- `<PictureImage>` responsive `<picture>` component with automatic AVIF/WebP resolution, cache-busting, and CLS protection.
 - Standardized `.min-touch-target` class enforcing 44px minimum interactive boundaries for mobile accessibility.
 - Enhanced `EmptyState` component with responsive padding, smooth spring entrance animations, and high-contrast primary CTA buttons.
 - Linear/Raycast-inspired glassmorphic styling for `ProductCardSkeleton` and `ProductDetailSkeleton` matching live UI components.

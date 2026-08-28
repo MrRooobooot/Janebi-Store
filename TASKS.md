@@ -2,6 +2,12 @@
 
 ## Status: Completed (Aug 28, 2026)
 
+### 0. Automated Asset WebP/AVIF Image Pipeline & LCP Optimization
+- [x] Implemented reusable `<PictureImage>` component supporting `image/avif`, `image/webp`, and SVG/PNG fallbacks.
+- [x] Added `priority={true}` with `loading="eager"` and `fetchPriority="high"` for Hero and LCP banners.
+- [x] Enforced explicit width/height and aspect ratios on product tiles and deal cards to eliminate CLS.
+- [x] Integrated backwards compatibility into `SmartImage` and `BrandLogo` components.
+
 ### 1. Accessibility & WCAG AA Audit
 - [x] Enforced strict 2px high-contrast focus rings with dark/light mode parity.
 - [x] Standardized ARIA labels across navigation, header controls, product cards, wishlist, and compare buttons.

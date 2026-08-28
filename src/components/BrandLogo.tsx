@@ -1,9 +1,11 @@
 import React from 'react';
+import PictureImage from './PictureImage';
 
 interface BrandLogoProps {
   name: string;
   className?: string;
   size?: 'sm' | 'md' | 'lg';
+  priority?: boolean;
 }
 
 const BRAND_FILES: Record<string, string> = {
@@ -44,7 +46,7 @@ const BRAND_FILES: Record<string, string> = {
   'پاناسونیک': '/brands/panasonic.svg',
 };
 
-export default function BrandLogo({ name, className = '', size = 'md' }: BrandLogoProps) {
+export default function BrandLogo({ name, className = '', size = 'md', priority = false }: BrandLogoProps) {
   const cleanName = (name || '').trim().toLowerCase();
   
   let fileUrl = BRAND_FILES[cleanName];
@@ -66,9 +68,10 @@ export default function BrandLogo({ name, className = '', size = 'md' }: BrandLo
   if (fileUrl) {
     return (
       <div className={`flex items-center justify-center ${className}`}>
-        <img
+        <PictureImage
           src={fileUrl}
           alt={name}
+          priority={priority}
           className={`${sizeClasses} w-auto object-contain transition-transform`}
         />
       </div>

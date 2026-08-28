@@ -14,6 +14,7 @@ import {
 import { Product } from '../types';
 import { toPersianDigits, formatPrice, getAssetUrl } from '../lib/utils';
 import { useStoreSettings } from '../hooks/useStoreSettings';
+import PictureImage from '../components/PictureImage';
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -203,9 +204,12 @@ export default function Home() {
             {/* Visual 3D Asset Showcase Column (Desktop/Tablet) */}
             <div className="hidden md:flex md:col-span-5 items-center justify-center relative">
               <div className="relative w-64 h-64 lg:w-80 lg:h-80 rounded-3xl p-6 bg-zinc-800/60 border border-zinc-700/60 backdrop-blur-md flex items-center justify-center shadow-2xl group">
-                <img
-                  src={getAssetUrl(currentSlide.image)}
+                <PictureImage
+                  src={currentSlide.image}
                   alt={currentSlide.title}
+                  width="320"
+                  height="320"
+                  priority={true}
                   className="w-full h-full object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.6)] group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
@@ -316,9 +320,11 @@ export default function Home() {
                   className="bg-zinc-800/70 hover:bg-zinc-800 border border-zinc-700/60 hover:border-orange-500/40 rounded-2xl p-3.5 text-white flex flex-col justify-between transition-all duration-200 shadow-md group"
                 >
                   <div className="relative aspect-square rounded-xl bg-zinc-900/80 p-3 mb-3 flex items-center justify-center overflow-hidden">
-                    <img 
-                      src={getAssetUrl(p.image)} 
+                    <PictureImage 
+                      src={p.image} 
                       alt={p.title} 
+                      width="160"
+                      height="160"
                       className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
                     />
                     <span className="absolute top-2 right-2 bg-rose-600 text-white text-[10px] font-black px-2 py-0.5 rounded-lg">
