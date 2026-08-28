@@ -85,7 +85,7 @@ export default function AdminReviews() {
     <div className="space-y-6 text-right">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-gray-900 dark:text-white flex items-center gap-2">
+          <h1 className="text-2xl font-black text-[var(--color-text-main-light)] dark:text-white flex items-center gap-2">
             <MessageSquare className="h-6 w-6 text-orange-500" />
             مدیریت نظرات کاربران
           </h1>
@@ -93,13 +93,13 @@ export default function AdminReviews() {
             بررسی، پالایش و حذف نظرات ثبت‌شده روی محصولات
           </p>
         </div>
-        <div className="text-xs font-bold text-gray-500 bg-white dark:bg-gray-800 px-3.5 py-2 rounded-xl border border-gray-100 dark:border-gray-700">
+        <div className="text-xs font-bold text-gray-500 bg-[var(--color-surface-light)] dark:bg-gray-800 px-3.5 py-2 rounded-xl border border-[var(--color-border-light)] dark:border-gray-700">
           تعداد کل نظرات: <span className="text-orange-600 font-mono font-bold">{reviews.length}</span>
         </div>
       </div>
 
       {/* Filters and Search */}
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-100 dark:border-gray-700/60 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 p-4 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700/60 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="relative w-full sm:w-80">
           <input
             type="text"
@@ -129,7 +129,7 @@ export default function AdminReviews() {
       </div>
 
       {/* Reviews Table */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700/60 shadow-xs overflow-hidden">
+      <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700/60 shadow-xs overflow-hidden">
         {loading ? (
           <div className="p-12 text-center text-gray-400 text-xs">در حال بارگذاری نظرات...</div>
         ) : filteredReviews.length === 0 ? (
@@ -137,7 +137,7 @@ export default function AdminReviews() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-xs text-right">
-              <thead className="bg-gray-50 dark:bg-gray-700/30 text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700/60">
+              <thead className="bg-gray-50 dark:bg-gray-700/30 text-gray-500 dark:text-gray-400 border-b border-[var(--color-border-light)] dark:border-gray-700/60">
                 <tr>
                   <th className="p-3.5 font-bold">کاربر</th>
                   <th className="p-3.5 font-bold">محصول</th>
@@ -151,7 +151,7 @@ export default function AdminReviews() {
                 {filteredReviews.map((rev) => (
                   <tr key={rev.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/20 transition-colors">
                     <td className="p-3.5">
-                      <div className="font-bold text-gray-900 dark:text-gray-100">{rev.userName}</div>
+                      <div className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">{rev.userName}</div>
                       {rev.isVerifiedBuyer && (
                         <span className="text-[10px] text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5 mt-0.5">
                           <CheckCircle className="h-3 w-3" /> خریدار
@@ -170,7 +170,7 @@ export default function AdminReviews() {
                       </div>
                     </td>
                     <td className="p-3.5 max-w-[280px]">
-                      <div className="font-bold text-gray-900 dark:text-gray-100">{rev.title}</div>
+                      <div className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">{rev.title}</div>
                       <div className="text-[11px] text-gray-500 dark:text-gray-400 truncate">{rev.comment}</div>
                     </td>
                     <td className="p-3.5 text-gray-500 dark:text-gray-400 text-[11px] whitespace-nowrap">
@@ -204,16 +204,16 @@ export default function AdminReviews() {
       {/* Review Detail Modal */}
       {selectedReview && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative">
-            <div className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-800 mb-4">
-              <h3 className="text-base font-black text-gray-900 dark:text-gray-100">جزئیات کامل نظر</h3>
+          <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative">
+            <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] mb-4">
+              <h3 className="text-base font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">جزئیات کامل نظر</h3>
               <button onClick={() => setSelectedReview(null)} className="text-gray-400 hover:text-gray-600 text-xs font-bold">بستن</button>
             </div>
 
             <div className="space-y-4 text-xs">
               <div className="p-3.5 rounded-2xl bg-gray-50 dark:bg-gray-800/60 flex items-center justify-between">
                 <div>
-                  <div className="font-bold text-gray-900 dark:text-white text-sm">{selectedReview.userName}</div>
+                  <div className="font-bold text-[var(--color-text-main-light)] dark:text-white text-sm">{selectedReview.userName}</div>
                   <div className="text-[11px] text-gray-400 mt-0.5">تاریخ ثبت: {selectedReview.date}</div>
                 </div>
                 <div className="flex items-center gap-1 bg-amber-50 dark:bg-amber-950/40 text-amber-600 px-3 py-1.5 rounded-xl font-bold">
@@ -224,14 +224,14 @@ export default function AdminReviews() {
 
               <div>
                 <span className="text-gray-400 block mb-1">کالای مربوطه:</span>
-                <div className="font-bold text-gray-900 dark:text-gray-100 p-2.5 rounded-xl bg-gray-50 dark:bg-gray-800/40">
+                <div className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] p-2.5 rounded-xl bg-gray-50 dark:bg-gray-800/40">
                   {selectedReview.product?.title || `محصول کد ${selectedReview.productId}`}
                 </div>
               </div>
 
               <div>
                 <span className="text-gray-400 block mb-1">عنوان نظر:</span>
-                <div className="font-bold text-gray-900 dark:text-gray-100">{selectedReview.title}</div>
+                <div className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">{selectedReview.title}</div>
               </div>
 
               <div>
@@ -241,7 +241,7 @@ export default function AdminReviews() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
+              <div className="flex items-center justify-between pt-4 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
                 <div className="text-xs font-semibold flex items-center gap-1.5">
                   {selectedReview.recommend ? (
                     <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1">

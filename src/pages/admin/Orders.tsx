@@ -236,7 +236,7 @@ export default function AdminOrders() {
     <div className="space-y-6 text-right">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mb-1">مدیریت سفارشات مشتریان</h1>
+          <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-white mb-1">مدیریت سفارشات مشتریان</h1>
           <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">بررسی، چاپ فاکتور، انتساب کد رهگیری پستی و تغییر وضعیت سفارشات</p>
         </div>
 
@@ -265,12 +265,12 @@ export default function AdminOrders() {
             className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
               statusFilter === tab.id
                 ? 'bg-orange-600 text-white shadow-sm'
-                : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-100 dark:border-gray-700/60 hover:bg-gray-50'
+                : 'bg-[var(--color-surface-light)] dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-[var(--color-border-light)] dark:border-gray-700/60 hover:bg-gray-50'
             }`}
           >
             <span>{tab.label}</span>
             <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono ${
-              statusFilter === tab.id ? 'bg-white/25 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-500'
+              statusFilter === tab.id ? 'bg-[var(--color-surface-light)]/25 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-500'
             }`}>
               {tab.count}
             </span>
@@ -278,14 +278,14 @@ export default function AdminOrders() {
         ))}
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-4 space-y-4">
+      <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700 p-4 space-y-4">
         <div className="relative max-w-md">
           <input 
             type="text" 
             placeholder="جستجو (شماره سفارش، نام، موبایل، کد رهگیری)..." 
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:border-orange-500 text-xs font-bold"
+            className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[var(--color-surface-dark)] focus:outline-none focus:border-orange-500 text-xs font-bold"
           />
           <Search className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
         </div>
@@ -293,7 +293,7 @@ export default function AdminOrders() {
         <div className="overflow-x-auto">
           <table className="w-full text-right">
             <thead>
-              <tr className="bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 text-xs border-b border-gray-100 dark:border-gray-700">
+              <tr className="bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 text-xs border-b border-[var(--color-border-light)] dark:border-gray-700">
                 <th className="p-3.5 font-bold">شماره سفارش</th>
                 <th className="p-3.5 font-bold">تاریخ</th>
                 <th className="p-3.5 font-bold">تحویل‌گیرنده</th>
@@ -310,7 +310,7 @@ export default function AdminOrders() {
                 <tr><td colSpan={7} className="text-center p-8 text-xs font-bold text-gray-400">هیچ سفارشی یافت نشد.</td></tr>
               ) : filteredOrders.map(order => (
                 <tr key={order.id} className="text-xs hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                  <td className="p-3.5 font-bold text-gray-900 dark:text-white font-mono dir-ltr text-left">{order.id}</td>
+                  <td className="p-3.5 font-bold text-[var(--color-text-main-light)] dark:text-white font-mono dir-ltr text-left">{order.id}</td>
                   <td className="p-3.5 text-gray-600 dark:text-gray-300">{order.date}</td>
                   <td className="p-3.5 text-gray-600 dark:text-gray-300">
                     <div className="font-bold text-gray-800 dark:text-gray-200">{order.recipientName}</div>
@@ -359,11 +359,11 @@ export default function AdminOrders() {
                           <ChevronDown className="w-3 h-3" />
                         </button>
                         
-                        <div className="absolute left-0 top-full mt-1 w-36 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-20 overflow-hidden text-right">
+                        <div className="absolute left-0 top-full mt-1 w-36 bg-[var(--color-surface-light)] dark:bg-gray-800 border border-[var(--color-border-light)] dark:border-gray-700 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-20 overflow-hidden text-right">
                           <button onClick={() => updateStatus(order.id, 'processing', 'در حال پردازش')} className="w-full text-right px-3 py-2 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-1.5 text-blue-600 font-bold"><Package className="w-3.5 h-3.5"/> در پردازش</button>
                           <button onClick={() => updateStatus(order.id, 'shipped', 'ارسال شده')} className="w-full text-right px-3 py-2 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-1.5 text-purple-600 font-bold"><Truck className="w-3.5 h-3.5"/> ارسال شده</button>
                           <button onClick={() => updateStatus(order.id, 'delivered', 'تحویل داده شده')} className="w-full text-right px-3 py-2 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-1.5 text-emerald-600 font-bold"><CheckCircle className="w-3.5 h-3.5"/> تحویل شده</button>
-                          <button onClick={() => updateStatus(order.id, 'cancelled', 'لغو شده')} className="w-full text-right px-3 py-2 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-1.5 text-red-600 font-bold border-t border-gray-100 dark:border-gray-700"><XCircle className="w-3.5 h-3.5"/> لغو سفارش</button>
+                          <button onClick={() => updateStatus(order.id, 'cancelled', 'لغو شده')} className="w-full text-right px-3 py-2 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-1.5 text-red-600 font-bold border-t border-[var(--color-border-light)] dark:border-gray-700"><XCircle className="w-3.5 h-3.5"/> لغو سفارش</button>
                         </div>
                       </div>
                     </div>
@@ -378,11 +378,11 @@ export default function AdminOrders() {
       {/* Order Details & Print Modal */}
       {selectedOrder && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs text-right">
-          <div className="bg-white dark:bg-gray-800 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 sm:p-8 space-y-6">
-            <div className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-700">
+          <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 sm:p-8 space-y-6">
+            <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-gray-700">
               <div className="flex items-center gap-2">
                 <Package className="w-5 h-5 text-orange-500" />
-                <h3 className="font-extrabold text-base text-gray-900 dark:text-white">
+                <h3 className="font-extrabold text-base text-[var(--color-text-main-light)] dark:text-white">
                   جزئیات سفارش <span className="font-mono text-orange-600" dir="ltr">{selectedOrder.id}</span>
                 </h3>
               </div>
@@ -407,7 +407,7 @@ export default function AdminOrders() {
                   value={trackingInput}
                   onChange={(e) => setTrackingInput(e.target.value)}
                   placeholder="مثلاً: 243920194857291038"
-                  className="flex-1 bg-white dark:bg-gray-900 border border-blue-200 dark:border-blue-800 rounded-xl px-3 py-2 text-xs font-mono font-bold text-gray-900 dark:text-white focus:outline-none focus:border-blue-500"
+                  className="flex-1 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-blue-200 dark:border-blue-800 rounded-xl px-3 py-2 text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-white focus:outline-none focus:border-blue-500"
                 />
                 <button
                   type="button"
@@ -421,7 +421,7 @@ export default function AdminOrders() {
             </div>
 
             {/* Status and metadata */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-gray-50 dark:bg-gray-900/60 p-4 rounded-2xl border border-gray-100 dark:border-gray-700 text-xs">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-gray-50 dark:bg-[var(--color-surface-dark)]/60 p-4 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700 text-xs">
               <div>
                 <span className="text-gray-400 block mb-1">وضعیت:</span>
                 <span className="font-bold text-orange-600">{selectedOrder.statusText}</span>
@@ -442,16 +442,16 @@ export default function AdminOrders() {
 
             {/* Recipient Information */}
             <div className="p-4 rounded-2xl bg-orange-50/40 dark:bg-orange-950/20 border border-orange-100 dark:border-orange-900/30 text-xs space-y-2">
-              <div className="font-bold text-gray-900 dark:text-white flex items-center gap-1.5">
+              <div className="font-bold text-[var(--color-text-main-light)] dark:text-white flex items-center gap-1.5">
                 <User className="w-4 h-4 text-orange-500" />
                 <span>مشخصات تحویل‌گیرنده:</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-gray-600 dark:text-gray-300 font-medium">
-                <div>نام: <strong className="text-gray-900 dark:text-white">{selectedOrder.recipientName}</strong></div>
-                <div>شماره تماس: <strong className="text-gray-900 dark:text-white font-mono" dir="ltr">{selectedOrder.recipientPhone}</strong></div>
-                <div className="sm:col-span-2">آدرس پستی: <strong className="text-gray-900 dark:text-white">{selectedOrder.recipientAddress}</strong></div>
+                <div>نام: <strong className="text-[var(--color-text-main-light)] dark:text-white">{selectedOrder.recipientName}</strong></div>
+                <div>شماره تماس: <strong className="text-[var(--color-text-main-light)] dark:text-white font-mono" dir="ltr">{selectedOrder.recipientPhone}</strong></div>
+                <div className="sm:col-span-2">آدرس پستی: <strong className="text-[var(--color-text-main-light)] dark:text-white">{selectedOrder.recipientAddress}</strong></div>
                 {selectedOrder.recipientPostalCode && (
-                  <div>کد پستی: <strong className="text-gray-900 dark:text-white font-mono" dir="ltr">{selectedOrder.recipientPostalCode}</strong></div>
+                  <div>کد پستی: <strong className="text-[var(--color-text-main-light)] dark:text-white font-mono" dir="ltr">{selectedOrder.recipientPostalCode}</strong></div>
                 )}
               </div>
             </div>
@@ -461,11 +461,11 @@ export default function AdminOrders() {
               <h4 className="font-bold text-xs text-gray-700 dark:text-gray-300">اقلام سفارش:</h4>
               <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
                 {selectedOrder.items?.map((item: any, idx: number) => (
-                  <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-900/60 border border-gray-100 dark:border-gray-700 text-xs">
+                  <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-[var(--color-surface-dark)]/60 border border-[var(--color-border-light)] dark:border-gray-700 text-xs">
                     <div className="flex items-center gap-3">
-                      <img src={item.image} alt={item.title} className="w-10 h-10 rounded-lg object-contain bg-white dark:bg-gray-800 p-1 border border-gray-200 dark:border-gray-700" />
+                      <img src={item.image} alt={item.title} className="w-10 h-10 rounded-lg object-contain bg-[var(--color-surface-light)] dark:bg-gray-800 p-1 border border-gray-200 dark:border-gray-700" />
                       <div>
-                        <div className="font-bold text-gray-900 dark:text-white">{item.title}</div>
+                        <div className="font-bold text-[var(--color-text-main-light)] dark:text-white">{item.title}</div>
                         <div className="text-[11px] text-gray-400">{item.brand}</div>
                       </div>
                     </div>
@@ -478,7 +478,7 @@ export default function AdminOrders() {
               </div>
             </div>
 
-            <div className="pt-4 flex flex-wrap items-center justify-between gap-2 border-t border-gray-100 dark:border-gray-700">
+            <div className="pt-4 flex flex-wrap items-center justify-between gap-2 border-t border-[var(--color-border-light)] dark:border-gray-700">
               <div className="flex items-center gap-2">
                 <button
                   type="button"

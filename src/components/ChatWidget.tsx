@@ -109,12 +109,12 @@ export default function ChatWidget() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-800 w-[92vw] sm:w-96 h-[32rem] flex flex-col overflow-hidden mb-4 transition-colors"
+            className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl shadow-2xl border border-gray-200 dark:border-[var(--color-border-dark)] w-[92vw] sm:w-96 h-[32rem] flex flex-col overflow-hidden mb-4 transition-colors"
           >
             {/* Header */}
             <div className="bg-gradient-to-r from-orange-600 to-amber-600 text-white p-4 flex items-center justify-between shadow-sm">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center">
+                <div className="w-9 h-9 rounded-full bg-[var(--color-surface-light)]/20 backdrop-blur-md flex items-center justify-center">
                   <Bot className="h-5 w-5 text-white" />
                 </div>
                 <div>
@@ -127,7 +127,7 @@ export default function ChatWidget() {
               </div>
               <button 
                 onClick={() => setIsOpen(false)} 
-                className="text-white/80 hover:text-white p-1 rounded-full hover:bg-white/10 transition-colors"
+                className="text-white/80 hover:text-white p-1 rounded-full hover:bg-[var(--color-surface-light)]/10 transition-colors"
                 title="بستن"
               >
                 <X className="h-5 w-5" />
@@ -142,7 +142,7 @@ export default function ChatWidget() {
                   className={`max-w-[85%] p-3.5 rounded-2xl text-xs sm:text-sm leading-relaxed ${
                     msg.isUser 
                       ? 'bg-orange-600 text-white self-end rounded-br-none shadow-sm' 
-                      : 'bg-white dark:bg-gray-800 border border-gray-200/80 dark:border-gray-700 text-gray-800 dark:text-gray-100 self-start rounded-bl-none shadow-sm'
+                      : 'bg-[var(--color-surface-light)] dark:bg-gray-800 border border-gray-200/80 dark:border-gray-700 text-gray-800 dark:text-[var(--color-text-main-dark)] self-start rounded-bl-none shadow-sm'
                   }`}
                 >
                   <div>{msg.text}</div>
@@ -153,7 +153,7 @@ export default function ChatWidget() {
               ))}
 
               {isTyping && (
-                <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 p-3 rounded-2xl self-start rounded-bl-none flex items-center gap-1.5 text-xs">
+                <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 p-3 rounded-2xl self-start rounded-bl-none flex items-center gap-1.5 text-xs">
                   <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-bounce"></span>
                   <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-bounce [animation-delay:0.2s]"></span>
                   <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-bounce [animation-delay:0.4s]"></span>
@@ -163,12 +163,12 @@ export default function ChatWidget() {
             </div>
 
             {/* Quick Suggestions Chips */}
-            <div className="p-2 bg-gray-100/60 dark:bg-gray-800/40 border-t border-gray-200/60 dark:border-gray-800 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+            <div className="p-2 bg-gray-100/60 dark:bg-gray-800/40 border-t border-gray-200/60 dark:border-[var(--color-border-dark)] flex items-center gap-1.5 overflow-x-auto no-scrollbar">
               {QUICK_QUESTIONS.map((q, idx) => (
                 <button
                   key={idx}
                   onClick={() => handleSend(q)}
-                  className="whitespace-nowrap px-2.5 py-1 text-[11px] font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 border border-gray-200 dark:border-gray-700 rounded-full transition-colors shrink-0"
+                  className="whitespace-nowrap px-2.5 py-1 text-[11px] font-medium bg-[var(--color-surface-light)] dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 border border-gray-200 dark:border-gray-700 rounded-full transition-colors shrink-0"
                 >
                   {q}
                 </button>
@@ -176,13 +176,13 @@ export default function ChatWidget() {
             </div>
 
             {/* Input Form */}
-            <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="p-3 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex gap-2">
+            <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="p-3 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border-t border-gray-200 dark:border-[var(--color-border-dark)] flex gap-2">
               <input 
                 type="text" 
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="سوال خود را بنویسید..." 
-                className="flex-1 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-transparent focus:border-orange-500 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none transition-colors"
+                className="flex-1 bg-gray-100 dark:bg-gray-800 text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] border border-transparent focus:border-orange-500 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none transition-colors"
               />
               <button 
                 type="submit" 

@@ -201,7 +201,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
             onFocus={() => setIsOpen(true)}
             onKeyDown={handleKeyDown}
             placeholder="جست‌وجوی محصول، برند یا مدل گوشی..."
-            className="w-full bg-gray-100 dark:bg-gray-800/80 border border-gray-200/80 dark:border-gray-700/60 text-gray-900 dark:text-gray-100 text-xs sm:text-sm rounded-2xl pl-16 pr-11 py-3 focus:outline-none focus:bg-white dark:focus:bg-gray-900 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all duration-200 shadow-inner dark:shadow-none placeholder-gray-400 dark:placeholder-gray-500"
+            className="w-full bg-gray-100 dark:bg-gray-800/80 border border-gray-200/80 dark:border-gray-700/60 text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-xs sm:text-sm rounded-2xl pl-16 pr-11 py-3 focus:outline-none focus:bg-[var(--color-surface-light)] dark:focus:bg-gray-900 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all duration-200 shadow-inner dark:shadow-none placeholder-gray-400 dark:placeholder-gray-500"
           />
 
           {/* Right Icon: Search */}
@@ -251,7 +251,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.98 }}
             transition={{ duration: 0.18, ease: 'easeOut' }}
-            className="absolute right-0 left-0 mt-2 bg-white/98 dark:bg-gray-900/98 backdrop-blur-2xl rounded-3xl border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden z-50 divide-y divide-gray-100 dark:divide-gray-800/60 max-h-[75vh] flex flex-col"
+            className="absolute right-0 left-0 mt-2 bg-[var(--color-surface-light)]/98 dark:bg-[var(--color-surface-dark)]/98 backdrop-blur-2xl rounded-3xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-2xl overflow-hidden z-50 divide-y divide-gray-100 dark:divide-gray-800/60 max-h-[75vh] flex flex-col"
           >
             {/* Case 1: Query is entered and has results */}
             {query.trim().length > 0 && results.length > 0 && (
@@ -281,7 +281,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
                         }`}
                       >
                         <div className="flex items-center gap-3.5 overflow-hidden">
-                          <div className="w-12 h-12 bg-white dark:bg-gray-800 rounded-xl p-1 border border-gray-100 dark:border-gray-700/60 shrink-0 flex items-center justify-center overflow-hidden group-hover:scale-105 transition-transform">
+                          <div className="w-12 h-12 bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-xl p-1 border border-[var(--color-border-light)] dark:border-gray-700/60 shrink-0 flex items-center justify-center overflow-hidden group-hover:scale-105 transition-transform">
                             <img
                               src={product.image}
                               alt={product.title}
@@ -289,7 +289,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
                             />
                           </div>
                           <div className="truncate text-right">
-                            <h4 className="font-bold text-xs sm:text-sm text-gray-900 dark:text-gray-100 truncate group-hover:text-orange-600 transition-colors">
+                            <h4 className="font-bold text-xs sm:text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] truncate group-hover:text-orange-600 transition-colors">
                               {product.title}
                             </h4>
                             <div className="flex items-center gap-2 mt-1 text-[11px]">
@@ -325,7 +325,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
                 <button
                   type="button"
                   onClick={() => handleSubmit()}
-                  className="w-full p-3 bg-gray-50/80 dark:bg-gray-800/50 hover:bg-orange-50 dark:hover:bg-orange-950/30 text-orange-600 dark:text-orange-400 text-xs font-bold flex items-center justify-center gap-2 transition-colors border-t border-gray-100 dark:border-gray-800"
+                  className="w-full p-3 bg-gray-50/80 dark:bg-gray-800/50 hover:bg-orange-50 dark:hover:bg-orange-950/30 text-orange-600 dark:text-orange-400 text-xs font-bold flex items-center justify-center gap-2 transition-colors border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]"
                 >
                   <span>مشاهده تمامی نتایج برای «{query}»</span>
                   <ArrowLeft className="h-4 w-4" />
@@ -352,7 +352,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
                 <div className="w-12 h-12 bg-orange-50 dark:bg-orange-950/50 text-orange-600 rounded-2xl flex items-center justify-center mx-auto">
                   <SearchX className="h-6 w-6" />
                 </div>
-                <h4 className="font-bold text-sm text-gray-900 dark:text-gray-100">
+                <h4 className="font-bold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
                   هیچ محصولی با عنوان «{query}» پیدا نشد!
                 </h4>
                 <p className="text-xs text-gray-500 dark:text-gray-400 max-w-xs mx-auto">
@@ -433,7 +433,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
                         <div
                           key={idx}
                           onClick={() => handleSelectCategory(cat.name)}
-                          className="flex items-center gap-2.5 p-2.5 rounded-xl bg-gray-50 dark:bg-gray-800/60 hover:bg-orange-50 dark:hover:bg-orange-950/40 border border-gray-100 dark:border-gray-700/40 cursor-pointer transition-all group"
+                          className="flex items-center gap-2.5 p-2.5 rounded-xl bg-gray-50 dark:bg-gray-800/60 hover:bg-orange-50 dark:hover:bg-orange-950/40 border border-[var(--color-border-light)] dark:border-gray-700/40 cursor-pointer transition-all group"
                         >
                           <div className="p-1.5 rounded-lg bg-orange-100/70 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 group-hover:scale-110 transition-transform">
                             <CategoryIcon className="h-4 w-4" />

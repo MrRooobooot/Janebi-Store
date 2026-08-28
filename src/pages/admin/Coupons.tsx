@@ -119,7 +119,7 @@ export default function AdminCoupons() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mb-1">مدیریت کدهای تخفیف و پروموشن</h1>
+          <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-white mb-1">مدیریت کدهای تخفیف و پروموشن</h1>
           <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">تعریف کوپن‌های درصدی و نقدی با حداقل خرید و مدیریت فعال/غیرفعال‌سازی</p>
         </div>
 
@@ -137,14 +137,14 @@ export default function AdminCoupons() {
         {loading ? (
           <div className="col-span-full p-12 text-center text-gray-400">در حال دریافت کدهای تخفیف...</div>
         ) : coupons.length === 0 ? (
-          <div className="col-span-full p-12 bg-white dark:bg-gray-800 rounded-3xl text-center text-gray-400 border border-gray-100 dark:border-gray-700 shadow-xs">
+          <div className="col-span-full p-12 bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl text-center text-gray-400 border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs">
             هیچ کد تخفیف فعالی یافت نشد. می‌توانید با دکمه بالا اولین کد را بسازید.
           </div>
         ) : (
           coupons.map((coupon) => (
             <div 
               key={coupon.code}
-              className="bg-white dark:bg-gray-800 rounded-3xl p-5 border border-gray-100 dark:border-gray-700 shadow-xs hover:shadow-md transition-all relative overflow-hidden flex flex-col justify-between"
+              className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl p-5 border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs hover:shadow-md transition-all relative overflow-hidden flex flex-col justify-between"
             >
               {/* Ticket Top Notch */}
               <div className="flex items-center justify-between gap-3 mb-4">
@@ -162,7 +162,7 @@ export default function AdminCoupons() {
               </div>
 
               {/* Coupon Code Block */}
-              <div className="bg-gray-50 dark:bg-gray-900/60 p-4 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 flex items-center justify-between mb-4">
+              <div className="bg-gray-50 dark:bg-[var(--color-surface-dark)]/60 p-4 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 flex items-center justify-between mb-4">
                 <div>
                   <span className="font-mono text-lg font-black text-orange-600 dark:text-orange-400 tracking-wider">
                     {coupon.code}
@@ -175,7 +175,7 @@ export default function AdminCoupons() {
                 <button
                   type="button"
                   onClick={() => handleCopyCode(coupon.code)}
-                  className="p-2.5 rounded-xl bg-white dark:bg-gray-800 hover:bg-orange-50 text-gray-500 hover:text-orange-600 border border-gray-200 dark:border-gray-700 transition-all cursor-pointer shadow-xs"
+                  className="p-2.5 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-800 hover:bg-orange-50 text-gray-500 hover:text-orange-600 border border-gray-200 dark:border-gray-700 transition-all cursor-pointer shadow-xs"
                   title="کپی کردن کد"
                 >
                   <Copy className="h-4 w-4" />
@@ -186,7 +186,7 @@ export default function AdminCoupons() {
               <div className="space-y-2 text-xs mb-4">
                 <div className="flex justify-between py-1 border-b border-gray-50 dark:border-gray-700/60">
                   <span className="text-gray-400">میزان تخفیف:</span>
-                  <span className="font-black text-gray-900 dark:text-white">
+                  <span className="font-black text-[var(--color-text-main-light)] dark:text-white">
                     {coupon.percent ? `${toPersianDigits(coupon.percent)}٪` : `${toPersianDigits(coupon.amount?.toLocaleString('fa-IR'))} تومان`}
                   </span>
                 </div>
@@ -199,7 +199,7 @@ export default function AdminCoupons() {
               </div>
 
               {/* Action Buttons */}
-              <div className="pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-end">
+              <div className="pt-3 border-t border-[var(--color-border-light)] dark:border-gray-700 flex items-center justify-end">
                 <button
                   onClick={() => handleDelete(coupon.code)}
                   className="p-2 rounded-xl text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
@@ -216,9 +216,9 @@ export default function AdminCoupons() {
       {/* Modern Add Coupon Modal */}
       {isModalOpen && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/65 backdrop-blur-md">
-          <div className="bg-white dark:bg-gray-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-gray-100 dark:border-gray-700 text-right animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-700 mb-5">
-              <h3 className="font-black text-gray-900 dark:text-white text-base flex items-center gap-2">
+          <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-[var(--color-border-light)] dark:border-gray-700 text-right animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-gray-700 mb-5">
+              <h3 className="font-black text-[var(--color-text-main-light)] dark:text-white text-base flex items-center gap-2">
                 <Tag className="h-5 w-5 text-orange-500" />
                 <span>تعریف کد تخفیف جدید</span>
               </h3>
@@ -299,7 +299,7 @@ export default function AdminCoupons() {
                 />
               </div>
 
-              <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-700">
+              <div className="flex justify-end gap-3 pt-4 border-t border-[var(--color-border-light)] dark:border-gray-700">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}

@@ -31,17 +31,17 @@ export default function FAQ() {
   return (
     <section className="mt-16">
       <div className="text-center mb-10">
-        <h2 className="text-2xl font-black text-gray-900 dark:text-gray-100 mb-2">سوالات متداول</h2>
+        <h2 className="text-2xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] mb-2">سوالات متداول</h2>
         <p className="text-gray-500 dark:text-gray-400">پاسخ پرتکرارترین سوالات شما درباره خرید و ارسال</p>
       </div>
       <div className="max-w-3xl mx-auto space-y-4">
         {faqs.map((faq, index) => (
-          <div key={index} className="bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-800 rounded-2xl overflow-hidden transition-all duration-200">
+          <div key={index} className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200/80 dark:border-[var(--color-border-dark)] rounded-2xl overflow-hidden transition-all duration-200">
             <button
               onClick={() => toggle(index)}
               className="w-full flex items-center justify-between p-5 sm:p-6 text-right focus:outline-none group"
             >
-              <span className="font-bold text-gray-900 dark:text-gray-100 pr-2 border-r-4 border-transparent group-hover:border-orange-500 transition-colors text-sm sm:text-base">
+              <span className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] pr-2 border-r-4 border-transparent group-hover:border-orange-500 transition-colors text-sm sm:text-base">
                 {faq.question}
               </span>
               <ChevronDown className={`h-5 w-5 text-gray-500 dark:text-gray-400 transition-transform duration-300 ${openIndex === index ? 'rotate-180 text-orange-600 dark:text-orange-400' : ''}`} />
@@ -51,7 +51,7 @@ export default function FAQ() {
                 openIndex === index ? 'max-h-40 pb-6 opacity-100' : 'max-h-0 opacity-0'
               }`}
             >
-              <div className="pt-3 border-t border-gray-100 dark:border-gray-800">{faq.answer}</div>
+              <div className="pt-3 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">{faq.answer}</div>
             </div>
           </div>
         ))}

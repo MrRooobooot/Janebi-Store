@@ -30,8 +30,8 @@ export default function CartSummaryCard({
   const payable = finalTotal + (isFreeShipping ? 0 : SHIPPING_FEES.standard);
 
   return (
-    <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border border-gray-100 dark:border-gray-800 rounded-3xl p-6 sm:p-7 shadow-sm sticky top-28 space-y-6">
-      <h3 className="font-black text-lg text-gray-900 dark:text-gray-100 pb-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+    <div className="bg-[var(--color-surface-light)]/90 dark:bg-[var(--color-surface-dark)]/90 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 sm:p-7 shadow-sm sticky top-28 space-y-6">
+      <h3 className="font-black text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex items-center justify-between">
         <span>خلاصه پیش‌فاکتور</span>
         <span className="text-xs font-bold text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/40 px-2.5 py-1 rounded-xl">
           محاسبه رسمی
@@ -51,7 +51,7 @@ export default function CartSummaryCard({
               value={couponInput}
               onChange={(e) => setCouponInput(e.target.value)}
               placeholder="مثلا: OFF20"
-              className="w-full bg-gray-50/90 dark:bg-gray-800/80 border border-gray-200/80 dark:border-gray-700 rounded-2xl py-3 px-3.5 pl-3 pr-9 text-left font-mono text-xs font-bold text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500 uppercase tracking-wider transition-colors"
+              className="w-full bg-gray-50/90 dark:bg-gray-800/80 border border-gray-200/80 dark:border-gray-700 rounded-2xl py-3 px-3.5 pl-3 pr-9 text-left font-mono text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500 uppercase tracking-wider transition-colors"
             />
             <Tag className="h-4 w-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
@@ -79,7 +79,7 @@ export default function CartSummaryCard({
       <div className="space-y-3.5 pt-2 text-xs font-bold text-gray-600 dark:text-gray-400">
         <div className="flex justify-between items-center">
           <span>جمع کل اقلام سبد</span>
-          <span className="font-black text-gray-900 dark:text-gray-100 text-sm">
+          <span className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-sm">
             {formatPrice(cartTotal)}
           </span>
         </div>
@@ -98,14 +98,14 @@ export default function CartSummaryCard({
               رایگان
             </span>
           ) : (
-            <span className="font-black text-gray-900 dark:text-gray-100">
+            <span className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
               {formatPrice(SHIPPING_FEES.standard)}
             </span>
           )}
         </div>
 
-        <div className="border-t border-gray-100 dark:border-gray-800 pt-4 flex justify-between items-center text-sm">
-          <span className="font-black text-gray-900 dark:text-gray-100">مبلغ نهایی قابل پرداخت:</span>
+        <div className="border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pt-4 flex justify-between items-center text-sm">
+          <span className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">مبلغ نهایی قابل پرداخت:</span>
           <div className="text-left">
             <div className="font-black text-2xl text-orange-600 dark:text-orange-400 tracking-tight">
               {formatPrice(payable)}
@@ -123,7 +123,7 @@ export default function CartSummaryCard({
         <ArrowLeft className="h-5 w-5 group-hover:translate-x-[-3px] transition-transform" />
       </Link>
 
-      <div className="flex items-center justify-center gap-2 text-[11px] font-bold text-gray-400 pt-2 border-t border-gray-100 dark:border-gray-800">
+      <div className="flex items-center justify-center gap-2 text-[11px] font-bold text-gray-400 pt-2 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
         <ShieldCheck className="h-4 w-4 text-emerald-500" />
         <span>پرداخت امن و رمزنگاری‌شده بانکی</span>
       </div>

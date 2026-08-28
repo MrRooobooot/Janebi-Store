@@ -79,7 +79,7 @@ export default function BrandLogo({ name, className = '', size = 'md', priority 
   }
 
   return (
-    <div className={`flex items-center justify-center font-black text-xs text-gray-900 dark:text-gray-100 uppercase tracking-tight ${className}`}>
+    <div className={`flex items-center justify-center font-black text-xs text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] uppercase tracking-tight ${className}`}>
       {name}
     </div>
   );

@@ -46,12 +46,12 @@ export default function Products() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Page Title Header */}
-        <div className="mb-8 text-right bg-gradient-to-r from-orange-50 via-amber-50 to-transparent dark:from-gray-900 dark:via-gray-850 dark:to-transparent p-6 rounded-3xl border border-orange-100/60 dark:border-gray-800">
+        <div className="mb-8 text-right bg-gradient-to-r from-orange-50 via-amber-50 to-transparent dark:from-gray-900 dark:via-gray-850 dark:to-transparent p-6 rounded-3xl border border-orange-100/60 dark:border-[var(--color-border-dark)]">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 dark:bg-orange-950/70 text-orange-700 dark:text-orange-300 text-xs font-bold mb-2">
             <Sparkles className="h-3.5 w-3.5 text-orange-500" />
             <span>کاتالوگ کامل جانبی آرنا</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-gray-100 mb-2">
+          <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] mb-2">
             فروشگاه تجهیزات و لوازم جانبی اورجینال
           </h1>
           <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
@@ -126,7 +126,7 @@ export default function Products() {
                 <button
                   onClick={() => setPage(Math.max(1, page - 1))}
                   disabled={page === 1}
-                  className="px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 disabled:opacity-40 hover:bg-orange-50 dark:hover:bg-gray-800 text-xs font-bold flex items-center gap-1 transition-all cursor-pointer disabled:cursor-not-allowed text-gray-700 dark:text-gray-300"
+                  className="px-4 py-2.5 rounded-xl border border-gray-200 dark:border-[var(--color-border-dark)] disabled:opacity-40 hover:bg-orange-50 dark:hover:bg-gray-800 text-xs font-bold flex items-center gap-1 transition-all cursor-pointer disabled:cursor-not-allowed text-gray-700 dark:text-gray-300"
                 >
                   <ChevronRight className="h-4 w-4" />
                   <span>صفحه قبلی</span>
@@ -140,7 +140,7 @@ export default function Products() {
                       className={`w-10 h-10 rounded-xl flex items-center justify-center text-xs font-extrabold transition-all cursor-pointer ${
                         page === i + 1
                           ? 'bg-gradient-to-tr from-orange-600 to-amber-600 text-white shadow-md shadow-orange-500/25 scale-105'
-                          : 'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-orange-500/50 text-gray-700 dark:text-gray-300'
+                          : 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-[var(--color-border-dark)] hover:border-orange-500/50 text-gray-700 dark:text-gray-300'
                       }`}
                     >
                       {toPersianDigits(i + 1)}
@@ -151,7 +151,7 @@ export default function Products() {
                 <button
                   onClick={() => setPage(Math.min(totalPages, page + 1))}
                   disabled={page === totalPages}
-                  className="px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 disabled:opacity-40 hover:bg-orange-50 dark:hover:bg-gray-800 text-xs font-bold flex items-center gap-1 transition-all cursor-pointer disabled:cursor-not-allowed text-gray-700 dark:text-gray-300"
+                  className="px-4 py-2.5 rounded-xl border border-gray-200 dark:border-[var(--color-border-dark)] disabled:opacity-40 hover:bg-orange-50 dark:hover:bg-gray-800 text-xs font-bold flex items-center gap-1 transition-all cursor-pointer disabled:cursor-not-allowed text-gray-700 dark:text-gray-300"
                 >
                   <span>صفحه بعدی</span>
                   <ChevronLeft className="h-4 w-4" />

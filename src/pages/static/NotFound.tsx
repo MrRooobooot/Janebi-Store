@@ -15,7 +15,7 @@ export default function NotFound() {
         <AlertTriangle className="h-16 w-16 text-orange-500" />
       </div>
       
-      <h1 className="text-6xl sm:text-8xl font-black text-gray-900 dark:text-white tracking-tighter mb-4">
+      <h1 className="text-6xl sm:text-8xl font-black text-[var(--color-text-main-light)] dark:text-white tracking-tighter mb-4">
         ۴۰۴
       </h1>
       
@@ -38,7 +38,7 @@ export default function NotFound() {
         
         <Link 
           to="/products"
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 px-6 py-3 rounded-xl font-bold transition-all"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[var(--color-surface-light)] dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 px-6 py-3 rounded-xl font-bold transition-all"
         >
           <Search className="h-5 w-5" />
           <span>مشاهده محصولات</span>

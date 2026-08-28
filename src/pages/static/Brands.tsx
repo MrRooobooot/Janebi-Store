@@ -93,7 +93,7 @@ export default function Brands() {
       </div>
 
       {/* Search Bar */}
-      <div className="bg-white dark:bg-gray-800/80 rounded-2xl border border-gray-100 dark:border-gray-700/60 p-4 shadow-xs">
+      <div className="bg-[var(--color-surface-light)] dark:bg-gray-800/80 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700/60 p-4 shadow-xs">
         <div className="relative w-full sm:w-80">
           <input
             type="text"
@@ -110,7 +110,7 @@ export default function Brands() {
       {loading && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="bg-white dark:bg-gray-800/90 rounded-3xl border border-gray-100 dark:border-gray-700/60 p-5 animate-pulse">
+            <div key={i} className="bg-[var(--color-surface-light)] dark:bg-gray-800/90 rounded-3xl border border-[var(--color-border-light)] dark:border-gray-700/60 p-5 animate-pulse">
               <div className="h-40 rounded-2xl bg-gray-100 dark:bg-gray-700/60 mb-4" />
               <div className="flex items-center gap-3.5 mb-3">
                 <div className="w-16 h-12 rounded-2xl bg-gray-100 dark:bg-gray-700/60" />
@@ -128,7 +128,7 @@ export default function Brands() {
 
       {/* Error state */}
       {!loading && error && (
-        <div className="bg-white dark:bg-gray-900 border border-red-100 dark:border-red-900/40 rounded-2xl p-8 text-center">
+        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-red-100 dark:border-red-900/40 rounded-2xl p-8 text-center">
           <p className="text-sm text-red-600 dark:text-red-400 font-bold">{error}</p>
           <button
             onClick={() => window.location.reload()}
@@ -141,7 +141,7 @@ export default function Brands() {
 
       {/* Empty state */}
       {!loading && !error && filteredBrands.length === 0 && (
-        <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-8 text-center">
+        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-8 text-center">
           <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
             {searchQuery ? 'برندی مطابق جستجوی شما یافت نشد.' : 'هنوز برندی ثبت نشده است.'}
           </p>
@@ -160,7 +160,7 @@ export default function Brands() {
             >
               <Link 
                 to={`/products?brand=${encodeURIComponent(b.name)}`}
-                className="bg-white dark:bg-gray-800/90 rounded-3xl border border-gray-100 dark:border-gray-700/60 p-5 flex flex-col justify-between hover:shadow-xl hover:border-orange-500/40 dark:hover:border-orange-500/40 hover:-translate-y-1.5 transition-all duration-300 group h-full relative overflow-hidden"
+                className="bg-[var(--color-surface-light)] dark:bg-gray-800/90 rounded-3xl border border-[var(--color-border-light)] dark:border-gray-700/60 p-5 flex flex-col justify-between hover:shadow-xl hover:border-orange-500/40 dark:hover:border-orange-500/40 hover:-translate-y-1.5 transition-all duration-300 group h-full relative overflow-hidden"
               >
                 <div>
                   {/* Cover Banner */}
@@ -188,11 +188,11 @@ export default function Brands() {
 
                   {/* Brand Logo & Name Header */}
                   <div className="flex items-center gap-3.5 mb-3">
-                    <div className="w-16 h-12 rounded-2xl bg-gray-50 dark:bg-gray-700/60 border border-gray-100 dark:border-gray-700/60 flex items-center justify-center p-2 group-hover:scale-105 transition-transform shrink-0">
+                    <div className="w-16 h-12 rounded-2xl bg-gray-50 dark:bg-gray-700/60 border border-[var(--color-border-light)] dark:border-gray-700/60 flex items-center justify-center p-2 group-hover:scale-105 transition-transform shrink-0">
                       <BrandLogo name={b.name} size="md" />
                     </div>
                     <div>
-                      <h3 className="text-base font-black text-gray-900 dark:text-gray-100 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                      <h3 className="text-base font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
                         {b.faName} <span className="font-sans text-xs text-gray-400 font-medium">({b.name})</span>
                       </h3>
                       <span className="text-[11px] text-orange-600/80 dark:text-orange-400/80 font-bold">
@@ -210,7 +210,7 @@ export default function Brands() {
                 </div>
 
                 {/* Card Footer Action */}
-                <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700/60 text-xs font-bold text-orange-600 dark:text-orange-400">
+                <div className="flex items-center justify-between pt-4 border-t border-[var(--color-border-light)] dark:border-gray-700/60 text-xs font-bold text-orange-600 dark:text-orange-400">
                   <span className="flex items-center gap-1 text-gray-400 font-medium text-[11px]">
                     <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" /> گارانتی معتبر شرکتی
                   </span>

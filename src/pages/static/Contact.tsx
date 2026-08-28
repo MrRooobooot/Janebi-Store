@@ -72,24 +72,24 @@ export default function Contact() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Contact Info Cards */}
         <div className="space-y-4 lg:col-span-1">
-          <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-xs flex items-start gap-4">
+          <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs flex items-start gap-4">
             <div className="p-3 bg-orange-100 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400 rounded-xl shrink-0">
               <MapPin className="h-6 w-6" />
             </div>
             <div>
-              <h4 className="font-bold text-gray-900 dark:text-gray-100 text-sm mb-1">آدرس فروشگاه</h4>
+              <h4 className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-sm mb-1">آدرس فروشگاه</h4>
               <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
                 {settings.address}
               </p>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-xs flex items-start gap-4">
+          <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs flex items-start gap-4">
             <div className="p-3 bg-blue-100 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 rounded-xl shrink-0">
               <Phone className="h-6 w-6" />
             </div>
             <div>
-              <h4 className="font-bold text-gray-900 dark:text-gray-100 text-sm mb-1">تلفن پشتیبانی</h4>
+              <h4 className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-sm mb-1">تلفن پشتیبانی</h4>
               <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed dir-ltr text-right">
                 {settings.phone}
               </p>
@@ -97,24 +97,24 @@ export default function Contact() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-xs flex items-start gap-4">
+          <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs flex items-start gap-4">
             <div className="p-3 bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 rounded-xl shrink-0">
               <Mail className="h-6 w-6" />
             </div>
             <div>
-              <h4 className="font-bold text-gray-900 dark:text-gray-100 text-sm mb-1">پست الکترونیک</h4>
+              <h4 className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-sm mb-1">پست الکترونیک</h4>
               <p className="text-xs text-gray-600 dark:text-gray-400 dir-ltr text-right">
                 {settings.email}
               </p>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-xs flex items-start gap-4">
+          <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs flex items-start gap-4">
             <div className="p-3 bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 rounded-xl shrink-0">
               <Clock className="h-6 w-6" />
             </div>
             <div>
-              <h4 className="font-bold text-gray-900 dark:text-gray-100 text-sm mb-1">ساعات کاری</h4>
+              <h4 className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-sm mb-1">ساعات کاری</h4>
               <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
                 {settings.supportHours}
               </p>
@@ -123,10 +123,10 @@ export default function Contact() {
         </div>
 
         {/* Contact Form */}
-        <div className="lg:col-span-2 bg-white dark:bg-gray-900 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-800 shadow-xs">
+        <div className="lg:col-span-2 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 sm:p-8 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs">
           <div className="flex items-center gap-2 mb-6">
             <MessageSquare className="h-5 w-5 text-orange-600 dark:text-orange-400" />
-            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">ارسال پیام مستقیم به پشتیبانی</h3>
+            <h3 className="text-xl font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">ارسال پیام مستقیم به پشتیبانی</h3>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -138,7 +138,7 @@ export default function Contact() {
                   value={formData.name} 
                   onChange={e => setFormData({...formData, name: e.target.value})} 
                   placeholder="مثلاً: علی محمدی"
-                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500 dark:focus:border-orange-400 transition-colors" 
+                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500 dark:focus:border-orange-400 transition-colors" 
                   required 
                 />
               </div>
@@ -150,7 +150,7 @@ export default function Contact() {
                   value={formData.contactInfo} 
                   onChange={e => setFormData({...formData, contactInfo: e.target.value})} 
                   placeholder="09123456789"
-                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm font-mono text-left text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500 dark:focus:border-orange-400 transition-colors" 
+                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm font-mono text-left text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500 dark:focus:border-orange-400 transition-colors" 
                   required 
                 />
               </div>
@@ -163,7 +163,7 @@ export default function Contact() {
                 value={formData.subject} 
                 onChange={e => setFormData({...formData, subject: e.target.value})} 
                 placeholder="مثلاً: پیگیری سفارش، مشاوره خرید..."
-                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500 dark:focus:border-orange-400 transition-colors" 
+                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500 dark:focus:border-orange-400 transition-colors" 
               />
             </div>
 
@@ -174,7 +174,7 @@ export default function Contact() {
                 value={formData.message} 
                 onChange={e => setFormData({...formData, message: e.target.value})} 
                 placeholder="توضیحات خود را بنویسید..."
-                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500 dark:focus:border-orange-400 transition-colors" 
+                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500 dark:focus:border-orange-400 transition-colors" 
                 required
               ></textarea>
             </div>

@@ -109,7 +109,7 @@ export default function AdminSettings() {
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-12">
       <div>
-        <h1 className="text-2xl font-black text-gray-900 dark:text-white flex items-center gap-2">
+        <h1 className="text-2xl font-black text-[var(--color-text-main-light)] dark:text-white flex items-center gap-2">
           <Settings className="h-6 w-6 text-orange-600" />
           تنظیمات عمومی و محتوای فروشگاه
         </h1>
@@ -119,8 +119,8 @@ export default function AdminSettings() {
       <form onSubmit={handleSave} className="space-y-6">
         
         {/* ۱. اطلاعات اصلی و ارتباطی */}
-        <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 border border-gray-100 dark:border-gray-800 shadow-xs space-y-4">
-          <h2 className="text-base font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-800 pb-3 flex items-center gap-2">
+        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-4">
+          <h2 className="text-base font-bold text-[var(--color-text-main-light)] dark:text-white border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pb-3 flex items-center gap-2">
             <Phone className="h-5 w-5 text-orange-500" />
             اطلاعات تماس و هویت سایت
           </h2>
@@ -184,8 +184,8 @@ export default function AdminSettings() {
         </div>
 
         {/* ۲. بنر اعلان و آستانه ارسال */}
-        <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 border border-gray-100 dark:border-gray-800 shadow-xs space-y-4">
-          <h2 className="text-base font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-800 pb-3 flex items-center gap-2">
+        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-4">
+          <h2 className="text-base font-bold text-[var(--color-text-main-light)] dark:text-white border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pb-3 flex items-center gap-2">
             <Megaphone className="h-5 w-5 text-amber-500" />
             پیام اعلان سراسری و آستانه ارسال رایگان
           </h2>
@@ -218,8 +218,8 @@ export default function AdminSettings() {
         </div>
 
         {/* ۳. مدیریت ۳ اسلایدر هیرو صفحه اول */}
-        <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 border border-gray-100 dark:border-gray-800 shadow-xs space-y-6">
-          <h2 className="text-base font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-800 pb-3 flex items-center gap-2">
+        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-6">
+          <h2 className="text-base font-bold text-[var(--color-text-main-light)] dark:text-white border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pb-3 flex items-center gap-2">
             <Layers className="h-5 w-5 text-orange-600" />
             مدیریت اسلایدرهای هیرو صفحه اول
           </h2>
@@ -233,21 +233,21 @@ export default function AdminSettings() {
                 placeholder="عنوان اصلی"
                 value={settings.heroSlide1Title || ''}
                 onChange={e => setSettings({ ...settings, heroSlide1Title: e.target.value })}
-                className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
+                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
               />
               <input
                 type="text"
                 placeholder="بج / برچسب (مثلاً گارانتی ۶ ماهه)"
                 value={settings.heroSlide1Badge || ''}
                 onChange={e => setSettings({ ...settings, heroSlide1Badge: e.target.value })}
-                className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
+                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
               />
               <input
                 type="text"
                 placeholder="توضیحات کوتاه"
                 value={settings.heroSlide1Subtitle || ''}
                 onChange={e => setSettings({ ...settings, heroSlide1Subtitle: e.target.value })}
-                className="col-span-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
+                className="col-span-full bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
               />
             </div>
           </div>
@@ -261,21 +261,21 @@ export default function AdminSettings() {
                 placeholder="عنوان اصلی"
                 value={settings.heroSlide2Title || ''}
                 onChange={e => setSettings({ ...settings, heroSlide2Title: e.target.value })}
-                className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
+                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
               />
               <input
                 type="text"
                 placeholder="بج / برچسب"
                 value={settings.heroSlide2Badge || ''}
                 onChange={e => setSettings({ ...settings, heroSlide2Badge: e.target.value })}
-                className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
+                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
               />
               <input
                 type="text"
                 placeholder="توضیحات کوتاه"
                 value={settings.heroSlide2Subtitle || ''}
                 onChange={e => setSettings({ ...settings, heroSlide2Subtitle: e.target.value })}
-                className="col-span-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
+                className="col-span-full bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
               />
             </div>
           </div>
@@ -289,29 +289,29 @@ export default function AdminSettings() {
                 placeholder="عنوان اصلی"
                 value={settings.heroSlide3Title || ''}
                 onChange={e => setSettings({ ...settings, heroSlide3Title: e.target.value })}
-                className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
+                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
               />
               <input
                 type="text"
                 placeholder="بج / برچسب"
                 value={settings.heroSlide3Badge || ''}
                 onChange={e => setSettings({ ...settings, heroSlide3Badge: e.target.value })}
-                className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
+                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
               />
               <input
                 type="text"
                 placeholder="توضیحات کوتاه"
                 value={settings.heroSlide3Subtitle || ''}
                 onChange={e => setSettings({ ...settings, heroSlide3Subtitle: e.target.value })}
-                className="col-span-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
+                className="col-span-full bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
               />
             </div>
           </div>
         </div>
 
         {/* ۴. پشتیبان‌گیری از دیتابیس */}
-        <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 border border-gray-100 dark:border-gray-800 shadow-xs space-y-4">
-          <h2 className="text-base font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-800 pb-3 flex items-center gap-2">
+        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-4">
+          <h2 className="text-base font-bold text-[var(--color-text-main-light)] dark:text-white border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pb-3 flex items-center gap-2">
             <Database className="h-5 w-5 text-indigo-500" />
             پشتیبان‌گیری از دیتابیس فروشگاه
           </h2>

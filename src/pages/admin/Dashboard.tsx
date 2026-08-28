@@ -95,7 +95,7 @@ export default function Dashboard() {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mb-1">داشبورد مدیریت و تحلیل</h1>
+          <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-white mb-1">داشبورد مدیریت و تحلیل</h1>
           <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm">نمای کلی از عملکرد فروشگاه، کاتالوگ انبار و باشگاه وفاداری کاربران</p>
         </div>
         
@@ -110,14 +110,14 @@ export default function Dashboard() {
           </Link>
           <Link
             to="/admin/orders"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 text-xs font-bold transition-all shadow-xs"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 text-xs font-bold transition-all shadow-xs"
           >
             <ShoppingCart className="h-3.5 w-3.5 text-blue-500" />
             <span>سفارشات جدید</span>
           </Link>
           <Link
             to="/admin/coupons"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 text-xs font-bold transition-all shadow-xs"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 text-xs font-bold transition-all shadow-xs"
           >
             <Tag className="h-3.5 w-3.5 text-emerald-500" />
             <span>کد تخفیف</span>
@@ -127,13 +127,13 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statCards.map((stat, i) => (
-          <div key={i} className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 flex items-center gap-4 shadow-xs">
+          <div key={i} className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-gray-700 flex items-center gap-4 shadow-xs">
             <div className={`p-4 rounded-xl ${stat.bg}`}>
               <stat.icon className={`h-8 w-8 ${stat.color}`} />
             </div>
             <div>
               <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">{stat.title}</div>
-              <div className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</div>
+              <div className="text-xl sm:text-2xl font-bold text-[var(--color-text-main-light)] dark:text-white">{stat.value}</div>
             </div>
           </div>
         ))}
@@ -143,15 +143,15 @@ export default function Dashboard() {
       {analytics && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Loyalty / VIP Points Card */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 shadow-xs space-y-4">
+          <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs space-y-4">
             <div className="flex items-center gap-2 text-amber-500">
               <Award className="h-5 w-5" />
-              <h2 className="font-bold text-gray-900 dark:text-white text-sm">باشگاه مشتریان و امتیازات VIP</h2>
+              <h2 className="font-bold text-[var(--color-text-main-light)] dark:text-white text-sm">باشگاه مشتریان و امتیازات VIP</h2>
             </div>
             <div className="space-y-3 text-xs">
               <div className="flex justify-between py-2 border-b border-gray-50 dark:border-gray-700">
                 <span className="text-gray-500 dark:text-gray-400">کاربران دارای امتیاز:</span>
-                <span className="font-bold text-gray-900 dark:text-white">{analytics.loyalty.totalVipUsers} کاربر</span>
+                <span className="font-bold text-[var(--color-text-main-light)] dark:text-white">{analytics.loyalty.totalVipUsers} کاربر</span>
               </div>
               <div className="flex justify-between py-2 border-b border-gray-50 dark:border-gray-700">
                 <span className="text-gray-500 dark:text-gray-400">مجموع امتیازات فعال:</span>
@@ -165,11 +165,11 @@ export default function Dashboard() {
           </div>
 
           {/* Category Performance */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 shadow-xs lg:col-span-2 space-y-4">
+          <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs lg:col-span-2 space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-indigo-500">
                 <TrendingUp className="h-5 w-5" />
-                <h2 className="font-bold text-gray-900 dark:text-white text-sm">عملکرد دسته‌بندی‌ها</h2>
+                <h2 className="font-bold text-[var(--color-text-main-light)] dark:text-white text-sm">عملکرد دسته‌بندی‌ها</h2>
               </div>
               <span className="text-xs text-gray-500 dark:text-gray-400">
                 میانگین سفارش: {analytics.financials.averageOrderValue.toLocaleString()} تومان
@@ -191,15 +191,15 @@ export default function Dashboard() {
       )}
 
       {/* Recent Orders Table */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-xs">
-        <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
-          <h2 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">آخرین سفارشات</h2>
+      <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700 overflow-hidden shadow-xs">
+        <div className="p-6 border-b border-[var(--color-border-light)] dark:border-gray-700 flex items-center justify-between">
+          <h2 className="text-base sm:text-lg font-bold text-[var(--color-text-main-light)] dark:text-white">آخرین سفارشات</h2>
           <Link to="/admin/orders" className="text-xs sm:text-sm font-bold text-orange-600 hover:text-orange-700">مشاهده همه</Link>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-right">
             <thead>
-              <tr className="bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 text-xs border-b border-gray-100 dark:border-gray-700">
+              <tr className="bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 text-xs border-b border-[var(--color-border-light)] dark:border-gray-700">
                 <th className="p-4 font-medium">شماره سفارش</th>
                 <th className="p-4 font-medium">تاریخ</th>
                 <th className="p-4 font-medium">مشتری</th>
@@ -210,10 +210,10 @@ export default function Dashboard() {
             <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
               {recentOrders.map((order) => (
                 <tr key={order.id} className="text-xs hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                  <td className="p-4 font-bold text-gray-900 dark:text-white dir-ltr text-left w-max inline-block font-mono">{order.id}</td>
+                  <td className="p-4 font-bold text-[var(--color-text-main-light)] dark:text-white dir-ltr text-left w-max inline-block font-mono">{order.id}</td>
                   <td className="p-4 text-gray-600 dark:text-gray-300">{order.date}</td>
                   <td className="p-4 text-gray-600 dark:text-gray-300">{order.recipientName}</td>
-                  <td className="p-4 font-bold text-gray-900 dark:text-white font-mono">{order.total.toLocaleString()} تومان</td>
+                  <td className="p-4 font-bold text-[var(--color-text-main-light)] dark:text-white font-mono">{order.total.toLocaleString()} تومان</td>
                   <td className="p-4">
                     <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold ${
                       order.status === "delivered" ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400" :

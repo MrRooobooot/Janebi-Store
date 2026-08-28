@@ -21,8 +21,8 @@ export default function CheckoutOrderSummary({
   isFreeShipping,
 }: CheckoutOrderSummaryProps) {
   return (
-    <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border border-gray-100 dark:border-gray-800 rounded-3xl p-6 sm:p-7 shadow-sm sticky top-28 space-y-6">
-      <h3 className="font-black text-lg text-gray-900 dark:text-gray-100 pb-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+    <div className="bg-[var(--color-surface-light)]/90 dark:bg-[var(--color-surface-dark)]/90 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 sm:p-7 shadow-sm sticky top-28 space-y-6">
+      <h3 className="font-black text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex items-center justify-between">
         <span>فاکتور نهایی سفارش</span>
         <span className="text-xs font-bold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2.5 py-1 rounded-xl">
           {toPersianDigits(cart.length)} قلم کالا
@@ -32,8 +32,8 @@ export default function CheckoutOrderSummary({
       {/* Cart items scrollable overview */}
       <div className="space-y-3 max-h-60 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700">
         {cart.map((item) => (
-          <div key={item.id} className="flex items-center gap-3.5 text-xs bg-gray-50/50 dark:bg-gray-800/30 p-2 rounded-2xl border border-gray-100 dark:border-gray-800/60">
-            <div className="w-12 h-12 rounded-xl bg-white dark:bg-gray-800 p-1 border border-gray-100 dark:border-gray-700 shrink-0 flex items-center justify-center">
+          <div key={item.id} className="flex items-center gap-3.5 text-xs bg-gray-50/50 dark:bg-gray-800/30 p-2 rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60">
+            <div className="w-12 h-12 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-800 p-1 border border-[var(--color-border-light)] dark:border-gray-700 shrink-0 flex items-center justify-center">
               <img
                 src={item.image}
                 alt={item.title}
@@ -41,14 +41,14 @@ export default function CheckoutOrderSummary({
               />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="font-bold text-gray-900 dark:text-gray-100 truncate">
+              <div className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] truncate">
                 {item.title}
               </div>
               <div className="text-[11px] text-gray-400 font-medium mt-0.5">
                 {toPersianDigits(item.quantity)} عدد × {formatPrice(item.price)}
               </div>
             </div>
-            <div className="font-black text-gray-900 dark:text-gray-100 shrink-0">
+            <div className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] shrink-0">
               {formatPrice(item.price * item.quantity)}
             </div>
           </div>
@@ -56,10 +56,10 @@ export default function CheckoutOrderSummary({
       </div>
 
       {/* Summary Math */}
-      <div className="space-y-3.5 pt-4 border-t border-gray-100 dark:border-gray-800 text-xs font-bold text-gray-600 dark:text-gray-400">
+      <div className="space-y-3.5 pt-4 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-xs font-bold text-gray-600 dark:text-gray-400">
         <div className="flex justify-between items-center">
           <span>مجموع قیمت کالاها</span>
-          <span className="font-black text-gray-900 dark:text-gray-100 text-sm">
+          <span className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-sm">
             {formatPrice(cartTotal)}
           </span>
         </div>
@@ -71,14 +71,14 @@ export default function CheckoutOrderSummary({
               رایگان
             </span>
           ) : (
-            <span className="font-black text-gray-900 dark:text-gray-100">
+            <span className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
               {formatPrice(shippingFee)}
             </span>
           )}
         </div>
 
-        <div className="border-t border-gray-100 dark:border-gray-800 pt-4 flex justify-between items-center text-sm">
-          <span className="font-black text-gray-900 dark:text-gray-100">مبلغ نهایی فاکتور:</span>
+        <div className="border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pt-4 flex justify-between items-center text-sm">
+          <span className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">مبلغ نهایی فاکتور:</span>
           <div className="font-black text-2xl text-orange-600 dark:text-orange-400 tracking-tight">
             {formatPrice(finalPayable)}
           </div>
@@ -105,7 +105,7 @@ export default function CheckoutOrderSummary({
         )}
       </button>
 
-      <div className="flex items-center justify-center gap-2 text-[11px] font-bold text-gray-400 pt-2 border-t border-gray-100 dark:border-gray-800">
+      <div className="flex items-center justify-center gap-2 text-[11px] font-bold text-gray-400 pt-2 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
         <ShieldCheck className="h-4 w-4 text-emerald-500" />
         <span>تضمین امنیت پرداخت و حفظ حریم خصوصی</span>
       </div>

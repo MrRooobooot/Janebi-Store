@@ -48,7 +48,7 @@ export default function ProductSortHeader({
   setInPageQuery,
 }: ProductSortHeaderProps) {
   return (
-    <div className="sticky top-20 z-20 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border border-gray-100 dark:border-gray-800 rounded-3xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 transition-all">
+    <div className="sticky top-20 z-20 bg-[var(--color-surface-light)]/95 dark:bg-[var(--color-surface-dark)]/95 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 transition-all">
       {/* Mobile filter toggle & item counts */}
       <div className="flex items-center justify-between sm:justify-start gap-4">
         <button

@@ -33,8 +33,8 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
   return (
     <div className="space-y-6 text-right">
       {/* Header & Search */}
-      <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-6 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
-        <h2 className="font-extrabold text-lg text-gray-900 dark:text-gray-100 flex items-center gap-2">
+      <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+        <h2 className="font-extrabold text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
           <Package className="h-5 w-5 text-orange-500" />
           <span>سفارش‌های من ({toPersianDigits(orders.length)})</span>
         </h2>
@@ -46,7 +46,7 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="جستجو کد سفارش یا عنوان کالا..."
-            className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-4 pr-10 text-xs font-bold text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500"
+            className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-4 pr-10 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
           />
           <Search className="h-4 w-4 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2" />
         </div>
@@ -66,14 +66,14 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
             className={`px-4 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2 ${
               activeTab === tab.id
                 ? 'bg-orange-500 text-white shadow-md shadow-orange-500/20'
-                : 'bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'
+                : 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'
             }`}
           >
             <span>{tab.label}</span>
             <span
               className={`text-[10px] px-2 py-0.5 rounded-full ${
                 activeTab === tab.id
-                  ? 'bg-white/20 text-white'
+                  ? 'bg-[var(--color-surface-light)]/20 text-white'
                   : 'bg-gray-100 dark:bg-gray-800 text-gray-500'
               }`}
             >
@@ -85,7 +85,7 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
 
       {/* Orders List */}
       {filteredOrders.length === 0 ? (
-        <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-12 text-center text-gray-400 font-bold text-sm">
+        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-12 text-center text-gray-400 font-bold text-sm">
           هیچ سفارشی متناسب با جستجوی شما یافت نشد.
         </div>
       ) : (
@@ -93,12 +93,12 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
           {filteredOrders.map((order) => (
             <div
               key={order.id}
-              className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-6 shadow-xs space-y-4"
+              className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 shadow-xs space-y-4"
             >
               {/* Order Header */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-gray-100 dark:border-gray-800 text-xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-xs">
                 <div className="flex items-center gap-3">
-                  <span className="font-extrabold text-sm text-gray-900 dark:text-gray-100">
+                  <span className="font-extrabold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
                     کد سفارش: {order.id}
                   </span>
                   <span
@@ -130,15 +130,15 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
                 {order.items.map((item) => (
                   <div
                     key={item.id}
-                    className="flex items-center gap-3 p-3 rounded-2xl bg-gray-50 dark:bg-gray-800/60 border border-gray-100 dark:border-gray-800"
+                    className="flex items-center gap-3 p-3 rounded-2xl bg-gray-50 dark:bg-gray-800/60 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]"
                   >
                     <img
                       src={item.image}
                       alt={item.title}
-                      className="w-12 h-12 rounded-xl object-contain bg-white dark:bg-gray-900 p-1 border border-gray-200 dark:border-gray-700 shrink-0"
+                      className="w-12 h-12 rounded-xl object-contain bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] p-1 border border-gray-200 dark:border-gray-700 shrink-0"
                     />
                     <div className="min-w-0 flex-1 text-xs">
-                      <div className="font-bold text-gray-900 dark:text-gray-100 truncate">
+                      <div className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] truncate">
                         {item.title}
                       </div>
                       <div className="text-[11px] text-gray-400 mt-0.5">
@@ -150,7 +150,7 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
               </div>
 
               {/* Recipient details & Actions */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-gray-100 dark:border-gray-800 text-xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-xs">
                 <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 font-medium">
                   <MapPin className="h-4 w-4 text-gray-400 shrink-0" />
                   <span>تحویل گیرنده: {order.recipient.name} ({order.recipient.address})</span>

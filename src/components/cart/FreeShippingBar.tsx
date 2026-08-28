@@ -54,7 +54,7 @@ export default function FreeShippingBar({
               </div>
             ) : (
               <div>
-                <h3 className="font-bold text-gray-900 dark:text-gray-100 text-base md:text-lg">
+                <h3 className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-base md:text-lg">
                   تنها <span className="text-orange-600 dark:text-orange-400 font-black text-xl">{formatPrice(amountLeft)}</span> دیگر تا{' '}
                   <span className="text-orange-600 dark:text-orange-400 font-black">ارسال رایگان</span>
                 </h3>

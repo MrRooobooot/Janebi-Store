@@ -48,7 +48,7 @@ export default function VipClubTab() {
       <div className="bg-gradient-to-br from-amber-500 via-orange-500 to-amber-600 rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-lg shadow-orange-500/20 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center">
+            <div className="w-12 h-12 rounded-2xl bg-[var(--color-surface-light)]/20 backdrop-blur-md flex items-center justify-center">
               <Award className="h-6 w-6 text-amber-200" />
             </div>
             <div>
@@ -58,7 +58,7 @@ export default function VipClubTab() {
               </p>
             </div>
           </div>
-          <span className="text-xs font-black bg-white text-orange-600 px-3 py-1.5 rounded-full">
+          <span className="text-xs font-black bg-[var(--color-surface-light)] text-orange-600 px-3 py-1.5 rounded-full">
             سطح بعدی: الماس
           </span>
         </div>
@@ -71,7 +71,7 @@ export default function VipClubTab() {
           </div>
           <div className="w-full h-3 bg-black/20 rounded-full overflow-hidden p-0.5">
             <div
-              className="h-full bg-white rounded-full transition-all duration-500"
+              className="h-full bg-[var(--color-surface-light)] rounded-full transition-all duration-500"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
@@ -79,8 +79,8 @@ export default function VipClubTab() {
       </div>
 
       {/* Exclusive Coupons */}
-      <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-6 shadow-xs space-y-4">
-        <h3 className="font-extrabold text-base text-gray-900 dark:text-gray-100 flex items-center gap-2 pb-4 border-b border-gray-100 dark:border-gray-800">
+      <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 shadow-xs space-y-4">
+        <h3 className="font-extrabold text-base text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2 pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
           <Gift className="h-5 w-5 text-orange-500" />
           <span>کدهای تخفیف اختصاصی شما</span>
         </h3>
@@ -113,7 +113,7 @@ export default function VipClubTab() {
 
               <button
                 onClick={() => handleCopy(cp.code)}
-                className="w-full py-2 bg-white dark:bg-gray-800 hover:bg-orange-500 hover:text-white text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-500/30 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-xs"
+                className="w-full py-2 bg-[var(--color-surface-light)] dark:bg-gray-800 hover:bg-orange-500 hover:text-white text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-500/30 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-xs"
               >
                 {copiedCode === cp.code ? (
                   <>

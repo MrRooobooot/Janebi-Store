@@ -98,12 +98,12 @@ export default function AdminMessages() {
     <div className="space-y-6 text-right">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mb-1">پیام‌های تماس و پشتیبانی</h1>
+        <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-white mb-1">پیام‌های تماس و پشتیبانی</h1>
         <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">بررسی سوالات کاربران، پیگیری نظرات و ارتباط مستقیم با مشتریان</p>
       </div>
 
       {/* Filter Tabs & Search */}
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-xs flex flex-col md:flex-row items-center justify-between gap-3">
+      <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 p-4 rounded-3xl border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs flex flex-col md:flex-row items-center justify-between gap-3">
         {/* Search Input */}
         <div className="relative flex-1 w-full">
           <input
@@ -145,7 +145,7 @@ export default function AdminMessages() {
         {loading ? (
           <div className="col-span-full p-12 text-center text-gray-400">در حال دریافت پیام‌ها...</div>
         ) : filteredMessages.length === 0 ? (
-          <div className="col-span-full p-12 bg-white dark:bg-gray-800 rounded-3xl text-center text-gray-400 border border-gray-100 dark:border-gray-700 shadow-xs">
+          <div className="col-span-full p-12 bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl text-center text-gray-400 border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs">
             هیچ پیامی در این دسته‌بندی یافت نشد.
           </div>
         ) : (
@@ -153,7 +153,7 @@ export default function AdminMessages() {
             <div
               key={msg.id}
               onClick={() => setSelectedMessage(msg)}
-              className="bg-white dark:bg-gray-800 rounded-3xl p-5 border border-gray-100 dark:border-gray-700 shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group"
+              className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl p-5 border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group"
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-3">
@@ -161,7 +161,7 @@ export default function AdminMessages() {
                   <span className="text-[10px] text-gray-400 font-medium">{msg.createdAt}</span>
                 </div>
 
-                <h3 className="font-extrabold text-sm text-gray-900 dark:text-white mb-1 group-hover:text-orange-600 transition-colors line-clamp-1">
+                <h3 className="font-extrabold text-sm text-[var(--color-text-main-light)] dark:text-white mb-1 group-hover:text-orange-600 transition-colors line-clamp-1">
                   {msg.subject || 'بدون موضوع'}
                 </h3>
 
@@ -170,7 +170,7 @@ export default function AdminMessages() {
                 </p>
               </div>
 
-              <div className="pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between text-xs text-gray-500">
+              <div className="pt-3 border-t border-[var(--color-border-light)] dark:border-gray-700 flex items-center justify-between text-xs text-gray-500">
                 <div className="flex items-center gap-1.5 truncate max-w-[160px]">
                   <User className="h-3.5 w-3.5 text-orange-500 shrink-0" />
                   <span className="font-bold text-gray-800 dark:text-gray-200 truncate">{msg.name}</span>
@@ -189,14 +189,14 @@ export default function AdminMessages() {
       {/* Message View Modal */}
       {selectedMessage && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/65 backdrop-blur-md">
-          <div className="bg-white dark:bg-gray-800 rounded-3xl max-w-xl w-full p-6 shadow-2xl border border-gray-100 dark:border-gray-700 text-right animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-700 mb-5">
+          <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl max-w-xl w-full p-6 shadow-2xl border border-[var(--color-border-light)] dark:border-gray-700 text-right animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-gray-700 mb-5">
               <div className="flex items-center gap-2">
                 <div className="p-2 rounded-xl bg-orange-100 dark:bg-orange-950/60 text-orange-600">
                   <Mail className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="font-black text-gray-900 dark:text-white text-base">جزئیات پیام ارسالی</h3>
+                  <h3 className="font-black text-[var(--color-text-main-light)] dark:text-white text-base">جزئیات پیام ارسالی</h3>
                   <span className="text-[11px] text-gray-400">{selectedMessage.createdAt}</span>
                 </div>
               </div>
@@ -206,10 +206,10 @@ export default function AdminMessages() {
             </div>
 
             {/* Sender Info Grid */}
-            <div className="grid grid-cols-2 gap-3 bg-gray-50 dark:bg-gray-900/60 p-4 rounded-2xl border border-gray-100 dark:border-gray-700 mb-4 text-xs">
+            <div className="grid grid-cols-2 gap-3 bg-gray-50 dark:bg-[var(--color-surface-dark)]/60 p-4 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700 mb-4 text-xs">
               <div>
                 <span className="text-gray-400 block mb-0.5">نام فرستنده:</span>
-                <strong className="text-gray-900 dark:text-white">{selectedMessage.name}</strong>
+                <strong className="text-[var(--color-text-main-light)] dark:text-white">{selectedMessage.name}</strong>
               </div>
 
               <div>
@@ -241,21 +241,21 @@ export default function AdminMessages() {
             <div className="space-y-3 mb-6">
               <div>
                 <span className="text-xs font-bold text-gray-400 block mb-1">موضوع پیام:</span>
-                <div className="font-extrabold text-sm text-gray-900 dark:text-white">
+                <div className="font-extrabold text-sm text-[var(--color-text-main-light)] dark:text-white">
                   {selectedMessage.subject || 'بدون موضوع'}
                 </div>
               </div>
 
               <div>
                 <span className="text-xs font-bold text-gray-400 block mb-1">متن کامل پیام:</span>
-                <div className="p-4 rounded-2xl bg-gray-50 dark:bg-gray-900/60 text-gray-800 dark:text-gray-200 text-xs leading-relaxed max-h-48 overflow-y-auto whitespace-pre-wrap border border-gray-100 dark:border-gray-700">
+                <div className="p-4 rounded-2xl bg-gray-50 dark:bg-[var(--color-surface-dark)]/60 text-gray-800 dark:text-gray-200 text-xs leading-relaxed max-h-48 overflow-y-auto whitespace-pre-wrap border border-[var(--color-border-light)] dark:border-gray-700">
                   {selectedMessage.message}
                 </div>
               </div>
             </div>
 
             {/* Status Change & Action Footer */}
-            <div className="pt-4 border-t border-gray-100 dark:border-gray-700 flex flex-wrap items-center justify-between gap-2">
+            <div className="pt-4 border-t border-[var(--color-border-light)] dark:border-gray-700 flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-1.5">
                 <span className="text-xs font-bold text-gray-500">تغییر وضعیت:</span>
                 <button

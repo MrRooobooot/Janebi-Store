@@ -91,11 +91,11 @@ export default function ProductDetail() {
   if (loading) return <ProductDetailSkeleton />;
   if (!product)
     return (
-      <div className="bg-white dark:bg-gray-900 rounded-3xl p-12 text-center border border-gray-100 dark:border-gray-800 flex flex-col items-center shadow-xs">
+      <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-12 text-center border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex flex-col items-center shadow-xs">
         <div className="w-16 h-16 rounded-2xl bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 flex items-center justify-center mb-4 border border-orange-100 dark:border-orange-800/60 shadow-inner">
           <AlertCircle className="h-8 w-8" />
         </div>
-        <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">محصول یافت نشد!</h3>
+        <h3 className="text-xl font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] mb-2">محصول یافت نشد!</h3>
         <p className="text-gray-500 dark:text-gray-300 mb-6">
           احتمالاً این محصول حذف شده یا آدرس را اشتباه وارد کرده‌اید.
         </p>
@@ -135,7 +135,7 @@ export default function ProductDetail() {
         className="space-y-10 pb-28 lg:pb-12 text-right"
       >
         {/* Main Product Card */}
-        <div className="bg-white/85 dark:bg-gray-900/85 backdrop-blur-xl rounded-3xl p-6 sm:p-8 lg:p-10 shadow-sm border border-gray-100 dark:border-gray-800 transition-colors">
+        <div className="bg-[var(--color-surface-light)]/85 dark:bg-[var(--color-surface-dark)]/85 backdrop-blur-xl rounded-3xl p-6 sm:p-8 lg:p-10 shadow-sm border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] transition-colors">
           <div className="flex flex-col lg:flex-row gap-10 lg:gap-14">
             {/* Gallery Column */}
             <div className="w-full lg:w-5/12">
@@ -143,7 +143,7 @@ export default function ProductDetail() {
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.4 }}
-                className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100/80 dark:from-gray-800/40 dark:to-gray-800/20 backdrop-blur-md rounded-3xl flex items-center justify-center p-8 mb-4 border border-gray-200/60 dark:border-gray-800 relative overflow-hidden group shadow-inner"
+                className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100/80 dark:from-gray-800/40 dark:to-gray-800/20 backdrop-blur-md rounded-3xl flex items-center justify-center p-8 mb-4 border border-gray-200/60 dark:border-[var(--color-border-dark)] relative overflow-hidden group shadow-inner"
               >
                 {product.discount && (
                   <div className="absolute top-5 right-5 bg-gradient-to-r from-rose-600 to-orange-600 text-white font-black px-3.5 py-1.5 rounded-xl z-10 text-xs shadow-md tracking-wider">
@@ -155,7 +155,7 @@ export default function ProductDetail() {
                 <button
                   onClick={() => setIsLightboxOpen(true)}
                   aria-label="مشاهده تصویر در اندازه بزرگ"
-                  className="absolute top-5 left-5 w-10 h-10 rounded-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-gray-200/60 dark:border-gray-700 text-gray-700 dark:text-gray-200 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-105 z-10 shadow-sm"
+                  className="absolute top-5 left-5 w-10 h-10 rounded-xl bg-[var(--color-surface-light)]/80 dark:bg-gray-800/80 backdrop-blur-md border border-gray-200/60 dark:border-gray-700 text-gray-700 dark:text-gray-200 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-105 z-10 shadow-sm"
                 >
                   <Maximize2 className="h-4 w-4" />
                 </button>
@@ -176,10 +176,10 @@ export default function ProductDetail() {
                     <button
                       key={idx}
                       onClick={() => setSelectedImageIndex(idx)}
-                      className={`w-20 h-20 bg-white dark:bg-gray-800/40 backdrop-blur-md rounded-2xl border-2 p-2 shrink-0 transition-all duration-300 ${
+                      className={`w-20 h-20 bg-[var(--color-surface-light)] dark:bg-gray-800/40 backdrop-blur-md rounded-2xl border-2 p-2 shrink-0 transition-all duration-300 ${
                         selectedImageIndex === idx
                           ? 'border-orange-500 shadow-md scale-105'
-                          : 'border-gray-100 dark:border-gray-800 opacity-60 hover:opacity-100'
+                          : 'border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] opacity-60 hover:opacity-100'
                       }`}
                     >
                       <img src={img} alt={`تصویر ${idx + 1}`} className="w-full h-full object-contain" />
@@ -189,18 +189,18 @@ export default function ProductDetail() {
               )}
 
               {/* Trust Badges - Desktop view */}
-              <div className="grid grid-cols-2 gap-3 mt-6 pt-6 border-t border-gray-100 dark:border-gray-800/60">
-                <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-gray-50/70 dark:bg-gray-800/30 border border-gray-100 dark:border-gray-800/50">
+              <div className="grid grid-cols-2 gap-3 mt-6 pt-6 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60">
+                <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-gray-50/70 dark:bg-gray-800/30 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/50">
                   <Award className="h-5 w-5 text-amber-500 shrink-0" />
                   <div className="text-right">
-                    <p className="text-xs font-black text-gray-900 dark:text-gray-100">ضمانت ۱۰۰٪ اصالت</p>
+                    <p className="text-xs font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">ضمانت ۱۰۰٪ اصالت</p>
                     <p className="text-[10px] text-gray-500 dark:text-gray-400">کالای اورجینال و شرکتی</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-gray-50/70 dark:bg-gray-800/30 border border-gray-100 dark:border-gray-800/50">
+                <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-gray-50/70 dark:bg-gray-800/30 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/50">
                   <RotateCcw className="h-5 w-5 text-emerald-500 shrink-0" />
                   <div className="text-right">
-                    <p className="text-xs font-black text-gray-900 dark:text-gray-100">۷ روز مهلت تست</p>
+                    <p className="text-xs font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">۷ روز مهلت تست</p>
                     <p className="text-[10px] text-gray-500 dark:text-gray-400">ضمانت بازگشت وجه</p>
                   </div>
                 </div>
@@ -224,12 +224,12 @@ export default function ProductDetail() {
                   </button>
                 </div>
 
-                <h1 className="text-2xl lg:text-3xl font-black text-gray-900 dark:text-gray-100 mb-4 leading-snug">
+                <h1 className="text-2xl lg:text-3xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] mb-4 leading-snug">
                   {product.title}
                 </h1>
 
                 {/* Rating & SKU Bar */}
-                <div className="flex flex-wrap items-center gap-4 mb-6 pb-6 border-b border-gray-100 dark:border-gray-800 text-xs sm:text-sm">
+                <div className="flex flex-wrap items-center gap-4 mb-6 pb-6 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-xs sm:text-sm">
                   <div className={`flex items-center gap-1 ${hasRating ? 'text-amber-400' : 'text-gray-400'}`}>
                     {[...Array(5)].map((_, i) => (
                       <Star
@@ -256,7 +256,7 @@ export default function ProductDetail() {
                 </div>
 
                 {/* Price & Stock Status Box */}
-                <div className="bg-gray-50/80 dark:bg-gray-800/40 rounded-3xl p-6 mb-8 border border-gray-100 dark:border-gray-800/80">
+                <div className="bg-gray-50/80 dark:bg-gray-800/40 rounded-3xl p-6 mb-8 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/80">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                       <span className="text-xs text-gray-500 dark:text-gray-400 font-medium block mb-1">
@@ -316,7 +316,7 @@ export default function ProductDetail() {
               </div>
 
               {/* Action Buttons */}
-              <div ref={actionsRef} className="pt-6 border-t border-gray-100 dark:border-gray-800 flex items-center gap-3">
+              <div ref={actionsRef} className="pt-6 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex items-center gap-3">
                 <button
                   onClick={handleAddToCart}
                   disabled={outOfStock}
@@ -372,8 +372,8 @@ export default function ProductDetail() {
         </div>
 
         {/* Tabs Section (Description, Specs, Reviews) */}
-        <div className="bg-white/85 dark:bg-gray-900/85 backdrop-blur-xl rounded-3xl p-6 sm:p-8 lg:p-10 shadow-sm border border-gray-100 dark:border-gray-800">
-          <div className="flex gap-4 sm:gap-8 border-b border-gray-200 dark:border-gray-800 mb-8 overflow-x-auto pb-px">
+        <div className="bg-[var(--color-surface-light)]/85 dark:bg-[var(--color-surface-dark)]/85 backdrop-blur-xl rounded-3xl p-6 sm:p-8 lg:p-10 shadow-sm border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
+          <div className="flex gap-4 sm:gap-8 border-b border-gray-200 dark:border-[var(--color-border-dark)] mb-8 overflow-x-auto pb-px">
             <button
               onClick={() => setActiveTab('description')}
               className={`pb-4 font-bold text-sm sm:text-base border-b-2 transition-all whitespace-nowrap relative ${
@@ -434,29 +434,29 @@ export default function ProductDetail() {
               transition={{ duration: 0.3 }}
               className="max-w-3xl"
             >
-              <div className="bg-gray-50/60 dark:bg-gray-800/30 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+              <div className="bg-gray-50/60 dark:bg-gray-800/30 rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] overflow-hidden">
                 <dl className="divide-y divide-gray-100 dark:divide-gray-800/60 text-xs sm:text-sm">
                   <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex justify-between">
                     <dt className="font-bold text-gray-500 dark:text-gray-400">نام تجاری / برند</dt>
-                    <dd className="font-black text-gray-900 dark:text-gray-100 sm:col-span-2 flex items-center gap-2">
+                    <dd className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] sm:col-span-2 flex items-center gap-2">
                       <span>{product.brand}</span>
                       <BrandLogo name={product.brand} size="sm" />
                     </dd>
                   </div>
                   <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex justify-between">
                     <dt className="font-bold text-gray-500 dark:text-gray-400">دسته‌بندی اصلی</dt>
-                    <dd className="font-bold text-gray-900 dark:text-gray-100 sm:col-span-2">{product.category}</dd>
+                    <dd className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] sm:col-span-2">{product.category}</dd>
                   </div>
                   {product.sku && (
                     <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex justify-between">
                       <dt className="font-bold text-gray-500 dark:text-gray-400">شناسه اختصاصی (SKU)</dt>
-                      <dd className="font-mono font-bold text-gray-900 dark:text-gray-100 sm:col-span-2">{product.sku}</dd>
+                      <dd className="font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] sm:col-span-2">{product.sku}</dd>
                     </div>
                   )}
                   {product.warranty && (
                     <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex justify-between">
                       <dt className="font-bold text-gray-500 dark:text-gray-400">گارانتی و خدمات</dt>
-                      <dd className="font-bold text-gray-900 dark:text-gray-100 sm:col-span-2 flex items-center gap-1.5">
+                      <dd className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] sm:col-span-2 flex items-center gap-1.5">
                         <ShieldCheck className="h-4 w-4 text-emerald-500" />
                         {product.warranty}
                       </dd>
@@ -465,7 +465,7 @@ export default function ProductDetail() {
                   {product.features && product.features.length > 0 && (
                     <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex flex-col gap-2">
                       <dt className="font-bold text-gray-500 dark:text-gray-400">سایر مشخصات و ویژگی‌ها</dt>
-                      <dd className="font-medium text-gray-900 dark:text-gray-100 sm:col-span-2 space-y-1.5">
+                      <dd className="font-medium text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] sm:col-span-2 space-y-1.5">
                         {product.features.map((feat: string, idx: number) => (
                           <div key={idx} className="flex items-center gap-2">
                             <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
@@ -511,7 +511,7 @@ export default function ProductDetail() {
           >
             <button
               onClick={() => setIsLightboxOpen(false)}
-              className="absolute top-6 left-6 text-white/80 hover:text-white bg-white/10 p-2.5 rounded-full backdrop-blur-md transition-colors"
+              className="absolute top-6 left-6 text-white/80 hover:text-white bg-[var(--color-surface-light)]/10 p-2.5 rounded-full backdrop-blur-md transition-colors"
             >
               <X className="h-6 w-6" />
             </button>
@@ -539,9 +539,9 @@ export default function ProductDetail() {
             className="fixed bottom-0 left-0 right-0 z-50 lg:hidden pb-safe"
           >
             <div className="mx-3 mb-[76px]">
-              <div className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-2xl rounded-2xl border border-gray-200/80 dark:border-gray-700/80 shadow-2xl p-3 flex items-center gap-3 text-right">
+              <div className="bg-[var(--color-surface-light)]/95 dark:bg-[var(--color-surface-dark)]/95 backdrop-blur-2xl rounded-2xl border border-gray-200/80 dark:border-gray-700/80 shadow-2xl p-3 flex items-center gap-3 text-right">
                 <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                  <div className="w-12 h-12 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 flex items-center justify-center shrink-0 overflow-hidden">
+                  <div className="w-12 h-12 rounded-xl bg-gray-50 dark:bg-gray-800 border border-[var(--color-border-light)] dark:border-gray-700 flex items-center justify-center shrink-0 overflow-hidden">
                     <img
                       src={product.image}
                       alt={product.title}

@@ -19,7 +19,7 @@ export default function EmptyState({
   actionText, 
   actionLink, 
   onActionClick,
-  className = "linear-card bg-white dark:bg-white/[0.025] rounded-3xl p-8 sm:p-12 shadow-sm border border-zinc-200/80 dark:border-white/[0.08] min-h-[45vh]"
+  className = "linear-card bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-light)]/[0.025] rounded-3xl p-8 sm:p-12 shadow-sm border border-zinc-200/80 dark:border-white/[0.08] min-h-[45vh]"
 }: EmptyStateProps) {
   return (
     <div className={`${className} flex flex-col items-center justify-center text-center transition-colors select-none`}>

@@ -22,8 +22,8 @@ export default function Privacy() {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 sm:p-10 border border-gray-100 dark:border-gray-800 shadow-xs space-y-6 text-gray-700 dark:text-gray-300 leading-relaxed text-sm sm:text-base">
-        <div className="flex items-center gap-3 text-lg font-bold text-gray-900 dark:text-gray-100">
+      <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 sm:p-10 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-6 text-gray-700 dark:text-gray-300 leading-relaxed text-sm sm:text-base">
+        <div className="flex items-center gap-3 text-lg font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
           <Eye className="h-5 w-5 text-orange-600 dark:text-orange-400" />
           <span>جمع‌آوری و استفاده از اطلاعات</span>
         </div>
@@ -31,7 +31,7 @@ export default function Privacy() {
           جانبی آرنا برای ثبت، پردازش و ارسال سفارش‌ها، اطلاعاتی مانند آدرس، شماره تلفن و ایمیل را دریافت می‌کند. تمامی این اطلاعات با بهره‌گیری از پروتکل‌های امنیتی روز دنیا نگهداری می‌شوند.
         </p>
 
-        <div className="flex items-center gap-3 text-lg font-bold text-gray-900 dark:text-gray-100 pt-4 border-t border-gray-100 dark:border-gray-800">
+        <div className="flex items-center gap-3 text-lg font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] pt-4 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
           <ShieldCheck className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
           <span>عدم افشای اطلاعات به اشخاص ثالث</span>
         </div>
@@ -39,7 +39,7 @@ export default function Privacy() {
           اطلاعات شما به هیچ عنوان در اختیار سازمان‌ها یا اشخاص ثالث قرار نخواهد گرفت، مگر در مواردی که با حکم مستقیم مراجع ذی‌صلاح قانونی صادر شده باشد.
         </p>
 
-        <div className="flex items-center gap-3 text-lg font-bold text-gray-900 dark:text-gray-100 pt-4 border-t border-gray-100 dark:border-gray-800">
+        <div className="flex items-center gap-3 text-lg font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] pt-4 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
           <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
           <span>ارتباطات و خبرنامه</span>
         </div>

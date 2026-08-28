@@ -27,7 +27,7 @@ export default function CheckoutCallback() {
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-md bg-white dark:bg-gray-900 rounded-3xl p-8 border border-gray-100 dark:border-gray-800 shadow-xl text-center"
+        className="w-full max-w-md bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-8 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xl text-center"
       >
         <div className="mb-6 flex justify-center">
           {isSuccess ? (
@@ -57,13 +57,13 @@ export default function CheckoutCallback() {
           {orderId && (
             <div className="flex justify-between items-center text-sm">
               <span className="text-gray-500 dark:text-gray-400">شماره سفارش:</span>
-              <span className="font-bold text-gray-900 dark:text-white dir-ltr">{orderId}</span>
+              <span className="font-bold text-[var(--color-text-main-light)] dark:text-white dir-ltr">{orderId}</span>
             </div>
           )}
           {refId && isSuccess && (
             <div className="flex justify-between items-center text-sm">
               <span className="text-gray-500 dark:text-gray-400">کد پیگیری تراکنش:</span>
-              <span className="font-bold text-gray-900 dark:text-white dir-ltr">{refId}</span>
+              <span className="font-bold text-[var(--color-text-main-light)] dark:text-white dir-ltr">{refId}</span>
             </div>
           )}
         </div>
@@ -79,7 +79,7 @@ export default function CheckoutCallback() {
           
           <Link 
             to="/"
-            className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-bold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2"
+            className="w-full bg-[var(--color-surface-light)] dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-bold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2"
           >
             <span>بازگشت به صفحه اصلی</span>
             <ArrowRight className="h-4 w-4" />

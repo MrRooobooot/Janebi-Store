@@ -28,9 +28,9 @@ export default function ProfileSidebar({
   ];
 
   return (
-    <aside className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-6 shadow-xs text-right space-y-6">
+    <aside className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 shadow-xs text-right space-y-6">
       {/* User Header Badge */}
-      <div className="flex items-center gap-4 pb-6 border-b border-gray-100 dark:border-gray-800">
+      <div className="flex items-center gap-4 pb-6 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
         <div className="relative shrink-0">
           <img
             src={user.avatar || '/avatar.svg'}
@@ -42,7 +42,7 @@ export default function ProfileSidebar({
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <h3 className="font-extrabold text-sm text-gray-900 dark:text-gray-100 truncate">
+            <h3 className="font-extrabold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] truncate">
               {user.name}
             </h3>
             <span className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full flex items-center gap-1 shrink-0">
@@ -96,7 +96,7 @@ export default function ProfileSidebar({
       </nav>
 
       {/* Logout button */}
-      <div className="pt-4 border-t border-gray-100 dark:border-gray-800">
+      <div className="pt-4 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
         <button
           onClick={onLogoutClick}
           className="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"

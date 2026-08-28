@@ -16,7 +16,7 @@ export default function WishlistPage() {
       transition={{ duration: 0.4 }}
     >
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-black text-gray-900 dark:text-gray-100 tracking-tight">علاقه‌مندی‌های من</h1>
+        <h1 className="text-2xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] tracking-tight">علاقه‌مندی‌های من</h1>
       </div>
 
       {wishlist.length === 0 ? (
@@ -26,7 +26,7 @@ export default function WishlistPage() {
           description="محصولات مورد علاقه خود را به این لیست اضافه کنید تا بعداً راحت‌تر آن‌ها را پیدا کنید."
           actionText="مشاهده محصولات"
           actionLink="/products"
-          className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-3xl p-12 shadow-sm border border-gray-100 dark:border-gray-800"
+          className="bg-[var(--color-surface-light)]/80 dark:bg-[var(--color-surface-dark)]/80 backdrop-blur-xl rounded-3xl p-12 shadow-sm border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]"
         />
       ) : (
         <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

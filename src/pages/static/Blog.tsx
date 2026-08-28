@@ -69,7 +69,7 @@ export default function Blog() {
     >
       <div className="bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 text-white rounded-3xl p-8 sm:p-10 relative overflow-hidden shadow-lg shadow-orange-500/20">
         <div className="relative z-10 max-w-xl">
-          <span className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full mb-3">
+          <span className="inline-flex items-center gap-1.5 bg-[var(--color-surface-light)]/20 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full mb-3">
             <BookOpen className="h-3.5 w-3.5" /> مجله تخصصی جانبی آرنا
           </span>
           <h1 className="text-3xl font-black mb-3 tracking-tight">آخرین اخبار و راهنماهای کاربردی</h1>
@@ -83,7 +83,7 @@ export default function Blog() {
       {loading && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden animate-pulse">
+            <div key={i} className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] overflow-hidden animate-pulse">
               <div className="aspect-video bg-gray-100 dark:bg-gray-800" />
               <div className="p-6 space-y-3">
                 <div className="h-4 w-full bg-gray-100 dark:bg-gray-800 rounded" />
@@ -98,7 +98,7 @@ export default function Blog() {
 
       {/* Error */}
       {!loading && error && (
-        <div className="bg-white dark:bg-gray-900 border border-red-100 dark:border-red-900/40 rounded-2xl p-8 text-center">
+        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-red-100 dark:border-red-900/40 rounded-2xl p-8 text-center">
           <p className="text-sm text-red-600 dark:text-red-400 font-bold">{error}</p>
           <button
             onClick={() => window.location.reload()}
@@ -111,7 +111,7 @@ export default function Blog() {
 
       {/* Empty */}
       {!loading && !error && articles.length === 0 && (
-        <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-8 text-center">
+        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-8 text-center">
           <BookOpen className="h-8 w-8 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
           <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
             هنوز مقاله‌ای منتشر نشده است — به زودی اولین مطالب مجله اینجا قرار می‌گیرد.
@@ -134,7 +134,7 @@ export default function Blog() {
                 tabIndex={0}
                 onKeyDown={(e) => { if (e.key === 'Enter') setOpenArticle(art); }}
                 aria-label={`خواندن مقاله: ${art.title}`}
-                className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden hover:shadow-lg dark:hover:shadow-black/30 hover:border-orange-200 dark:hover:border-gray-700 transition-all duration-300 flex flex-col group h-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-400"
+                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] overflow-hidden hover:shadow-lg dark:hover:shadow-black/30 hover:border-orange-200 dark:hover:border-gray-700 transition-all duration-300 flex flex-col group h-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-400"
               >
                 <div className="aspect-video w-full relative overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center">
                   <img src={art.image || FALLBACK_IMAGE} alt={art.title} loading="lazy" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" />
@@ -151,7 +151,7 @@ export default function Blog() {
                         <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {art.readTime}</span>
                       )}
                     </div>
-                    <h3 className="font-bold text-gray-900 dark:text-gray-100 text-base leading-snug mb-3 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                    <h3 className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-base leading-snug mb-3 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
                       {art.title}
                     </h3>
                     <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-3 mb-6">
@@ -162,7 +162,7 @@ export default function Blog() {
                     )}
                   </div>
 
-                  <div className="pt-4 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between text-xs font-bold text-orange-600 dark:text-orange-400">
+                  <div className="pt-4 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex items-center justify-between text-xs font-bold text-orange-600 dark:text-orange-400">
                     <span className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 font-medium text-[11px]">
                       <User className="h-3.5 w-3.5" /> {art.author}
                     </span>
@@ -196,7 +196,7 @@ export default function Blog() {
               role="dialog"
               aria-modal="true"
               aria-label={openArticle.title}
-              className="bg-white dark:bg-gray-900 w-full max-w-2xl max-h-[88vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl border border-gray-100 dark:border-gray-800 shadow-2xl"
+              className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] w-full max-w-2xl max-h-[88vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-2xl"
             >
               <div className="relative aspect-video w-full overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50 dark:from-gray-800 dark:to-gray-900">
                 <img src={openArticle.image || FALLBACK_IMAGE} alt={openArticle.title} className="object-cover w-full h-full" />
@@ -221,7 +221,7 @@ export default function Blog() {
                   <span className="flex items-center gap-1"><User className="h-3.5 w-3.5" /> {openArticle.author}</span>
                 </div>
 
-                <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-gray-100 leading-relaxed mb-6">
+                <h2 className="text-xl sm:text-2xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] leading-relaxed mb-6">
                   {openArticle.title}
                 </h2>
 

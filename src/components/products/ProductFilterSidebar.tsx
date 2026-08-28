@@ -80,7 +80,7 @@ export default function ProductFilterSidebar({
             value={inPageQuery}
             onChange={(e) => setInPageQuery(e.target.value)}
             placeholder="نام، مدل یا برند..."
-            className="w-full bg-white dark:bg-gray-800/80 border-2 border-gray-100 dark:border-gray-800 rounded-2xl py-3 px-4 pr-10 text-xs font-medium text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500/50 focus:ring-4 focus:ring-orange-500/10 dark:focus:ring-orange-500/5 transition-all shadow-xs group-hover:border-gray-200 dark:group-hover:border-gray-700"
+            className="w-full bg-[var(--color-surface-light)] dark:bg-gray-800/80 border-2 border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl py-3 px-4 pr-10 text-xs font-medium text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500/50 focus:ring-4 focus:ring-orange-500/10 dark:focus:ring-orange-500/5 transition-all shadow-xs group-hover:border-gray-200 dark:group-hover:border-gray-700"
           />
           <Search className="h-4 w-4 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2 transition-colors group-hover:text-orange-500" />
           {inPageQuery && (
@@ -95,8 +95,8 @@ export default function ProductFilterSidebar({
       </div>
 
       {/* Category Filter */}
-      <div className="border-t border-gray-100 dark:border-gray-800 pt-6">
-        <h4 className="font-bold text-sm text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+      <div className="border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pt-6">
+        <h4 className="font-bold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] mb-4 flex items-center gap-2">
           <div className="p-1.5 rounded-lg bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400">
             <Tag className="h-4 w-4" />
           </div>
@@ -155,8 +155,8 @@ export default function ProductFilterSidebar({
       </div>
 
       {/* Brand Filter */}
-      <div className="border-t border-gray-100 dark:border-gray-800 pt-6">
-        <h4 className="font-bold text-sm text-gray-900 dark:text-gray-100 mb-4 flex items-center justify-between">
+      <div className="border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pt-6">
+        <h4 className="font-bold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] mb-4 flex items-center justify-between">
           <span className="flex items-center gap-2">
             <div className="p-1.5 rounded-lg bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400">
               <Sparkles className="h-4 w-4" />
@@ -190,7 +190,7 @@ export default function ProductFilterSidebar({
                     className={`w-4.5 h-4.5 rounded-lg flex items-center justify-center transition-all duration-200 ${
                       isChecked
                         ? 'bg-orange-500 text-white shadow-md shadow-orange-500/30 scale-110'
-                        : 'border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800'
+                        : 'border-2 border-gray-300 dark:border-gray-600 bg-[var(--color-surface-light)] dark:bg-gray-800'
                     }`}
                   >
                     {isChecked && <Check className="h-3 w-3 stroke-[3]" />}
@@ -211,8 +211,8 @@ export default function ProductFilterSidebar({
       </div>
 
       {/* Price Range Filter */}
-      <div className="border-t border-gray-100 dark:border-gray-800 pt-6">
-        <h4 className="font-bold text-sm text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+      <div className="border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pt-6">
+        <h4 className="font-bold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] mb-4 flex items-center gap-2">
           <div className="p-1.5 rounded-lg bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400">
             <DollarSign className="h-4 w-4" />
           </div>
@@ -231,7 +231,7 @@ export default function ProductFilterSidebar({
               value={minPrice}
               onChange={(e) => setMinPrice(e.target.value ? Number(e.target.value) : '')}
               placeholder="300000"
-              className="w-full bg-white dark:bg-gray-800/80 border-2 border-gray-100 dark:border-gray-800 rounded-xl py-2 px-3 text-xs font-mono text-left font-medium text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500/50 focus:ring-4 focus:ring-orange-500/10 dark:focus:ring-orange-500/5 transition-all shadow-xs"
+              className="w-full bg-[var(--color-surface-light)] dark:bg-gray-800/80 border-2 border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-xl py-2 px-3 text-xs font-mono text-left font-medium text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500/50 focus:ring-4 focus:ring-orange-500/10 dark:focus:ring-orange-500/5 transition-all shadow-xs"
             />
           </div>
           <div className="group">
@@ -244,7 +244,7 @@ export default function ProductFilterSidebar({
               value={maxPrice}
               onChange={(e) => setMaxPrice(e.target.value ? Number(e.target.value) : '')}
               placeholder="3000000"
-              className="w-full bg-white dark:bg-gray-800/80 border-2 border-gray-100 dark:border-gray-800 rounded-xl py-2 px-3 text-xs font-mono text-left font-medium text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500/50 focus:ring-4 focus:ring-orange-500/10 dark:focus:ring-orange-500/5 transition-all shadow-xs"
+              className="w-full bg-[var(--color-surface-light)] dark:bg-gray-800/80 border-2 border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-xl py-2 px-3 text-xs font-mono text-left font-medium text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500/50 focus:ring-4 focus:ring-orange-500/10 dark:focus:ring-orange-500/5 transition-all shadow-xs"
             />
           </div>
         </div>
@@ -263,7 +263,7 @@ export default function ProductFilterSidebar({
                 className={`text-[10px] px-3 py-1.5 rounded-lg transition-all duration-200 border-2 ${
                   isActive
                     ? 'bg-orange-500 text-white border-orange-500 font-bold shadow-md shadow-orange-500/20'
-                    : 'bg-white dark:bg-gray-800/80 text-gray-600 dark:text-gray-300 border-gray-100 dark:border-gray-800 hover:border-gray-200 dark:hover:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 font-medium'
+                    : 'bg-[var(--color-surface-light)] dark:bg-gray-800/80 text-gray-600 dark:text-gray-300 border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] hover:border-gray-200 dark:hover:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 font-medium'
                 }`}
               >
                 {preset.label}
@@ -274,7 +274,7 @@ export default function ProductFilterSidebar({
       </div>
 
       {/* Special Toggles */}
-      <div className="border-t border-gray-100 dark:border-gray-800 pt-6 space-y-4">
+      <div className="border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pt-6 space-y-4">
         {/* Discounted only toggle */}
         <label className="flex items-center justify-between cursor-pointer group bg-gray-50 dark:bg-gray-800/50 p-3 rounded-2xl hover:bg-orange-50 dark:hover:bg-orange-500/5 transition-colors border border-transparent hover:border-orange-100 dark:hover:border-orange-500/10">
           <span className="text-xs font-bold text-gray-800 dark:text-gray-200 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors flex items-center gap-2">
@@ -297,7 +297,7 @@ export default function ProductFilterSidebar({
             }`}
           >
             <div
-              className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-300 ${
+              className={`bg-[var(--color-surface-light)] w-4 h-4 rounded-full shadow-md transform transition-transform duration-300 ${
                 onlyDiscounted ? 'translate-x-0' : '-translate-x-5'
               }`}
             />
@@ -326,7 +326,7 @@ export default function ProductFilterSidebar({
             }`}
           >
             <div
-              className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-300 ${
+              className={`bg-[var(--color-surface-light)] w-4 h-4 rounded-full shadow-md transform transition-transform duration-300 ${
                 onlyInStock ? 'translate-x-0' : '-translate-x-5'
               }`}
             />
@@ -359,9 +359,9 @@ export default function ProductFilterSidebar({
   return (
     <>
       {/* Desktop Filter Sidebar */}
-      <aside className="hidden lg:block lg:col-span-3 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-6 shadow-xs h-fit sticky top-28">
-        <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100 dark:border-gray-800">
-          <h3 className="font-extrabold text-base text-gray-900 dark:text-gray-100 flex items-center gap-2">
+      <aside className="hidden lg:block lg:col-span-3 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 shadow-xs h-fit sticky top-28">
+        <div className="flex items-center justify-between mb-6 pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
+          <h3 className="font-extrabold text-base text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
             <span>فیلترهای پیشرفته</span>
           </h3>
           {activeFiltersCount > 0 && (
@@ -391,11 +391,11 @@ export default function ProductFilterSidebar({
                 animate={{ x: 0 }}
                 exit={{ x: '100%' }}
                 transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                className="fixed inset-y-0 right-0 w-full max-w-xs bg-white dark:bg-gray-900 shadow-2xl p-6 overflow-y-auto flex flex-col justify-between"
+                className="fixed inset-y-0 right-0 w-full max-w-xs bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] shadow-2xl p-6 overflow-y-auto flex flex-col justify-between"
               >
                 <div>
-                  <div className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-800 mb-6">
-                    <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                  <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] mb-6">
+                    <h3 className="font-bold text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
                       فیلتر محصولات
                     </h3>
                     <button
@@ -409,7 +409,7 @@ export default function ProductFilterSidebar({
                   {renderFilterControls()}
                 </div>
 
-                <div className="pt-6 border-t border-gray-100 dark:border-gray-800 mt-6 sticky bottom-0 bg-white dark:bg-gray-900">
+                <div className="pt-6 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] mt-6 sticky bottom-0 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)]">
                   <button
                     onClick={() => setMobileFilterOpen(false)}
                     className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-orange-500/25 active:scale-98 transition-transform text-sm cursor-pointer"

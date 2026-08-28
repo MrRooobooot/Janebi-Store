@@ -80,7 +80,7 @@ export default function AdminNewsletter() {
     <div className="space-y-6 text-right">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-gray-900 dark:text-white flex items-center gap-2">
+          <h1 className="text-2xl font-black text-[var(--color-text-main-light)] dark:text-white flex items-center gap-2">
             <MailCheck className="h-6 w-6 text-orange-500" />
             اعضای خبرنامه ایمیلی
           </h1>
@@ -98,7 +98,7 @@ export default function AdminNewsletter() {
       </div>
 
       {/* Search and Count Bar */}
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-100 dark:border-gray-700/60 shadow-xs flex items-center justify-between gap-3">
+      <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 p-4 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700/60 shadow-xs flex items-center justify-between gap-3">
         <div className="relative w-full sm:w-80">
           <input
             type="text"
@@ -116,7 +116,7 @@ export default function AdminNewsletter() {
       </div>
 
       {/* Subscribers Table */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700/60 shadow-xs overflow-hidden">
+      <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700/60 shadow-xs overflow-hidden">
         {loading ? (
           <div className="p-12 text-center text-gray-400 text-xs">در حال بارگذاری اعضا...</div>
         ) : filteredSubscribers.length === 0 ? (
@@ -124,7 +124,7 @@ export default function AdminNewsletter() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-xs text-right">
-              <thead className="bg-gray-50 dark:bg-gray-700/30 text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700/60">
+              <thead className="bg-gray-50 dark:bg-gray-700/30 text-gray-500 dark:text-gray-400 border-b border-[var(--color-border-light)] dark:border-gray-700/60">
                 <tr>
                   <th className="p-3.5 font-bold">ردیف</th>
                   <th className="p-3.5 font-bold">آدرس ایمیل</th>
@@ -136,7 +136,7 @@ export default function AdminNewsletter() {
                 {filteredSubscribers.map((sub, idx) => (
                   <tr key={sub.email} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/20 transition-colors">
                     <td className="p-3.5 font-mono text-gray-400 w-12">{idx + 1}</td>
-                    <td className="p-3.5 font-mono font-bold text-gray-900 dark:text-gray-100 text-left dir-ltr">
+                    <td className="p-3.5 font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-left dir-ltr">
                       {sub.email}
                     </td>
                     <td className="p-3.5 text-gray-500 dark:text-gray-400 font-mono text-[11px]">

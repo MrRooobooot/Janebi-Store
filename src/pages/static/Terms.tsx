@@ -22,8 +22,8 @@ export default function Terms() {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 sm:p-10 border border-gray-100 dark:border-gray-800 shadow-xs space-y-6 text-gray-700 dark:text-gray-300 leading-relaxed text-sm sm:text-base">
-        <div className="flex items-center gap-3 text-lg font-bold text-gray-900 dark:text-gray-100">
+      <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 sm:p-10 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-6 text-gray-700 dark:text-gray-300 leading-relaxed text-sm sm:text-base">
+        <div className="flex items-center gap-3 text-lg font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
           <CheckCircle2 className="h-5 w-5 text-orange-600 dark:text-orange-400" />
           <span>شرایط عمومی و ثبت سفارش</span>
         </div>
@@ -31,7 +31,7 @@ export default function Terms() {
           ورود کاربران به وب‌سایت جانبی آرنا و ثبت سفارش در هر زمان به معنی پذیرفتن کامل کلیه شرایط و قوانین از سوی کاربر است. تمامی ثبت سفارش‌ها به صورت ۲۴ ساعته امکان‌پذیر می‌باشد.
         </p>
 
-        <div className="flex items-center gap-3 text-lg font-bold text-gray-900 dark:text-gray-100 pt-4 border-t border-gray-100 dark:border-gray-800">
+        <div className="flex items-center gap-3 text-lg font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] pt-4 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
           <Truck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
           <span>رویه‌های ارسال و تحویل سفارش</span>
         </div>
@@ -39,7 +39,7 @@ export default function Terms() {
           سفارش‌های ثبت شده در شهر تهران توسط پیک اختصاصی یا پست پیشتاز ظرف کمتر از ۲۴ ساعت تحویل داده شده و سفارش‌های شهرستان از طریق پست پیشتاز یا تیپاکس ۲ الی ۳ روز کاری ارسال می‌شوند.
         </p>
 
-        <div className="flex items-center gap-3 text-lg font-bold text-gray-900 dark:text-gray-100 pt-4 border-t border-gray-100 dark:border-gray-800">
+        <div className="flex items-center gap-3 text-lg font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] pt-4 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
           <RefreshCw className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
           <span>شرایط 7 روز مهلت بازگشت کالا</span>
         </div>

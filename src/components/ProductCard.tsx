@@ -31,7 +31,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
   };
 
   return (
-    <div className="linear-card bg-white dark:bg-white/[0.025] rounded-3xl border border-zinc-200/80 dark:border-white/[0.08] p-4.5 hover:shadow-2xl transition-all duration-300 relative flex flex-col justify-between h-full group select-none hover:-translate-y-1">
+    <div className="linear-card bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-light)]/[0.025] rounded-3xl border border-zinc-200/80 dark:border-white/[0.08] p-4.5 hover:shadow-2xl transition-all duration-300 relative flex flex-col justify-between h-full group select-none hover:-translate-y-1">
       
       {/* 1. Header Badges & Quick Action Floating Buttons */}
       <div>
@@ -46,7 +46,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
                 {toPersianDigits(product.discount)}٪ تخفیف
               </span>
             ) : (
-              <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-white/[0.04] px-2.5 py-0.5 rounded-lg border border-zinc-200/60 dark:border-white/[0.06]">
+              <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-[var(--color-surface-light)]/[0.04] px-2.5 py-0.5 rounded-lg border border-zinc-200/60 dark:border-white/[0.06]">
                 {product.brand || 'اورجینال'}
               </span>
             )}
@@ -60,7 +60,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
               className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
                 inWishlist 
                   ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-500 border border-rose-200 dark:border-rose-800' 
-                  : 'bg-zinc-50 dark:bg-white/[0.03] text-zinc-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 border border-zinc-200/40 dark:border-white/[0.05]'
+                  : 'bg-zinc-50 dark:bg-[var(--color-surface-light)]/[0.03] text-zinc-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 border border-zinc-200/40 dark:border-white/[0.05]'
               }`}
               title="علاقه‌مندی‌ها"
             >
@@ -73,7 +73,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
               className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
                 inCompare 
                   ? 'bg-orange-50 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-800' 
-                  : 'bg-zinc-50 dark:bg-white/[0.03] text-zinc-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-950/30 border border-zinc-200/40 dark:border-white/[0.05]'
+                  : 'bg-zinc-50 dark:bg-[var(--color-surface-light)]/[0.03] text-zinc-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-950/30 border border-zinc-200/40 dark:border-white/[0.05]'
               }`}
               title="مقایسه مشخصات"
             >
@@ -165,7 +165,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
 
         {/* 6. Guarantee Micro-Badge */}
         {product.warranty && (
-          <div className="mt-2.5 flex items-center gap-1.5 text-[10px] text-zinc-500 dark:text-zinc-400 font-medium bg-zinc-50 dark:bg-white/[0.02] px-2 py-1 rounded-lg border border-zinc-200/40 dark:border-white/[0.04]">
+          <div className="mt-2.5 flex items-center gap-1.5 text-[10px] text-zinc-500 dark:text-zinc-400 font-medium bg-zinc-50 dark:bg-[var(--color-surface-light)]/[0.02] px-2 py-1 rounded-lg border border-zinc-200/40 dark:border-white/[0.04]">
             <ShieldCheck className="h-3 w-3 text-emerald-500 shrink-0" />
             <span className="truncate">{product.warranty}</span>
           </div>

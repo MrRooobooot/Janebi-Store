@@ -51,7 +51,7 @@ export default function BrandShowcase() {
               اصالت ۱۰۰٪ تضمین‌شده
             </span>
           </div>
-          <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-gray-100 tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] tracking-tight">
             برندهای معتبر و نمایندگی‌های رسمی
           </h2>
         </div>
@@ -78,16 +78,16 @@ export default function BrandShowcase() {
                   <div key={`${brand.name}-${idx}`} className="w-36 shrink-0 mx-4">
                     <Link
                       to={`/products?brand=${encodeURIComponent(brand.name)}`}
-                      className="group relative flex flex-col items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-gray-800/80 border border-gray-100 dark:border-gray-700/60 hover:border-orange-500/40 dark:hover:border-orange-500/40 shadow-xs hover:shadow-lg hover:-translate-y-1 transition-all duration-300 h-full"
+                      className="group relative flex flex-col items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-[var(--color-surface-light)] dark:bg-gray-800/80 border border-[var(--color-border-light)] dark:border-gray-700/60 hover:border-orange-500/40 dark:hover:border-orange-500/40 shadow-xs hover:shadow-lg hover:-translate-y-1 transition-all duration-300 h-full"
                     >
                       {/* Logo Frame */}
-                      <div className="w-full h-14 rounded-xl bg-gray-50/80 dark:bg-gray-700/40 group-hover:bg-orange-50/50 dark:group-hover:bg-orange-950/20 border border-gray-100/80 dark:border-gray-700/40 flex items-center justify-center p-2 transition-colors duration-300">
+                      <div className="w-full h-14 rounded-xl bg-gray-50/80 dark:bg-gray-700/40 group-hover:bg-orange-50/50 dark:group-hover:bg-orange-950/20 border border-[var(--color-border-light)]/80 dark:border-gray-700/40 flex items-center justify-center p-2 transition-colors duration-300">
                         <BrandLogo name={brand.name} size="md" />
                       </div>
       
                       {/* Info */}
                       <div className="mt-3 text-center w-full">
-                        <div className="font-extrabold text-xs text-gray-900 dark:text-gray-100 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors truncate">
+                        <div className="font-extrabold text-xs text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors truncate">
                           {displayName}
                         </div>
                         <div className="text-[10px] font-medium text-gray-400 dark:text-gray-500 mt-0.5">

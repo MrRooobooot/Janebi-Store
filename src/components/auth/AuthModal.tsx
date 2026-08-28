@@ -108,19 +108,19 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.92, opacity: 0, y: 15 }}
           transition={{ type: 'spring', damping: 26, stiffness: 320 }}
-          className="relative w-full max-w-md bg-white dark:bg-gray-900 rounded-3xl p-6 sm:p-8 shadow-2xl border border-gray-100 dark:border-gray-800 text-right z-10 overflow-hidden my-auto max-h-[90vh] flex flex-col"
+          className="relative w-full max-w-md bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 sm:p-8 shadow-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-right z-10 overflow-hidden my-auto max-h-[90vh] flex flex-col"
         >
           {/* Decorative subtle glows */}
           <div className="absolute -top-12 -left-12 w-40 h-40 bg-orange-500/15 rounded-full blur-2xl pointer-events-none" />
           <div className="absolute -bottom-12 -right-12 w-40 h-40 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
 
           {/* Header Bar */}
-          <div className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-800/80 mb-5 relative">
+          <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/80 mb-5 relative">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-xl bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center font-bold">
                 <Sparkles className="h-4 w-4" />
               </div>
-              <span className="font-black text-sm text-gray-900 dark:text-gray-100">
+              <span className="font-black text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
                 {mode === 'login' ? 'ورود به حساب کاربری' : 'ایجاد حساب کاربری جدید'}
               </span>
             </div>
@@ -141,7 +141,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
               onClick={() => setMode('login')}
               className={`flex-1 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all duration-200 ${
                 mode === 'login'
-                  ? 'bg-white dark:bg-gray-900 text-orange-600 dark:text-orange-400 shadow-xs'
+                  ? 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-orange-600 dark:text-orange-400 shadow-xs'
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
               }`}
             >
@@ -154,7 +154,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
               onClick={() => setMode('register')}
               className={`flex-1 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all duration-200 ${
                 mode === 'register'
-                  ? 'bg-white dark:bg-gray-900 text-orange-600 dark:text-orange-400 shadow-xs'
+                  ? 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-orange-600 dark:text-orange-400 shadow-xs'
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
               }`}
             >
@@ -176,7 +176,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="مثلاً: علی رضایی"
-                    className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3 px-4 pr-10 text-xs font-bold text-gray-900 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
+                    className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3 px-4 pr-10 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
                     required
                   />
                   <User className="h-4 w-4 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -195,7 +195,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="09123456789"
-                  className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3 px-4 pl-10 text-left text-xs font-mono font-bold text-gray-900 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
+                  className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3 px-4 pl-10 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
                   required
                 />
                 <Phone className="h-4 w-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -213,7 +213,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3 px-4 pl-10 pr-10 text-left text-xs font-mono font-bold text-gray-900 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
+                  className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3 px-4 pl-10 pr-10 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
                   required
                 />
                 <Lock className="h-4 w-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -244,7 +244,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
           </form>
 
           {/* Footer note */}
-          <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800/60 text-center text-[11px] text-gray-400 dark:text-gray-500">
+          <div className="mt-4 pt-3 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-center text-[11px] text-gray-400 dark:text-gray-500">
             {mode === 'login' ? (
               <span>ورود شما به منزله پذیرش قوانین جانبی آرنا است.</span>
             ) : (

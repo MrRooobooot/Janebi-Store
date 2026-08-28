@@ -29,7 +29,7 @@ export default function CheckoutStepsBar() {
       </div>
 
       <div className="flex flex-col items-center gap-2 bg-gray-50 dark:bg-gray-950 px-2 sm:px-4">
-        <div className="w-10 h-10 rounded-2xl bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-500 flex items-center justify-center font-bold text-base">
+        <div className="w-10 h-10 rounded-2xl bg-[var(--color-surface-light)] dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-500 flex items-center justify-center font-bold text-base">
           ۳
         </div>
         <span className="text-xs font-medium text-gray-500 dark:text-gray-400">پرداخت</span>

@@ -57,13 +57,13 @@ export default function RecentlyViewed({
       className="mt-12 text-right"
     >
       {/* Header */}
-      <div className="flex items-center justify-between mb-6 pb-3 border-b border-gray-200/70 dark:border-gray-800">
+      <div className="flex items-center justify-between mb-6 pb-3 border-b border-gray-200/70 dark:border-[var(--color-border-dark)]">
         <div className="flex items-center gap-2.5">
           <div className="p-2 rounded-xl bg-orange-50 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400">
             <History className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="text-xl font-black text-gray-900 dark:text-gray-100 tracking-tight flex items-center gap-2">
+            <h3 className="text-xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] tracking-tight flex items-center gap-2">
               {title}
             </h3>
             <p className="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">

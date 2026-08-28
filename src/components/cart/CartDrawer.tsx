@@ -66,7 +66,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-              className="w-screen max-w-md bg-white dark:bg-[#0c1017] text-zinc-900 dark:text-zinc-100 shadow-2xl border-r border-zinc-200/80 dark:border-zinc-800 flex flex-col justify-between"
+              className="w-screen max-w-md bg-[var(--color-surface-light)] dark:bg-[#0c1017] text-zinc-900 dark:text-zinc-100 shadow-2xl border-r border-zinc-200/80 dark:border-zinc-800 flex flex-col justify-between"
             >
               {/* Drawer Header */}
               <div className="p-4 sm:p-5 border-b border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between">

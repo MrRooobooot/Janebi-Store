@@ -305,7 +305,7 @@ export default function AdminProducts() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mb-1">مدیریت محصولات و موجودی انبار</h1>
+          <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-white mb-1">مدیریت محصولات و موجودی انبار</h1>
           <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm">افزودن کالا، تنظیم هوشمند قیمت و تخفیف، تخصیص خودکار وکتور کالا و کنترل موجودی</p>
         </div>
         <button
@@ -318,7 +318,7 @@ export default function AdminProducts() {
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-xs flex flex-col md:flex-row items-center gap-3">
+      <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 p-4 rounded-3xl border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs flex flex-col md:flex-row items-center gap-3">
         <div className="relative flex-1 w-full">
           <input
             type="text"
@@ -356,11 +356,11 @@ export default function AdminProducts() {
       </div>
 
       {/* Products Table */}
-      <div className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-xs">
+      <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl border border-[var(--color-border-light)] dark:border-gray-700 overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-right border-collapse">
             <thead>
-              <tr className="border-b border-gray-100 dark:border-gray-700 bg-gray-50/75 dark:bg-gray-800/50 text-[11px] font-black text-gray-500 dark:text-gray-400">
+              <tr className="border-b border-[var(--color-border-light)] dark:border-gray-700 bg-gray-50/75 dark:bg-gray-800/50 text-[11px] font-black text-gray-500 dark:text-gray-400">
                 <th className="p-4 pr-6">کالا و دسته‌بندی</th>
                 <th className="p-4">برند</th>
                 <th className="p-4">قیمت اصلی</th>
@@ -396,10 +396,10 @@ export default function AdminProducts() {
                           <img
                             src={p.image}
                             alt={p.title}
-                            className="w-12 h-12 rounded-xl object-contain bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 p-1 shrink-0"
+                            className="w-12 h-12 rounded-xl object-contain bg-gray-50 dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-gray-700 p-1 shrink-0"
                           />
                           <div className="min-w-0">
-                            <h4 className="font-black text-gray-900 dark:text-gray-100 line-clamp-1 leading-snug">{p.title}</h4>
+                            <h4 className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] line-clamp-1 leading-snug">{p.title}</h4>
                             <div className="flex items-center gap-2 mt-1">
                               <span className="inline-block px-2 py-0.5 rounded-md text-[10px] font-bold bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 border border-orange-200/50 dark:border-orange-800/40">
                                 {p.category}
@@ -479,16 +479,16 @@ export default function AdminProducts() {
       {/* Modern Fixed-Height Responsive Modal */}
       {isModalOpen && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/65 backdrop-blur-md">
-          <div className="bg-white dark:bg-gray-800 rounded-3xl max-w-2xl w-full shadow-2xl border border-gray-100 dark:border-gray-700 flex flex-col max-h-[92vh] overflow-hidden text-right animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl max-w-2xl w-full shadow-2xl border border-[var(--color-border-light)] dark:border-gray-700 flex flex-col max-h-[92vh] overflow-hidden text-right animate-in fade-in zoom-in-95 duration-200">
             
             {/* Modal Sticky Header */}
-            <div className="p-5 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shrink-0">
+            <div className="p-5 border-b border-[var(--color-border-light)] dark:border-gray-700 flex items-center justify-between bg-[var(--color-surface-light)]/80 dark:bg-gray-800/80 backdrop-blur-md shrink-0">
               <div className="flex items-center gap-2.5">
                 <div className="p-2 rounded-xl bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400">
                   <Package className="h-5 w-5" />
                 </div>
                 <div>
-                  <h2 className="text-base sm:text-lg font-black text-gray-900 dark:text-white">
+                  <h2 className="text-base sm:text-lg font-black text-[var(--color-text-main-light)] dark:text-white">
                     {editingProduct ? `ویرایش کالا: ${editingProduct.title}` : 'افزودن کالای جدید به فروشگاه'}
                   </h2>
                   <span className="text-[11px] text-gray-400">اطلاعات کالا به صورت زنده در کاتالوگ و انبار ذخیره خواهد شد</span>
@@ -575,7 +575,7 @@ export default function AdminProducts() {
                       value={formData.originalPrice ? formatPrice(parseInt(toEnglishDigits(formData.originalPrice), 10) || 0) : ''}
                       onChange={(e) => handleOriginalPriceChange(e.target.value)}
                       placeholder="مثال: ۱,۲۰۰,۰۰۰"
-                      className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl p-2.5 text-xs font-mono font-bold text-gray-900 dark:text-white focus:outline-none focus:border-orange-500"
+                      className="w-full bg-[var(--color-surface-light)] dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl p-2.5 text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-white focus:outline-none focus:border-orange-500"
                     />
                   </div>
 
@@ -588,7 +588,7 @@ export default function AdminProducts() {
                       value={formData.discount}
                       onChange={(e) => handleDiscountChange(e.target.value)}
                       placeholder="۰"
-                      className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl p-2.5 text-xs font-mono font-bold text-rose-600 dark:text-rose-400 focus:outline-none focus:border-orange-500"
+                      className="w-full bg-[var(--color-surface-light)] dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl p-2.5 text-xs font-mono font-bold text-rose-600 dark:text-rose-400 focus:outline-none focus:border-orange-500"
                     />
                   </div>
 
@@ -600,7 +600,7 @@ export default function AdminProducts() {
                       value={formData.price ? formatPrice(parseInt(toEnglishDigits(formData.price), 10) || 0) : ''}
                       onChange={(e) => handlePriceChange(e.target.value)}
                       placeholder="مثال: ۹۸۰,۰۰۰"
-                      className="w-full bg-white dark:bg-gray-800 border border-orange-300 dark:border-orange-500 rounded-xl p-2.5 text-xs font-mono font-black text-orange-600 dark:text-orange-400 focus:outline-none focus:border-orange-500"
+                      className="w-full bg-[var(--color-surface-light)] dark:bg-gray-800 border border-orange-300 dark:border-orange-500 rounded-xl p-2.5 text-xs font-mono font-black text-orange-600 dark:text-orange-400 focus:outline-none focus:border-orange-500"
                     />
                   </div>
                 </div>
@@ -647,7 +647,7 @@ export default function AdminProducts() {
                   <img 
                     src={formData.image} 
                     alt="Preview" 
-                    className="w-16 h-16 rounded-xl border border-gray-200 dark:border-gray-600 object-contain p-1.5 bg-white dark:bg-gray-900 shadow-sm shrink-0" 
+                    className="w-16 h-16 rounded-xl border border-gray-200 dark:border-gray-600 object-contain p-1.5 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] shadow-sm shrink-0" 
                   />
                   <div className="overflow-hidden grow">
                     <span className="text-[11px] text-gray-500 dark:text-gray-400 block mb-0.5">آدرس فایل تصویر وکتور:</span>
@@ -673,11 +673,11 @@ export default function AdminProducts() {
                           isSelected 
                             ? 'bg-orange-500 text-white border-orange-600 shadow-md scale-102' 
                             : isCategoryMatch
-                              ? 'bg-orange-50/70 dark:bg-orange-950/20 text-gray-800 dark:text-gray-100 border-orange-200 dark:border-orange-800 hover:border-orange-400'
-                              : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-gray-200 dark:border-gray-700 hover:border-gray-400'
+                              ? 'bg-orange-50/70 dark:bg-orange-950/20 text-gray-800 dark:text-[var(--color-text-main-dark)] border-orange-200 dark:border-orange-800 hover:border-orange-400'
+                              : 'bg-[var(--color-surface-light)] dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-gray-200 dark:border-gray-700 hover:border-gray-400'
                         }`}
                       >
-                        <img src={item.url} alt={item.label} className="w-9 h-9 rounded-lg object-contain bg-white dark:bg-gray-900 p-0.5 shrink-0 shadow-xs" />
+                        <img src={item.url} alt={item.label} className="w-9 h-9 rounded-lg object-contain bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] p-0.5 shrink-0 shadow-xs" />
                         <div className="min-w-0">
                           <span className="text-[11px] font-black truncate block leading-tight">{item.label}</span>
                           <span className={`text-[9px] block ${isSelected ? 'text-orange-100' : 'text-gray-400'}`}>{item.category}</span>
@@ -702,7 +702,7 @@ export default function AdminProducts() {
             </form>
 
             {/* Sticky Action Footer */}
-            <div className="p-4 sm:p-5 border-t border-gray-100 dark:border-gray-700 flex items-center justify-end gap-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shrink-0">
+            <div className="p-4 sm:p-5 border-t border-[var(--color-border-light)] dark:border-gray-700 flex items-center justify-end gap-3 bg-[var(--color-surface-light)]/80 dark:bg-gray-800/80 backdrop-blur-md shrink-0">
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}

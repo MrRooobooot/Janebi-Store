@@ -44,12 +44,12 @@ export default function AdminLayout() {
 
   if (!user || user.role !== 'admin') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
-        <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-3xl p-8 text-center shadow-xl border border-gray-100 dark:border-gray-800">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[var(--color-surface-dark)] p-4">
+        <div className="max-w-md w-full bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl p-8 text-center shadow-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
           <div className="bg-red-100 dark:bg-red-900/30 p-6 rounded-full inline-block mb-6">
             <ShieldAlert className="h-16 w-16 text-red-500" />
           </div>
-          <h1 className="text-2xl font-black text-gray-900 dark:text-white mb-4">دسترسی غیرمجاز</h1>
+          <h1 className="text-2xl font-black text-[var(--color-text-main-light)] dark:text-white mb-4">دسترسی غیرمجاز</h1>
           <p className="text-gray-500 dark:text-gray-400 mb-8">
             شما اجازه دسترسی به پنل مدیریت را ندارید. لطفاً با حساب کاربری مدیر وارد شوید.
           </p>
@@ -89,15 +89,15 @@ export default function AdminLayout() {
   ];
 
   const sidebarContent = (
-    <div className="flex flex-col h-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-l border-gray-200/80 dark:border-gray-800">
+    <div className="flex flex-col h-full bg-[var(--color-surface-light)]/95 dark:bg-[var(--color-surface-dark)]/95 backdrop-blur-xl border-l border-gray-200/80 dark:border-[var(--color-border-dark)]">
       {/* Brand Header */}
-      <div className="p-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+      <div className="p-5 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex items-center justify-between">
         <Link to="/admin" className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-orange-600 to-amber-500 text-white font-black text-base flex items-center justify-center shadow-md shadow-orange-500/20">
             J
           </div>
           <div>
-            <span className="text-base font-black text-gray-900 dark:text-gray-100">جانبی‌آرنا</span>
+            <span className="text-base font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">جانبی‌آرنا</span>
             <span className="block text-[10px] text-orange-600 dark:text-orange-400 font-bold">پنل مدیریت هوشمند</span>
           </div>
         </Link>
@@ -119,14 +119,14 @@ export default function AdminLayout() {
       </div>
       
       {/* Admin User Info Card */}
-      <div className="p-3.5 mx-3 my-3 rounded-2xl bg-gray-50/80 dark:bg-gray-800/40 border border-gray-100 dark:border-gray-800 flex items-center gap-3">
+      <div className="p-3.5 mx-3 my-3 rounded-2xl bg-gray-50/80 dark:bg-gray-800/40 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex items-center gap-3">
         <img 
           src={user.avatar || '/avatar.svg'} 
           alt={user.name} 
           className="w-10 h-10 rounded-xl border border-orange-500/30 object-cover shrink-0"
         />
         <div className="overflow-hidden grow">
-          <div className="font-bold text-gray-900 dark:text-white text-xs truncate">{user.name}</div>
+          <div className="font-bold text-[var(--color-text-main-light)] dark:text-white text-xs truncate">{user.name}</div>
           <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
             مدیر سیستم (آنلاین)
@@ -148,7 +148,7 @@ export default function AdminLayout() {
                 `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
                   isActive 
                     ? 'bg-gradient-to-r from-orange-600 to-amber-600 text-white shadow-md shadow-orange-500/25' 
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-gray-100'
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-[var(--color-text-main-light)] dark:hover:text-gray-100'
                 }`
               }
             >
@@ -167,7 +167,7 @@ export default function AdminLayout() {
       </nav>
 
       {/* Footer Utility Actions */}
-      <div className="p-3 border-t border-gray-100 dark:border-gray-800 space-y-1.5">
+      <div className="p-3 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] space-y-1.5">
         <Link
           to="/"
           target="_blank"
@@ -224,7 +224,7 @@ export default function AdminLayout() {
       {/* Main Content Area */}
       <div className="flex-1 lg:mr-64 flex flex-col min-w-0">
         {/* Mobile Header Bar */}
-        <header className="lg:hidden bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-b border-gray-200/80 dark:border-gray-800 p-3.5 flex items-center justify-between sticky top-0 z-20 shadow-xs">
+        <header className="lg:hidden bg-[var(--color-surface-light)]/90 dark:bg-[var(--color-surface-dark)]/90 backdrop-blur-xl border-b border-gray-200/80 dark:border-[var(--color-border-dark)] p-3.5 flex items-center justify-between sticky top-0 z-20 shadow-xs">
           <button
             onClick={() => setMobileOpen(true)}
             className="p-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200"
@@ -232,7 +232,7 @@ export default function AdminLayout() {
             <Menu className="h-5 w-5" />
           </button>
           <div className="flex items-center gap-2">
-            <span className="text-sm font-black text-gray-900 dark:text-white">جانبی‌آرنا</span>
+            <span className="text-sm font-black text-[var(--color-text-main-light)] dark:text-white">جانبی‌آرنا</span>
             <span className="text-[10px] bg-orange-100 dark:bg-orange-900/40 text-orange-600 font-bold px-2 py-0.5 rounded-md">مدیریت</span>
           </div>
           <button

@@ -38,7 +38,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="bg-white/95 dark:bg-[#080d15]/90 backdrop-blur-xl border-b border-zinc-200/80 dark:border-zinc-800/80 sticky top-0 z-40 transition-colors duration-200 w-full overflow-x-clip">
+    <header className="bg-[var(--color-surface-light)]/95 dark:bg-[#080d15]/90 backdrop-blur-xl border-b border-zinc-200/80 dark:border-zinc-800/80 sticky top-0 z-40 transition-colors duration-200 w-full overflow-x-clip">
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
       
       {/* Top Announcement Bar — Strict Overflow Control */}
@@ -104,7 +104,7 @@ export default function Header() {
               aria-label={isDarkMode ? "تغییر به حالت روز" : "تغییر به حالت شب"}
               title={isDarkMode ? "حالت روز (روشن)" : "حالت شب (تاریک)"}
               onClick={toggleTheme}
-              className="p-2 text-zinc-600 dark:text-zinc-300 hover:text-orange-600 dark:hover:text-orange-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-white/[0.06] transition-colors"
+              className="p-2 text-zinc-600 dark:text-zinc-300 hover:text-orange-600 dark:hover:text-orange-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-[var(--color-surface-light)]/[0.06] transition-colors"
             >
               {isDarkMode ? <Sun className="h-5 w-5 text-amber-400" /> : <Moon className="h-5 w-5 text-zinc-600" />}
             </button>
@@ -169,7 +169,7 @@ export default function Header() {
 
                 {userDropdownOpen && (
                   <div 
-                    className="absolute left-0 mt-2 w-48 bg-white dark:bg-zinc-900 rounded-2xl shadow-xl border border-zinc-200 dark:border-zinc-800 py-2 z-50 animate-in fade-in zoom-in-95 duration-100"
+                    className="absolute left-0 mt-2 w-48 bg-[var(--color-surface-light)] dark:bg-zinc-900 rounded-2xl shadow-xl border border-zinc-200 dark:border-zinc-800 py-2 z-50 animate-in fade-in zoom-in-95 duration-100"
                     onMouseLeave={() => setUserDropdownOpen(false)}
                   >
                     <div className="px-4 py-2 border-b border-zinc-100 dark:border-zinc-800">
@@ -255,7 +255,7 @@ export default function Header() {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-4 space-y-3 animate-in slide-in-from-top-2 duration-150">
+        <div className="lg:hidden border-t border-zinc-200 dark:border-zinc-800 bg-[var(--color-surface-light)] dark:bg-zinc-900 px-4 py-4 space-y-3 animate-in slide-in-from-top-2 duration-150">
           <div className="grid grid-cols-2 gap-2 text-xs font-medium">
             {navLinks.map((link) => (
               <Link

@@ -50,7 +50,7 @@ export default function MobileBottomNav() {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-t border-gray-200/50 dark:border-gray-800/50 shadow-lg px-2 py-1.5 transition-colors duration-300">
+    <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-[var(--color-surface-light)]/80 dark:bg-[var(--color-surface-dark)]/80 backdrop-blur-xl border-t border-gray-200/50 dark:border-[var(--color-border-dark)]/50 shadow-lg px-2 py-1.5 transition-colors duration-300">
       <div className="flex items-center justify-around max-w-md mx-auto">
         {navItems.map((item) => {
           const isActive = item.exact
@@ -66,7 +66,7 @@ export default function MobileBottomNav() {
               className={`relative flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-300 min-touch-target ${
                 isActive
                   ? 'text-orange-600 dark:text-orange-400 font-bold'
-                  : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-white/[0.04]'
+                  : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-[var(--color-surface-light)]/[0.04]'
               }`}
             >
               {isActive && (

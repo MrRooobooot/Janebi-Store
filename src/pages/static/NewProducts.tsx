@@ -31,7 +31,7 @@ export default function NewProducts() {
     >
       <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white rounded-3xl p-8 sm:p-10 relative overflow-hidden shadow-lg shadow-blue-600/20">
         <div className="relative z-10 max-w-xl">
-          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold mb-3">
+          <div className="inline-flex items-center gap-2 bg-[var(--color-surface-light)]/20 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold mb-3">
             <Zap className="h-4 w-4 text-amber-300" /> تازه رسیده‌ها
           </div>
           <h1 className="text-3xl font-black mb-3 tracking-tight">جدیدترین محصولات جانبی آرنا</h1>
@@ -43,7 +43,7 @@ export default function NewProducts() {
 
       <div>
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-black text-gray-900 dark:text-gray-100 flex items-center gap-2">
+          <h2 className="text-xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-orange-600 dark:text-orange-400" />
             جدیدترین کالاهای موجود
           </h2>
@@ -55,14 +55,14 @@ export default function NewProducts() {
               <ProductCardSkeleton key={idx} />
             ))
           ) : error ? (
-            <div className="col-span-full bg-white dark:bg-gray-900 border border-red-100 dark:border-red-900/40 rounded-2xl p-8 text-center">
+            <div className="col-span-full bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-red-100 dark:border-red-900/40 rounded-2xl p-8 text-center">
               <p className="text-sm text-red-600 dark:text-red-400 font-bold">{error}</p>
               <button onClick={() => window.location.reload()} className="mt-4 px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold transition-colors">
                 تلاش مجدد
               </button>
             </div>
           ) : products.length === 0 ? (
-            <div className="col-span-full bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-8 text-center">
+            <div className="col-span-full bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-8 text-center">
               <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">در حال حاضر محصولی برای نمایش وجود ندارد.</p>
             </div>
           ) : (

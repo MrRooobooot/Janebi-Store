@@ -29,7 +29,7 @@ export default function Compare() {
           description="شما هنوز محصولی را برای مقایسه انتخاب نکرده‌اید. با افزودن محصولات به لیست مقایسه می‌توانید راحت‌تر تصمیم‌گیری کنید."
           actionText="مشاهده محصولات"
           actionLink="/products"
-          className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-3xl p-12 shadow-xs border border-gray-100 dark:border-gray-800 text-center"
+          className="bg-[var(--color-surface-light)]/80 dark:bg-[var(--color-surface-dark)]/80 backdrop-blur-xl rounded-3xl p-12 shadow-xs border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-center"
         />
       </motion.div>
     );
@@ -46,7 +46,7 @@ export default function Compare() {
       className="text-right"
     >
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
-        <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-gray-100 flex items-center gap-3">
+        <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-3">
           <span className="relative">
             مقایسه محصولات
             <span className="absolute bottom-1 left-0 right-0 h-3 bg-orange-200/50 dark:bg-orange-500/20 -z-10 rounded-sm"></span>
@@ -63,13 +63,13 @@ export default function Compare() {
         </button>
       </div>
 
-      <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-gray-100 dark:border-gray-800 rounded-3xl overflow-hidden shadow-xs transition-colors">
+      <div className="bg-[var(--color-surface-light)]/80 dark:bg-[var(--color-surface-dark)]/80 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl overflow-hidden shadow-xs transition-colors">
         <div className="overflow-x-auto custom-scrollbar pb-2">
           <table className="w-full min-w-[900px] text-right border-collapse">
             <thead>
               <tr>
-                <th className="p-6 border-b border-l border-gray-100 dark:border-gray-800/60 bg-gray-50/50 dark:bg-gray-800/30 w-1/4 align-top">
-                  <div className="text-gray-900 dark:text-gray-100 font-black text-lg mb-2">
+                <th className="p-6 border-b border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 bg-gray-50/50 dark:bg-gray-800/30 w-1/4 align-top">
+                  <div className="text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] font-black text-lg mb-2">
                     مشخصات کالاها
                   </div>
                   <p className="text-xs text-gray-500 dark:text-gray-400 font-medium leading-relaxed">
@@ -85,11 +85,11 @@ export default function Compare() {
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.9 }}
                       key={item.id}
-                      className="p-6 border-b border-l border-gray-100 dark:border-gray-800/60 w-1/4 relative align-top group hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors"
+                      className="p-6 border-b border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 w-1/4 relative align-top group hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors"
                     >
                       <button
                         onClick={() => toggleCompare(item)}
-                        className="absolute top-4 left-4 text-gray-400 hover:text-white bg-white dark:bg-gray-800 hover:bg-red-500 dark:hover:bg-red-500 rounded-xl p-1.5 border border-gray-200 dark:border-gray-700 hover:border-red-500 transition-all shadow-xs z-10 opacity-80 group-hover:opacity-100"
+                        className="absolute top-4 left-4 text-gray-400 hover:text-white bg-[var(--color-surface-light)] dark:bg-gray-800 hover:bg-red-500 dark:hover:bg-red-500 rounded-xl p-1.5 border border-gray-200 dark:border-gray-700 hover:border-red-500 transition-all shadow-xs z-10 opacity-80 group-hover:opacity-100"
                         title="حذف از مقایسه"
                       >
                         <X className="h-4 w-4" />
@@ -98,7 +98,7 @@ export default function Compare() {
                       <div className="flex flex-col items-center text-center">
                         <Link
                           to={`/products/${item.id}`}
-                          className="w-32 h-32 mb-4 bg-white dark:bg-gray-800 rounded-2xl p-2 flex items-center justify-center border border-gray-100 dark:border-gray-700 group-hover:border-orange-200 dark:group-hover:border-orange-800/50 transition-colors"
+                          className="w-32 h-32 mb-4 bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl p-2 flex items-center justify-center border border-[var(--color-border-light)] dark:border-gray-700 group-hover:border-orange-200 dark:group-hover:border-orange-800/50 transition-colors"
                         >
                           <img
                             src={item.image}
@@ -109,7 +109,7 @@ export default function Compare() {
 
                         <Link
                           to={`/products/${item.id}`}
-                          className="font-bold text-gray-900 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-400 line-clamp-2 mb-3 text-xs sm:text-sm transition-colors h-10 leading-snug"
+                          className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] hover:text-orange-600 dark:hover:text-orange-400 line-clamp-2 mb-3 text-xs sm:text-sm transition-colors h-10 leading-snug"
                         >
                           {item.title}
                         </Link>
@@ -133,7 +133,7 @@ export default function Compare() {
                 {Array.from({ length: Math.max(0, 3 - compareItems.length) }).map((_, idx) => (
                   <th
                     key={`empty-${idx}`}
-                    className="p-6 border-b border-l border-gray-100 dark:border-gray-800/60 bg-gray-50/30 dark:bg-gray-900/30 w-1/4 align-middle"
+                    className="p-6 border-b border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 bg-gray-50/30 dark:bg-[var(--color-surface-dark)]/30 w-1/4 align-middle"
                   >
                     <div
                       className="flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 h-full min-h-[250px] border-2 border-dashed border-gray-200 dark:border-gray-700/50 rounded-2xl p-8 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors group cursor-pointer"
@@ -151,7 +151,7 @@ export default function Compare() {
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-gray-800/60">
               <tr className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
-                <td className="p-4 font-bold text-gray-900 dark:text-gray-100 bg-gray-50/50 dark:bg-gray-800/30 border-l border-gray-100 dark:border-gray-800/60 w-1/4 text-xs sm:text-sm">
+                <td className="p-4 font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] bg-gray-50/50 dark:bg-gray-800/30 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 w-1/4 text-xs sm:text-sm">
                   <div className="flex items-center gap-2">
                     <Tag className="h-4 w-4 text-orange-500" /> برند سازنده
                   </div>
@@ -159,7 +159,7 @@ export default function Compare() {
                 {compareItems.map((item) => (
                   <td
                     key={item.id}
-                    className="p-4 text-gray-700 dark:text-gray-200 border-l border-gray-100 dark:border-gray-800/60 text-center font-bold text-xs sm:text-sm"
+                    className="p-4 text-gray-700 dark:text-gray-200 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-center font-bold text-xs sm:text-sm"
                   >
                     {item.brand}
                   </td>
@@ -167,14 +167,14 @@ export default function Compare() {
                 {Array.from({ length: Math.max(0, 3 - compareItems.length) }).map((_, idx) => (
                   <td
                     key={`empty-brand-${idx}`}
-                    className="p-4 border-l border-gray-100 dark:border-gray-800/60 text-center text-gray-300 dark:text-gray-700"
+                    className="p-4 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-center text-gray-300 dark:text-gray-700"
                   >
                     -
                   </td>
                 ))}
               </tr>
               <tr className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
-                <td className="p-4 font-bold text-gray-900 dark:text-gray-100 bg-gray-50/50 dark:bg-gray-800/30 border-l border-gray-100 dark:border-gray-800/60 text-xs sm:text-sm">
+                <td className="p-4 font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] bg-gray-50/50 dark:bg-gray-800/30 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-xs sm:text-sm">
                   <div className="flex items-center gap-2">
                     <Info className="h-4 w-4 text-orange-500" /> دسته‌بندی
                   </div>
@@ -182,7 +182,7 @@ export default function Compare() {
                 {compareItems.map((item) => (
                   <td
                     key={item.id}
-                    className="p-4 text-gray-600 dark:text-gray-300 border-l border-gray-100 dark:border-gray-800/60 text-center font-medium bg-gray-50/30 dark:bg-gray-800/10"
+                    className="p-4 text-gray-600 dark:text-gray-300 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-center font-medium bg-gray-50/30 dark:bg-gray-800/10"
                   >
                     <span className="bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full text-xs font-bold">
                       {item.category}
@@ -192,14 +192,14 @@ export default function Compare() {
                 {Array.from({ length: Math.max(0, 3 - compareItems.length) }).map((_, idx) => (
                   <td
                     key={`empty-cat-${idx}`}
-                    className="p-4 border-l border-gray-100 dark:border-gray-800/60 text-center text-gray-300 dark:text-gray-700"
+                    className="p-4 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-center text-gray-300 dark:text-gray-700"
                   >
                     -
                   </td>
                 ))}
               </tr>
               <tr className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
-                <td className="p-4 font-bold text-gray-900 dark:text-gray-100 bg-gray-50/50 dark:bg-gray-800/30 border-l border-gray-100 dark:border-gray-800/60 text-xs sm:text-sm">
+                <td className="p-4 font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] bg-gray-50/50 dark:bg-gray-800/30 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-xs sm:text-sm">
                   <div className="flex items-center gap-2">
                     <ShieldCheck className="h-4 w-4 text-emerald-500" /> گارانتی
                   </div>
@@ -207,7 +207,7 @@ export default function Compare() {
                 {compareItems.map((item) => (
                   <td
                     key={item.id}
-                    className="p-4 text-gray-700 dark:text-gray-200 border-l border-gray-100 dark:border-gray-800/60 text-center font-medium text-xs sm:text-sm"
+                    className="p-4 text-gray-700 dark:text-gray-200 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-center font-medium text-xs sm:text-sm"
                   >
                     {item.warranty ? (
                       <div className="flex items-center justify-center gap-1.5 font-bold">
@@ -221,7 +221,7 @@ export default function Compare() {
                 {Array.from({ length: Math.max(0, 3 - compareItems.length) }).map((_, idx) => (
                   <td
                     key={`empty-war-${idx}`}
-                    className="p-4 border-l border-gray-100 dark:border-gray-800/60 text-center text-gray-300 dark:text-gray-700"
+                    className="p-4 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-center text-gray-300 dark:text-gray-700"
                   >
                     -
                   </td>
@@ -233,7 +233,7 @@ export default function Compare() {
                   key={feature}
                   className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors"
                 >
-                  <td className="p-4 font-bold text-gray-900 dark:text-gray-100 bg-gray-50/50 dark:bg-gray-800/30 border-l border-gray-100 dark:border-gray-800/60 text-xs sm:text-sm">
+                  <td className="p-4 font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] bg-gray-50/50 dark:bg-gray-800/30 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-xs sm:text-sm">
                     <div className="flex items-center gap-2">
                       <div className="w-1.5 h-1.5 rounded-full bg-orange-400 shrink-0"></div> {feature}
                     </div>
@@ -241,7 +241,7 @@ export default function Compare() {
                   {compareItems.map((item) => (
                     <td
                       key={item.id}
-                      className="p-4 border-l border-gray-100 dark:border-gray-800/60 text-center align-middle"
+                      className="p-4 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-center align-middle"
                     >
                       {item.features?.includes(feature) ? (
                         <div className="flex justify-center">
@@ -257,7 +257,7 @@ export default function Compare() {
                   {Array.from({ length: Math.max(0, 3 - compareItems.length) }).map((_, idx) => (
                     <td
                       key={`empty-feat-${idx}`}
-                      className="p-4 border-l border-gray-100 dark:border-gray-800/60 text-center text-gray-300 dark:text-gray-700"
+                      className="p-4 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-center text-gray-300 dark:text-gray-700"
                     >
                       -
                     </td>

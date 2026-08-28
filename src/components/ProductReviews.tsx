@@ -231,11 +231,11 @@ export default function ProductReviews({ productId, initialRating = 4.7, initial
   return (
     <div className="space-y-8 text-right">
       {/* Top Overview & Ratings Summary Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-gradient-to-br from-gray-50 to-orange-50/30 dark:from-gray-800/60 dark:to-gray-900/60 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-800">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-gradient-to-br from-gray-50 to-orange-50/30 dark:from-gray-800/60 dark:to-gray-900/60 rounded-3xl p-6 sm:p-8 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
         
         {/* Rating Score Card */}
-        <div className="lg:col-span-4 flex flex-col items-center justify-center p-6 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800/80 shadow-xs text-center">
-          <div className="text-5xl font-black text-gray-900 dark:text-gray-100 tracking-tight mb-2">
+        <div className="lg:col-span-4 flex flex-col items-center justify-center p-6 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/80 shadow-xs text-center">
+          <div className="text-5xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] tracking-tight mb-2">
             {avgRating}
           </div>
 
@@ -256,14 +256,14 @@ export default function ProductReviews({ productId, initialRating = 4.7, initial
             از مجموع {totalReviews.toLocaleString('fa-IR')} دیدگاه ثبت‌شده
           </p>
 
-          <div className="w-full pt-4 border-t border-gray-100 dark:border-gray-800 flex items-center justify-center gap-2 text-xs text-emerald-600 dark:text-emerald-400 font-bold">
+          <div className="w-full pt-4 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex items-center justify-center gap-2 text-xs text-emerald-600 dark:text-emerald-400 font-bold">
             <Award className="h-4 w-4" />
             <span>{recommendPercent}٪ خریداران این محصول را پیشنهاد داده‌اند</span>
           </div>
         </div>
 
         {/* Rating Bars Breakdown */}
-        <div className="lg:col-span-8 flex flex-col justify-center space-y-2.5 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-100 dark:border-gray-800/80 shadow-xs">
+        <div className="lg:col-span-8 flex flex-col justify-center space-y-2.5 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] p-6 rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/80 shadow-xs">
           <h4 className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-1 flex items-center gap-1.5">
             <Sparkles className="h-4 w-4 text-orange-500" />
             توزیع امتیاز کاربران:
@@ -301,7 +301,7 @@ export default function ProductReviews({ productId, initialRating = 4.7, initial
       {/* Action Header: Filter / Sort / Add Review Button */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2">
         <div>
-          <h3 className="text-lg font-black text-gray-900 dark:text-gray-100 flex items-center gap-2">
+          <h3 className="text-lg font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
             نظرات و بازخورد خریداران
             <span className="text-xs font-bold bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 px-2.5 py-0.5 rounded-full">
               {filteredReviews.length.toLocaleString('fa-IR')}
@@ -336,10 +336,10 @@ export default function ProductReviews({ productId, initialRating = 4.7, initial
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
             onSubmit={handleSubmitReview}
-            className="bg-white dark:bg-gray-900 rounded-3xl p-6 sm:p-8 border-2 border-orange-500/30 dark:border-orange-500/20 shadow-xl space-y-6 overflow-hidden"
+            className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 sm:p-8 border-2 border-orange-500/30 dark:border-orange-500/20 shadow-xl space-y-6 overflow-hidden"
           >
-            <div className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-800">
-              <h4 className="font-black text-sm text-gray-900 dark:text-gray-100 flex items-center gap-2">
+            <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
+              <h4 className="font-black text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
                 <Send className="h-4 w-4 text-orange-600" />
                 ثبت نظر و امتیاز برای این محصول
               </h4>
@@ -357,7 +357,7 @@ export default function ProductReviews({ productId, initialRating = 4.7, initial
                   value={userName}
                   onChange={(e) => setUserName(e.target.value)}
                   placeholder="مثلاً: علی محمدی"
-                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3 text-xs text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500"
+                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3 text-xs text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
                   required
                 />
               </div>
@@ -372,7 +372,7 @@ export default function ProductReviews({ productId, initialRating = 4.7, initial
                   value={reviewTitle}
                   onChange={(e) => setReviewTitle(e.target.value)}
                   placeholder="مثلاً: کیفیـت ساخت عالی و شارژدهی فوق‌العاده"
-                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3 text-xs text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500"
+                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3 text-xs text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
                   required
                 />
               </div>
@@ -383,7 +383,7 @@ export default function ProductReviews({ productId, initialRating = 4.7, initial
               <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">
                 امتیاز شما به کیفیت محصول:
               </label>
-              <div className="flex flex-wrap items-center gap-3 bg-gray-50 dark:bg-gray-800/60 p-4 rounded-2xl border border-gray-100 dark:border-gray-700/60">
+              <div className="flex flex-wrap items-center gap-3 bg-gray-50 dark:bg-gray-800/60 p-4 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700/60">
                 <div dir="ltr" className="flex items-center gap-1.5 [direction:ltr]">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
@@ -421,13 +421,13 @@ export default function ProductReviews({ productId, initialRating = 4.7, initial
                 value={reviewComment}
                 onChange={(e) => setReviewComment(e.target.value)}
                 placeholder="نقاط قوت، نقاط ضعف و نحوه عملکرد محصول در استفاده روزمره را توضیح دهید..."
-                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3.5 text-xs text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500 transition-colors resize-none"
+                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3.5 text-xs text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500 transition-colors resize-none"
                 required
               />
             </div>
 
             {/* Recommendation Toggle */}
-            <div className="flex items-center justify-between bg-gray-50 dark:bg-gray-800/60 p-4 rounded-2xl border border-gray-100 dark:border-gray-700/60">
+            <div className="flex items-center justify-between bg-gray-50 dark:bg-gray-800/60 p-4 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700/60">
               <span className="text-xs font-bold text-gray-800 dark:text-gray-200">
                 آیا خرید این محصول را به سایر کاربران پیشنهاد می‌کنید؟
               </span>
@@ -439,7 +439,7 @@ export default function ProductReviews({ productId, initialRating = 4.7, initial
                   className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
                     recommend
                       ? 'bg-emerald-600 text-white shadow-xs'
-                      : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100'
+                      : 'bg-[var(--color-surface-light)] dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100'
                   }`}
                 >
                   <ThumbsUp className="h-3.5 w-3.5" />
@@ -452,7 +452,7 @@ export default function ProductReviews({ productId, initialRating = 4.7, initial
                   className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
                     !recommend
                       ? 'bg-red-600 text-white shadow-xs'
-                      : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100'
+                      : 'bg-[var(--color-surface-light)] dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100'
                   }`}
                 >
                   <ThumbsDown className="h-3.5 w-3.5" />
@@ -491,7 +491,7 @@ export default function ProductReviews({ productId, initialRating = 4.7, initial
       </AnimatePresence>
 
       {/* Sorting & Filter Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-gray-50 dark:bg-gray-800/50 p-3 rounded-2xl border border-gray-100 dark:border-gray-800">
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-gray-50 dark:bg-gray-800/50 p-3 rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
         <div className="flex flex-wrap items-center gap-2 text-xs">
           <span className="font-bold text-gray-500 dark:text-gray-400 flex items-center gap-1 ml-1">
             <Filter className="h-3.5 w-3.5" />
@@ -503,7 +503,7 @@ export default function ProductReviews({ productId, initialRating = 4.7, initial
             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
               ratingFilter === 'all'
                 ? 'bg-orange-600 text-white shadow-xs'
-                : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100'
+                : 'bg-[var(--color-surface-light)] dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100'
             }`}
           >
             همه نظرات
@@ -516,7 +516,7 @@ export default function ProductReviews({ productId, initialRating = 4.7, initial
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 ${
                 ratingFilter === star
                   ? 'bg-orange-600 text-white shadow-xs'
-                  : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100'
+                  : 'bg-[var(--color-surface-light)] dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100'
               }`}
             >
               <span>{star}</span>
@@ -531,7 +531,7 @@ export default function ProductReviews({ productId, initialRating = 4.7, initial
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-1.5 text-xs font-bold text-gray-800 dark:text-gray-200 focus:outline-none"
+            className="bg-[var(--color-surface-light)] dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-1.5 text-xs font-bold text-gray-800 dark:text-gray-200 focus:outline-none"
           >
             <option value="helpful">مفیدترین نظرات</option>
             <option value="newest">جدیدترین نظرات</option>
@@ -552,7 +552,7 @@ export default function ProductReviews({ productId, initialRating = 4.7, initial
               key={review.id}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800/80 rounded-2xl p-5 sm:p-6 shadow-2xs hover:border-gray-200 dark:hover:border-gray-700 transition-all space-y-3"
+              className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/80 rounded-2xl p-5 sm:p-6 shadow-2xs hover:border-gray-200 dark:hover:border-gray-700 transition-all space-y-3"
             >
               {/* Header */}
               <div className="flex items-center justify-between">
@@ -564,7 +564,7 @@ export default function ProductReviews({ productId, initialRating = 4.7, initial
 
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-sm text-gray-900 dark:text-gray-100">
+                      <span className="font-bold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
                         {review.userName}
                       </span>
                       {review.isVerifiedBuyer && (
@@ -602,7 +602,7 @@ export default function ProductReviews({ productId, initialRating = 4.7, initial
 
               {/* Title & Comment */}
               <div>
-                <h5 className="font-bold text-sm text-gray-900 dark:text-gray-100 mb-1">
+                <h5 className="font-bold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] mb-1">
                   {review.title}
                 </h5>
                 <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
@@ -611,7 +611,7 @@ export default function ProductReviews({ productId, initialRating = 4.7, initial
               </div>
 
               {/* Helpful Votes Footer */}
-              <div className="pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between text-xs text-gray-400">
+              <div className="pt-3 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex items-center justify-between text-xs text-gray-400">
                 <span>آیا این دیدگاه برای شما مفید بود؟</span>
 
                 <div className="flex items-center gap-2">
@@ -643,7 +643,7 @@ export default function ProductReviews({ productId, initialRating = 4.7, initial
             </motion.div>
           ))
         ) : (
-          <div className="text-center p-8 bg-gray-50 dark:bg-gray-800/40 rounded-2xl border border-gray-100 dark:border-gray-800 text-gray-400 text-xs">
+          <div className="text-center p-8 bg-gray-50 dark:bg-gray-800/40 rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-gray-400 text-xs">
             هیچ نظری با فیلتر انتخابی شما وجود ندارد.
           </div>
         )}

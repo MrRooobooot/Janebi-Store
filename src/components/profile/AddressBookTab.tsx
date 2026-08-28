@@ -119,9 +119,9 @@ export default function AddressBookTab() {
   return (
     <div className="space-y-6 text-right">
       {/* Header & Add Button */}
-      <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-6 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="font-extrabold text-lg text-gray-900 dark:text-gray-100 flex items-center gap-2">
+          <h2 className="font-extrabold text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
             <MapPin className="h-5 w-5 text-orange-500" />
             <span>آدرس‌های تحویل سفارش ({addresses.length})</span>
           </h2>
@@ -141,7 +141,7 @@ export default function AddressBookTab() {
 
       {/* Address Cards List */}
       {addresses.length === 0 ? (
-        <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-12 text-center text-gray-400 font-bold text-sm space-y-3">
+        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-12 text-center text-gray-400 font-bold text-sm space-y-3">
           <div className="w-12 h-12 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center mx-auto text-gray-400">
             <MapPin className="h-6 w-6" />
           </div>
@@ -158,16 +158,16 @@ export default function AddressBookTab() {
           {addresses.map((addr) => (
             <div
               key={addr.id}
-              className={`bg-white dark:bg-gray-900 border-2 rounded-3xl p-6 shadow-xs relative flex flex-col justify-between transition-all ${
+              className={`bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border-2 rounded-3xl p-6 shadow-xs relative flex flex-col justify-between transition-all ${
                 addr.isDefault
                   ? 'border-orange-500 shadow-md shadow-orange-500/10'
-                  : 'border-gray-100 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700'
+                  : 'border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] hover:border-gray-300 dark:hover:border-gray-700'
               }`}
             >
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <span className="font-extrabold text-sm text-gray-900 dark:text-gray-100 flex items-center gap-1.5">
+                    <span className="font-extrabold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-1.5">
                       <Building className="h-4 w-4 text-orange-500" />
                       {addr.title}
                     </span>
@@ -204,7 +204,7 @@ export default function AddressBookTab() {
                   {addr.province}، {addr.city}، {addr.address}
                 </p>
 
-                <div className="space-y-1.5 text-xs text-gray-500 dark:text-gray-400 font-medium bg-gray-50 dark:bg-gray-800/40 p-3 rounded-2xl border border-gray-100 dark:border-gray-800">
+                <div className="space-y-1.5 text-xs text-gray-500 dark:text-gray-400 font-medium bg-gray-50 dark:bg-gray-800/40 p-3 rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
                   <div className="flex justify-between">
                     <span>تحویل گیرنده:</span>
                     <strong className="text-gray-800 dark:text-gray-200">{addr.name}</strong>
@@ -222,7 +222,7 @@ export default function AddressBookTab() {
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-gray-100 dark:border-gray-800/60 mt-4 flex items-center justify-between">
+              <div className="pt-4 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 mt-4 flex items-center justify-between">
                 {!addr.isDefault ? (
                   <button
                     onClick={() => setDefaultAddress(addr.id)}
@@ -250,9 +250,9 @@ export default function AddressBookTab() {
             className="fixed inset-0 bg-black/60 backdrop-blur-xs"
           />
 
-          <div className="relative w-full max-w-lg bg-white dark:bg-gray-900 rounded-3xl p-6 sm:p-8 shadow-2xl border border-gray-100 dark:border-gray-800 z-10 text-right space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-800">
-              <h3 className="font-extrabold text-base text-gray-900 dark:text-gray-100 flex items-center gap-2">
+          <div className="relative w-full max-w-lg bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 sm:p-8 shadow-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] z-10 text-right space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
+              <h3 className="font-extrabold text-base text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
                 <MapPin className="h-5 w-5 text-orange-500" />
                 {editingId ? 'ویرایش آدرس تحویل' : 'ثبت آدرس جدید تحویل'}
               </h3>
@@ -275,7 +275,7 @@ export default function AddressBookTab() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="خانه، شرکت..."
-                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-3 text-xs font-bold text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500"
+                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-3 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
                     required
                   />
                 </div>
@@ -289,7 +289,7 @@ export default function AddressBookTab() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="علی رضایی"
-                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-3 text-xs font-bold text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500"
+                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-3 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
                     required
                   />
                 </div>
@@ -306,7 +306,7 @@ export default function AddressBookTab() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="09123456789"
-                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-3 text-left text-xs font-mono font-bold text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500"
+                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-3 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
                     required
                   />
                 </div>
@@ -318,7 +318,7 @@ export default function AddressBookTab() {
                   <select
                     value={province}
                     onChange={(e) => setProvince(e.target.value)}
-                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-3 text-xs font-bold text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500 cursor-pointer"
+                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-3 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500 cursor-pointer"
                   >
                     {PROVINCES.map((p) => (
                       <option key={p} value={p}>
@@ -339,7 +339,7 @@ export default function AddressBookTab() {
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                     placeholder="تهران"
-                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-3 text-xs font-bold text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500"
+                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-3 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
                     required
                   />
                 </div>
@@ -354,7 +354,7 @@ export default function AddressBookTab() {
                     value={postalCode}
                     onChange={(e) => setPostalCode(e.target.value)}
                     placeholder="1234567890"
-                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-3 text-left text-xs font-mono font-bold text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500"
+                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-3 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
                   />
                 </div>
               </div>
@@ -368,7 +368,7 @@ export default function AddressBookTab() {
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="خیابان اصلی، کوچه، پلاک، واحد..."
-                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-3 text-xs font-bold text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500 resize-none"
+                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-3 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500 resize-none"
                   required
                 />
               </div>

@@ -138,13 +138,13 @@ export default function AdminUsers() {
     <div className="space-y-6 text-right">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mb-1">مدیریت کاربران و باشگاه وفاداری</h1>
+          <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-white mb-1">مدیریت کاربران و باشگاه وفاداری</h1>
           <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">مشاهده لیست اعضا، تغییر نقش، بازنشانی رمز عبور و اعطای امتیازات VIP</p>
         </div>
       </div>
 
       {/* Search */}
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-xs">
+      <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 p-4 rounded-3xl border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs">
         <div className="relative">
           <input
             type="text"
@@ -158,10 +158,10 @@ export default function AdminUsers() {
       </div>
 
       {/* Users Table */}
-      <div className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-xs">
+      <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl border border-[var(--color-border-light)] dark:border-gray-700 overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-right text-xs">
-            <thead className="bg-gray-50/80 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700">
+            <thead className="bg-gray-50/80 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 border-b border-[var(--color-border-light)] dark:border-gray-700">
               <tr>
                 <th className="p-4 font-bold">نام و تصویر</th>
                 <th className="p-4 font-bold">شماره موبایل</th>
@@ -190,7 +190,7 @@ export default function AdminUsers() {
                         className="w-10 h-10 rounded-full border border-gray-200 dark:border-gray-700 object-cover shrink-0"
                       />
                       <div>
-                        <div className="font-extrabold text-gray-900 dark:text-white">{u.name}</div>
+                        <div className="font-extrabold text-[var(--color-text-main-light)] dark:text-white">{u.name}</div>
                         <div className="text-[10px] text-gray-400 font-mono mt-0.5">{u.email || 'بدون ایمیل'}</div>
                       </div>
                     </td>
@@ -255,9 +255,9 @@ export default function AdminUsers() {
       {/* Password Reset Modal */}
       {passwordModalUser && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="bg-white dark:bg-gray-800 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-gray-100 dark:border-gray-700 text-right">
-            <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-700 mb-4">
-              <h3 className="font-black text-gray-900 dark:text-white text-base flex items-center gap-2">
+          <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-[var(--color-border-light)] dark:border-gray-700 text-right">
+            <div className="flex items-center justify-between pb-3 border-b border-[var(--color-border-light)] dark:border-gray-700 mb-4">
+              <h3 className="font-black text-[var(--color-text-main-light)] dark:text-white text-base flex items-center gap-2">
                 <KeyRound className="h-5 w-5 text-orange-500" />
                 <span>تغییر رمز عبور کاربر</span>
               </h3>
@@ -267,7 +267,7 @@ export default function AdminUsers() {
             </div>
 
             <p className="text-xs text-gray-600 dark:text-gray-400 mb-4">
-              تنظیم رمز عبور جدید برای کاربر: <strong className="text-gray-900 dark:text-white">{passwordModalUser.name}</strong> ({passwordModalUser.phone})
+              تنظیم رمز عبور جدید برای کاربر: <strong className="text-[var(--color-text-main-light)] dark:text-white">{passwordModalUser.name}</strong> ({passwordModalUser.phone})
             </p>
 
             <form onSubmit={handleResetPasswordSubmit} className="space-y-4">
@@ -284,7 +284,7 @@ export default function AdminUsers() {
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-gray-100 dark:border-gray-700">
+              <div className="flex justify-end gap-2 pt-3 border-t border-[var(--color-border-light)] dark:border-gray-700">
                 <button
                   type="button"
                   onClick={() => setPasswordModalUser(null)}
@@ -309,9 +309,9 @@ export default function AdminUsers() {
       {/* VIP Points Modal */}
       {pointsModalUser && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="bg-white dark:bg-gray-800 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-gray-100 dark:border-gray-700 text-right">
-            <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-700 mb-4">
-              <h3 className="font-black text-gray-900 dark:text-white text-base flex items-center gap-2">
+          <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-[var(--color-border-light)] dark:border-gray-700 text-right">
+            <div className="flex items-center justify-between pb-3 border-b border-[var(--color-border-light)] dark:border-gray-700 mb-4">
+              <h3 className="font-black text-[var(--color-text-main-light)] dark:text-white text-base flex items-center gap-2">
                 <Award className="h-5 w-5 text-amber-500" />
                 <span>مدیریت امتیازات باشگاه VIP</span>
               </h3>
@@ -321,7 +321,7 @@ export default function AdminUsers() {
             </div>
 
             <p className="text-xs text-gray-600 dark:text-gray-400 mb-4">
-              کاربر: <strong className="text-gray-900 dark:text-white">{pointsModalUser.name}</strong> ({pointsModalUser.phone})
+              کاربر: <strong className="text-[var(--color-text-main-light)] dark:text-white">{pointsModalUser.name}</strong> ({pointsModalUser.phone})
             </p>
 
             <form onSubmit={handleUpdatePointsSubmit} className="space-y-4">
@@ -338,7 +338,7 @@ export default function AdminUsers() {
                 <span className="text-[10px] text-gray-400 mt-1 block">هر ۱۰۰ امتیاز معادل ۱۰,۰۰۰ تومان تخفیف روی خرید بعدی کاربر است.</span>
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-gray-100 dark:border-gray-700">
+              <div className="flex justify-end gap-2 pt-3 border-t border-[var(--color-border-light)] dark:border-gray-700">
                 <button
                   type="button"
                   onClick={() => setPointsModalUser(null)}

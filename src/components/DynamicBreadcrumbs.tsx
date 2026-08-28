@@ -151,7 +151,7 @@ export default function DynamicBreadcrumbs() {
       />
       <nav
         aria-label="مسیر راهنما"
-        className="flex items-center gap-1.5 text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-6 overflow-x-auto whitespace-nowrap hide-scrollbar print:hidden dir-rtl py-1 bg-white/50 dark:bg-gray-900/40 backdrop-blur-xs px-3 sm:px-4 py-2 rounded-2xl border border-gray-100/80 dark:border-gray-800/80 shadow-xs"
+        className="flex items-center gap-1.5 text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-6 overflow-x-auto whitespace-nowrap hide-scrollbar print:hidden dir-rtl py-1 bg-[var(--color-surface-light)]/50 dark:bg-[var(--color-surface-dark)]/40 backdrop-blur-xs px-3 sm:px-4 py-2 rounded-2xl border border-[var(--color-border-light)]/80 dark:border-[var(--color-border-dark)]/80 shadow-xs"
       >
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
@@ -177,7 +177,7 @@ export default function DynamicBreadcrumbs() {
               ) : (
                 <span
                   aria-current="page"
-                  className="text-gray-900 dark:text-gray-100 font-black truncate max-w-[200px] sm:max-w-[350px]"
+                  className="text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] font-black truncate max-w-[200px] sm:max-w-[350px]"
                   title={item.label}
                 >
                   {item.label}

@@ -34,7 +34,7 @@ export default function Checkout() {
           description="برای ثبت سفارش ابتدا باید محصولاتی را به سبد خرید اضافه کنید."
           actionText="مشاهده محصولات"
           actionLink="/products"
-          className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-3xl p-12 shadow-xs border border-gray-100 dark:border-gray-800"
+          className="bg-[var(--color-surface-light)]/80 dark:bg-[var(--color-surface-dark)]/80 backdrop-blur-xl rounded-3xl p-12 shadow-xs border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]"
         />
       </motion.div>
     );
@@ -48,7 +48,7 @@ export default function Checkout() {
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-right"
     >
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-gray-100 flex items-center gap-3">
+        <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-3">
           <span className="relative">
             اطلاعات ارسال
             <span className="absolute bottom-1 left-0 right-0 h-3 bg-orange-200/50 dark:bg-orange-500/20 -z-10 rounded-sm"></span>
