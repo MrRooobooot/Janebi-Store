@@ -24,3 +24,18 @@
 - [x] `npm run test` — Unit test suite (285 tests) passing.
 - [x] `npm run test:e2e` — Playwright end-to-end user flows verified.
 - [x] `npm run build` — Production assets and bundles built cleanly.
+
+---
+
+## 🎯 Next Priority Backlog (Phase Next)
+
+### Priority 1: Automated Asset WebP/AVIF Image Pipeline
+- [ ] Implement responsive image variants (`<picture>` with `.webp` / `.avif` fallbacks) for high-DPI displays.
+- [ ] Add preloading hints for LCP brand carousel and hero banner images.
+
+### Priority 2: Full PWA & Offline Support
+- [ ] Add Web App Manifest and Service Worker caching for domestic offline browsing.
+- [ ] LocalStorage cache for static catalogue with background SWR sync.
+
+### Priority 3: Iranian Payment Gateways Auto-Failover
+- [ ] Implement seamless fallback between Zarinpal and Shaparak/Saman gateways on gateway outage.
