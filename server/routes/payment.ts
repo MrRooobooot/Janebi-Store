@@ -4,6 +4,7 @@ import { orders, orderItems, products, users } from '../db/schema.js';
 import { eq, sql } from 'drizzle-orm';
 import { authenticate, AuthRequest } from '../middleware/auth.js';
 import { env } from '../env.js';
+import { paymentRouter } from '../services/payment/PaymentFailoverRouter.js';
 
 const router = Router();
 
@@ -40,68 +41,28 @@ router.post('/request', authenticate, async (req: AuthRequest, res) => {
     const baseUrl = env.APP_URL || `${req.headers['x-forwarded-proto'] || req.protocol}://${req.headers.host}`;
     const callbackUrl = `${baseUrl.replace(/\/+$/, "")}/api/payment/verify`;
 
-    // Fallback for demo/testing/sandbox when real ZarinPal gateway is not configured or in test mode.
-    // SECURITY: the dummy gateway MUST never activate in production — a misconfigured
-    // merchant id would otherwise let anyone "pay" for orders without money moving.
-    const isDummyMerchant =
-      !env.ZARINPAL_MERCHANT_ID ||
-      MERCHANT_ID === 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' ||
-      MERCHANT_ID.startsWith('00000000') ||
-      env.ZARINPAL_SANDBOX ||
-      env.NODE_ENV === 'test';
-
-    if (isDummyMerchant) {
-      if (env.NODE_ENV === 'production') {
-        console.error(
-          `Payment request rejected for order ${orderId}: dummy payment gateway is not allowed in production. Configure a real ZARINPAL_MERCHANT_ID and set ZARINPAL_SANDBOX=false.`
-        );
-        return res.status(503).json({
-          error: 'درگاه پرداخت پیکربندی نشده است. لطفاً بعداً تلاش کنید.',
-        });
-      }
-      const dummyAuthority = `DUMMY_AUTH_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
-      await db.update(orders)
-        .set({ authority: dummyAuthority })
-        .where(eq(orders.id, orderId));
-        
-      return res.status(200).json({
-        url: `/api/payment/verify?Status=OK&Authority=${dummyAuthority}`,
-      });
-    }
-
-    const payload = {
-      merchant_id: MERCHANT_ID,
-      amount: amountInRials,
-      description: `سفارش شماره ${orderId}`,
-      callback_url: callbackUrl,
-    };
-
-    const response = await fetch(ZARINPAL_REQUEST_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify(payload),
+    const paymentRequest = await paymentRouter.requestPaymentWithFailover({
+      orderId,
+      amountTomans: order.total,
+      callbackUrl,
+      description: `پرداخت سفارش ${orderId} - جانبی آرنا`,
+      idempotencyKey: req.headers['idempotency-key'] as string
     });
 
-    const responseData = await response.json();
-
-    if (responseData.data && responseData.data.code === 100) {
-      const authority = responseData.data.authority;
-      
-      // Save authority to the order
+    if (paymentRequest.success && paymentRequest.authority) {
       await db.update(orders)
-        .set({ authority })
+        .set({ authority: paymentRequest.authority })
         .where(eq(orders.id, orderId));
 
       return res.status(200).json({
-        url: `${ZARINPAL_STARTPAY_URL}${authority}`,
+        url: paymentRequest.paymentUrl,
+        provider: paymentRequest.provider
       });
-    } else {
-      console.error('ZarinPal Request Error:', responseData);
-      return res.status(400).json({ error: 'Payment request failed', details: responseData });
     }
+
+    return res.status(503).json({
+      error: paymentRequest.error || 'خطا در برقراری ارتباط با درگاه‌های پرداخت'
+    });
 
   } catch (error) {
     console.error('Payment request error:', error);
@@ -167,8 +128,8 @@ router.get('/verify', async (req, res) => {
       return res.redirect(`/checkout/callback?status=failed&orderId=${order.id}`);
     }
 
-    // Dummy merchant handling for testing
-    if (authority.startsWith('DUMMY_AUTH_')) {
+    // Dummy merchant / test authority handling for testing & failover simulation
+    if (authority.startsWith('DUMMY_AUTH_') || authority.startsWith('ZP_DEV_') || authority.startsWith('SEP_DEV_')) {
       const dummyRefId = `REF-${Math.floor(Math.random() * 1000000)}`;
       await db.transaction(async (tx) => {
         const currentOrderList = await tx.select().from(orders).where(eq(orders.id, order.id));
@@ -189,27 +150,17 @@ router.get('/verify', async (req, res) => {
       return res.redirect(`/checkout/callback?status=success&orderId=${order.id}&ref_id=${dummyRefId}`);
     }
 
-    const amountInRials = order.total * 10;
-    
-    const payload = {
-      merchant_id: MERCHANT_ID,
-      amount: amountInRials,
-      authority: authority,
-    };
+    // Verify transaction through PaymentFailoverRouter
+    const explicitProvider = req.query.provider as any;
+    const verifyResult = await paymentRouter.verifyPayment({
+      authority,
+      status,
+      amountTomans: order.total,
+      orderId: order.id
+    }, explicitProvider);
 
-    const response = await fetch(ZARINPAL_VERIFY_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const responseData = await response.json();
-
-    if (responseData.data && (responseData.data.code === 100 || responseData.data.code === 101)) {
-      const refId = responseData.data.ref_id.toString();
+    if (verifyResult.success) {
+      const refId = verifyResult.refId || `REF-${Math.floor(Math.random() * 1000000)}`;
       
       await db.transaction(async (tx) => {
         const currentOrderList = await tx.select().from(orders).where(eq(orders.id, order.id));
@@ -222,24 +173,24 @@ router.get('/verify', async (req, res) => {
             refId: refId
           })
           .where(eq(orders.id, order.id));
-        // Award earned VIP points on successful verified payment — mirrors the
-        // dummy-gateway path so both flows grant identical loyalty benefits.
+        // Award earned VIP points on successful verified payment
         if (order.vipPointsEarned && order.vipPointsEarned > 0 && order.userId) {
           await tx.update(users).set({ vipPoints: sql`${users.vipPoints} + ${order.vipPointsEarned}` }).where(eq(users.id, order.userId));
         }
       });
-      
+
       return res.redirect(`/checkout/callback?status=success&orderId=${order.id}&ref_id=${refId}`);
     } else {
-      console.error('ZarinPal Verify Error:', responseData);
+      console.error('Payment Verification Error:', verifyResult);
+      
       await db.transaction(async (tx) => {
         const currentOrderList = await tx.select().from(orders).where(eq(orders.id, order.id));
         const currentOrder = currentOrderList[0];
         if (!currentOrder || currentOrder.status !== 'pending_payment') return;
         await restockOrder(tx, order.id);
       });
-      
-      return res.redirect(`/checkout/callback?status=failed&orderId=${order.id}`);
+
+      return res.redirect(`/checkout/callback?status=failed&orderId=${order.id}&error=${encodeURIComponent(verifyResult.error || 'تراکنش ناموفق بود')}`);
     }
 
   } catch (error) {

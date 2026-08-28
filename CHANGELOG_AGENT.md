@@ -3,6 +3,8 @@
 ## [2026-08-28] - Storefront Accessibility, Design System & UX Hardening
 
 ### Added
+- Payment Gateway Architecture & Auto-Failover Router (`server/services/payment/`) with Circuit Breaker support across Zarinpal and Saman/Shaparak.
+- Unit tests (`tests/unit/payment-failover.test.ts`) validating automated failover routing, authority resolution, and Circuit Breaker state tracking.
 - Progressive Web App (PWA) manifest (`manifest.webmanifest`) with standalone display, Persian metadata, RTL orientation, and vector icons.
 - Service Worker (`sw.js`) providing Cache-First static asset delivery, Stale-While-Revalidate for catalogue APIs, and offline fallback.
 - `<PictureImage>` responsive `<picture>` component with automatic AVIF/WebP resolution, cache-busting, and CLS protection.

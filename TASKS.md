@@ -45,4 +45,7 @@
 - [x] Registered Service Worker lifecycle in `main.tsx` and linked manifest in `index.html`.
 
 ### Priority 3: Iranian Payment Gateways Auto-Failover
-- [ ] Implement seamless fallback between Zarinpal and Shaparak/Saman gateways on gateway outage.
+- [x] Implemented unified `IPaymentGateway` interface and adapter architecture (`ZarinpalAdapter`, `SamanAdapter`).
+- [x] Built resilient `PaymentFailoverRouter` with Circuit Breaker (CLOSED / OPEN / HALF_OPEN states) and consecutive failure tracking.
+- [x] Integrated failover dispatch with Idempotency Key header support and atomic order restock / VIP refund rollback.
+- [x] Authored unit test suite in `tests/unit/payment-failover.test.ts` verifying auto-switch to Saman when Zarinpal times out.
