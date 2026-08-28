@@ -23,7 +23,11 @@ SSH_OPTS="-o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=accept-
 # Step 1: Build (unless --skip-build)
 if [ "$1" != "--skip-build" ] && [ "$2" != "--skip-build" ]; then
   echo "🔨 Building..."
-  bun run build 2>&1 | tail -3
+  if command -v bun &> /dev/null; then
+    bun run build 2>&1 | tail -3
+  else
+    npm run build 2>&1 | tail -3
+  fi
 fi
 
 # Step 2: Sync dist
