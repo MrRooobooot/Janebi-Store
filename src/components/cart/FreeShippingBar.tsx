@@ -2,7 +2,7 @@ import React from 'react';
 import { Truck, CheckCircle2, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
 import { FREE_SHIPPING_THRESHOLD } from '../../lib/constants';
-import { formatPrice } from '../../lib/utils';
+import { formatPrice, toPersianDigits } from '../../lib/utils';
 
 interface FreeShippingBarProps {
   isFreeShipping: boolean;
@@ -66,13 +66,13 @@ export default function FreeShippingBar({
           </div>
         </div>
         <span
-          className={`text-xs font-black px-3 py-1.5 rounded-full border self-start md:self-center ${
+          className={`text-xs font-black px-3 py-1.5 rounded-full border self-start md:self-center font-mono ${
             isFreeShipping
               ? 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700'
               : 'bg-orange-100 dark:bg-orange-900/60 text-orange-800 dark:text-orange-300 border-orange-300 dark:border-orange-700'
           }`}
         >
-          {progressPercentage}%
+          {toPersianDigits(progressPercentage)}٪
         </span>
       </div>
 
