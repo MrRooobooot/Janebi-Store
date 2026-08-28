@@ -263,8 +263,13 @@ export default function ProductDetail() {
                         قیمت نهایی مصرف‌کننده:
                       </span>
                       {product.originalPrice && product.discount && (
-                        <div className="text-gray-400 dark:text-gray-500 text-sm line-through font-medium mb-0.5">
-                          {formatPrice(product.originalPrice)}
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <span className="text-gray-400 dark:text-gray-500 text-sm line-through font-medium">
+                            {formatPrice(product.originalPrice)}
+                          </span>
+                          <span className="bg-rose-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded-md">
+                            سود شما: {formatPrice(product.originalPrice - product.price)}
+                          </span>
                         </div>
                       )}
                       <div className="text-3xl font-black text-orange-600 dark:text-orange-400 tracking-tight">

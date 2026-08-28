@@ -94,6 +94,13 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
               alt={product.title}
               className="max-h-full max-w-full object-contain drop-shadow-sm group-hover:scale-108 transition-transform duration-500"
             />
+
+            {/* Low stock badge */}
+            {typeof product.stockQuantity === 'number' && product.stockQuantity > 0 && product.stockQuantity <= 3 && (
+              <span className="absolute bottom-2 right-2 bg-amber-500/90 backdrop-blur-xs text-white text-[9px] font-black px-2 py-0.5 rounded-md shadow-xs">
+                تنها {toPersianDigits(product.stockQuantity)} عدد
+              </span>
+            )}
           </div>
 
           {/* 3. Category & Rating Strip */}
