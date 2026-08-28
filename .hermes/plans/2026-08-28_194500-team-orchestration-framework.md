@@ -146,6 +146,9 @@ Atlas automatically spawns `@Rook` for code review upon completion of any multi-
 
 ---
 
-## 5. Execution Handoff
+## 6. Framework Self-Correction & Missing Capability Fixes
+- **Weakness Found during Dry-Run:** In multi-bot CLI executions (`hermes -p bot chat -q`), long prompts with unescaped backticks or missing quotes could cause code snippet ingestion errors.
+- **Correction Applied:** Standardized on strict file-based task passing and isolated parameter escaping for subagent delegation.
+- **RTL Animation Invariant:** All drawer/slide-over animations must explicitly use negative offsets (`-100%`) or CSS logical properties (`inset-inline-start`) to prevent layout inversion on RTL/LTR switching.
 
 Plan complete and saved to `.hermes/plans/2026-08-28_194500-team-orchestration-framework.md`. Ready to execute subsequent development cycles under strict Orchestrator governance.

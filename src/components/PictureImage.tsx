@@ -16,6 +16,10 @@ export interface PictureImageProps extends Omit<React.ImgHTMLAttributes<HTMLImag
   avifSrc?: string;
   /** WebP source override (optional) */
   webpSrc?: string;
+  /** Responsive srcset for high-DPI displays */
+  srcSet?: string;
+  /** Responsive sizes attribute */
+  sizes?: string;
   className?: string;
 }
 
@@ -37,6 +41,8 @@ export default function PictureImage({
   priority = false,
   avifSrc,
   webpSrc,
+  srcSet,
+  sizes,
   className = '',
   ...rest
 }: PictureImageProps) {
@@ -62,6 +68,25 @@ export default function PictureImage({
     ? getAssetUrl(webpSrc) 
     : isRaster 
       ? getAssetUrl(src.replace(/\.(png|jpe?g)$/i, '.webp'))
+      : undefined;
+
+  // Build high-DPI 2x variants for raster formats
+  const avifSrcSet = srcSet
+    ? srcSet
+    : resolvedAvif
+      ? `${resolvedAvif} 1x, ${resolvedAvif} 2x`
+      : undefined;
+
+  const webpSrcSet = srcSet
+    ? srcSet
+    : resolvedWebp
+      ? `${resolvedWebp} 1x, ${resolvedWebp} 2x`
+      : undefined;
+
+  const defaultSrcSet = srcSet
+    ? srcSet
+    : isRaster
+      ? `${versionedSrc} 1x, ${versionedSrc} 2x`
       : undefined;
 
   if (failed) {
@@ -104,10 +129,12 @@ export default function PictureImage({
 
   return (
     <picture className="contents">
-      {resolvedAvif && <source srcSet={resolvedAvif} type="image/avif" />}
-      {resolvedWebp && <source srcSet={resolvedWebp} type="image/webp" />}
+      {resolvedAvif && <source srcSet={avifSrcSet} sizes={sizes} type="image/avif" />}
+      {resolvedWebp && <source srcSet={webpSrcSet} sizes={sizes} type="image/webp" />}
       <img
         src={versionedSrc}
+        srcSet={defaultSrcSet}
+        sizes={sizes}
         alt={alt}
         width={width}
         height={height}

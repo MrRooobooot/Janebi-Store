@@ -35,16 +35,22 @@
 ## 🎯 Next Priority Backlog (Phase Next)
 
 ### Priority 1: Automated Asset WebP/AVIF Image Pipeline
-- [ ] Implement responsive image variants (`<picture>` with `.webp` / `.avif` fallbacks) for high-DPI displays.
-- [ ] Add preloading hints for LCP brand carousel and hero banner images.
+- [x] Implement responsive image variants (`<picture>` with `.webp` / `.avif` fallbacks) for high-DPI displays (1x/2x candidates).
+- [x] Add preloading hints for LCP brand carousel and hero banner images in `index.html`.
 
 ### Priority 2: Full PWA & Offline Support
 - [x] Add Web App Manifest (`manifest.webmanifest`) with `dir="rtl"`, standalone mode, and responsive vector icons (192px / 512px).
 - [x] Implement Service Worker (`sw.js`) with Stale-While-Revalidate for catalogue APIs, Cache-First for static assets/fonts, and Offline fallback.
 - [x] Registered Service Worker lifecycle in `main.tsx` and linked manifest in `index.html`.
 
-### Priority 3: Iranian Payment Gateways Auto-Failover
+### 3. Iranian Payment Gateways Auto-Failover
 - [x] Implemented unified `IPaymentGateway` interface and adapter architecture (`ZarinpalAdapter`, `SamanAdapter`).
 - [x] Built resilient `PaymentFailoverRouter` with Circuit Breaker (CLOSED / OPEN / HALF_OPEN states) and consecutive failure tracking.
 - [x] Integrated failover dispatch with Idempotency Key header support and atomic order restock / VIP refund rollback.
 - [x] Authored unit test suite in `tests/unit/payment-failover.test.ts` verifying auto-switch to Saman when Zarinpal times out.
+
+### 4. Hardcore Adversarial Verification Harness & Invariants
+- [x] Created consolidated verification pipeline (`scripts/verify-all.sh`) and unified `npm run verify` command (Strict Typecheck + Vitest + Full Build).
+- [x] Implemented comprehensive transactional invariants and Persian input edge-case test suite (`tests/unit/concurrency-invariants.test.ts`).
+- [x] Locked profile `code-pro` (`SOUL.md`) to zero-sycophancy and mandatory `npm run verify` enforcement on Janebi Arena.
+- [x] Verified full suite: 33 test files (291 tests passed), TypeScript clean, Vite client and Esbuild server compiled successfully.

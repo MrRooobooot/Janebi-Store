@@ -1,5 +1,11 @@
 # CHANGELOG_AGENT.md — Janebi Store Agent Work Log
 
+## [2026-08-29] - Hardcore Adversarial Verification Harness & Invariant Guard
+- Added unified adversarial verification pipeline in `scripts/verify-all.sh` wired to `npm run verify` (`tsc --noEmit` + `vitest run` + client/server production build).
+- Implemented `tests/unit/concurrency-invariants.test.ts` verifying Persian unicode/mobile normalization, invalid edge cases, and zero-negative-stock transactional invariants.
+- Configured and linked profile `code-pro` (`SOUL.md`) with explicit engineering invariants and adversarial quality gates for Janebi Arena.
+- Verified 33 test files (291 passing tests) with 100% build and type-safety clean.
+
 ## [2026-08-28] - Storefront Accessibility, Design System & UX Hardening
 
 ### Added
