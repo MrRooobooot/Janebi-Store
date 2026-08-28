@@ -120,7 +120,11 @@ export default function Footer() {
                 className="grow bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-r-2xl px-4 py-3 focus:outline-none focus:border-orange-500 dark:focus:border-orange-400 text-left dir-ltr text-xs text-gray-800 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-500"
                 required
               />
-              <button type="submit" className="bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600 text-white px-5 rounded-l-2xl flex items-center justify-center transition-colors font-medium">
+              <button 
+                type="submit" 
+                aria-label="ارسال عضویت در خبرنامه"
+                className="bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600 text-white px-5 rounded-l-2xl flex items-center justify-center transition-colors font-medium cursor-pointer"
+              >
                 <Send className="h-4 w-4" />
               </button>
             </form>

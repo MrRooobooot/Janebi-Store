@@ -201,7 +201,8 @@ export default function ChatWidget() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(true)}
-          className="bg-gradient-to-r from-orange-600 to-amber-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-[0_8px_30px_rgb(234,88,12,0.35)] transition-all relative group"
+          aria-label="باز کردن پنجره پشتیبانی هوشمند آنلاین"
+          className="bg-gradient-to-r from-orange-600 to-amber-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-[0_8px_30px_rgb(234,88,12,0.35)] transition-all relative group cursor-pointer"
         >
           <MessageCircle className="h-6 w-6" />
           <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-500 border-2 border-white dark:border-gray-900 rounded-full"></span>

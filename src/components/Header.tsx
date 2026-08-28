@@ -214,6 +214,7 @@ export default function Header() {
             ) : (
               <button
                 onClick={() => setAuthModalOpen(true)}
+                aria-label="ورود یا ثبت نام در سایت"
                 className="flex items-center gap-1.5 bg-orange-600 hover:bg-orange-500 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-black transition-all shadow-sm shadow-orange-600/25 cursor-pointer active:scale-95"
               >
                 <LogIn className="h-4 w-4" />
