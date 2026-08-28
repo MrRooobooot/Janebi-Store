@@ -14,6 +14,10 @@ interface CartContextType {
   cartCount: number;
   appliedCoupon: string | null;
   setAppliedCoupon: (code: string | null) => void;
+  isCartDrawerOpen: boolean;
+  setIsCartDrawerOpen: (open: boolean) => void;
+  openCartDrawer: () => void;
+  closeCartDrawer: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -29,7 +33,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   });
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
+  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const { addToast } = useToast();
+
+  const openCartDrawer = () => setIsCartDrawerOpen(true);
+  const closeCartDrawer = () => setIsCartDrawerOpen(false);
 
   // Sync cart from server when logged in
   React.useEffect(() => {
@@ -89,6 +97,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
     
     addToast('محصول به سبد خرید اضافه شد', 'success');
+    setIsCartDrawerOpen(true);
   };
 
   const removeFromCart = async (id: number) => {
@@ -151,7 +160,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const cartCount = cart.reduce((count, item) => count + item.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart, cartTotal, cartCount, appliedCoupon, setAppliedCoupon }}>
+    <CartContext.Provider value={{
+      cart,
+      addToCart,
+      removeFromCart,
+      updateQuantity,
+      clearCart,
+      cartTotal,
+      cartCount,
+      appliedCoupon,
+      setAppliedCoupon,
+      isCartDrawerOpen,
+      setIsCartDrawerOpen,
+      openCartDrawer,
+      closeCartDrawer
+    }}>
       {children}
     </CartContext.Provider>
   );

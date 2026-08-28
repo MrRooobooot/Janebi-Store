@@ -6,9 +6,13 @@ import BackToTop from './BackToTop';
 import ChatWidget from './ChatWidget';
 import DynamicBreadcrumbs from './DynamicBreadcrumbs';
 import MobileBottomNav from './MobileBottomNav';
+import CartDrawer from './cart/CartDrawer';
+import { useCart } from '../contexts/CartContext';
 
 export default function Layout() {
   const location = useLocation();
+  const { isCartDrawerOpen, closeCartDrawer } = useCart();
+
   return (
     <div className="min-h-screen flex flex-col font-sans text-zinc-900 dark:text-zinc-100 bg-[#f8fafc] dark:bg-[#090d16] transition-colors duration-200 pb-20 lg:pb-0 relative w-full max-w-full overflow-x-hidden selection:bg-orange-500 selection:text-white">
       <Header />
@@ -22,6 +26,7 @@ export default function Layout() {
       <BackToTop />
       <ChatWidget />
       <MobileBottomNav />
+      <CartDrawer isOpen={isCartDrawerOpen} onClose={closeCartDrawer} />
     </div>
   );
 }

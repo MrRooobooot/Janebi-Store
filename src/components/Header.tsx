@@ -14,7 +14,7 @@ import { toPersianDigits } from '../lib/utils';
 export default function Header() {
   const { user, isLoggedIn, logout } = useAuth();
   const { wishlist } = useWishlist();
-  const { cartCount } = useCart();
+  const { cartCount, openCartDrawer } = useCart();
   const { compareItems } = useCompare();
   const { isDarkMode, toggleTheme } = useTheme();
   const navigate = useNavigate();
@@ -139,9 +139,10 @@ export default function Header() {
             </Link>
 
             {/* Cart Button */}
-            <Link
-              to="/cart"
-              className="flex items-center gap-1.5 bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 hover:bg-orange-600 hover:text-white dark:hover:bg-orange-600 dark:hover:text-white border border-orange-200 dark:border-orange-900/50 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl transition-all duration-200 shadow-xs"
+            <button
+              onClick={openCartDrawer}
+              aria-label="مشاهده سبد خرید"
+              className="flex items-center gap-1.5 bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 hover:bg-orange-600 hover:text-white dark:hover:bg-orange-600 dark:hover:text-white border border-orange-200 dark:border-orange-900/50 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl transition-all duration-200 shadow-xs cursor-pointer"
             >
               <div className="relative">
                 <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -152,7 +153,7 @@ export default function Header() {
                 )}
               </div>
               <span className="text-xs font-bold hidden md:inline">سبد خرید</span>
-            </Link>
+            </button>
 
             {/* User Account Menu / Login */}
             {isLoggedIn ? (
