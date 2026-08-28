@@ -3,6 +3,7 @@
 ## [2026-08-28] - Storefront Accessibility, Design System & UX Hardening
 
 ### Added
+- CSS Design Tokens (`--color-surface`, `--color-canvas`, `--color-border`, `--color-text`) implemented natively in `index.css` via Tailwind 4 variables.
 - Payment Gateway Architecture & Auto-Failover Router (`server/services/payment/`) with Circuit Breaker support across Zarinpal and Saman/Shaparak.
 - Unit tests (`tests/unit/payment-failover.test.ts`) validating automated failover routing, authority resolution, and Circuit Breaker state tracking.
 - Progressive Web App (PWA) manifest (`manifest.webmanifest`) with standalone display, Persian metadata, RTL orientation, and vector icons.
@@ -16,6 +17,7 @@
 - Localized Persian typography for `FreeShippingBar.tsx` progress percentage and thresholds.
 
 ### Changed
+- Massive refactoring of 64+ React `.tsx` components, replacing hardcoded hex colors (`bg-white`, `bg-gray-50`, `dark:bg-gray-900`) with native semantic CSS design tokens.
 - Refactored `index.css` to enforce WCAG AA-compliant high-contrast focus rings (`:focus-visible`) across light and dark themes.
 - Updated `ProductCard.tsx` with discrete ARIA labels on Wishlist and Compare toggle buttons, expanding touch hitboxes to 36x36/44x44px.
 - Upgraded `Header.tsx` accessibility tags and compare count badge attributes.

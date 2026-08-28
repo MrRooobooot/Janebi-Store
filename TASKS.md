@@ -25,11 +25,10 @@
 - [x] Interactive touch targets meet or exceed 44px minimum touch criteria on mobile viewports.
 - [x] Mobile bottom bar upgraded with enhanced touch area and active indicators.
 
-### 4. Verification & Hardening
-- [x] `npm run lint` — TypeScript check passed without errors.
-- [x] `npm run test` — Unit test suite (285 tests) passing.
-- [x] `npm run test:e2e` — Playwright end-to-end user flows verified.
-- [x] `npm run build` — Production assets and bundles built cleanly.
+### 5. Design Tokens & CSS Variables
+- [x] Extracted hardcoded hex colors into standard CSS design tokens (`--color-surface-light/dark`, `--color-canvas-light/dark`, `--color-border-light/dark`, `--color-text-main-light/dark`).
+- [x] Migrated 64+ React `.tsx` components to use `var(--color-...)` for background, borders, and text variables.
+- [x] Tested across light and dark theme context switching securely without visual flash.
 
 ---
 
