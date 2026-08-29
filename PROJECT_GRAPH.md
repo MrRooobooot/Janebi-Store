@@ -1,7 +1,7 @@
 # ARCHITECTURE & PROJECT GRAPH — JANEBI ARENA
 
 > **Autonomous Engineering Knowledge Base & Live System Map**
-> **Last Verified & Updated:** 2026-08-29
+> **Last Verified & Updated:** 2026-08-29 (Theme & Light Mode Polish)
 > **Status:** Live & Production Ready (36 test suites, 297 passing tests)
 > **PRD Reference:** `AGENTS.md` | `PROJECT_AUDIT.md` | `TASKS.md`
 
