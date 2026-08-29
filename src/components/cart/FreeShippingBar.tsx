@@ -31,12 +31,12 @@ export default function FreeShippingBar({
           <div
             className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-md ${
               isFreeShipping
-                ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-emerald-500/20'
-                : 'bg-gradient-to-br from-orange-400 to-orange-600 text-white shadow-orange-500/20'
+                ? 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-500'
+                : 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-orange-200 dark:border-orange-800 text-orange-600 dark:text-orange-500'
             }`}
           >
             {isFreeShipping ? (
-              <CheckCircle2 className="h-7 w-7 animate-bounce" />
+              <CheckCircle2 className="h-7 w-7 animate-pulse" />
             ) : (
               <Truck className="h-7 w-7" />
             )}
@@ -84,8 +84,8 @@ export default function FreeShippingBar({
           transition={{ duration: 0.8, ease: 'easeOut' }}
           className={`h-full rounded-full transition-all relative ${
             isFreeShipping
-              ? 'bg-gradient-to-r from-emerald-500 to-teal-400 shadow-md shadow-emerald-500/30'
-              : 'bg-gradient-to-r from-amber-500 to-orange-500 shadow-md shadow-orange-500/30'
+              ? 'bg-emerald-500 shadow-md shadow-emerald-500/20'
+              : 'bg-orange-500 shadow-md shadow-orange-500/20'
           }`}
         />
       </div>
