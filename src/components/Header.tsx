@@ -42,15 +42,15 @@ export default function Header() {
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
       
       {/* Top Announcement Bar — Strict Overflow Control */}
-      <div className="bg-zinc-950 text-zinc-200 dark:bg-black/60 text-xs py-1.5 px-3 sm:px-4 border-b border-zinc-800/80 dark:border-white/5 w-full overflow-hidden">
+      <div className="bg-zinc-100 dark:bg-black/60 text-zinc-700 dark:text-zinc-200 text-xs py-1.5 px-3 sm:px-4 border-b border-zinc-200/80 dark:border-white/5 w-full overflow-hidden transition-colors">
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5 text-[11px] font-medium text-amber-400 min-w-0">
+          <div className="flex items-center gap-1.5 text-[11px] font-medium text-orange-600 dark:text-amber-400 min-w-0">
             <Sparkles className="h-3.5 w-3.5 animate-pulse shrink-0" />
-            <span className="text-zinc-200 truncate">{settings.announcement}</span>
+            <span className="text-zinc-800 dark:text-zinc-200 truncate font-semibold">{settings.announcement}</span>
           </div>
-          <div className="hidden md:flex items-center gap-4 text-[11px] text-zinc-400 font-medium shrink-0">
-            <span>تلفن پشتیبانی: <span dir="ltr" className="font-mono">{toPersianDigits(settings.phone)}</span></span>
-            <span className="h-3 w-px bg-zinc-800 dark:bg-zinc-700" />
+          <div className="hidden md:flex items-center gap-4 text-[11px] text-zinc-500 dark:text-zinc-400 font-medium shrink-0">
+            <span>تلفن پشتیبانی: <span dir="ltr" className="font-mono font-bold text-zinc-700 dark:text-zinc-300">{toPersianDigits(settings.phone)}</span></span>
+            <span className="h-3 w-px bg-zinc-300 dark:bg-zinc-700" />
             <span>ساعت کاری: {toPersianDigits(settings.supportHours)}</span>
           </div>
         </div>

@@ -162,26 +162,26 @@ export default function Home() {
       
       {/* 1. Hero Showcase Section */}
       <section className="w-full box-border">
-        <div className={`relative rounded-3xl overflow-hidden bg-gradient-to-b from-[#0e1422] via-[#090d16] to-[#05070c] border ${currentSlide.borderColor} shadow-2xl p-6 sm:p-8 lg:p-10 transition-all duration-700 min-h-[360px] sm:min-h-[420px] flex flex-col justify-between`}>
+        <div className={`relative rounded-3xl overflow-hidden bg-gradient-to-b from-orange-50/70 via-white to-zinc-50 dark:from-[#0e1422] dark:via-[#090d16] dark:to-[#05070c] border border-orange-200/80 dark:${currentSlide.borderColor} shadow-xl dark:shadow-2xl p-6 sm:p-8 lg:p-10 transition-all duration-700 min-h-[360px] sm:min-h-[420px] flex flex-col justify-between`}>
           
           {/* Subtle Ambient Dot Grid */}
-          <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(#0000000a_1px,transparent_1px)] dark:bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" />
 
           {/* Grid: Text Column & Graphic Column */}
           <div className="relative z-10 w-full grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
             
             {/* Text & Actions */}
             <div className="md:col-span-7 space-y-4 text-right">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-800/90 border border-zinc-700 text-amber-400 text-xs font-black shadow-xs">
-                <Sparkles className="h-3.5 w-3.5 animate-pulse text-amber-400 shrink-0" />
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 dark:bg-zinc-800/90 border border-orange-200 dark:border-zinc-700 text-orange-700 dark:text-amber-400 text-xs font-black shadow-xs">
+                <Sparkles className="h-3.5 w-3.5 animate-pulse text-orange-600 dark:text-amber-400 shrink-0" />
                 <span>{currentSlide.tag}</span>
               </div>
 
-              <h1 className="text-xl sm:text-3xl lg:text-4xl font-black text-white leading-snug tracking-tight">
+              <h1 className="text-xl sm:text-3xl lg:text-4xl font-black text-zinc-900 dark:text-white leading-snug tracking-tight">
                 {currentSlide.title}
               </h1>
 
-              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-normal">
+              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-normal">
                 {currentSlide.subtitle}
               </p>
 
@@ -194,8 +194,8 @@ export default function Home() {
                   <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                 </Link>
 
-                <div className={`text-xs font-black px-4 py-2.5 rounded-2xl border ${currentSlide.badgeBg} flex items-center gap-2`}>
-                  <Award className="h-4 w-4 shrink-0" />
+                <div className={`text-xs font-black px-4 py-2.5 rounded-2xl border bg-orange-100 text-orange-800 border-orange-200 dark:${currentSlide.badgeBg} flex items-center gap-2`}>
+                  <Award className="h-4 w-4 shrink-0 text-orange-600 dark:text-inherit" />
                   <span>{currentSlide.badge}</span>
                 </div>
               </div>
@@ -203,27 +203,27 @@ export default function Home() {
 
             {/* Visual 3D Asset Showcase Column (Desktop/Tablet) */}
             <div className="hidden md:flex md:col-span-5 items-center justify-center relative">
-              <div className="relative w-64 h-64 lg:w-80 lg:h-80 rounded-3xl p-6 bg-zinc-800/60 border border-zinc-700/60 backdrop-blur-md flex items-center justify-center shadow-2xl group">
+              <div className="relative w-64 h-64 lg:w-80 lg:h-80 rounded-3xl p-6 bg-white/80 dark:bg-zinc-800/60 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-md flex items-center justify-center shadow-lg dark:shadow-2xl group">
                 <PictureImage
                   src={currentSlide.image}
                   alt={currentSlide.title}
                   width="320"
                   height="320"
                   priority={true}
-                  className="w-full h-full object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.6)] group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.15)] dark:drop-shadow-[0_20px_30px_rgba(0,0,0,0.6)] group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
             </div>
           </div>
 
           {/* Slide Indicator Dots (Centered) */}
-          <div className="relative z-10 flex items-center justify-center gap-2 mt-6 pt-3 border-t border-zinc-800/80">
+          <div className="relative z-10 flex items-center justify-center gap-2 mt-6 pt-3 border-t border-zinc-200/80 dark:border-zinc-800/80">
             {heroSlides.map((slide, idx) => (
               <button
                 key={slide.id}
                 onClick={() => setActiveSlide(idx)}
                 className={`h-2.5 rounded-full transition-all duration-300 ${
-                  activeSlide === idx ? 'w-8 bg-orange-500 shadow-md shadow-orange-500/50' : 'w-2.5 bg-zinc-700 hover:bg-zinc-500'
+                  activeSlide === idx ? 'w-8 bg-orange-500 shadow-md shadow-orange-500/50' : 'w-2.5 bg-zinc-300 dark:bg-zinc-700 hover:bg-zinc-400 dark:hover:bg-zinc-500'
                 }`}
                 aria-label={`اسلاید ${idx + 1}`}
               />
