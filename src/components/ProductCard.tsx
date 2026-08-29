@@ -113,7 +113,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
           </div>
 
           {/* 4. Product Title */}
-          <h3 className="font-black text-xs sm:text-sm text-zinc-900 dark:text-[#f7f8f8] line-clamp-2 leading-relaxed min-h-[40px] group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+          <h3 className="font-black text-xs sm:text-sm text-zinc-900 dark:text-[#f7f8f8] line-clamp-2 leading-relaxed h-10 sm:h-11 flex items-start group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
             {product.title}
           </h3>
         </Link>

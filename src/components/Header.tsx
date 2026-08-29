@@ -42,24 +42,24 @@ export default function Header() {
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
       
       {/* Top Announcement Bar — Strict Overflow Control */}
-      <div className="bg-zinc-900 text-zinc-100 text-xs py-1.5 px-3 sm:px-4 border-b border-zinc-800 w-full overflow-hidden">
+      <div className="bg-zinc-950 text-zinc-200 dark:bg-black/60 text-xs py-1.5 px-3 sm:px-4 border-b border-zinc-800/80 dark:border-white/5 w-full overflow-hidden">
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 text-[11px] font-medium text-amber-400 min-w-0">
             <Sparkles className="h-3.5 w-3.5 animate-pulse shrink-0" />
             <span className="text-zinc-200 truncate">{settings.announcement}</span>
           </div>
           <div className="hidden md:flex items-center gap-4 text-[11px] text-zinc-400 font-medium shrink-0">
-            <span>تلفن پشتیبانی: {settings.phone}</span>
-            <span className="h-3 w-px bg-zinc-700" />
-            <span>ساعت کاری: {settings.supportHours}</span>
+            <span>تلفن پشتیبانی: <span dir="ltr" className="font-mono">{toPersianDigits(settings.phone)}</span></span>
+            <span className="h-3 w-px bg-zinc-800 dark:bg-zinc-700" />
+            <span>ساعت کاری: {toPersianDigits(settings.supportHours)}</span>
           </div>
         </div>
       </div>
 
       {/* Main Navbar */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 w-full">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 w-full relative z-30">
         <div className="flex items-center justify-between h-16 sm:h-18 gap-2 sm:gap-4">
-          
+            
           {/* Logo & Mobile Menu Toggle */}
           <div className="shrink-0 flex items-center gap-2 sm:gap-3">
             <button
@@ -92,7 +92,7 @@ export default function Header() {
           </div>
 
           {/* Desktop Search */}
-          <div className="flex-1 max-w-xl mx-4 hidden md:block relative z-30">
+          <div className="flex-1 max-w-xl mx-4 hidden md:block relative z-20">
             <HeaderSearch />
           </div>
 
