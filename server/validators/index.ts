@@ -78,17 +78,38 @@ export const orderSubmitSchema = z.object({
   })
 });
 
+// Normalizer function for Iranian mobile phone numbers (handles Persian/Arabic digits, +98, 0098, 98 prefixes)
+export function normalizeIranianPhone(val: unknown): string {
+  if (typeof val !== 'string') return String(val || '');
+  let cleaned = val
+    .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d).toString())
+    .replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d).toString())
+    .replace(/[\s\-\(\)\.]+/g, '');
+
+  if (cleaned.startsWith('+98')) cleaned = '0' + cleaned.slice(3);
+  else if (cleaned.startsWith('0098')) cleaned = '0' + cleaned.slice(4);
+  else if (cleaned.startsWith('98')) cleaned = '0' + cleaned.slice(2);
+  else if (cleaned.length === 10 && cleaned.startsWith('9')) cleaned = '0' + cleaned;
+
+  return cleaned;
+}
+
+const iranianPhoneSchema = z.preprocess(
+  normalizeIranianPhone,
+  z.string().regex(/^09\d{9}$/, "شماره موبایل معتبر نیست")
+);
+
 export const registerSchema = z.object({
   body: z.object({
     name: z.string().min(2, "نام باید حداقل ۲ حرف باشد"),
-    phone: z.string().regex(/^09\d{9}$/, "شماره موبایل معتبر نیست"),
+    phone: iranianPhoneSchema,
     password: z.string().min(6, "رمز عبور باید حداقل ۶ کاراکتر باشد")
   })
 });
 
 export const loginSchema = z.object({
   body: z.object({
-    phone: z.string().regex(/^09\d{9}$/, "شماره موبایل معتبر نیست"),
+    phone: iranianPhoneSchema,
     password: z.string().min(1, "رمز عبور را وارد کنید")
   })
 });
