@@ -55,4 +55,5 @@
 - [x] Created consolidated verification pipeline (`scripts/verify-all.sh`) and unified `npm run verify` command (Strict Typecheck + Vitest + Full Build).
 - [x] Implemented comprehensive transactional invariants and Persian input edge-case test suite (`tests/unit/concurrency-invariants.test.ts`).
 - [x] Locked profile `code-pro` (`SOUL.md`) to zero-sycophancy and mandatory `npm run verify` enforcement on Janebi Arena.
-- [x] Verified full suite: 36 test files (297 tests passed), TypeScript clean, Vite client and Esbuild server compiled successfully.
+- [x] Full Production Readiness Documentation & System PRD (`AGENTS.md`, `PROJECT_AUDIT.md`, `PROJECT_GRAPH.md`).
+- [x] Verified full verification pipeline (`npm run verify`): 36 test files (297 tests passed), TypeScript clean, Vite client and Esbuild server compiled successfully.
