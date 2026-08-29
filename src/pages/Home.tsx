@@ -278,30 +278,30 @@ export default function Home() {
 
       {/* 4. Amazing Deals Section */}
       <section className="w-full">
-        <div className="bg-gradient-to-br from-[#121827] via-[#0b0f19] to-[#06080e] rounded-3xl p-5 sm:p-8 text-white border border-orange-500/30 shadow-2xl relative overflow-hidden">
+        <div className="bg-gradient-to-br from-orange-50 via-white to-amber-50/40 dark:from-[#121827] dark:via-[#0b0f19] dark:to-[#06080e] rounded-3xl p-5 sm:p-8 text-zinc-900 dark:text-white border border-orange-200/80 dark:border-orange-500/30 shadow-xl dark:shadow-2xl relative overflow-hidden transition-colors">
           
           {/* Section Header */}
-          <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-zinc-800">
+          <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-orange-100 dark:border-zinc-800">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-orange-400">
+              <div className="w-10 h-10 rounded-xl bg-orange-500/10 dark:bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-orange-600 dark:text-orange-400">
                 <Flame className="h-5 w-5 animate-bounce" />
               </div>
               <div>
-                <h2 className="text-lg sm:text-2xl font-black text-white">پیشنهادات شگفت‌انگیز روز</h2>
-                <p className="text-xs text-zinc-300 mt-0.5">تخفیف‌های محدود با تضمین کمترین قیمت بازار</p>
+                <h2 className="text-lg sm:text-2xl font-black text-zinc-900 dark:text-white">پیشنهادات شگفت‌انگیز روز</h2>
+                <p className="text-xs text-zinc-600 dark:text-zinc-300 mt-0.5">تخفیف‌های محدود با تضمین کمترین قیمت بازار</p>
               </div>
             </div>
 
             {/* Countdown Clock */}
-            <div className="flex items-center gap-2 bg-zinc-800/90 border border-zinc-700/80 px-3.5 py-1.5 rounded-2xl text-xs font-bold font-mono">
-              <Clock className="h-4 w-4 text-orange-400 shrink-0" />
-              <span className="text-zinc-200">فرصت باقی‌مانده:</span>
-              <div className="flex items-center gap-1 text-sm font-black text-orange-400">
-                <span className="bg-zinc-900 px-1.5 py-0.5 rounded-lg border border-zinc-700">{toPersianDigits(timeLeft.hours.toString().padStart(2, '0'))}</span>
+            <div className="flex items-center gap-2 bg-white/90 dark:bg-zinc-800/90 border border-orange-200/80 dark:border-zinc-700/80 px-3.5 py-1.5 rounded-2xl text-xs font-bold font-mono shadow-xs">
+              <Clock className="h-4 w-4 text-orange-600 dark:text-orange-400 shrink-0" />
+              <span className="text-zinc-700 dark:text-zinc-200">فرصت باقی‌مانده:</span>
+              <div className="flex items-center gap-1 text-sm font-black text-orange-600 dark:text-orange-400">
+                <span className="bg-orange-100/70 dark:bg-zinc-900 px-1.5 py-0.5 rounded-lg border border-orange-200 dark:border-zinc-700 text-orange-700 dark:text-orange-300">{toPersianDigits(timeLeft.hours.toString().padStart(2, '0'))}</span>
                 <span>:</span>
-                <span className="bg-zinc-900 px-1.5 py-0.5 rounded-lg border border-zinc-700">{toPersianDigits(timeLeft.minutes.toString().padStart(2, '0'))}</span>
+                <span className="bg-orange-100/70 dark:bg-zinc-900 px-1.5 py-0.5 rounded-lg border border-orange-200 dark:border-zinc-700 text-orange-700 dark:text-orange-300">{toPersianDigits(timeLeft.minutes.toString().padStart(2, '0'))}</span>
                 <span>:</span>
-                <span className="bg-zinc-900 px-1.5 py-0.5 rounded-lg border border-zinc-700">{toPersianDigits(timeLeft.seconds.toString().padStart(2, '0'))}</span>
+                <span className="bg-orange-100/70 dark:bg-zinc-900 px-1.5 py-0.5 rounded-lg border border-orange-200 dark:border-zinc-700 text-orange-700 dark:text-orange-300">{toPersianDigits(timeLeft.seconds.toString().padStart(2, '0'))}</span>
               </div>
             </div>
           </div>
@@ -310,46 +310,46 @@ export default function Home() {
           <div className="relative z-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
             {loading ? (
               Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="h-64 bg-zinc-800/50 rounded-2xl animate-pulse" />
+                <div key={i} className="h-64 bg-zinc-200/50 dark:bg-zinc-800/50 rounded-2xl animate-pulse" />
               ))
             ) : dealProducts.length > 0 ? (
               dealProducts.map((p) => (
                 <Link
                   key={p.id}
                   to={`/product/${p.id}`}
-                  className="bg-zinc-800/70 hover:bg-zinc-800 border border-zinc-700/60 hover:border-orange-500/40 rounded-2xl p-3.5 text-white flex flex-col justify-between transition-all duration-200 shadow-md group"
+                  className="bg-white/90 hover:bg-white dark:bg-zinc-800/70 dark:hover:bg-zinc-800 border border-zinc-200/80 hover:border-orange-500/50 dark:border-zinc-700/60 dark:hover:border-orange-500/40 rounded-2xl p-3.5 text-zinc-900 dark:text-white flex flex-col justify-between transition-all duration-200 shadow-sm hover:shadow-md group"
                 >
-                  <div className="relative aspect-square rounded-xl bg-zinc-900/80 p-3 mb-3 flex items-center justify-center overflow-hidden">
+                  <div className="relative aspect-square rounded-xl bg-zinc-50 dark:bg-zinc-900/80 p-3 mb-3 flex items-center justify-center overflow-hidden border border-zinc-100 dark:border-transparent">
                     <PictureImage 
                       src={p.image} 
                       alt={p.title} 
                       width="160"
                       height="160"
-                      className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
+                      className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300 drop-shadow-[0_4px_8px_rgba(0,0,0,0.06)] dark:drop-shadow-none" 
                     />
-                    <span className="absolute top-2 right-2 bg-rose-600 text-white text-[10px] font-black px-2 py-0.5 rounded-lg">
+                    <span className="absolute top-2 right-2 bg-rose-600 text-white text-[10px] font-black px-2 py-0.5 rounded-lg shadow-xs">
                       {toPersianDigits(p.discount || 0)}٪
                     </span>
                   </div>
 
-                  <h3 className="text-xs font-bold line-clamp-2 leading-relaxed min-h-[36px] text-zinc-100 group-hover:text-orange-400 transition-colors">
+                  <h3 className="text-xs font-bold line-clamp-2 leading-relaxed min-h-[36px] text-zinc-800 dark:text-zinc-100 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
                     {p.title}
                   </h3>
 
-                  <div className="mt-3 pt-2 border-t border-zinc-700/50 flex flex-col items-end">
+                  <div className="mt-3 pt-2 border-t border-zinc-100 dark:border-zinc-700/50 flex flex-col items-end">
                     {p.originalPrice && p.originalPrice > p.price && (
                       <span className="text-[10px] text-zinc-400 line-through">
                         {formatPrice(p.originalPrice)}
                       </span>
                     )}
-                    <span className="text-xs sm:text-sm font-black text-orange-400">
+                    <span className="text-xs sm:text-sm font-black text-orange-600 dark:text-orange-400">
                       {formatPrice(p.price)}
                     </span>
                   </div>
                 </Link>
               ))
             ) : (
-              <div className="col-span-full py-8 text-center text-sm font-medium text-zinc-300">
+              <div className="col-span-full py-8 text-center text-sm font-medium text-zinc-500 dark:text-zinc-300">
                 در حال حاضر تمام شگفت‌انگیزها به پایان رسیده‌اند.
               </div>
             )}
