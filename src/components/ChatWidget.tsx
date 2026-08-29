@@ -112,22 +112,22 @@ export default function ChatWidget() {
             className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl shadow-2xl border border-gray-200 dark:border-[var(--color-border-dark)] w-[92vw] sm:w-96 h-[32rem] flex flex-col overflow-hidden mb-4 transition-colors"
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-orange-600 to-amber-600 text-white p-4 flex items-center justify-between shadow-sm">
+            <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border-b border-gray-200 dark:border-[var(--color-border-dark)] text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] p-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-[var(--color-surface-light)]/20 backdrop-blur-md flex items-center justify-center">
-                  <Bot className="h-5 w-5 text-white" />
+                <div className="w-9 h-9 rounded-full bg-orange-50 dark:bg-orange-500/10 flex items-center justify-center">
+                  <Bot className="h-5 w-5 text-orange-600 dark:text-orange-500" />
                 </div>
                 <div>
                   <h3 className="font-extrabold text-sm flex items-center gap-1.5">
                     پشتیبانی هوشمند
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                   </h3>
-                  <p className="text-[11px] text-white/80">پاسخگویی آنلاین و فوری</p>
+                  <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">پاسخگویی آنلاین و فوری</p>
                 </div>
               </div>
               <button 
-                onClick={() => setIsOpen(false)} 
-                className="text-white/80 hover:text-white p-1 rounded-full hover:bg-[var(--color-surface-light)]/10 transition-colors"
+                onClick={() => setIsOpen(false)}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 title="بستن"
               >
                 <X className="h-5 w-5" />
@@ -154,9 +154,9 @@ export default function ChatWidget() {
 
               {isTyping && (
                 <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 p-3 rounded-2xl self-start rounded-bl-none flex items-center gap-1.5 text-xs">
-                  <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-bounce"></span>
-                  <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-bounce [animation-delay:0.2s]"></span>
-                  <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                  <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse"></span>
+                  <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse [animation-delay:0.2s]"></span>
+                  <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse [animation-delay:0.4s]"></span>
                 </div>
               )}
               <div ref={messagesEndRef} />
@@ -202,7 +202,7 @@ export default function ChatWidget() {
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(true)}
           aria-label="باز کردن پنجره پشتیبانی هوشمند آنلاین"
-          className="bg-gradient-to-r from-orange-600 to-amber-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-[0_8px_30px_rgb(234,88,12,0.35)] transition-all relative group cursor-pointer"
+          className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-[var(--color-border-dark)] text-orange-600 dark:text-orange-500 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all relative group cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-900/20"
         >
           <MessageCircle className="h-6 w-6" />
           <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-500 border-2 border-white dark:border-gray-900 rounded-full"></span>

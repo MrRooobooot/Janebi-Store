@@ -31,7 +31,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
   };
 
   return (
-    <div className="linear-card bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-light)]/[0.025] rounded-3xl border border-zinc-200/80 dark:border-white/[0.08] p-4.5 hover:shadow-2xl transition-all duration-300 relative flex flex-col justify-between h-full group select-none hover:-translate-y-1">
+    <div className="linear-card bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-light)]/[0.025] rounded-2xl border border-zinc-200/80 dark:border-white/[0.08] p-4 transition-all duration-300 relative flex flex-col justify-between h-full group select-none hover:-translate-y-0.5">
       
       {/* 1. Header Badges & Quick Action Floating Buttons */}
       <div>
@@ -42,7 +42,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
                 ناموجود
               </span>
             ) : product.discount && product.discount > 0 ? (
-              <span className="bg-rose-600 dark:bg-rose-500 text-white text-[11px] font-black px-2.5 py-0.5 rounded-full shadow-xs shadow-rose-600/30">
+              <span className="bg-rose-600 dark:bg-rose-500 text-white text-[11px] font-black px-2.5 py-0.5 rounded-full">
                 {toPersianDigits(product.discount)}٪ تخفیف
               </span>
             ) : (
