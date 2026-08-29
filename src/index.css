@@ -37,8 +37,10 @@
   --color-canvas-dark: #08090a;
   --color-surface-light: #ffffff;
   --color-surface-dark: #111317;
-  --color-border-light: rgba(0, 0, 0, 0.08);
+  --color-surface-elevated-dark: #181b20;
+  --color-border-light: rgba(15, 23, 42, 0.10);
   --color-border-dark: rgba(255, 255, 255, 0.08);
+  --color-border-dark-hover: rgba(255, 106, 0, 0.40);
   --color-text-main-light: #0f172a;
   --color-text-main-dark: #f7f8f8;
   --color-text-muted-light: #64748b;
@@ -65,10 +67,11 @@ body {
   margin: 0 !important;
   padding: 0 !important;
   font-family: var(--font-sans);
+  font-feature-settings: "ss01" on, "cv01" on;
   background-color: var(--color-canvas-light);
   color: var(--color-text-main-light);
   box-sizing: border-box;
-  transition: background-color 0.25s ease, color 0.25s ease;
+  transition: background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 #root {
@@ -87,6 +90,10 @@ body {
 }
 
 /* ── Glassmorphic Luminance Stepping ────────────────────────────── */
+.linear-card {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 .dark .linear-card {
   background-color: rgba(255, 255, 255, 0.025);
   border: 1px solid rgba(255, 255, 255, 0.08);

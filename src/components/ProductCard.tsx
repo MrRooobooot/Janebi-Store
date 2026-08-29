@@ -42,7 +42,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
                 ناموجود
               </span>
             ) : product.discount && product.discount > 0 ? (
-              <span className="bg-gradient-to-r from-rose-600 to-pink-600 text-white text-[11px] font-black px-2.5 py-0.5 rounded-full shadow-sm shadow-rose-600/30">
+              <span className="bg-rose-600 dark:bg-rose-500 text-white text-[11px] font-black px-2.5 py-0.5 rounded-full shadow-xs shadow-rose-600/30">
                 {toPersianDigits(product.discount)}٪ تخفیف
               </span>
             ) : (

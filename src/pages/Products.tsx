@@ -42,19 +42,19 @@ export default function Products() {
   } = useProductFilters();
 
   return (
-    <div className="min-h-screen bg-gray-50/50 dark:bg-gray-950/50 py-8">
+    <div className="min-h-screen bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Page Title Header */}
-        <div className="mb-8 text-right bg-gradient-to-r from-orange-50 via-amber-50 to-transparent dark:from-gray-900 dark:via-gray-850 dark:to-transparent p-6 rounded-3xl border border-orange-100/60 dark:border-[var(--color-border-dark)]">
+        <div className="mb-8 text-right bg-gradient-to-r from-orange-500/10 via-amber-500/5 to-transparent dark:from-white/[0.04] dark:via-white/[0.02] dark:to-transparent p-6 rounded-3xl border border-orange-500/20 dark:border-white/[0.08]">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 dark:bg-orange-950/70 text-orange-700 dark:text-orange-300 text-xs font-bold mb-2">
             <Sparkles className="h-3.5 w-3.5 text-orange-500" />
             <span>کاتالوگ کامل جانبی آرنا</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] mb-2">
+          <h1 className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-[#f7f8f8] mb-2">
             فروشگاه تجهیزات و لوازم جانبی اورجینال
           </h1>
-          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
             بررسی، مقایسه تخصصی و خرید مستقیم انواع قاب، گلس، شارژر فست، کابل و پاوربانک با گارانتی تعویض فیزیکی
           </p>
         </div>
