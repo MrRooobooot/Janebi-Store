@@ -8,11 +8,6 @@ import { paymentRouter } from '../services/payment/PaymentFailoverRouter.js';
 
 const router = Router();
 
-const MERCHANT_ID = env.ZARINPAL_MERCHANT_ID || 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'; 
-const ZARINPAL_REQUEST_URL = 'https://api.zarinpal.com/pg/v4/payment/request.json';
-const ZARINPAL_VERIFY_URL = 'https://api.zarinpal.com/pg/v4/payment/verify.json';
-const ZARINPAL_STARTPAY_URL = 'https://www.zarinpal.com/pg/StartPay/';
-
 router.post('/request', authenticate, async (req: AuthRequest, res) => {
   try {
     const userId = req.user.id as string;

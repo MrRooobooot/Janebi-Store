@@ -6,13 +6,18 @@ export class ZarinpalAdapter implements IPaymentGateway {
   private merchantId: string;
   private sandbox: boolean;
 
-  private readonly REQUEST_URL = 'https://api.zarinpal.com/pg/v4/payment/request.json';
-  private readonly VERIFY_URL = 'https://api.zarinpal.com/pg/v4/payment/verify.json';
-  private readonly STARTPAY_URL = 'https://www.zarinpal.com/pg/StartPay/';
+  private readonly REQUEST_URL: string;
+  private readonly VERIFY_URL: string;
+  private readonly STARTPAY_URL: string;
 
   constructor() {
     this.merchantId = env.ZARINPAL_MERCHANT_ID || 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx';
     this.sandbox = Boolean(env.ZARINPAL_SANDBOX);
+
+    const baseDomain = this.sandbox ? 'https://sandbox.zarinpal.com' : 'https://payment.zarinpal.com';
+    this.REQUEST_URL = `${baseDomain}/pg/v4/payment/request.json`;
+    this.VERIFY_URL = `${baseDomain}/pg/v4/payment/verify.json`;
+    this.STARTPAY_URL = `${this.sandbox ? 'https://sandbox.zarinpal.com' : 'https://www.zarinpal.com'}/pg/StartPay/`;
   }
 
   get isHealthy(): boolean {
