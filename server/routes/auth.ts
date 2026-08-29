@@ -1,6 +1,7 @@
 import { Router } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import { validate } from "../middleware/validate.js";
 import { registerSchema, loginSchema, otpSendSchema, otpVerifySchema, resetPasswordSchema } from "../validators/index.js";
 import { db } from "../db/index.js";
@@ -189,13 +190,23 @@ router.get("/me", authenticate, async (req: AuthRequest, res) => {
   });
   res.json({ user: { ...req.user, addresses: userAddresses } });
 });
-// In-memory OTP Store for phone verification with expiration
+// In-memory OTP Store with automatic cleanup
 interface OtpEntry {
   code: string;
   expiresAt: number;
   attempts: number;
 }
 const otpStore = new Map<string, OtpEntry>();
+
+// Periodic cleanup of expired OTPs to prevent memory leaks
+setInterval(() => {
+  const now = Date.now();
+  for (const [phone, entry] of otpStore.entries()) {
+    if (now > entry.expiresAt) {
+      otpStore.delete(phone);
+    }
+  }
+}, 5 * 60 * 1000).unref();
 
 router.post("/otp/send", validate(otpSendSchema), async (req, res) => {
   const { phone } = req.body;
@@ -209,8 +220,8 @@ router.post("/otp/send", validate(otpSendSchema), async (req, res) => {
     });
   }
 
-  // Generate 5-digit OTP
-  const code = Math.floor(10000 + Math.random() * 90000).toString();
+  // Cryptographically secure 5-digit OTP
+  const code = crypto.randomInt(10000, 100000).toString();
   const expiresAt = Date.now() + 2 * 60 * 1000; // 2 minutes
 
   otpStore.set(phone, { code, expiresAt, attempts: 0 });
@@ -263,7 +274,7 @@ router.post("/otp/verify", validate(otpVerifySchema), async (req, res) => {
       // Create new user automatically via OTP registration
       const userId = `usr-${Date.now()}`;
       const joinedDate = new Intl.DateTimeFormat("fa-IR").format(new Date());
-      const randomPassword = await bcrypt.hash(Math.random().toString(36), 10);
+      const randomPassword = await bcrypt.hash(crypto.randomBytes(24).toString('hex'), 10);
       const userName = name || "کاربر جـانبی";
 
       await db.insert(users).values({

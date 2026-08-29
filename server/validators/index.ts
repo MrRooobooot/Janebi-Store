@@ -50,7 +50,17 @@ export const reviewSubmitSchema = z.object({
 
 export const orderSubmitSchema = z.object({
   body: z.object({
-    items: z.array(z.any()).min(1, "سبد خرید خالی است"),
+    items: z.array(z.object({
+      id: z.number().or(z.string()).optional(),
+      productId: z.number().or(z.string()).optional(),
+      quantity: z.number().int().positive().optional(),
+      qty: z.number().int().positive().optional(),
+      price: z.number().optional(),
+      title: z.string().optional(),
+      image: z.string().optional(),
+      brand: z.string().optional(),
+      color: z.string().optional(),
+    }).passthrough()).min(1, "سبد خرید خالی است"),
     recipient: z.object({
       name: z.string().min(1),
       phone: z.string().min(1),

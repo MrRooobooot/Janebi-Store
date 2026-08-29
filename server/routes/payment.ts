@@ -128,8 +128,11 @@ router.get('/verify', async (req, res) => {
       return res.redirect(`/checkout/callback?status=failed&orderId=${order.id}`);
     }
 
-    // Dummy merchant / test authority handling for testing & failover simulation
-    if (authority.startsWith('DUMMY_AUTH_') || authority.startsWith('ZP_DEV_') || authority.startsWith('SEP_DEV_')) {
+    // Dummy merchant / test authority handling for testing & failover simulation (Non-production sandbox only)
+    if (
+      env.NODE_ENV !== "production" &&
+      (authority.startsWith('DUMMY_AUTH_') || authority.startsWith('ZP_DEV_') || authority.startsWith('SEP_DEV_'))
+    ) {
       const dummyRefId = `REF-${Math.floor(Math.random() * 1000000)}`;
       await db.transaction(async (tx) => {
         const currentOrderList = await tx.select().from(orders).where(eq(orders.id, order.id));
