@@ -96,7 +96,7 @@ export default function VipClubBanner() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="bg-gray-900 hover:bg-black disabled:opacity-60 text-white px-6 py-3.5 rounded-xl font-extrabold text-xs sm:text-sm transition-all duration-300 flex items-center justify-center gap-2 shrink-0 shadow-lg active:scale-95"
+                className="bg-zinc-900 hover:bg-black dark:bg-orange-500 dark:hover:bg-orange-600 disabled:opacity-60 text-white px-6 py-3.5 rounded-xl font-extrabold text-xs sm:text-sm transition-all duration-300 flex items-center justify-center gap-2 shrink-0 shadow-lg active:scale-95 cursor-pointer"
               >
                 <Gift className="h-4 w-4 text-orange-400" />
                 {submitting ? 'در حال ثبت...' : 'دریافت هدیه'}
