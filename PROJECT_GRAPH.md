@@ -54,6 +54,11 @@
 - **Design Tokens & Theme:** `src/index.css` (Obsidian dark canvas `--color-canvas`, glassmorphic cards `--color-surface`, standard focus rings).
 - **Persian Normalization & Utils:** `src/lib/utils.ts` (`toPersianDigits`, `toEnglishDigits`, `normalizeIranianMobile`, `isValidIranianMobile`, `formatPrice`).
 - **PWA & Offline:** `public/manifest.webmanifest`, `public/sw.js` (Cache-first for assets, Stale-while-revalidate for API).
+- **AI Search & Agent Readiness (AI SEO / AEO / GEO):**
+  - `public/llms.txt` & `public/llms-full.txt` (Structured plain text store context and catalog for LLMs).
+  - `public/pricing.md` (Machine-readable shipping rates, returns, and pricing policies).
+  - `public/robots.txt` (Explicitly permits `GPTBot`, `PerplexityBot`, `ClaudeBot`, `Google-Extended`, `Bingbot`, `Applebot`).
+  - `index.html` & `src/pages/ProductDetail.tsx` (Deep JSON-LD Graph Schema: `Organization`, `WebSite`, `Product`, `Offer`, `AggregateRating`).
 
 ---
 

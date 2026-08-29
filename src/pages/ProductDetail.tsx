@@ -56,6 +56,44 @@ export default function ProductDetail() {
           brand: data.brand,
           rating: data.rating,
         });
+
+        // Dynamic Product JSON-LD Schema for AI Crawlers and Search Engines
+        const existingScript = document.getElementById('product-schema-jsonld');
+        if (existingScript) existingScript.remove();
+
+        const schemaScript = document.createElement('script');
+        schemaScript.id = 'product-schema-jsonld';
+        schemaScript.type = 'application/ld+json';
+        schemaScript.text = JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'Product',
+          name: data.title,
+          image: data.image?.startsWith('http') ? data.image : `https://janebiarena.ir${data.image}`,
+          description: data.description || `${data.title} - اورجینال با ضمانت سلامت و اصالت فیزیکی کالا`,
+          brand: {
+            '@type': 'Brand',
+            name: data.brand || 'Janebi Arena',
+          },
+          offers: {
+            '@type': 'Offer',
+            url: window.location.href,
+            priceCurrency: 'IRR',
+            price: (data.price * 10).toString(),
+            availability: data.inStock !== false ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+            seller: {
+              '@type': 'Organization',
+              name: 'جانبی آرنا',
+            },
+          },
+          aggregateRating: data.rating ? {
+            '@type': 'AggregateRating',
+            ratingValue: data.rating.toString(),
+            reviewCount: (data.reviewsCount || 1).toString(),
+            bestRating: '5',
+            worstRating: '1',
+          } : undefined,
+        });
+        document.head.appendChild(schemaScript);
       })
       .catch(() => {
         setProduct(null);
