@@ -68,7 +68,7 @@ export default function Compare() {
           <table className="w-full min-w-[900px] text-right border-collapse">
             <thead>
               <tr>
-                <th className="p-6 border-b border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 bg-gray-50/50 dark:bg-gray-800/30 w-1/4 align-top">
+                <th className="p-6 border-b border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 bg-[var(--color-canvas-light)]/50 dark:bg-[var(--color-canvas-dark)]/50 w-1/4 align-top">
                   <div className="text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] font-black text-lg mb-2">
                     مشخصات کالاها
                   </div>
@@ -85,11 +85,11 @@ export default function Compare() {
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.9 }}
                       key={item.id}
-                      className="p-6 border-b border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 w-1/4 relative align-top group hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors"
+                      className="p-6 border-b border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 w-1/4 relative align-top group hover:bg-[var(--color-canvas-light)]/50 dark:hover:bg-[var(--color-canvas-dark)]/30 transition-colors"
                     >
                       <button
                         onClick={() => toggleCompare(item)}
-                        className="absolute top-4 left-4 text-gray-400 hover:text-white bg-[var(--color-surface-light)] dark:bg-gray-800 hover:bg-red-500 dark:hover:bg-red-500 rounded-xl p-1.5 border border-gray-200 dark:border-gray-700 hover:border-red-500 transition-all shadow-xs z-10 opacity-80 group-hover:opacity-100"
+                        className="absolute top-4 left-4 text-gray-400 hover:text-white bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] hover:bg-red-500 dark:hover:bg-red-500 rounded-xl p-1.5 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] hover:border-red-500 transition-all shadow-xs z-10 opacity-80 group-hover:opacity-100"
                         title="حذف از مقایسه"
                       >
                         <X className="h-4 w-4" />
@@ -98,7 +98,7 @@ export default function Compare() {
                       <div className="flex flex-col items-center text-center">
                         <Link
                           to={`/products/${item.id}`}
-                          className="w-32 h-32 mb-4 bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl p-2 flex items-center justify-center border border-[var(--color-border-light)] dark:border-gray-700 group-hover:border-orange-200 dark:group-hover:border-orange-800/50 transition-colors"
+                          className="w-32 h-32 mb-4 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-2 flex items-center justify-center border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] group-hover:border-orange-200 dark:group-hover:border-orange-800/50 transition-colors"
                         >
                           <img
                             src={item.image}
@@ -139,7 +139,7 @@ export default function Compare() {
                       className="flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 h-full min-h-[250px] border-2 border-dashed border-gray-200 dark:border-gray-700/50 rounded-2xl p-8 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors group cursor-pointer"
                       onClick={() => navigate('/products')}
                     >
-                      <div className="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                      <div className="w-12 h-12 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                         <span className="text-2xl font-light text-gray-400">+</span>
                       </div>
                       <span className="text-xs sm:text-sm font-bold mb-1">افزودن کالا</span>
@@ -149,9 +149,9 @@ export default function Compare() {
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 dark:divide-gray-800/60">
-              <tr className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
-                <td className="p-4 font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] bg-gray-50/50 dark:bg-gray-800/30 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 w-1/4 text-xs sm:text-sm">
+            <tbody className="divide-y divide-[var(--color-border-light)] dark:divide-[var(--color-border-dark)]/60">
+              <tr className="hover:bg-[var(--color-canvas-light)]/50 dark:hover:bg-[var(--color-canvas-dark)]/30 transition-colors">
+                <td className="p-4 font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] bg-[var(--color-canvas-light)]/50 dark:bg-[var(--color-canvas-dark)]/30 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 w-1/4 text-xs sm:text-sm">
                   <div className="flex items-center gap-2">
                     <Tag className="h-4 w-4 text-orange-500" /> برند سازنده
                   </div>
@@ -173,8 +173,8 @@ export default function Compare() {
                   </td>
                 ))}
               </tr>
-              <tr className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
-                <td className="p-4 font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] bg-gray-50/50 dark:bg-gray-800/30 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-xs sm:text-sm">
+              <tr className="hover:bg-[var(--color-canvas-light)]/50 dark:hover:bg-[var(--color-canvas-dark)]/30 transition-colors">
+                <td className="p-4 font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] bg-[var(--color-canvas-light)]/50 dark:bg-[var(--color-canvas-dark)]/30 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-xs sm:text-sm">
                   <div className="flex items-center gap-2">
                     <Info className="h-4 w-4 text-orange-500" /> دسته‌بندی
                   </div>
@@ -182,9 +182,9 @@ export default function Compare() {
                 {compareItems.map((item) => (
                   <td
                     key={item.id}
-                    className="p-4 text-gray-600 dark:text-gray-300 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-center font-medium bg-gray-50/30 dark:bg-gray-800/10"
+                    className="p-4 text-gray-600 dark:text-gray-300 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-center font-medium bg-[var(--color-canvas-light)]/30 dark:bg-[var(--color-canvas-dark)]/10"
                   >
-                    <span className="bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full text-xs font-bold">
+                    <span className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] px-3 py-1 rounded-full text-xs font-bold">
                       {item.category}
                     </span>
                   </td>
@@ -198,8 +198,8 @@ export default function Compare() {
                   </td>
                 ))}
               </tr>
-              <tr className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
-                <td className="p-4 font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] bg-gray-50/50 dark:bg-gray-800/30 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-xs sm:text-sm">
+              <tr className="hover:bg-[var(--color-canvas-light)]/50 dark:hover:bg-[var(--color-canvas-dark)]/30 transition-colors">
+                <td className="p-4 font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] bg-[var(--color-canvas-light)]/50 dark:bg-[var(--color-canvas-dark)]/30 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-xs sm:text-sm">
                   <div className="flex items-center gap-2">
                     <ShieldCheck className="h-4 w-4 text-emerald-500" /> گارانتی
                   </div>
@@ -231,9 +231,9 @@ export default function Compare() {
               {allFeatures.map((feature) => (
                 <tr
                   key={feature}
-                  className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors"
+                  className="hover:bg-[var(--color-canvas-light)]/50 dark:hover:bg-[var(--color-canvas-dark)]/30 transition-colors"
                 >
-                  <td className="p-4 font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] bg-gray-50/50 dark:bg-gray-800/30 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-xs sm:text-sm">
+                  <td className="p-4 font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] bg-[var(--color-canvas-light)]/50 dark:bg-[var(--color-canvas-dark)]/30 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-xs sm:text-sm">
                     <div className="flex items-center gap-2">
                       <div className="w-1.5 h-1.5 rounded-full bg-orange-400 shrink-0"></div> {feature}
                     </div>

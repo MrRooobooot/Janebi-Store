@@ -122,7 +122,7 @@ export default function PersonalInfoTab() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-3 px-4 pr-10 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
+                  className="w-full bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl py-3 px-4 pr-10 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
                   required
                 />
                 <User className="h-4 w-4 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2" />
@@ -139,7 +139,7 @@ export default function PersonalInfoTab() {
                   dir="ltr"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-3 px-4 pl-10 text-left font-mono text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
+                  className="w-full bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl py-3 px-4 pl-10 text-left font-mono text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
                   required
                 />
                 <Phone className="h-4 w-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -157,7 +157,7 @@ export default function PersonalInfoTab() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="example@mail.com"
-                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-3 px-4 pr-10 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
+                className="w-full bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl py-3 px-4 pr-10 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
               />
               <Mail className="h-4 w-4 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2" />
             </div>
@@ -193,7 +193,7 @@ export default function PersonalInfoTab() {
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-3 px-4 pl-10 text-left font-mono text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
+                  className="w-full bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl py-3 px-4 pl-10 text-left font-mono text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
                 />
                 <Lock className="h-4 w-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
@@ -210,7 +210,7 @@ export default function PersonalInfoTab() {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-3 px-4 pl-10 text-left font-mono text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
+                  className="w-full bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl py-3 px-4 pl-10 text-left font-mono text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
                 />
                 <Lock className="h-4 w-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
@@ -220,7 +220,7 @@ export default function PersonalInfoTab() {
           <button
             type="submit"
             disabled={passwordLoading}
-            className="bg-gray-900 dark:bg-gray-800 hover:bg-black dark:hover:bg-gray-700 text-white font-bold text-xs px-6 py-3 rounded-2xl flex items-center gap-2 transition-all shadow-md active:scale-95 disabled:opacity-50 cursor-pointer"
+            className="bg-gray-900 dark:bg-orange-500 hover:bg-black dark:hover:bg-orange-600 text-white font-bold text-xs px-6 py-3 rounded-2xl flex items-center gap-2 transition-all shadow-md active:scale-95 disabled:opacity-50 cursor-pointer"
           >
             {passwordLoading ? 'در حال به‌روزرسانی...' : 'به‌روزرسانی کلمه عبور'}
           </button>

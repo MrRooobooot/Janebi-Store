@@ -142,7 +142,7 @@ export default function ChatWidget() {
                   className={`max-w-[85%] p-3.5 rounded-2xl text-xs sm:text-sm leading-relaxed ${
                     msg.isUser 
                       ? 'bg-orange-600 text-white self-end rounded-br-none shadow-sm' 
-                      : 'bg-[var(--color-surface-light)] dark:bg-gray-800 border border-gray-200/80 dark:border-gray-700 text-gray-800 dark:text-[var(--color-text-main-dark)] self-start rounded-bl-none shadow-sm'
+                      : 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-gray-800 dark:text-[var(--color-text-main-dark)] self-start rounded-bl-none shadow-sm'
                   }`}
                 >
                   <div>{msg.text}</div>
@@ -163,12 +163,12 @@ export default function ChatWidget() {
             </div>
 
             {/* Quick Suggestions Chips */}
-            <div className="p-2 bg-gray-100/60 dark:bg-gray-800/40 border-t border-gray-200/60 dark:border-[var(--color-border-dark)] flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+            <div className="p-2 bg-[var(--color-canvas-light)]/60 dark:bg-[var(--color-canvas-dark)]/40 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex items-center gap-1.5 overflow-x-auto no-scrollbar">
               {QUICK_QUESTIONS.map((q, idx) => (
                 <button
                   key={idx}
                   onClick={() => handleSend(q)}
-                  className="whitespace-nowrap px-2.5 py-1 text-[11px] font-medium bg-[var(--color-surface-light)] dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 border border-gray-200 dark:border-gray-700 rounded-full transition-colors shrink-0"
+                  className="whitespace-nowrap px-2.5 py-1 text-[11px] font-medium bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-full transition-colors shrink-0"
                 >
                   {q}
                 </button>
@@ -176,13 +176,13 @@ export default function ChatWidget() {
             </div>
 
             {/* Input Form */}
-            <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="p-3 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border-t border-gray-200 dark:border-[var(--color-border-dark)] flex gap-2">
+            <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="p-3 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex gap-2">
               <input 
                 type="text" 
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
+                value={input} 
+                onChange={(e) => setInput(e.target.value)} 
                 placeholder="سوال خود را بنویسید..." 
-                className="flex-1 bg-gray-100 dark:bg-gray-800 text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] border border-transparent focus:border-orange-500 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none transition-colors"
+                className="flex-1 bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] border border-transparent focus:border-orange-500 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none transition-colors"
               />
               <button 
                 type="submit" 

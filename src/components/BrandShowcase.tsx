@@ -78,7 +78,7 @@ export default function BrandShowcase() {
                   <div key={`${brand.name}-${idx}`} className="w-36 shrink-0 mx-4">
                     <Link
                       to={`/products?brand=${encodeURIComponent(brand.name)}`}
-                      className="group relative flex flex-col items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-[var(--color-surface-light)] dark:bg-gray-800/80 border border-[var(--color-border-light)] dark:border-gray-700/60 hover:border-orange-500/40 dark:hover:border-orange-500/40 shadow-xs hover:shadow-lg hover:-translate-y-1 transition-all duration-300 h-full"
+                      className="group relative flex flex-col items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] hover:border-orange-500/40 dark:hover:border-orange-500/40 shadow-xs hover:shadow-lg hover:-translate-y-1 transition-all duration-300 h-full"
                     >
                       {/* Logo Frame */}
                       <div className="w-full h-14 rounded-xl bg-gray-50/80 dark:bg-gray-700/40 group-hover:bg-orange-50/50 dark:group-hover:bg-orange-950/20 border border-[var(--color-border-light)]/80 dark:border-gray-700/40 flex items-center justify-center p-2 transition-colors duration-300">

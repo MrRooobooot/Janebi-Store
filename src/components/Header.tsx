@@ -177,7 +177,7 @@ export default function Header() {
 
                 {userDropdownOpen && (
                   <div 
-                    className="absolute left-0 mt-2 w-48 bg-[var(--color-surface-light)] dark:bg-zinc-900 rounded-2xl shadow-xl border border-zinc-200 dark:border-zinc-800 py-2 z-50 animate-in fade-in zoom-in-95 duration-100"
+                    className="absolute left-0 mt-2 w-48 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl shadow-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] py-2 z-50 animate-in fade-in zoom-in-95 duration-100"
                     onMouseLeave={() => setUserDropdownOpen(false)}
                   >
                     <div className="px-4 py-2 border-b border-zinc-100 dark:border-zinc-800">
@@ -264,7 +264,7 @@ export default function Header() {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-zinc-200 dark:border-zinc-800 bg-[var(--color-surface-light)] dark:bg-zinc-900 px-4 py-4 space-y-3 animate-in slide-in-from-top-2 duration-150">
+        <div className="lg:hidden border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] px-4 py-4 space-y-3 animate-in slide-in-from-top-2 duration-150">
           <div className="grid grid-cols-2 gap-2 text-xs font-medium">
             {navLinks.map((link) => (
               <Link

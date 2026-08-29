@@ -113,7 +113,7 @@ export default function VipClubTab() {
 
               <button
                 onClick={() => handleCopy(cp.code)}
-                className="w-full py-2 bg-[var(--color-surface-light)] dark:bg-gray-800 hover:bg-orange-500 hover:text-white text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-500/30 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-xs"
+                className="w-full py-2 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] hover:bg-orange-500 hover:text-white text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-500/30 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-xs"
               >
                 {copiedCode === cp.code ? (
                   <>

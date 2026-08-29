@@ -53,7 +53,7 @@ export default function CheckoutCallback() {
             : message || 'متأسفانه در فرآیند پرداخت خطایی رخ داد یا پرداخت توسط شما لغو شد.'}
         </p>
 
-        <div className="bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-4 mb-8 space-y-3 text-right">
+        <div className="bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] rounded-2xl p-4 mb-8 space-y-3 text-right">
           {orderId && (
             <div className="flex justify-between items-center text-sm">
               <span className="text-gray-500 dark:text-gray-400">شماره سفارش:</span>
@@ -79,7 +79,7 @@ export default function CheckoutCallback() {
           
           <Link 
             to="/"
-            className="w-full bg-[var(--color-surface-light)] dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-bold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2"
+            className="w-full bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-gray-700 dark:text-gray-300 hover:bg-[var(--color-canvas-light)] dark:hover:bg-gray-800 font-bold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2"
           >
             <span>بازگشت به صفحه اصلی</span>
             <ArrowRight className="h-4 w-4" />
