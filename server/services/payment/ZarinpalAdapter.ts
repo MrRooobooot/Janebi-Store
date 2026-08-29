@@ -40,7 +40,6 @@ export class ZarinpalAdapter implements IPaymentGateway {
       !this.merchantId ||
       this.merchantId === 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' ||
       this.merchantId.startsWith('00000000') ||
-      this.sandbox ||
       env.NODE_ENV === 'test';
 
     if (isDummyMerchant) {
