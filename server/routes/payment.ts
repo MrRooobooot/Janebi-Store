@@ -46,6 +46,7 @@ router.post('/request', authenticate, async (req: AuthRequest, res) => {
       amountTomans: order.total,
       callbackUrl,
       description: `پرداخت سفارش ${orderId} - جانبی آرنا`,
+      mobile: order.recipientPhone || req.user.phone,
       idempotencyKey: req.headers['idempotency-key'] as string
     });
 

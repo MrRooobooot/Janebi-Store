@@ -58,12 +58,14 @@ export class ZarinpalAdapter implements IPaymentGateway {
 
     const payload = {
       merchant_id: this.merchantId,
-      amount: options.amountTomans * 10, // Tomans to Rials
+      amount: options.amountTomans, // Send as Tomans with explicit currency
+      currency: 'IRT',
       description: options.description || `سفارش شماره ${options.orderId}`,
       callback_url: options.callbackUrl,
       metadata: {
         mobile: options.mobile,
-        email: options.email
+        email: options.email,
+        order_id: options.orderId
       }
     };
 
@@ -121,7 +123,7 @@ export class ZarinpalAdapter implements IPaymentGateway {
 
     const payload = {
       merchant_id: this.merchantId,
-      amount: options.amountTomans * 10,
+      amount: options.amountTomans, // Must match request currency (Tomans)
       authority: options.authority
     };
 
