@@ -1,5 +1,6 @@
 import React from 'react';
-import { ShieldCheck, Truck, Headphones, Award, Smartphone, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Truck, Headphones, Award, CheckCircle2 } from 'lucide-react';
+import { LogoSymbol } from '../../components/Logo';
 import { motion } from 'motion/react';
 
 export default function About() {
@@ -23,7 +24,9 @@ export default function About() {
             ما در جانبی آرنا با بیش از ۷ سال تجربه در تامین و توزیع مستقیم لوازم جانبی اصلی، تضمین‌کننده بهترین کیفیت و مناسب‌ترین قیمت برای هموطنان عزیز هستیم.
           </p>
         </div>
-        <Smartphone className="absolute -left-10 -bottom-10 h-64 w-64 text-white/10 rotate-12 pointer-events-none" />
+        <div className="absolute -left-10 -bottom-10 w-64 h-64 opacity-15 rotate-12 pointer-events-none">
+          <LogoSymbol theme="white" className="w-full h-full" />
+        </div>
       </div>
 
       {/* Value Cards */}

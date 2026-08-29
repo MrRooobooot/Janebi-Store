@@ -3,10 +3,11 @@ import { Outlet, NavLink, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { 
-  LayoutDashboard, Package, ShoppingCart, Users, LogOut, ArrowRight, 
-  ShieldAlert, Tag, Mail, MessageSquare, MailCheck, Settings, Menu, X,
-  Sun, Moon, ExternalLink, AlertTriangle, Smartphone
+  LayoutDashboard, Package, ShoppingCart, Users, Settings, Tag, 
+  ChevronRight, LogOut, MessageSquare, Mail, MailCheck, Menu, X, 
+  Sun, Moon, ExternalLink, AlertTriangle, ShieldAlert, ArrowRight
 } from 'lucide-react';
+import Logo, { LogoSymbol } from '../Logo';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function AdminLayout() {
@@ -93,8 +94,8 @@ export default function AdminLayout() {
       {/* Brand Header */}
       <div className="p-5 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex items-center justify-between">
         <Link to="/admin" className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-orange-600 via-orange-500 to-amber-500 text-white flex items-center justify-center shadow-md shadow-orange-600/30 border border-orange-400/40">
-            <Smartphone className="h-5 w-5 stroke-[2.4]" />
+          <div className="w-9 h-9 rounded-2xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 flex items-center justify-center shrink-0 shadow-sm">
+            <LogoSymbol className="w-6 h-6" />
           </div>
           <div>
             <span className="text-sm font-black text-[var(--color-text-main-light)] dark:text-white">
@@ -234,8 +235,8 @@ export default function AdminLayout() {
             <Menu className="h-5 w-5" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-orange-600 to-amber-500 text-white flex items-center justify-center shadow-xs">
-              <Smartphone className="h-3.5 w-3.5 stroke-[2.4]" />
+            <div className="w-7 h-7 rounded-lg bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 flex items-center justify-center shadow-xs">
+              <LogoSymbol className="w-5 h-5" />
             </div>
             <span className="text-xs font-black text-[var(--color-text-main-light)] dark:text-white">
               جانبی <span className="text-orange-500">آرنا</span>

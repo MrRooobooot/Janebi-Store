@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Truck, HeadphonesIcon, Shield, CheckCircle, Send, Phone, Mail, Award, Smartphone } from 'lucide-react';
+import { Truck, HeadphonesIcon, Shield, CheckCircle, Send, Phone, Mail, Award } from 'lucide-react';
+import Logo from './Logo';
 import { useToast } from '../contexts/ToastContext';
 import { FREE_SHIPPING_THRESHOLD } from '../lib/constants';
 import { useStoreSettings } from '../hooks/useStoreSettings';
@@ -89,15 +90,7 @@ export default function Footer() {
           {/* About & Contact Info */}
           <div className="lg:col-span-4 space-y-4 text-right flex flex-col justify-between">
             <div className="space-y-2">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-orange-600 to-amber-500 text-white flex items-center justify-center shadow-md shadow-orange-600/25 shrink-0">
-                  <Smartphone className="h-4 w-4 stroke-[2.4]" />
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-base font-black text-zinc-900 dark:text-white">جانبی</span>
-                  <span className="text-base font-black bg-gradient-to-l from-orange-600 to-amber-500 bg-clip-text text-transparent">آرنا</span>
-                </div>
-              </div>
+              <Logo size="sm" />
               <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
                 مرجع تخصصی عرضه مستقیم انواع لوازم جانبی موبایل، شارژر، گلس، قاب و تجهیزات دیجیتال با ضمانت اصالت و سلامت فیزیکی.
               </p>

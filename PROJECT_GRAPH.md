@@ -52,6 +52,7 @@
 - **App Shell & Routing:** `src/App.tsx`, `src/main.tsx` (React Router v7, React 19).
 - **State & Contexts:** `CartContext.tsx`, `AuthContext.tsx`, `ToastContext.tsx`, `WishlistContext.tsx`, `CompareContext.tsx`.
 - **Design Tokens & Theme:** `src/index.css` (Obsidian dark canvas `--color-canvas`, glassmorphic cards `--color-surface`, standard focus rings).
+- **Brand Identity & Vector Assets:** `src/components/Logo.tsx` (`Logo`, `LogoSymbol`), `public/favicon.svg`, `public/logo-fa.svg`, `public/logo-en.svg`, `public/logo-symbol.svg`, `public/icon-192.svg`, `public/icon-512.svg`.
 - **Persian Normalization & Utils:** `src/lib/utils.ts` (`toPersianDigits`, `toEnglishDigits`, `normalizeIranianMobile`, `isValidIranianMobile`, `formatPrice`).
 - **PWA & Offline:** `public/manifest.webmanifest`, `public/sw.js` (Cache-first for assets, Stale-while-revalidate for API).
 - **AI Search & Agent Readiness (AI SEO / AEO / GEO):**
