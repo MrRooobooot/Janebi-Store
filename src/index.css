@@ -28,23 +28,62 @@
 
 @theme {
   --font-sans: "Vazirmatn", system-ui, -apple-system, sans-serif;
+  
+  /* ── Core Brand Palette (Vibrant Persian Amber-Orange & Titanium Accents) ── */
   --color-primary-50: #fff7ed;
   --color-primary-100: #ffedd5;
+  --color-primary-200: #fed7aa;
+  --color-primary-300: #fdba74;
+  --color-primary-400: #fb923c;
   --color-primary-500: #ff6a00;
   --color-primary-600: #f05400;
   --color-primary-700: #d04000;
+  --color-primary-800: #9a3412;
+  --color-primary-900: #7c2d12;
+  --color-primary-950: #431407;
+
+  /* ── Secondary & Accent Tokens (Emerald, Indigo, Rose, Gold) ── */
+  --color-accent-gold: #f59e0b;
+  --color-accent-emerald: #10b981;
+  --color-accent-cyan: #06b6d4;
+  --color-accent-rose: #f43f5e;
+  --color-accent-violet: #8b5cf6;
+
+  /* ── Semantic Canvas & Glass Surface Hierarchy ── */
   --color-canvas-light: #f8fafc;
   --color-canvas-dark: #08090a;
   --color-surface-light: #ffffff;
   --color-surface-dark: #111317;
+  --color-surface-elevated-light: #ffffff;
   --color-surface-elevated-dark: #181b20;
-  --color-border-light: rgba(15, 23, 42, 0.10);
+  --color-surface-card-light: #ffffff;
+  --color-surface-card-dark: #12151a;
+  --color-surface-glass-light: rgba(255, 255, 255, 0.82);
+  --color-surface-glass-dark: rgba(17, 19, 23, 0.82);
+
+  /* ── Precision Border & Divider Tokens ── */
+  --color-border-light: rgba(15, 23, 42, 0.08);
   --color-border-dark: rgba(255, 255, 255, 0.08);
+  --color-border-subtle-light: rgba(15, 23, 42, 0.04);
+  --color-border-subtle-dark: rgba(255, 255, 255, 0.04);
   --color-border-dark-hover: rgba(255, 106, 0, 0.40);
+  --color-border-light-hover: rgba(240, 84, 0, 0.35);
+
+  /* ── High-Luminance Typography Tokens ── */
   --color-text-main-light: #0f172a;
   --color-text-main-dark: #f7f8f8;
   --color-text-muted-light: #64748b;
   --color-text-muted-dark: #94a3b8;
+  --color-text-subtle-light: #94a3b8;
+  --color-text-subtle-dark: #64748b;
+
+  /* ── Depth & Elevation Box Shadows ── */
+  --shadow-elevation-1: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-elevation-2: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-elevation-3: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+  --shadow-glow-orange: 0 8px 24px -4px rgba(255, 106, 0, 0.35);
+  --shadow-glow-amber: 0 8px 24px -4px rgba(245, 158, 11, 0.30);
+  --shadow-glow-emerald: 0 8px 24px -4px rgba(16, 185, 129, 0.30);
 }
 
 :root {
@@ -170,6 +209,52 @@ body {
 /* ── Persian Digit Rendering ────────────────────────────────────── */
 .persian-nums {
   font-feature-settings: "ss01" on;
+}
+
+/* ── Modern Vibrancy & Surface Utility Classes ──────────────────── */
+.surface-glass {
+  background-color: var(--color-surface-glass-light);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid var(--color-border-light);
+}
+
+.dark .surface-glass {
+  background-color: var(--color-surface-glass-dark);
+  border-color: var(--color-border-dark);
+}
+
+.surface-card {
+  background-color: var(--color-surface-card-light);
+  border: 1px solid var(--color-border-light);
+  box-shadow: var(--shadow-elevation-1);
+}
+
+.dark .surface-card {
+  background-color: var(--color-surface-card-dark);
+  border-color: var(--color-border-dark);
+}
+
+.brand-gradient {
+  background: linear-gradient(135deg, #ff6a00 0%, #f59e0b 100%);
+}
+
+.brand-gradient-text {
+  background: linear-gradient(135deg, #ff6a00 0%, #f59e0b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-glow-orange {
+  box-shadow: var(--shadow-glow-orange);
+}
+
+.brand-glow-amber {
+  box-shadow: var(--shadow-glow-amber);
+}
+
+.brand-glow-emerald {
+  box-shadow: var(--shadow-glow-emerald);
 }
 
 /* ── Logo Carousel ────────────────────────────────────── */
