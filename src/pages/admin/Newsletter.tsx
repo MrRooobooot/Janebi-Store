@@ -1,3 +1,4 @@
+import { authFetch } from '../../lib/api';
 import React, { useState, useEffect } from 'react';
 import { Send, Download, Trash2, Search, MailCheck, Calendar } from 'lucide-react';
 import { useToast } from '../../contexts/ToastContext';
@@ -16,7 +17,7 @@ export default function AdminNewsletter() {
   const fetchSubscribers = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('/api/admin/newsletter', {
+      const res = await authFetch('/api/admin/newsletter', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -40,7 +41,7 @@ export default function AdminNewsletter() {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`/api/admin/newsletter/${encodeURIComponent(email)}`, {
+      const res = await authFetch(`/api/admin/newsletter/${encodeURIComponent(email)}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });

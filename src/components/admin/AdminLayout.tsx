@@ -1,3 +1,4 @@
+import { authFetch } from '../../lib/api';
 import React, { useState, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -29,7 +30,7 @@ export default function AdminLayout() {
     const headers: Record<string, string> = { Authorization: `Bearer ${token}` };
     
     // Fetch live synchronized admin statistics
-    fetch('/api/admin/stats', { headers, credentials: 'include' })
+    authFetch('/api/admin/stats', { headers, credentials: 'include' })
       .then(res => res.json())
       .then(data => {
         if (data?.metrics || data?.statusCounts) {

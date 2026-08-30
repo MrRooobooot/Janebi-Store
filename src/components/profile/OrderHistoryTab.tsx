@@ -4,6 +4,7 @@ import { Package, Search, Printer, XCircle, Clock, CheckCircle2, MapPin, Calenda
 import { Order } from '../../types';
 import { toPersianDigits, formatPrice } from '../../lib/utils';
 import { useToast } from '../../contexts/ToastContext';
+import { authFetch } from '../../lib/api';
 
 interface OrderHistoryTabProps {
   orders: Order[];
@@ -22,7 +23,7 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
     setRetryingId(orderId);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('/api/payment/request', {
+      const res = await authFetch('/api/payment/request', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

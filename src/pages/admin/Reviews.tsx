@@ -1,3 +1,4 @@
+import { authFetch } from '../../lib/api';
 import React, { useState, useEffect } from 'react';
 import { MessageSquare, Star, Trash2, Search, Filter, ThumbsUp, ThumbsDown, CheckCircle, AlertCircle } from 'lucide-react';
 import { useToast } from '../../contexts/ToastContext';
@@ -31,7 +32,7 @@ export default function AdminReviews() {
   const fetchReviews = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('/api/admin/reviews', {
+      const res = await authFetch('/api/admin/reviews', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -55,7 +56,7 @@ export default function AdminReviews() {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`/api/admin/reviews/${id}`, {
+      const res = await authFetch(`/api/admin/reviews/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });

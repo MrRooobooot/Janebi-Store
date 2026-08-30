@@ -1,3 +1,4 @@
+import { authFetch } from '../../lib/api';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -34,7 +35,7 @@ export default function AdminOrders() {
 
   const fetchOrders = async () => {
     try {
-      const res = await fetch('/api/admin/orders', {
+      const res = await authFetch('/api/admin/orders', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (!res.ok) throw new Error();
@@ -50,7 +51,7 @@ export default function AdminOrders() {
   const updateStatus = async (orderId: string, newStatus: string, newStatusText: string) => {
     setUpdatingId(orderId);
     try {
-      const res = await fetch(`/api/admin/orders/${orderId}/status`, {
+      const res = await authFetch(`/api/admin/orders/${orderId}/status`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -81,7 +82,7 @@ export default function AdminOrders() {
     if (!trackingInput.trim()) return;
     setSavingTracking(true);
     try {
-      const res = await fetch(`/api/admin/orders/${orderId}/tracking`, {
+      const res = await authFetch(`/api/admin/orders/${orderId}/tracking`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

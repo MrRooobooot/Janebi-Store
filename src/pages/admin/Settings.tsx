@@ -1,3 +1,4 @@
+import { authFetch } from '../../lib/api';
 import React, { useState, useEffect } from 'react';
 import { Settings, Save, Phone, Mail, MapPin, Clock, Truck, Megaphone, Check, Loader2, Database, Download, Sparkles, Layers } from 'lucide-react';
 import { useToast } from '../../contexts/ToastContext';
@@ -57,7 +58,7 @@ export default function AdminSettings() {
   const fetchSettings = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('/api/admin/settings', {
+      const res = await authFetch('/api/admin/settings', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -77,7 +78,7 @@ export default function AdminSettings() {
     setSaving(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('/api/admin/settings', {
+      const res = await authFetch('/api/admin/settings', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useToast } from '../contexts/ToastContext';
 import { isValidIranianMobile, normalizeIranianMobile, toEnglishDigits } from '../lib/utils';
+import { authFetch } from '../lib/api';
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_FEES } from '../lib/constants';
 
 export interface CheckoutFormData {
@@ -97,7 +98,7 @@ export function useCheckoutForm() {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('/api/orders', {
+      const res = await authFetch('/api/orders', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -131,7 +132,7 @@ export function useCheckoutForm() {
       
       if (formData.paymentMethod === 'online') {
         try {
-          const paymentRes = await fetch('/api/payment/request', {
+          const paymentRes = await authFetch('/api/payment/request', {
             method: 'POST',
             headers: { 
               'Content-Type': 'application/json',

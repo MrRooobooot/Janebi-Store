@@ -3,6 +3,7 @@ import { User, Phone, Mail, Lock, ShieldCheck, Camera, Save } from 'lucide-react
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
 import { normalizeIranianMobile } from '../../lib/utils';
+import { authFetch } from '../../lib/api';
 
 const AVATARS = [
   '/avatar.svg',
@@ -56,7 +57,7 @@ export default function PersonalInfoTab() {
 
     setPasswordLoading(true);
     try {
-      const res = await fetch('/api/users/me/password', {
+      const res = await authFetch('/api/users/me/password', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

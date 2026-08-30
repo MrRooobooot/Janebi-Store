@@ -1,3 +1,4 @@
+import { authFetch } from '../../lib/api';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -254,7 +255,7 @@ export default function AdminProducts() {
     if (!window.confirm('آیا از حذف این محصول اطمینان دارید؟')) return;
 
     try {
-      const res = await fetch(`/api/admin/products/${id}`, {
+      const res = await authFetch(`/api/admin/products/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

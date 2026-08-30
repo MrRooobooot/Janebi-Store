@@ -1,3 +1,4 @@
+import { authFetch } from '../../lib/api';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -25,7 +26,7 @@ export default function AdminUsers() {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch('/api/admin/users', {
+      const res = await authFetch('/api/admin/users', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (!res.ok) throw new Error();
@@ -45,7 +46,7 @@ export default function AdminUsers() {
     }
     
     try {
-      const res = await fetch(`/api/admin/users/${userId}/role`, {
+      const res = await authFetch(`/api/admin/users/${userId}/role`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +73,7 @@ export default function AdminUsers() {
 
     setSubmitting(true);
     try {
-      const res = await fetch(`/api/admin/users/${passwordModalUser.id}/password`, {
+      const res = await authFetch(`/api/admin/users/${passwordModalUser.id}/password`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -105,7 +106,7 @@ export default function AdminUsers() {
 
     setSubmitting(true);
     try {
-      const res = await fetch(`/api/admin/users/${pointsModalUser.id}/points`, {
+      const res = await authFetch(`/api/admin/users/${pointsModalUser.id}/points`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

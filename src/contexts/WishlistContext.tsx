@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { useToast } from './ToastContext';
 import { Product } from '../types';
+import { authFetch } from '../lib/api';
 import { useAuth } from './AuthContext';
 
 interface WishlistContextType {
@@ -25,7 +26,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
   React.useEffect(() => {
     if (isLoggedIn) {
       const token = localStorage.getItem('token');
-      fetch('/api/wishlist', {
+      authFetch('/api/wishlist', {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       .then(res => res.json())
@@ -53,7 +54,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
       if (isLoggedIn) {
         const token = localStorage.getItem('token');
         try {
-          await fetch(`/api/wishlist/${product.id}`, {
+          await authFetch(`/api/wishlist/${product.id}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
           });
@@ -72,7 +73,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
       if (isLoggedIn) {
         const token = localStorage.getItem('token');
         try {
-          await fetch('/api/wishlist', {
+          await authFetch('/api/wishlist', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify({ productId: product.id })

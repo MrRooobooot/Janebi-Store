@@ -1,3 +1,4 @@
+import { authFetch } from '../lib/api';
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useToast } from "./ToastContext";
 
@@ -198,7 +199,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const updateProfile = async (data: Partial<UserProfile>) => {
     try {
-      const res = await fetch("/api/users/me", {
+      const res = await authFetch("/api/users/me", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -222,7 +223,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const addAddress = async (address: Omit<AddressItem, "id">) => {
     if (!user) return;
     try {
-      const res = await fetch("/api/users/me/addresses", {
+      const res = await authFetch("/api/users/me/addresses", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -247,7 +248,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const updateAddress = async (id: string, address: Partial<AddressItem>) => {
     if (!user || !user.addresses) return;
     try {
-      const res = await fetch(`/api/users/me/addresses/${id}`, {
+      const res = await authFetch(`/api/users/me/addresses/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -275,7 +276,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const deleteAddress = async (id: string) => {
     if (!user || !user.addresses) return;
     try {
-      const res = await fetch(`/api/users/me/addresses/${id}`, {
+      const res = await authFetch(`/api/users/me/addresses/${id}`, {
         method: "DELETE",
         headers: getAuthHeaders(),
         credentials: "include"
@@ -298,7 +299,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const setDefaultAddress = async (id: string) => {
     if (!user || !user.addresses) return;
     try {
-      const res = await fetch(`/api/users/me/addresses/${id}/default`, {
+      const res = await authFetch(`/api/users/me/addresses/${id}/default`, {
         method: "PUT",
         headers: getAuthHeaders(),
         credentials: "include"

@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { useToast } from './ToastContext';
 import { Product, CartItem } from '../types';
 import { MAX_CART_QUANTITY } from '../lib/constants';
+import { authFetch } from '../lib/api';
 import { useAuth } from './AuthContext';
 
 interface CartContextType {
@@ -43,7 +44,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   React.useEffect(() => {
     if (isLoggedIn) {
       const token = localStorage.getItem('token');
-      fetch('/api/cart', {
+      authFetch('/api/cart', {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       .then(res => res.json())
@@ -86,7 +87,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (isLoggedIn) {
       const token = localStorage.getItem('token');
       try {
-        await fetch('/api/cart', {
+        await authFetch('/api/cart', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
           body: JSON.stringify({ productId: product.id, quantity })
@@ -106,7 +107,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (isLoggedIn) {
       const token = localStorage.getItem('token');
       try {
-        await fetch(`/api/cart/${id}`, {
+        await authFetch(`/api/cart/${id}`, {
           method: 'DELETE',
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -128,7 +129,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (isLoggedIn) {
       const token = localStorage.getItem('token');
       try {
-        await fetch(`/api/cart/${id}`, {
+        await authFetch(`/api/cart/${id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
           body: JSON.stringify({ quantity })
@@ -145,7 +146,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (isLoggedIn) {
       const token = localStorage.getItem('token');
       try {
-        await fetch(`/api/cart`, {
+        await authFetch(`/api/cart`, {
           method: 'DELETE',
           headers: { 'Authorization': `Bearer ${token}` }
         });

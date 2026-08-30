@@ -1,3 +1,4 @@
+import { authFetch } from '../../lib/api';
 import React, { useEffect, useState } from "react";
 import { Users, Package, ShoppingCart, DollarSign, Award, TrendingUp, Sparkles, Tag } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -43,8 +44,8 @@ export default function Dashboard() {
     try {
       const headers: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
       const [statsRes, analyticsRes] = await Promise.all([
-        fetch("/api/admin/stats", { headers, credentials: "include" }),
-        fetch("/api/admin/analytics", { headers, credentials: "include" }),
+        authFetch("/api/admin/stats", { headers, credentials: "include" }),
+        authFetch("/api/admin/analytics", { headers, credentials: "include" }),
       ]);
 
       if (!statsRes.ok || !analyticsRes.ok) throw new Error("خطا در دریافت آمار");

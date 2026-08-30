@@ -12,6 +12,7 @@ import PersonalInfoTab from '../components/profile/PersonalInfoTab';
 import VipClubTab from '../components/profile/VipClubTab';
 import WishlistPage from './Wishlist';
 import { Order } from '../types';
+import { authFetch } from '../lib/api';
 import EmptyState from '../components/EmptyState';
 import { UserCheck } from 'lucide-react';
 
@@ -52,7 +53,7 @@ export default function Profile() {
   const fetchUserOrders = () => {
     const token = localStorage.getItem('token');
     if (!token) return;
-    fetch('/api/orders', {
+    authFetch('/api/orders', {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -84,7 +85,7 @@ export default function Profile() {
     }
 
     try {
-      const res = await fetch(`/api/orders/${orderId}/cancel`, {
+      const res = await authFetch(`/api/orders/${orderId}/cancel`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`

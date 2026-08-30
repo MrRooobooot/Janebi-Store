@@ -3,6 +3,7 @@ import { Star, ThumbsUp, ThumbsDown, CircleCheck, MessageSquarePlus, Filter, Awa
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
+import { authFetch } from '../lib/api';
 import { ReviewSkeleton } from './Skeletons';
 
 export interface Review {
@@ -159,7 +160,7 @@ export default function ProductReviews({ productId, initialRating = 4.7, initial
     };
 
     const token = localStorage.getItem('token');
-    fetch(`/api/products/${productId}/reviews`, {
+    authFetch(`/api/products/${productId}/reviews`, {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',

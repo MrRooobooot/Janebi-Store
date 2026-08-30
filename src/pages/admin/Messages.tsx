@@ -1,3 +1,4 @@
+import { authFetch } from '../../lib/api';
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { 
@@ -29,7 +30,7 @@ export default function AdminMessages() {
   const fetchMessages = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('/api/admin/contact-messages', {
+      const res = await authFetch('/api/admin/contact-messages', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -51,7 +52,7 @@ export default function AdminMessages() {
   const handleUpdateStatus = async (id: string, newStatus: 'unread' | 'read' | 'resolved') => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`/api/admin/contact-messages/${id}/status`, {
+      const res = await authFetch(`/api/admin/contact-messages/${id}/status`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

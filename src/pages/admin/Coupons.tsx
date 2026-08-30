@@ -1,3 +1,4 @@
+import { authFetch } from '../../lib/api';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useToast } from '../../contexts/ToastContext';
@@ -40,7 +41,7 @@ export default function AdminCoupons() {
 
   const fetchCoupons = async () => {
     try {
-      const res = await fetch('/api/admin/coupons', {
+      const res = await authFetch('/api/admin/coupons', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (!res.ok) throw new Error();
@@ -74,7 +75,7 @@ export default function AdminCoupons() {
     };
 
     try {
-      const res = await fetch('/api/admin/coupons', {
+      const res = await authFetch('/api/admin/coupons', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -97,7 +98,7 @@ export default function AdminCoupons() {
   const handleDelete = async (code: string) => {
     if (!window.confirm(`آیا از حذف کد تخفیف «${code}» اطمینان دارید؟`)) return;
     try {
-      const res = await fetch(`/api/admin/coupons/${code}`, {
+      const res = await authFetch(`/api/admin/coupons/${code}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
