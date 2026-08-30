@@ -211,10 +211,14 @@ export default function AdminUsers() {
                     <td className="p-4">
                       <span className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold ${
                         u.role === 'admin' 
-                          ? 'bg-purple-100 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800' 
+                          ? (u.phone === '[REDACTED-CREDENTIAL]' || u.id === 'usr-admin-aidin')
+                            ? 'bg-purple-100 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800'
+                            : 'bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800'
                           : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
                       }`}>
-                        {u.role === 'admin' ? 'مدیر ارشد' : 'مشتری عادی'}
+                        {u.role === 'admin' 
+                          ? ((u.phone === '[REDACTED-CREDENTIAL]' || u.id === 'usr-admin-aidin') ? 'مدیر کل (ارشد)' : 'مدیر سیستم')
+                          : 'مشتری عادی'}
                       </span>
                     </td>
                     <td className="p-4 text-gray-500 dark:text-gray-400">{u.joinedDate || '-'}</td>
