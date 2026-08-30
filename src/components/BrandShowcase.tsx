@@ -17,6 +17,13 @@ interface Brand {
 // so the showcase never shows numbers the DB doesn't back.
 const DEFAULT_BRANDS: Brand[] = [];
 
+// Card outer width: w-36 (144px) + mx-4 (32px) — keep in sync with the class below.
+const CARD_OUTER_W = 176;
+// Half the track must exceed the widest container (max-w-7xl + margin) so the
+// marquee never shows its seam/empty space before the loop restarts.
+const MIN_HALF_TRACK_PX = 2600;
+const SPEED_PX_S = 28;
+
 export default function BrandShowcase() {
   const [brands, setBrands] = useState<Brand[]>(DEFAULT_BRANDS);
 
@@ -37,6 +44,14 @@ export default function BrandShowcase() {
       .catch(() => {});
     return () => { cancelled = true; };
   }, []);
+
+  const copyW = brands.length * CARD_OUTER_W;
+  const reps = brands.length ? Math.max(2, Math.ceil((MIN_HALF_TRACK_PX * 2) / copyW)) : 0;
+  const track: Brand[] = brands.length
+    ? Array.from({ length: reps }, (_, r) => brands).flat()
+    : [];
+  const halfTrackPx = (copyW * reps) / 2;
+  const durationS = Math.max(18, halfTrackPx / SPEED_PX_S);
 
   return (
     <section className="py-6 sm:py-8 text-right">
@@ -71,11 +86,11 @@ export default function BrandShowcase() {
             </div>
           </div>
           <div className="logo-carousel relative">
-            <div className="logo-carousel-track" style={{ animation: `logo-scroll 30s linear infinite` }}>
-              {[...brands, ...brands].map((brand, idx) => {
+            <div className="logo-carousel-track" style={track.length ? { animation: `logo-scroll ${durationS.toFixed(1)}s linear infinite` } : undefined}>
+              {track.map((brand, idx) => {
                 const displayName = brand.faName || brand.name;
                 return (
-                  <div key={`${brand.name}-${idx}`} className="w-36 shrink-0 mx-4">
+                  <div key={`${Math.floor(idx / brands.length)}-${brand.name}`} className="w-36 shrink-0 mx-4" aria-hidden={idx >= brands.length}>
                     <Link
                       to={`/products?brand=${encodeURIComponent(brand.name)}`}
                       className="group relative flex flex-col items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] hover:border-orange-500/40 dark:hover:border-orange-500/40 shadow-xs hover:shadow-lg hover:-translate-y-1 transition-all duration-300 h-full"

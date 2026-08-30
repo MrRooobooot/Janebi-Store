@@ -281,6 +281,11 @@ body {
   will-change: transform;
 }
 
+.logo-carousel:hover .logo-carousel-track,
+.logo-carousel:focus-within .logo-carousel-track {
+  animation-play-state: paused;
+}
+
 @keyframes logo-scroll {
   from { transform: translateX(0); }
   to { transform: translateX(calc(-50%)); }
