@@ -82,7 +82,7 @@ export function useCheckoutForm() {
         name: formData.name.trim(),
         phone: normalizedPhone,
         address: `${formData.province}، ${formData.city}، ${formData.address.trim()}`,
-        postalCode: postal,
+        postalCode: postal || undefined,
         notes: formData.notes,
       },
       items: cart.map((item) => ({

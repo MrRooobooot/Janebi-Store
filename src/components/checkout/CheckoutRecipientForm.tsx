@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { User as UserIcon, Phone, MapPin, Building, Star, CheckCircle2, AlertCircle } from 'lucide-react';
 import { CheckoutFormData } from '../../hooks/useCheckoutForm';
 import { useAuth } from '../../contexts/AuthContext';
-import { normalizeIranianMobile } from '../../lib/utils';
+import { normalizeIranianMobile, isValidIranianMobile, toEnglishDigits } from '../../lib/utils';
 
 interface CheckoutRecipientFormProps {
   formData: CheckoutFormData;
@@ -45,8 +45,8 @@ export default function CheckoutRecipientForm({
     updateField('postalCode', addr.postalCode || '');
   };
 
-  const isPhoneValid = !formData.phone || /^09\d{9}$/.test(formData.phone.trim());
-  const isPostalCodeValid = !formData.postalCode || /^\d{10}$/.test(formData.postalCode.trim());
+  const isPhoneValid = !formData.phone || isValidIranianMobile(formData.phone.trim());
+  const isPostalCodeValid = !formData.postalCode || /^\d{10}$/.test(toEnglishDigits(formData.postalCode.trim()));
 
   return (
     <div className="bg-[var(--color-surface-light)]/90 dark:bg-[var(--color-surface-dark)]/90 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
