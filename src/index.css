@@ -277,4 +277,6 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .logo-carousel-track { animation: none; }
+  .linear-card, .linear-card:hover { transition: none; transform: none; }
+  .group:hover .group-hover\:scale-108 { transform: none; }
 }

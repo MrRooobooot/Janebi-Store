@@ -52,12 +52,12 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
             )}
           </div>
 
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist(product); }}
               aria-label={inWishlist ? "حذف از لیست علاقه‌مندی‌ها" : "افزودن به لیست علاقه‌مندی‌ها"}
-              className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
+              className={`w-11 h-11 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition-all ${
                 inWishlist 
                   ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-500 border border-rose-200 dark:border-rose-800' 
                   : 'bg-zinc-50 dark:bg-[var(--color-surface-light)]/[0.03] text-zinc-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 border border-zinc-200/40 dark:border-white/[0.05]'
@@ -70,7 +70,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
               type="button"
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleCompare(product); }}
               aria-label={inCompare ? "حذف از مقایسه" : "افزودن به مقایسه"}
-              className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
+              className={`w-11 h-11 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition-all ${
                 inCompare 
                   ? 'bg-orange-50 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-800' 
                   : 'bg-zinc-50 dark:bg-[var(--color-surface-light)]/[0.03] text-zinc-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-950/30 border border-zinc-200/40 dark:border-white/[0.05]'
@@ -140,7 +140,8 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
             type="button"
             disabled={outOfStock}
             onClick={handleAddToCart}
-            className={`raycast-btn h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl flex items-center justify-center gap-1.5 text-xs font-black transition-all duration-200 cursor-pointer ${
+            aria-label={`افزودن ${product.title} به سبد خرید`}
+            className={`raycast-btn h-11 sm:h-10 px-4 sm:px-4 rounded-xl flex items-center justify-center gap-1.5 text-xs font-black transition-all duration-200 cursor-pointer ${
               outOfStock 
                 ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400 cursor-not-allowed shadow-none'
                 : added 
