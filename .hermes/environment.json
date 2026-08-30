@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "recipe": {
+    "name": "Vite",
+    "kind": "vite",
+    "bootstrap": [
+      "npm install"
+    ],
+    "build": [
+      "npm run build"
+    ],
+    "test": [
+      "npm run test",
+      "npm run lint"
+    ],
+    "start": "npm run dev",
+    "port": 3000,
+    "readinessPath": "/",
+    "evidence": [
+      "Detected package.json",
+      "Package manager: npm",
+      "Scripts: dev, verify, build, start, clean, lint, test, test:e2e, db:generate, db:generate:pg, db:push, db:push:pg, db:studio, db:studio:pg"
+    ]
+  },
+  "updatedAt": "2026-08-30T17:51:59.675710+00:00"
+}
