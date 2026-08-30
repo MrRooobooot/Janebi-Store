@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Package, Search, Printer, XCircle, Clock, CheckCircle2, MapPin, Calendar } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Package, Search, Printer, XCircle, Clock, CheckCircle2, MapPin, Calendar, CreditCard } from 'lucide-react';
 import { Order } from '../../types';
 import { toPersianDigits, formatPrice } from '../../lib/utils';
 import { useToast } from '../../contexts/ToastContext';
@@ -11,10 +12,40 @@ interface OrderHistoryTabProps {
 
 export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryTabProps) {
   const { addToast } = useToast();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'all' | 'processing' | 'delivered' | 'cancelled'>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [retryingId, setRetryingId] = useState<string | null>(null);
+
+  // Resume an abandoned online payment: request a fresh gateway URL and redirect.
+  const handleRetryPayment = async (orderId: string) => {
+    setRetryingId(orderId);
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/payment/request', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ orderId }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.url) {
+        window.location.href = data.url;
+        return;
+      }
+      addToast(data.error || 'خطا در اتصال به درگاه پرداخت.', 'error');
+    } catch {
+      addToast('خطا در ارتباط با درگاه پرداخت.', 'error');
+    } finally {
+      setRetryingId(null);
+    }
+  };
 
   const filteredOrders = orders.filter((order) => {
+    // pending_payment = abandoned gateway redirect; hide it from the user's list
+    if (order.status === 'pending_payment') return false;
     const matchesTab = activeTab === 'all' || order.status === activeTab;
     const matchesQuery =
       !searchQuery.trim() ||
@@ -164,6 +195,17 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
                     <Printer className="h-3.5 w-3.5 text-gray-500" />
                     چاپ فاکتور
                   </button>
+
+                  {order.status === 'pending_payment' && order.paymentMethod === 'پرداخت آنلاین زرین‌پال' && (
+                    <button
+                      onClick={() => handleRetryPayment(order.id)}
+                      disabled={retryingId === order.id}
+                      className="px-3.5 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 disabled:opacity-60 text-white font-bold text-xs flex items-center gap-1.5 transition-colors"
+                    >
+                      <CreditCard className="h-3.5 w-3.5" />
+                      {retryingId === order.id ? 'در حال اتصال...' : 'پرداخت سفارش'}
+                    </button>
+                  )}
 
                   {order.status === 'processing' && (
                     <button

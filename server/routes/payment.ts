@@ -28,9 +28,6 @@ router.post('/request', authenticate, async (req: AuthRequest, res) => {
     if (order.userId !== userId) {
       return res.status(403).json({ error: 'Unauthorized to pay for this order' });
     }
-    
-    // Convert Tomans to Rials for ZarinPal (multiply by 10)
-    const amountInRials = order.total * 10;
 
     // Use configured APP_URL or fallback safely to trusted forwarded headers
     const baseUrl = env.APP_URL || `${req.headers['x-forwarded-proto'] || req.protocol}://${req.headers.host}`;
