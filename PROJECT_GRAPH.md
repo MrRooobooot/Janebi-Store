@@ -1,7 +1,7 @@
 # ARCHITECTURE & PROJECT GRAPH — JANEBI ARENA
 
 > **Autonomous Engineering Knowledge Base & Live System Map**
-> **Last Verified & Updated:** 2026-08-29 (Theme & Light Mode Polish)
+> **Last Verified & Updated:** 2026-08-30 (Prod-First Safari/WebKit Bug Sweep)
 > **Status:** Live & Production Ready (36 test suites, 297 passing tests)
 > **PRD Reference:** `AGENTS.md` | `PROJECT_AUDIT.md` | `TASKS.md`
 
@@ -54,6 +54,7 @@
 - **Design Tokens & Theme:** `src/index.css` (Obsidian dark canvas `--color-canvas`, glassmorphic cards `--color-surface`, standard focus rings, expanded semantic brand scales `--color-primary-50..950`, accent tokens, elevation shadows `--shadow-elevation-1..3`, and brand glow filters).
 - **Brand Identity & Vector Assets:** `src/components/Logo.tsx` (`Logo`, `LogoSymbol`), `public/favicon.svg`, `public/logo-fa.svg`, `public/logo-en.svg`, `public/logo-symbol.svg`, `public/icon-192.svg`, `public/icon-512.svg`.
 - **Persian Normalization & Utils:** `src/lib/utils.ts` (`toPersianDigits`, `toEnglishDigits`, `normalizeIranianMobile`, `isValidIranianMobile`, `formatPrice`).
+- **Checkout Validation:** `src/components/checkout/CheckoutRecipientForm.tsx` + `src/hooks/useCheckoutForm.ts` (live Persian-digit mobile & postal-code validation via `isValidIranianMobile`/`toEnglishDigits`).
 - **PWA & Offline:** `public/manifest.webmanifest`, `public/sw.js` (Cache-first for assets, Stale-while-revalidate for API).
 - **AI Search & Agent Readiness (AI SEO / AEO / GEO):**
   - `public/llms.txt` & `public/llms-full.txt` (Structured plain text store context and catalog for LLMs).
@@ -68,7 +69,9 @@
 1. **Transactional Stock & Checkout:** Always wrap order placement and cancellation in `db.transaction`. Stock must never go negative.
 2. **Iranian Mobile & Persian Inputs:** Input phone numbers must strictly normalize to `09XXXXXXXXX` format using `normalizeIranianMobile`.
 3. **Admin Security Gate:** All admin endpoints must be defended by `requireAuth` + `requireAdmin` (401/403).
-4. **Verification Requirement:** Every implementation turn must pass:
+4. **PROD-FIRST Rule:** Live `https://janebiarena.ir` is the reference, never local. User-reported errors are checked on production FIRST; after every fix: deploy + live test on the domain.
+5. **Dual-Engine Browser Verification:** Valid live test = key pages + real flow (login/checkout/payment) on BOTH WebKit (Safari engine) and Chromium. Single-page headless Chromium load proves nothing; Safari-only errors are invisible to Chromium.
+6. **Verification Requirement:** Every implementation turn must pass:
    ```bash
    npm run verify
    ```
@@ -87,3 +90,4 @@
 - `tests/concurrency/adversarial-stress.test.ts` (50 parallel shoppers for 1 unit of stock).
 - `tests/api/` (`auth`, `admin`, `cart`, `products`, `orders`, `payment`, `reviews`, `users`, `coupons`).
 - `tests/unit/phase1-foundation.test.ts` & `phase2-database.test.ts` (PostgreSQL parity & schema checks).
+- **Live prod verification sweep (2026-08-30):** WebKit + Chromium on `/`, `/products`, `/checkout`, `/login` — 8/8 CLEAN (0 console errors/warnings, 0 failed requests).

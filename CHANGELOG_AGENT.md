@@ -1,5 +1,14 @@
 # CHANGELOG_AGENT.md — Janebi Store Agent Work Log
 
+## [2026-08-30] - Prod-First Safari/WebKit Bug Sweep & Live Verification
+
+- **Checkout Validation Fix (`c4cd855`):** Resolved Safari `SyntaxError: Unexpected token '{'` on the checkout entry page by wiring live recipient validation to `isValidIranianMobile` + `toEnglishDigits` in `CheckoutRecipientForm.tsx` / `useCheckoutForm.ts`; `server/validators/index.ts` `orderSubmitSchema` made nullable/optional-safe for optional order fields.
+- **Auth Noise Reduction (`58f6de2`):** Eliminated unnecessary `401` network calls from `/api/auth/me` and `/api/auth/refresh` for unauthenticated guest visits in `src/contexts/AuthContext.tsx`.
+- **Admin Guest Guard (`a79771c`):** Admin layout stats fetch now skipped for unauthenticated guest visits in `src/components/admin/AdminLayout.tsx`.
+- **WebKit Preload Warnings (`a73741c`):** Removed 4 unused image preloads (`products/hld-13.svg`, `brands/apple.svg`, `brands/samsung.svg`, `brands/anker.svg`) from `index.html` that triggered Safari console warnings.
+- **Dual-Engine Live Verification:** Playwright WebKit + Chromium sweep of `/`, `/products`, `/checkout`, `/login` on production — 8/8 CLEAN (0 console errors/warnings, 0 failed requests). `npm run test` 297/297, `tsc --noEmit` clean, build OK, deployed via `deploy.sh`, health `{"status":"ok","database":"ok"}`.
+- **Governance:** PROD-FIRST + dual-engine (WebKit & Chromium) verification rules codified as invariants in `PROJECT_GRAPH.md`.
+
 ## [2026-08-29] - Brand Identity Overhaul, E2E Contract Suite & Security Defense Hardening
 - **Brand Identity & Typography:** Upgraded brand logo and typography across Header, Footer, and Admin panel using vibrant orange/amber gradients, hover micro-interactions, and monospace bilingual tags.
 - **Enforced Rate-Limiting:** Secured `/api/auth/otp/send`, `/api/auth/otp/verify`, and `/api/auth/reset-password` against SMS and credential brute-force attacks via rate-limit middleware and automated verification in `tests/unit/rate-limiting.test.ts`.
