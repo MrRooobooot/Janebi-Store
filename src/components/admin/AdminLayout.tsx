@@ -23,8 +23,10 @@ export default function AdminLayout() {
   });
 
   useEffect(() => {
+    if (!user || user.role !== 'admin') return;
     const token = localStorage.getItem('token');
-    const headers: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
+    if (!token) return;
+    const headers: Record<string, string> = { Authorization: `Bearer ${token}` };
     
     // Fetch live synchronized admin statistics
     fetch('/api/admin/stats', { headers, credentials: 'include' })
