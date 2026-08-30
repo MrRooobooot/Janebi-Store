@@ -106,7 +106,9 @@ router.post("/refresh", async (req, res) => {
     const refreshToken = cookies.refreshToken || (req.body && req.body.refreshToken);
 
     if (!refreshToken) {
-      return res.status(401).json({ message: "No refresh token provided" });
+      // Anonymous visitor: not an error. 200 keeps the browser console clean
+      // while boot-time refresh probes for a session that doesn't exist yet.
+      return res.status(200).json({ authenticated: false });
     }
 
     const decoded = jwt.verify(refreshToken, env.JWT_REFRESH_SECRET) as any;
