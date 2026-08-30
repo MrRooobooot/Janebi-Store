@@ -65,8 +65,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       }
 
-      // Try automatic token refresh via HttpOnly refresh cookie ONLY if refresh cookie might exist
-      if (document.cookie.includes("refreshToken")) {
+      // Try automatic token refresh via HttpOnly refresh cookie. The cookie is
+      // HttpOnly so document.cookie can never reveal it — always attempt once;
+      // a 401 here simply means logged out.
+      {
         const refreshRes = await fetch("/api/auth/refresh", {
           method: "POST",
           credentials: "include"
