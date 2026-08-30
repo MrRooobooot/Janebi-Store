@@ -49,33 +49,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const checkAuth = async () => {
     try {
-      const res = await fetch("/api/auth/me", {
-        headers: {
-          ...(localStorage.getItem("token") ? { Authorization: `Bearer ${localStorage.getItem("token")}` } : {})
-        },
-        credentials: "include"
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.user) {
-          setUser(data.user);
-          return;
+      const token = localStorage.getItem("token");
+      if (token) {
+        const res = await fetch("/api/auth/me", {
+          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include"
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.user) {
+            setUser(data.user);
+            return;
+          }
         }
       }
 
-      // Try automatic token refresh via HttpOnly refresh cookie
-      const refreshRes = await fetch("/api/auth/refresh", {
-        method: "POST",
-        credentials: "include"
-      });
-      if (refreshRes.ok) {
-        const refreshData = await refreshRes.json();
-        if (refreshData.user) {
-          setUser(refreshData.user);
-          if (refreshData.accessToken) {
-            localStorage.setItem("token", refreshData.accessToken);
+      // Try automatic token refresh via HttpOnly refresh cookie ONLY if refresh cookie might exist
+      if (document.cookie.includes("refreshToken")) {
+        const refreshRes = await fetch("/api/auth/refresh", {
+          method: "POST",
+          credentials: "include"
+        });
+        if (refreshRes.ok) {
+          const refreshData = await refreshRes.json();
+          if (refreshData.user) {
+            setUser(refreshData.user);
+            if (refreshData.accessToken) {
+              localStorage.setItem("token", refreshData.accessToken);
+            }
+            return;
           }
-          return;
         }
       }
 
