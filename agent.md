@@ -59,7 +59,7 @@
 ## Current State (خلاصه)
 - **وضعیت کلی: LAUNCH-READY از نظر فنی.** سایت زنده و پایدار روی janebiarena.ir با آخرین کد.
 - گیت‌ها: **284/284 تست (31 فایل) · tsc تمیز · build سالم**
-- ادمین: حساب خودِ کاربر (`[REDACTED-CREDENTIAL]` / [REDACTED-CREDENTIAL]، نقش admin) + قابلیت ریست رمز هر کاربر از پنل
+- ادمین: حساب خودِ کاربر (`[REDACTED-CREDENTIAL]` / ایمیل `aidinnemati09@gmail.com` / نام `آیدین نعمتی` / [REDACTED-CREDENTIAL]، نقش admin) + قابلیت ریست رمز هر کاربر از پنل
 - محصولات فعلی: ۱۲ عدد (کاربر قرار است اجناس واقعی را آپلود کند)
 - پرداخت آنلاین: gated با 503 امن — منتظر Merchant ID زرین‌پال از کاربر
 
@@ -139,7 +139,7 @@
 - بکاپ‌ها: ~/backups/ (env-*.bak + janebi-consistent-*.db با integrity ok)
 - کانتینرها: janebi-store (Up، آخرین image شامل همه فیکس‌ها)، janebi-postgres (healthy، idle)
 - health: https://janebiarena.ir/api/health → {"status":"ok","database":"ok"}
-- دسترسی ادمین: `[REDACTED-CREDENTIAL]` / [REDACTED-CREDENTIAL] (نقش admin) — پنل: /admin
+- دسترسی ادمین: `[REDACTED-CREDENTIAL]` / `aidinnemati09@gmail.com` / [REDACTED-CREDENTIAL] (نقش admin) — پنل: /admin
 
 ## Risks (باقی‌مانده — قابل قبول و مستند)
 - OTP در production قابل تحویل نیست (بدون SMS) → ریست رمز از پنل ادمین پاسخگو است؛ فلوی عمومی منتظر SMS
