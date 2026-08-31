@@ -68,3 +68,21 @@
 - [x] Removed 4 unused image preloads (`products/hld-13.svg`, `brands/apple.svg`, `brands/samsung.svg`, `brands/anker.svg`) causing WebKit preload console warnings (`index.html`, `a73741c`).
 - [x] Live verification: WebKit + Chromium on `/`, `/products`, `/checkout`, `/login` — 8/8 CLEAN (0 errors, 0 warnings, 0 failed 4xx/5xx requests); deployed via `deploy.sh`, health `{"status":"ok","database":"ok"}`.
 - [x] Governance: PROD-FIRST + dual-engine (WebKit & Chromium) verification rules codified in `PROJECT_GRAPH.md` invariants.
+
+## Status: Completed (Aug 31, 2026) — Build Integrity & Deep Forensic Audit
+
+### 7. Build & Deploy Fixes
+- [x] Removed `NODE_ENV=development` from `.env` — Vite 8 was shipping a dev-mode bundle to production (jsxDEV ×763, 30 local path leaks, +37% bundle size). Prod now `production mode`, bundle `index-fuFg16cz.js` verified `jsxDEV:0` on live (`8e170c2`).
+- [x] Guarded `vite.config.ts` with explicit production NODE_ENV + `esbuild.drop: ['debugger']` (defense-in-depth; Vite 8 uses oxc over esbuild options).
+
+### 8. Deep Forensic Audit (READ-ONLY — findings only, no code changed)
+Full evidence, per-section scores /100, and remediation priorities: **`PROJECT_AUDIT.md` (2026-08-31 edition)**.
+
+Key findings (P0 first):
+- [!] Fake aggregate ratings/counts seeded in prod (`reviewsCount` up to 450 vs 2 real reviews) + client fallbacks (`DEFAULT_REVIEWS`, ProductCard `'۴.۸'` default) — must recompute & remove.
+- [!] OTP login/reset dead in production (no SMS provider; code generated but never delivered).
+- [!] No reaper for abandoned `pending_payment` orders → stock stays deducted.
+- [ ] P1: SW default branch cache-first traps `/api/settings` etc.; `CACHE_NAME` never bumped; settings PUT doesn't invalidate appCache.
+- [ ] P1: `schema.pg.ts` missing `blog_posts` (PG parity regression); zero secondary indexes (prod EXPLAIN = full scans).
+- [ ] P1: `llms.txt`/`pricing.md` fabricated stats, wrong category slugs (7 dead links verified on live), phone/address conflicts across 3 sources.
+- [ ] P2: scratch tables (`scratch_t`,`scratch_t2`,`s3`,`s4`,`mutex_t`) + 9 stale test coupons in prod DB; manifest theme colors predate palette migration; JSON-LD `</script>` escape; coupon usageLimit schema; admin backup should use `VACUUM INTO`.

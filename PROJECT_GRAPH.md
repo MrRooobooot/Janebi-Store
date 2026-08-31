@@ -1,7 +1,7 @@
 # ARCHITECTURE & PROJECT GRAPH — JANEBI ARENA
 
 > **Autonomous Engineering Knowledge Base & Live System Map**
-> **Last Verified & Updated:** 2026-08-30 (Prod-First Safari/WebKit Bug Sweep)
+> **Last Verified & Updated:** 2026-08-31 (Deep Forensic Audit — see `PROJECT_AUDIT.md` §2026-08-31)
 > **Status:** Live & Production Ready (36 test suites, 297 passing tests)
 > **PRD Reference:** `AGENTS.md` | `PROJECT_AUDIT.md` | `TASKS.md`
 
@@ -92,3 +92,17 @@
 - `tests/unit/phase1-foundation.test.ts` & `phase2-database.test.ts` (PostgreSQL parity & schema checks).
 - **Live prod verification sweep (2026-08-30):** WebKit + Chromium on `/`, `/products`, `/checkout`, `/login` — 8/8 CLEAN (0 console errors/warnings, 0 failed requests).
 - **authFetch token-recovery layer (2026-08-30):** `src/lib/api.ts` — single-flight 401→`POST /api/auth/refresh`→retry; all 41 Bearer call sites migrated (Profile, Cart/Wishlist/Auth contexts, checkout, OrderHistoryTab, PersonalInfoTab, ProductReviews, admin pages, AdminLayout, Dashboard). Server contract: refresh **without** cookie → `200 {authenticated:false}` (anonymous probe, no console noise); bad cookie → 401. Boot-time refresh in `AuthContext` unconditional (was dead code: `document.cookie.includes("refreshToken")` can never match an HttpOnly cookie). Access TTL 1d, refresh cookie 7d. Live-verified: stale-token orders flow recovers silently on Chromium + WebKit, anonymous home CLEAN.
+- **Build-pipeline integrity (2026-08-31):** `.env` must NOT contain `NODE_ENV=development` — Vite 8/rolldown overrides its own build default and ships a dev bundle (jsxDEV transform, local file-path leaks, +37% size). Removed; prod bundle `index-fuFg16cz.js` verified jsxDEV:0 on live.
+- **BrandShowcase marquee (2026-08-30):** dynamic track replication so half-track ≥ 2600px (never a seam/fast loop with few brands), fixed px/s speed, hover/focus pause (`BrandShowcase.tsx`, `index.css`).
+
+## 5. Known Gaps & Debts (2026-08-31 Deep Audit)
+
+Full evidence + remediation list: `PROJECT_AUDIT.md`. Highest-priority debts:
+1. **Fake aggregate ratings** — `products.rating/reviewsCount` seeded with fabricated values (max 450) vs 2 real reviews; P0 recompute + remove client fallbacks (`DEFAULT_REVIEWS`, `ProductCard` '۴.۸' default).
+2. **OTP dead in prod** — no SMS provider wired (`auth.ts:231-241`); login/reset OTP UI non-functional on live.
+3. **PG parity regression** — `schema.pg.ts` lacks `blog_posts` (SQLite has it).
+4. **Zero secondary indexes** — prod `EXPLAIN` shows full `SCAN orders`/`SCAN reviews`; FK-index migration needed before traffic growth.
+5. **SW default branch cache-first** — `/api/settings`, `/api/coupons-active`, `/api/blog` cached forever once seen; `CACHE_NAME` never bumped.
+6. **AI-SEO files stale/fabricated** — `llms.txt` phone/address conflict + 7 dead category links (verified `[]` on live API).
+7. **Prod DB residue** — scratch tables (`scratch_t`, `scratch_t2`, `s3`, `s4`, `mutex_t`) + 9 stale test coupons visible in VipClub tab.
+8. **Abandoned `pending_payment` orders** — no reaper; stock stays deducted if user never returns from gateway.
