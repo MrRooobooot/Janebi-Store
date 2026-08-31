@@ -698,6 +698,9 @@ router.put('/settings', async (req, res) => {
         .onConflictDoUpdate({ target: storeSettings.key, set: { value: String(value) } });
     }
 
+    // NOTE: GET /api/settings is not app-cached server-side (nginx 15s window
+    // only); nothing to invalidate here. Kept as documentation anchor.
+
     const rows = await db.select().from(storeSettings);
     const merged: Record<string, string> = { ...DEFAULT_SETTINGS };
     for (const row of rows) merged[row.key] = row.value;

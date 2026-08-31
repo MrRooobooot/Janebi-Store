@@ -1,5 +1,5 @@
-const CACHE_NAME = 'janebi-static-v1.0.0';
-const API_CACHE_NAME = 'janebi-api-v1.0.0';
+const CACHE_NAME = 'janebi-static-v1.1.0';
+const API_CACHE_NAME = 'janebi-api-v1.1.0';
 
 const PRECACHE_ASSETS = [
   '/',
@@ -103,10 +103,21 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Default: Network with Cache Fallback
+  // Default: Network-First with Cache Fallback.
+  // Everything not matched above (incl. /api/settings, /api/coupons-active,
+  // /api/blog, /api/reviews/*) must revalidate against the network so admin
+  // changes reach returning PWA clients; cache is only an offline fallback.
   event.respondWith(
-    caches.match(request).then((cached) => {
-      return cached || fetch(request).catch(() => new Response('', { status: 408 }));
-    })
+    fetch(request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200 && request.method === 'GET') {
+          caches.open(API_CACHE_NAME).then((cache) => cache.put(request, networkResponse.clone()));
+        }
+        return networkResponse;
+      })
+      .catch(async () => {
+        const cached = await caches.match(request);
+        return cached || new Response('', { status: 408 });
+      })
   );
 });

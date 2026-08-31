@@ -95,14 +95,16 @@
 - **Build-pipeline integrity (2026-08-31):** `.env` must NOT contain `NODE_ENV=development` — Vite 8/rolldown overrides its own build default and ships a dev bundle (jsxDEV transform, local file-path leaks, +37% size). Removed; prod bundle `index-fuFg16cz.js` verified jsxDEV:0 on live.
 - **BrandShowcase marquee (2026-08-30):** dynamic track replication so half-track ≥ 2600px (never a seam/fast loop with few brands), fixed px/s speed, hover/focus pause (`BrandShowcase.tsx`, `index.css`).
 
-## 5. Known Gaps & Debts (2026-08-31 Deep Audit)
+## 5. Known Gaps & Debts (2026-08-31 Deep Audit → Sep 1 remediation)
 
 Full evidence + remediation list: `PROJECT_AUDIT.md`. Highest-priority debts:
-1. **Fake aggregate ratings** — `products.rating/reviewsCount` seeded with fabricated values (max 450) vs 2 real reviews; P0 recompute + remove client fallbacks (`DEFAULT_REVIEWS`, `ProductCard` '۴.۸' default).
+1. **Fake aggregate ratings — FIXED & COMMITTED (2026-09-01):** seed aggregates zeroed (`seed-data.ts`), client fallbacks removed (`ProductCard` default rating, `ProductReviews` fake list). Remaining: prod DB recompute of `products.rating/reviewsCount` from real `reviews`.
 2. **OTP dead in prod** — no SMS provider wired (`auth.ts:231-241`); login/reset OTP UI non-functional on live.
-3. **PG parity regression** — `schema.pg.ts` lacks `blog_posts` (SQLite has it).
-4. **Zero secondary indexes** — prod `EXPLAIN` shows full `SCAN orders`/`SCAN reviews`; FK-index migration needed before traffic growth.
-5. **SW default branch cache-first** — `/api/settings`, `/api/coupons-active`, `/api/blog` cached forever once seen; `CACHE_NAME` never bumped.
-6. **AI-SEO files stale/fabricated** — `llms.txt` phone/address conflict + 7 dead category links (verified `[]` on live API).
-7. **Prod DB residue** — scratch tables (`scratch_t`, `scratch_t2`, `s3`, `s4`, `mutex_t`) + 9 stale test coupons visible in VipClub tab.
-8. **Abandoned `pending_payment` orders** — no reaper; stock stays deducted if user never returns from gateway.
+3. **PG parity regression — FIXED (2026-08-31):** `blogPosts` added to `schema.pg.ts` (schema.pg.ts:152).
+4. **Zero secondary indexes — FIXED & COMMITTED (2026-09-01):** migration `0005` (SQLite+PG) adds FK indexes: orders(user_id/created_at), order_items(order_id), reviews(product_id), cart_items(user_id), wishlist_items(user_id), addresses(user_id), product_features(product_id), contact_messages(status,created_at). Post-deploy: verify `PRAGMA table_info(orders)` has `created_at` + `EXPLAIN QUERY PLAN` no SCAN.
+5. **SW default branch cache-first — FIXED & COMMITTED (2026-09-01):** default branch now network-first with cache-only-offline fallback; `CACHE_NAME`/`API_CACHE_NAME` bumped to v1.1.0 (old caches purged on activate).
+6. **AI-SEO files — FIXED & COMMITTED (2026-09-01):** `llms.txt`/`llms-full.txt`/`pricing.md` regenerated from live API with real category slugs, real counts, unified store metadata.
+7. **Prod DB residue** — scratch tables (`scratch_t`, `scratch_t2`, `s3`, `s4`, `mutex_t`) + 9 stale test coupons visible in VipClub tab. STILL OPEN (prod-side cleanup).
+8. **Abandoned `pending_payment` orders — FIXED & COMMITTED (2026-09-01):** in-process reaper in `payment.ts` (5min interval, 60min cutoff, transaction-guarded restock + VIP refund, legacy NULL `created_at` falls back to base36 id timestamp; `orders.created_at` column added via migration 0005).
+
+**Also removed (2026-09-01 repo hygiene):** `sketches/`, `firebase.json`/`.firebaserc`/`.firebase/`, `metadata.json`, `.neural_graph.json` from repo & disk; `SECRETS_MAP.md` gitignored (local-only ops map).

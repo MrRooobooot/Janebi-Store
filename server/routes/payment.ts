@@ -195,4 +195,49 @@ router.get('/verify', async (req, res) => {
   }
 });
 
+// Reaper: cancel abandoned pending_payment orders and restock their items.
+// If a user never returns from the gateway, stock would stay deducted forever.
+// Interval 5min; orders older than 60min are cancelled. Runs in-process; the
+// transaction guard (`status === 'pending_payment'` re-check) makes it idempotent
+// against a concurrent real verify.
+const ABANDON_AFTER_MS = 60 * 60 * 1000;
+setInterval(async () => {
+  try {
+    const cutoff = new Date(Date.now() - ABANDON_AFTER_MS).toISOString();
+    // Legacy rows may lack created_at (column added 2026-08-31); treat NULL as
+    // "older than cutoff" only for orders whose id timestamp also predates the
+    // cutoff — ORD ids embed base36 creation time.
+    const stale = await db.select({ id: orders.id, createdAt: orders.createdAt }).from(orders)
+      .where(sql`${orders.status} = 'pending_payment' AND (${orders.createdAt} IS NULL OR ${orders.createdAt} < ${cutoff})`);
+    for (const { id, createdAt } of stale) {
+      if (!createdAt) {
+        const embeddedMs = parseInt(id.replace('ORD-', ''), 36);
+        if (!Number.isFinite(embeddedMs) || (Date.now() - embeddedMs) < ABANDON_AFTER_MS) continue;
+      }
+      await db.transaction(async (tx: any) => {
+        const current = await tx.select().from(orders).where(eq(orders.id, id));
+        if (!current[0] || current[0].status !== 'pending_payment') return;
+        const pointsToRefund = Number(current[0].vipPointsUsed) || 0;
+        const items = await tx.select().from(orderItems).where(eq(orderItems.orderId, id));
+        for (const item of items) {
+          await tx.update(products)
+            .set({ stockQuantity: sql`${products.stockQuantity} + ${item.qty}` })
+            .where(eq(products.id, item.productId));
+        }
+        if (pointsToRefund > 0 && current[0].userId) {
+          await tx.update(users)
+            .set({ vipPoints: sql`${users.vipPoints} + ${pointsToRefund}` })
+            .where(eq(users.id, current[0].userId));
+        }
+        await tx.update(orders)
+          .set({ status: 'cancelled', statusText: 'لغو شده (انصراف از پرداخت)' })
+          .where(eq(orders.id, id));
+      });
+      console.log(`[payment-reaper] cancelled abandoned order ${id}`);
+    }
+  } catch (err) {
+    console.error('[payment-reaper] error:', err);
+  }
+}, 5 * 60 * 1000).unref();
+
 export default router;

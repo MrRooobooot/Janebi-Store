@@ -108,7 +108,11 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
             <span className="font-semibold text-orange-600/90 dark:text-orange-400/90">{product.category}</span>
             <div className="flex items-center gap-1 font-bold text-amber-500">
               <Star className="h-3 w-3 fill-amber-400 stroke-amber-400" />
-              <span>{toPersianDigits(product.rating || '۴.۸')}</span>
+              {product.rating ? (
+                <span>{toPersianDigits(product.rating)}</span>
+              ) : (
+                <span>جدید</span>
+              )}
             </div>
           </div>
 

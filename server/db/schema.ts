@@ -53,6 +53,9 @@ export const orders = sqliteTable('orders', {
   id: text('id').primaryKey(),
   userId: text('user_id').references(() => users.id),
   date: text('date').notNull(),
+  // Machine-readable creation time (ISO-8601) for ordering, analytics, and the
+  // pending-payment reaper. `date` stays the human display string (fa-IR).
+  createdAt: text('created_at'),
   status: text('status').notNull(),
   statusText: text('statusText').notNull(),
   total: integer('total').notNull(),

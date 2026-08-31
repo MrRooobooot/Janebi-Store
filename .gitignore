@@ -52,3 +52,20 @@ backups/
 # Temp
 /tmp/
 *.tmp
+
+# Secret ops map (local only — never commit)
+SECRETS_MAP.md
+
+# Firebase legacy
+.firebase/
+.firebaserc
+firebase.json
+
+# AI tool droppings
+.neural_graph.json
+metadata.json
+sketches/
+
+# Playwright local artifacts
+playwright-report/
+test-results/

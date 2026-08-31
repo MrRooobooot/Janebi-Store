@@ -53,6 +53,8 @@ export const orders = pgTable('orders', {
   id: text('id').primaryKey(),
   userId: text('user_id').references(() => users.id),
   date: text('date').notNull(),
+  // Machine-readable creation time (ISO-8601) — parity with sqlite schema.
+  createdAt: text('created_at'),
   status: text('status').notNull(),
   statusText: text('statusText').notNull(),
   total: integer('total').notNull(),
@@ -146,11 +148,27 @@ export const storeSettings = pgTable('store_settings', {
   value: text('value').notNull()
 });
 
+// Blog posts — editable by the admin, served publicly via GET /api/blog.
+export const blogPosts = pgTable('blog_posts', {
+  id: text('id').primaryKey(),
+  title: text('title').notNull(),
+  excerpt: text('excerpt').notNull(),
+  body: text('body').notNull(), // paragraphs separated by \n\n
+  image: text('image'),
+  category: text('category').default('مقالات').notNull(),
+  author: text('author').default('تیم جانبی آرنا').notNull(),
+  readTime: text('readTime'),
+  published: boolean('published').default(true).notNull(),
+  createdAt: text('created_at').notNull()
+});
+
 // RELATIONS
 export const productsRelations = relations(products, ({ many }) => ({
   features: many(productFeatures),
   reviews: many(reviews),
 }));
+
+export const blogPostsRelations = relations(blogPosts, () => ({}));
 
 export const productFeaturesRelations = relations(productFeatures, ({ one }) => ({
   product: one(products, {

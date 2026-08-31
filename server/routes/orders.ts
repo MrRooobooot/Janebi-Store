@@ -185,6 +185,7 @@ router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
         id: orderId,
         userId: userId,
         date: dateStr,
+        createdAt: today.toISOString(),
         status: paymentMethod === "online" ? "pending_payment" : "processing",
         statusText: paymentMethod === "online" ? "در انتظار پرداخت" : "در حال پردازش",
         total: realTotal,

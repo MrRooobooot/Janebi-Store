@@ -86,3 +86,8 @@ Key findings (P0 first):
 - [ ] P1: `schema.pg.ts` missing `blog_posts` (PG parity regression); zero secondary indexes (prod EXPLAIN = full scans).
 - [ ] P1: `llms.txt`/`pricing.md` fabricated stats, wrong category slugs (7 dead links verified on live), phone/address conflicts across 3 sources.
 - [ ] P2: scratch tables (`scratch_t`,`scratch_t2`,`s3`,`s4`,`mutex_t`) + 9 stale test coupons in prod DB; manifest theme colors predate palette migration; JSON-LD `</script>` escape; coupon usageLimit schema; admin backup should use `VACUUM INTO`.
+
+## Status: Remediation committed (Sep 1, 2026)
+- [x] P0 fixes committed: payment-reaper + `orders.created_at` + indexes (0005 SQLite/PG), seed aggregates zeroed, fake client fallbacks removed (ProductCard default rating, ProductReviews DEFAULT_REVIEWS), SW default network-first v1.1.0, llms.txt/pricing.md regenerated from live API.
+- [x] Repo hygiene: sketches/, firebase legacy (.firebaserc/.firebase/firebase.json), metadata.json, .neural_graph.json removed; SECRETS_MAP.md local-only (gitignored).
+

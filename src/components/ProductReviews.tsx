@@ -27,50 +27,6 @@ interface ProductReviewsProps {
   initialReviewsCount?: number;
 }
 
-// Initial realistic default reviews per product category/id
-const DEFAULT_REVIEWS: Record<number, Review[]> = {
-  1: [
-    {
-      id: 'rev-101',
-      productId: 1,
-      userName: 'محمد حسینی',
-      rating: 5,
-      title: 'فوق‌العاده باکیفیت و بادوام',
-      comment: 'حدود ۳ ماهه استفاده می‌کنم. سرعت شارژ عالیه و جفت سوکت‌ها کاملاً محکم تو درگاه قرار می‌گیرن. روکشش هم روکش کنفی مقاومه که اصلاً قطع نمیشه.',
-      date: '۲ روز پیش',
-      isVerifiedBuyer: true,
-      recommend: true,
-      helpfulCount: 18,
-      unhelpfulCount: 1,
-    },
-    {
-      id: 'rev-102',
-      productId: 1,
-      userName: 'سارا احمدی',
-      rating: 4,
-      title: 'خوبه ولی کمی سفته',
-      comment: 'سرعت شارژ سوپرفست سامسونگ رو قشنگ پشتیبانی می‌کنه. فقط جنس جنس کابل یکم ضخیم و سفته که البته نشونه مقاومت بالای روکششه.',
-      date: '۱ هفته پیش',
-      isVerifiedBuyer: true,
-      recommend: true,
-      helpfulCount: 9,
-      unhelpfulCount: 2,
-    },
-    {
-      id: 'rev-103',
-      productId: 1,
-      userName: 'امیررضا کریمی',
-      rating: 5,
-      title: 'بهترین کابل انکر',
-      comment: 'انکر نیازی به تعریف نداره. گارانتی ۱۸ ماهه ایستا هم که روش بود خیالمو راحت کرد.',
-      date: '۳ هفته پیش',
-      isVerifiedBuyer: false,
-      recommend: true,
-      helpfulCount: 14,
-      unhelpfulCount: 0,
-    },
-  ],
-};
 
 const RATING_LABELS: Record<number, string> = {
   1: 'خیلی ضعیف (۱ از ۵)',
@@ -99,17 +55,16 @@ export default function ProductReviews({ productId, initialRating = 4.7, initial
   const [recommend, setRecommend] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Load reviews from API with fallback
+  // Load reviews from API (no fabricated fallback: empty/error = honest state)
   useEffect(() => {
     setLoading(true);
     fetch(`/api/products/${productId}/reviews`)
       .then(res => res.json())
       .then(data => {
-        setReviews(data);
+        setReviews(Array.isArray(data) ? data : []);
       })
       .catch(() => {
-        const initialList = DEFAULT_REVIEWS[productId] || [];
-        setReviews(initialList);
+        setReviews([]);
       })
       .finally(() => {
         setLoading(false);
@@ -120,7 +75,7 @@ export default function ProductReviews({ productId, initialRating = 4.7, initial
   const totalReviews = reviews.length;
   const avgRating = totalReviews > 0
     ? (reviews.reduce((acc, r) => acc + r.rating, 0) / totalReviews).toFixed(1)
-    : initialRating.toFixed(1);
+    : Number(initialRating || 0).toFixed(1);
 
   const starCounts = [5, 4, 3, 2, 1].map(star => {
     const count = reviews.filter(r => r.rating === star).length;
@@ -129,7 +84,7 @@ export default function ProductReviews({ productId, initialRating = 4.7, initial
   });
 
   const recommendedCount = reviews.filter(r => r.recommend).length;
-  const recommendPercent = totalReviews > 0 ? Math.round((recommendedCount / totalReviews) * 100) : 95;
+  const recommendPercent = totalReviews > 0 ? Math.round((recommendedCount / totalReviews) * 100) : 0;
 
   // Submit Handler via API
   const handleSubmitReview = (e: React.FormEvent) => {

@@ -85,10 +85,10 @@ export default function ProductDetail() {
               name: 'جانبی آرنا',
             },
           },
-          aggregateRating: data.rating ? {
+          aggregateRating: data.rating && data.reviewsCount > 0 ? {
             '@type': 'AggregateRating',
             ratingValue: data.rating.toString(),
-            reviewCount: (data.reviewsCount || 1).toString(),
+            reviewCount: data.reviewsCount.toString(),
             bestRating: '5',
             worstRating: '1',
           } : undefined,

@@ -1,5 +1,11 @@
 # CHANGELOG_AGENT.md — Janebi Store Agent Work Log
 
+## [2026-09-01] - Remediation Commit, Skill Refactor & Repo Hygiene
+- **Uncommitted remediation landed (Aug 31 wave):** payment-reaper (`server/routes/payment.ts` — 5min interval, 60min abandoned `pending_payment` cutoff with legacy base36-id fallback, transaction-guarded restock + VIP refund), `orders.created_at` column + SQLite/PG migrations (`drizzle/*/0005_order_created_at_indexes.sql` + secondary indexes), seed fake aggregates zeroed (`seed-data.ts` rating/reviewsCount → 0), SW default branch network-first with cache bump v1.1.0 (`public/sw.js`), llms.txt/llms-full.txt/pricing.md regenerated from live API, admin settings doc anchor, ProductCard '۴.۸' fallback removed, ProductReviews fake list removed.
+- **Quality gate:** `npm run verify` 100% PASSED (tsc strict + full Vitest suite + Vite client & Esbuild server build); post-build artifact audit `jsxDEV:0`, `/Users/` leaks:0.
+- **Skill refactor (Hermes profile):** recreated lost `iran-ecommerce-storefront-engineering`, added Related-Skills routing to `janebi-arena-production-readiness`, de-Prisma'd `fullstack-project-audit` + `production-ready-fullstack-patterns`, corrected `production-readiness-verification` pitfalls to Janebi reality (mobile admin login, `/api/admin/stats`, `npm run verify`).
+- **Repo hygiene (local + git):** removed dead artifacts from repo & disk — `sketches/` (3 design mockups, superseded by shipped design system), `firebase.json`/`.firebaserc`/`.firebase/` (legacy hosting, project uses Docker+VPS deploy), `metadata.json`, `.neural_graph.json`; local-only removals of stale `playwright-report/` + `test-results/`. `SECRETS_MAP.md` stays local (gitignored) as the ops credential map. `agent.md` + `docs/*-baseline.md` retained (still valid baselines).
+
 ## [2026-08-30] - Prod-First Safari/WebKit Bug Sweep & Live Verification
 
 - **Checkout Validation Fix (`c4cd855`):** Resolved Safari `SyntaxError: Unexpected token '{'` on the checkout entry page by wiring live recipient validation to `isValidIranianMobile` + `toEnglishDigits` in `CheckoutRecipientForm.tsx` / `useCheckoutForm.ts`; `server/validators/index.ts` `orderSubmitSchema` made nullable/optional-safe for optional order fields.
