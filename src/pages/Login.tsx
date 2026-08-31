@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Phone, Lock, Eye, EyeOff, LogIn, ArrowLeft, KeyRound, ShieldCheck } from "lucide-react";
 import { motion } from "motion/react";
@@ -12,6 +12,19 @@ export default function Login() {
   const navigate = useNavigate();
 
   const [mode, setMode] = useState<"password" | "otp" | "forgot">("password");
+  // OTP is only offered when the server has an SMS provider wired
+  // (audit §3.1 — dead feature must not be exposed on live).
+  const [otpAvailable, setOtpAvailable] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/auth/otp/status")
+      .then((r) => (r.ok ? r.json() : { enabled: false }))
+      .then((d: { enabled?: boolean }) => {
+        if (!cancelled) setOtpAvailable(Boolean(d.enabled));
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [otpCode, setOtpCode] = useState("");
@@ -186,6 +199,7 @@ export default function Login() {
           >
             ورود با رمز عبور
           </button>
+          {otpAvailable && (
           <button
             type="button"
             onClick={() => setMode("otp")}
@@ -197,6 +211,7 @@ export default function Login() {
           >
             ورود با پیامک (OTP)
           </button>
+          )}
         </div>
 
         <form

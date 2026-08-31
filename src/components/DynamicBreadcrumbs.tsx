@@ -146,7 +146,7 @@ export default function DynamicBreadcrumbs() {
               name: item.label,
               item: item.href ? `${window.location.origin}${item.href}` : window.location.href,
             })),
-          }),
+          }).replace(/</g, '\\u003c'),
         }}
       />
       <nav

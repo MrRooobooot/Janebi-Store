@@ -210,7 +210,21 @@ setInterval(() => {
   }
 }, 5 * 60 * 1000).unref();
 
+// OTP delivery is only enabled when an SMS provider is configured. In dev/test
+// a simulator logs the code; in production without credentials the feature is
+// hard-disabled so users never hit an undeliverable flow.
+export const smsProviderEnabled = Boolean(env.SMS_API_KEY) || Boolean(env.SMS_PROVIDER);
+
+router.get("/otp/status", (_req, res) => {
+  res.json({ enabled: smsProviderEnabled || env.NODE_ENV !== "production" });
+});
+
 router.post("/otp/send", validate(otpSendSchema), async (req, res) => {
+  if (!smsProviderEnabled && env.NODE_ENV === "production") {
+    return res.status(503).json({
+      message: "ورود با پیامک در حال حاضر در دسترس نیست. لطفاً از ورود با رمز عبور استفاده کنید."
+    });
+  }
   const { phone } = req.body;
   
   // Rate limit OTP requests per phone

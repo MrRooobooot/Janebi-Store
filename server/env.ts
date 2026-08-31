@@ -23,6 +23,10 @@ const envSchema = z.object({
   GEMINI_API_KEY: z.string().optional().or(z.literal("")),
   APP_URL: z.string().url().default("http://localhost:3000"),
   CORS_ORIGIN: z.string().optional(),
+  // SMS provider credentials — OTP delivery stays disabled (dead feature in
+  // prod, audit §3.1) until one of these is configured.
+  SMS_API_KEY: z.string().optional().or(z.literal("")),
+  SMS_PROVIDER: z.string().optional().or(z.literal("")),
 }).transform((data) => ({
   ...data,
   allowedOrigins: data.CORS_ORIGIN
