@@ -3,8 +3,16 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import {defineConfig} from 'vite';
 
-export default defineConfig(() => {
+export default defineConfig(({mode}) => {
+  // Force production semantics regardless of the ambient NODE_ENV inherited
+  // from .env (NODE_ENV=development) — dev-mode builds ship jsxDEV + local
+  // filePath leaks and bloat the bundle ~27%.
+  process.env.NODE_ENV = 'production';
   return {
+    mode,
+    esbuild: {
+      drop: mode === 'production' ? ['debugger'] : [],
+    },
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
