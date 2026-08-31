@@ -488,7 +488,7 @@ router.get('/coupons', async (req, res) => {
 
 router.post('/coupons', async (req, res) => {
   try {
-    const { code, percent, amount, minTotal, label, active } = req.body;
+    const { code, percent, amount, minTotal, label, active, usageLimit } = req.body;
     if (!code || !label) {
       return res.status(400).json({ message: 'Code and label are required' });
     }
@@ -499,7 +499,8 @@ router.post('/coupons', async (req, res) => {
       amount: amount ? parseInt(amount) : null,
       minTotal: minTotal ? parseInt(minTotal) : 0,
       label,
-      active: active ?? true
+      active: active ?? true,
+      usageLimit: usageLimit ? parseInt(usageLimit) : null
     }).returning();
 
     res.status(201).json(inserted[0]);

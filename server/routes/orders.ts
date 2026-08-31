@@ -119,6 +119,7 @@ router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
 
       // Handle Coupon
       let couponDiscount = 0;
+      let usedCouponCode: string | null = null;
       if (couponCode) {
         const couponList = await tx.select().from(coupons).where(eq(coupons.code, couponCode.toUpperCase()));
         const coupon = couponList[0];
@@ -135,7 +136,12 @@ router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
         if (realSubtotal < coupon.minTotal) {
           throw new Error(`حداقل مبلغ خرید برای این کد ${coupon.minTotal.toLocaleString()} تومان است`);
         }
-        
+
+        // Usage cap: null = unlimited. Enforce before discount computation.
+        if (coupon.usageLimit != null && (coupon.usedCount ?? 0) >= coupon.usageLimit) {
+          throw new Error("ظرفیت استفاده از این کد تخفیف تکمیل شده است");
+        }
+
         if (coupon.percent) {
           couponDiscount = Math.round(realSubtotal * (coupon.percent / 100));
         } else if (coupon.amount) {
@@ -143,6 +149,7 @@ router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
         }
 
         couponDiscount = Math.min(couponDiscount, realSubtotal);
+        usedCouponCode = coupon.code;
       }
 
       // Handle VIP Points Redemption (1 VIP Point = 1000 Tomans discount)
@@ -230,6 +237,13 @@ router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
         await tx.update(users)
           .set({ vipPoints: sql`${users.vipPoints} + ${earnedVipPoints}` })
           .where(eq(users.id, userId));
+      }
+
+      // Increment coupon redemption counter (transactional with the order)
+      if (usedCouponCode) {
+        await tx.update(coupons)
+          .set({ usedCount: sql`COALESCE(${coupons.usedCount}, 0) + 1` })
+          .where(eq(coupons.code, usedCouponCode));
       }
 
       // Clear user cart

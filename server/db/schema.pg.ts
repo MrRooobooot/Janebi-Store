@@ -107,7 +107,10 @@ export const coupons = pgTable('coupons', {
   label: text('label').notNull(),
   active: boolean('active').default(true),
   // Optional ISO-8601 expiry timestamp; null = never expires.
-  expiresAt: text('expiresAt')
+  expiresAt: text('expiresAt'),
+  // Optional max total redemptions; null = unlimited.
+  usageLimit: integer('usageLimit'),
+  usedCount: integer('usedCount').notNull().default(0)
 });
 
 export const cartItems = pgTable('cart_items', {

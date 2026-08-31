@@ -50,6 +50,14 @@ const handleCouponValidation = async (req: any, res: any) => {
     discount = Math.min(discount, cartTotal);
     const finalTotal = Math.max(0, cartTotal - discount);
 
+    if (coupon.usageLimit != null && (coupon.usedCount ?? 0) >= coupon.usageLimit) {
+      return res.status(400).json({
+        valid: false,
+        error: 'ظرفیت استفاده از این کد تخفیف تکمیل شده است',
+        message: 'ظرفیت استفاده از این کد تخفیف تکمیل شده است'
+      });
+    }
+
     res.json({
       valid: true,
       coupon,

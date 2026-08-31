@@ -131,6 +131,22 @@ app.use("/api/auth/otp/send", authLimiter);
 app.use("/api/auth/otp/verify", authLimiter);
 app.use("/api/auth/reset-password", authLimiter);
 
+// Rate limiting - Coupon validation (code brute-force protection).
+// Mounted before the general /api/coupons router so the stricter window wins.
+const couponLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes window
+  max: 10, // 10 validate attempts per window per IP
+  skip: () => process.env.NODE_ENV === "test" || env.NODE_ENV === "test",
+  message: {
+    message: "تعداد تلاش‌های بررسی کد تخفیف بیش از حد مجاز است. لطفاً بعداً تلاش کنید.",
+    error: "Too many coupon validation requests",
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use("/api/coupons/validate", couponLimiter);
+app.use("/api/coupons", couponLimiter);
+
 // Routes
 app.use("/api/products", productsRoutes);
 app.use("/api/categories", categoriesRoutes);
