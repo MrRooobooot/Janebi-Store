@@ -47,6 +47,9 @@ echo "📦 Updating container $CONTAINER_NAME..."
 ssh $SSH_OPTS "$REMOTE" "
   docker cp $APP_DIR/dist/server.cjs $CONTAINER_NAME:/app/dist/server.cjs
   docker cp $APP_DIR/dist/assets/. $CONTAINER_NAME:/app/dist/assets/
+  docker exec $CONTAINER_NAME mkdir -p /app/drizzle/sqlite /app/drizzle/pg
+  docker cp $APP_DIR/drizzle/sqlite/. $CONTAINER_NAME:/app/drizzle/sqlite/
+  docker cp $APP_DIR/drizzle/pg/. $CONTAINER_NAME:/app/drizzle/pg/
   docker restart $CONTAINER_NAME 2>&1 | tail -1
   sleep 3
 "
