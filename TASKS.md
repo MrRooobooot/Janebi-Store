@@ -93,3 +93,9 @@ Key findings (P0 first):
 - [x] P2 cluster A (Sep 1): coupon limiter (10/15min per-IP) + `usageLimit`/`usedCount` schema (0006 SQLite+PG) + order-transaction redemption increment + admin create accepts `usageLimit`; prod DB hygiene: 5 scratch tables dropped, 9 stale test coupons deleted (4 real coupons remain); `deploy.sh` now docker-cps `drizzle/` into container.
 - [x] Repo hygiene: sketches/, firebase legacy (.firebaserc/.firebase/firebase.json), metadata.json, .neural_graph.json removed; SECRETS_MAP.md local-only (gitignored).
 
+## Status: Prod DB hygiene verified (2026-09-01) — orchestrator round
+- [x] Scratch/test tables: census on prod shows ZERO of the 5 audit-listed tables (already purged with Aug-29 rebuild) — no DROP needed.
+- [x] Coupons: only 4 real business coupons (WELCOME10/OFF20/SUMMER30/JANEBI100); the 9 stale E2E coupons do not exist — no action needed.
+- [x] Migration 0005: prod had only 6/9 idx_* indexes (runner silently skipped 3 statements); missing idx_wishlist_items_user_id, idx_product_features_product_id, idx_contact_messages_status applied manually in-container; re-verified 9/9. integrity_check=ok.
+- Evidence: .hermes/reports/backend-db-hygiene.md (commit 7a86682). Independent orchestrator probes: health ok, /api/coupons-active = 4 real coupons only, idx census 9/9.
+- Follow-up: SQLite migration runner lacks journaling (`__drizzle_migrations` absent) — partial-application risk remains; track as P2.
