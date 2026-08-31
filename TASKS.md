@@ -100,3 +100,9 @@ Key findings (P0 first):
 - [x] Migration 0005: prod had only 6/9 idx_* indexes (runner silently skipped 3 statements); missing idx_wishlist_items_user_id, idx_product_features_product_id, idx_contact_messages_status applied manually in-container; re-verified 9/9. integrity_check=ok.
 - Evidence: .hermes/reports/backend-db-hygiene.md (commit 7a86682). Independent orchestrator probes: health ok, /api/coupons-active = 4 real coupons only, idx census 9/9.
 - Follow-up: SQLite migration runner lacks journaling (`__drizzle_migrations` absent) — partial-application risk remains; track as P2.
+
+## Status: Migration journaling fixed (2026-09-01 round 2)
+- [x] P2 follow-up DONE (commit f8b953f): `server/db/index.ts` journaled migrations — `__drizzle_migrations` (sha256/file, SQLite+PG), per-file transaction with journal insert inside the tx, loud failure (file+statement+error to stderr, abort) instead of the old empty-catch silent swallow; legacy backfill for existing prod DB. New tests/unit/migration-journal.test.ts (3 tests).
+- [x] Gate: npm run verify — 37 suites / 300 tests PASS. Deployed via deploy.sh; prod verified: journal=7 entries (0000–0006), 9/9 idx_ indexes, integrity_check ok, health ok after keep-alive.
+- [x] QA PASS (TEAM-QA, commit 33bf5c6): verify 37/300 green; live /api/health ok, /api/products 14 items, /api/coupons-active exactly 4 real coupons, bundle index-Du9A2uvd.js matches local build. Report: .hermes/reports/qa-2026-09-01-migration-journal.md.
+- Next: §3.15 gaps (Permissions-Policy header, CSP report-uri), useStoreSettings fallback single-sourcing.
