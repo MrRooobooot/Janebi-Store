@@ -2,6 +2,13 @@
 
 ## Status: Completed (Aug 28, 2026)
 
+### Round r38 (2026-09-13b) — Blog Post 15 + Post-14 Body Repair + Sitemap Fix (SHIPPED, live)
+- [x] پست پانزدهم «چرا گوشی هنگام شارژ داغ می‌شود؟» (rahnamaye-garmi-goshi-hange-sharzh، commit aac0b52) — ۷ پاراگراف تحریریه واقعی، سید ایمپوتنت prod. زنده: /api/blog=15، در sitemap داینامیک.
+- [x] ریشه‌یابی P0: post-14 بدنه زنده فاقد پاراگراف بود — seed از `join('\\\\n\\\\n')` (لیترال بک‌اسلش) استفاده کرده بود؛ ریشه کلاس باگ: بازنویسی bulkِ r37 خود join را خراب کرد. seed اصلاح + repair-blog-texts.ts پست ۱۴ را پوشش داد (8/8 repaired، live literal-\\n = 0).
+- [x] SEO: sitemap — 15 URL استاتیک اضافه‌شده حذف شد (روت داینامیک /sitemap.xml خودش پست‌ها را از DB تزریق می‌کرد → dup). حالا 40 locs، 0 dup، hub lastmod بروز (r38b، commit f6879d6).
+- [x] گیت verify سبز ×2، jsxDEV=0، دیپلوی با لاک ×2، sweep دو-موتوره (WebKit+Chromium) روی /blog و پست جدید: 0 خطای JS.
+- Next: پست ۱۶ + روتشن UI/SEO (پررندر JSON-LD برای کرالرها، چون BlogPosting فقط کلاینت-ساید تزریق می‌شود).
+
 ### Round 2026-09-01c (r37) — Blog Post 14 + Corrupted-Text Repair + Reading Progress (SHIPPED, live)
 - [x] پست چهاردهم «چند وات شارژر برای گوشی شما کافی است؟ راهنمای واقعی PD، QC و شارژ سریع» (rahnamaye-vate-sharzhe-divari، commit 42f136d) — محتوای تحریریه واقعی، سید ایمپوتنت prod. زنده: /api/blog=14، در sitemap داینامیک.
 - [x] تعمیر P0: پاراگراف‌های خراب/به‌هم‌ریخته در ۷ پست زنده (fandaki، gols-doorbin، paye-negahdarande، shishe-gherat، powerbank، kabel، asrar) — seed اصلاح شد و scripts/repair-blog-texts.ts (commit eaa539d) بدنه/excerpt را از seed اصلاح‌شده آپدیت کرد: 7/7 repaired، live bad-marker scan = 0.
