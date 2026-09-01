@@ -1,0 +1,338 @@
+[
+  {
+    "engine": "chromium",
+    "page": "/",
+    "pass": true,
+    "textLen": 5047,
+    "imgCount": 0,
+    "brokenImgs": [],
+    "realErrors": []
+  },
+  {
+    "engine": "chromium",
+    "page": "/products",
+    "pass": false,
+    "textLen": 3285,
+    "imgCount": 15,
+    "brokenImgs": [
+      "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU"
+    ],
+    "realErrors": [
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/products/",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      },
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/products/",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      },
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/products/",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      }
+    ]
+  },
+  {
+    "engine": "chromium",
+    "page": "/login",
+    "pass": false,
+    "textLen": 1141,
+    "imgCount": 0,
+    "brokenImgs": [],
+    "realErrors": [
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/login",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      },
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/login",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      },
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/login",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      },
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/login",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      }
+    ]
+  },
+  {
+    "engine": "chromium",
+    "page": "/cart",
+    "pass": false,
+    "textLen": 1085,
+    "imgCount": 0,
+    "brokenImgs": [],
+    "realErrors": [
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/cart",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      },
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/cart",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      },
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/cart",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      },
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/cart",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      }
+    ]
+  },
+  {
+    "engine": "chromium",
+    "page": "/blog",
+    "pass": false,
+    "textLen": 1184,
+    "imgCount": 0,
+    "brokenImgs": [],
+    "realErrors": [
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/blog",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      },
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/blog",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      },
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/blog",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      },
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/blog",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      }
+    ]
+  },
+  {
+    "engine": "webkit",
+    "page": "/",
+    "pass": true,
+    "textLen": 4207,
+    "imgCount": 0,
+    "brokenImgs": [],
+    "realErrors": []
+  },
+  {
+    "engine": "webkit",
+    "page": "/products",
+    "pass": false,
+    "textLen": 3288,
+    "imgCount": 15,
+    "brokenImgs": [
+      "https://janebiarena.ir/products/chg-2.svg?v=3.2.0",
+      "https://janebiarena.ir/products/cbl-1.svg?v=3.2.0",
+      "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU"
+    ],
+    "realErrors": [
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/products/",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      },
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/products/",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      }
+    ]
+  },
+  {
+    "engine": "webkit",
+    "page": "/login",
+    "pass": false,
+    "textLen": 1143,
+    "imgCount": 0,
+    "brokenImgs": [],
+    "realErrors": [
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/login",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      },
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/login",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      },
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/login",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      },
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/login",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      }
+    ]
+  },
+  {
+    "engine": "webkit",
+    "page": "/cart",
+    "pass": false,
+    "textLen": 1085,
+    "imgCount": 0,
+    "brokenImgs": [],
+    "realErrors": [
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/cart",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      },
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/cart",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      },
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/cart",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      },
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/cart",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      }
+    ]
+  },
+  {
+    "engine": "webkit",
+    "page": "/blog",
+    "pass": false,
+    "textLen": 1184,
+    "imgCount": 0,
+    "brokenImgs": [],
+    "realErrors": [
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/blog",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      },
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/blog",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      },
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/blog",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      },
+      {
+        "url": "https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU",
+        "text": "HTTP 408"
+      },
+      {
+        "url": "https://janebiarena.ir/blog",
+        "text": "Failed to load resource: the server responded with a status of 408 ()"
+      }
+    ]
+  }
+]
