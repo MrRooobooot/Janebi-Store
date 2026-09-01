@@ -48,8 +48,8 @@ export default function AdminLayout() {
 
   if (!user || user.role !== 'admin') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[var(--color-surface-dark)] p-4">
-        <div className="max-w-md w-full bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl p-8 text-center shadow-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
+      <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 p-4">
+        <div className="max-w-md w-full bg-zinc-50 dark:bg-zinc-900/60 rounded-3xl p-8 text-center shadow-xl border border-zinc-200/80 dark:border-zinc-800">
           <div className="bg-red-100 dark:bg-red-900/30 p-6 rounded-full inline-block mb-6">
             <ShieldAlert className="h-16 w-16 text-red-500" />
           </div>
@@ -93,9 +93,9 @@ export default function AdminLayout() {
   ];
 
   const sidebarContent = (
-    <div className="flex flex-col h-full bg-[var(--color-surface-light)]/95 dark:bg-[var(--color-surface-dark)]/95 backdrop-blur-xl border-l border-gray-200/80 dark:border-[var(--color-border-dark)]">
+    <div className="flex flex-col h-full bg-zinc-50/95 dark:bg-zinc-900/60 backdrop-blur-xl border-l border-zinc-200/80 dark:border-zinc-800">
       {/* Brand Header */}
-      <div className="p-5 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex items-center justify-between">
+      <div className="p-5 border-b border-zinc-200/80 dark:border-zinc-800 flex items-center justify-between">
         <Link to="/admin" className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-2xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 flex items-center justify-center shrink-0 shadow-sm">
             <LogoSymbol className="w-6 h-6" />
@@ -110,14 +110,16 @@ export default function AdminLayout() {
         <div className="flex items-center gap-1">
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-xl text-gray-500 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            aria-label={isDarkMode ? 'تغییر به حالت روز' : 'تغییر به حالت شب'}
+            className="w-11 h-11 flex items-center justify-center rounded-xl text-gray-500 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors motion-reduce:transition-none"
             title={isDarkMode ? 'حالت روز' : 'حالت شب'}
           >
             {isDarkMode ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4 text-indigo-500" />}
           </button>
-          <button 
-            onClick={() => setMobileOpen(false)} 
-            className="lg:hidden p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-200"
+          <button
+            onClick={() => setMobileOpen(false)}
+            aria-label="بستن منو"
+            className="lg:hidden w-11 h-11 flex items-center justify-center text-gray-500 hover:text-gray-700 dark:hover:text-gray-200"
           >
             <X className="h-5 w-5" />
           </button>
@@ -125,7 +127,7 @@ export default function AdminLayout() {
       </div>
       
       {/* Admin User Info Card */}
-      <div className="p-3.5 mx-3 my-3 rounded-2xl bg-gray-50/80 dark:bg-gray-800/40 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex items-center gap-3">
+      <div className="p-3.5 mx-3 my-3 rounded-2xl bg-zinc-100/80 dark:bg-zinc-800/40 border border-zinc-200/80 dark:border-zinc-800 flex items-center gap-3">
         <img 
           src={user.avatar || '/avatar.svg'} 
           alt={user.name} 
@@ -173,7 +175,7 @@ export default function AdminLayout() {
       </nav>
 
       {/* Footer Utility Actions */}
-      <div className="p-3 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] space-y-1.5">
+      <div className="p-3 border-t border-zinc-200/80 dark:border-zinc-800 space-y-1.5">
         <Link
           to="/"
           target="_blank"
@@ -197,7 +199,7 @@ export default function AdminLayout() {
   );
 
   return (
-    <div className="min-h-screen flex bg-gray-50/70 dark:bg-gray-950 text-right transition-colors duration-300">
+    <div className="min-h-screen flex bg-zinc-50 dark:bg-zinc-950 text-right transition-colors duration-300 motion-reduce:transition-none">
       {/* Desktop Sidebar */}
       <aside className="w-64 hidden lg:block fixed inset-y-0 right-0 z-30 shadow-xs">
         {sidebarContent}
@@ -230,10 +232,11 @@ export default function AdminLayout() {
       {/* Main Content Area */}
       <div className="flex-1 lg:mr-64 flex flex-col min-w-0">
         {/* Mobile Header Bar */}
-        <header className="lg:hidden bg-[var(--color-surface-light)]/90 dark:bg-[var(--color-surface-dark)]/90 backdrop-blur-xl border-b border-gray-200/80 dark:border-[var(--color-border-dark)] p-3.5 flex items-center justify-between sticky top-0 z-20 shadow-xs">
+        <header className="lg:hidden bg-zinc-50/90 dark:bg-zinc-900/60 backdrop-blur-xl border-b border-zinc-200/80 dark:border-zinc-800 p-3.5 flex items-center justify-between sticky top-0 z-20 shadow-xs">
           <button
             onClick={() => setMobileOpen(true)}
-            className="p-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200"
+            aria-label="باز کردن منوی مدیریت"
+            className="w-11 h-11 flex items-center justify-center rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200"
           >
             <Menu className="h-5 w-5" />
           </button>
@@ -248,7 +251,8 @@ export default function AdminLayout() {
           </div>
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-xl text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
+            aria-label={isDarkMode ? 'تغییر به حالت روز' : 'تغییر به حالت شب'}
+            className="w-11 h-11 flex items-center justify-center rounded-xl text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors motion-reduce:transition-none"
           >
             {isDarkMode ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4" />}
           </button>
