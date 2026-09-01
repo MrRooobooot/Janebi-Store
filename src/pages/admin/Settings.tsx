@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Settings, Save, Phone, Mail, MapPin, Clock, Truck, Megaphone, Check, Loader2, Database, Download, Sparkles, Layers } from 'lucide-react';
 import { useToast } from '../../contexts/ToastContext';
 import { STORE_SETTINGS_DEFAULTS } from '../../lib/constants';
+import { toEnglishDigits } from '../../lib/utils';
 
 interface StoreSettingsData {
   storeName: string;
@@ -189,9 +190,10 @@ export default function AdminSettings() {
             <div>
               <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">حداقل مبلغ برای ارسال رایگان (تومان)</label>
               <input
-                type="number"
+                type="text"
+                inputMode="numeric"
                 value={settings.freeShippingThreshold}
-                onChange={e => setSettings({ ...settings, freeShippingThreshold: Number(e.target.value) })}
+                onChange={e => setSettings({ ...settings, freeShippingThreshold: parseInt(toEnglishDigits(e.target.value).replace(/[^0-9]/g, ''), 10) || 0 })}
                 className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500 text-left dir-ltr"
                 required
               />

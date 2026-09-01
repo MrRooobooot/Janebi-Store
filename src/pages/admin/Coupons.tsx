@@ -65,6 +65,11 @@ export default function AdminCoupons() {
       return;
     }
 
+    if (formData.type === 'percent' && parsedVal > 99) {
+      addToast('درصد تخفیف باید بین ۱ تا ۹۹ باشد', 'error');
+      return;
+    }
+
     const payload = {
       code: formData.code.trim().toUpperCase(),
       percent: formData.type === 'percent' ? parsedVal : undefined,
@@ -261,12 +266,11 @@ export default function AdminCoupons() {
                     {formData.type === 'percent' ? 'درصد تخفیف (۱ تا ۹۹) *' : 'مبلغ تخفیف (تومان) *'}
                   </label>
                   <input
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
                     required
-                    min={1}
-                    max={formData.type === 'percent' ? 99 : undefined}
                     value={formData.value}
-                    onChange={(e) => setFormData({ ...formData, value: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, value: toEnglishDigits(e.target.value).replace(/[^0-9]/g, '') })}
                     placeholder={formData.type === 'percent' ? '20' : '100000'}
                     className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs font-mono font-bold text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500 text-left dir-ltr"
                   />

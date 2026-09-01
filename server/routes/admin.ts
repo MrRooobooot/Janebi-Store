@@ -182,6 +182,44 @@ router.get("/analytics", async (req, res) => {
     const totalVipUsers = allUsers.filter(u => (u.vipPoints || 0) > 0).length;
     const totalActiveVipPoints = allUsers.reduce((sum, u) => sum + (u.vipPoints || 0), 0);
 
+    // Sales trend: real daily revenue for the last 14 days (completed orders only).
+    // Timestamp resolution: `created_at` (ISO) first; legacy NULL rows fall back to the
+    // base36 timestamp embedded in the ORD- id (established 2026-08-31 convention).
+    const COMPLETED_STATUSES = ["processing", "shipped", "delivered"];
+    const resolveOrderTs = (o: typeof allOrders[number]): number | null => {
+      if (o.createdAt) {
+        const t = Date.parse(o.createdAt);
+        if (!Number.isNaN(t)) return t;
+      }
+      const m = /^ORD-([0-9A-Z]+)-/.exec(o.id);
+      if (m) {
+        const t = parseInt(m[1], 36);
+        if (!Number.isNaN(t) && t > 0) return t;
+      }
+      return null;
+    };
+
+    const DAY_MS = 24 * 60 * 60 * 1000;
+    const days = 14;
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    const trendBuckets: { date: string; revenue: number; orders: number }[] = [];
+    for (let i = days - 1; i >= 0; i--) {
+      trendBuckets.push({ date: new Date(todayStart.getTime() - i * DAY_MS).toISOString().slice(0, 10), revenue: 0, orders: 0 });
+    }
+    const trendIndex = new Map(trendBuckets.map((b, i) => [b.date, i]));
+
+    for (const order of allOrders) {
+      if (!COMPLETED_STATUSES.includes(order.status)) continue;
+      const ts = resolveOrderTs(order);
+      if (ts === null) continue;
+      const key = new Date(ts).toISOString().slice(0, 10);
+      const idx = trendIndex.get(key);
+      if (idx === undefined) continue;
+      trendBuckets[idx].revenue += order.total;
+      trendBuckets[idx].orders += 1;
+    }
+
     res.json({
       financials: {
         completedRevenue,
@@ -196,6 +234,7 @@ router.get("/analytics", async (req, res) => {
       },
       categoryPerformance: Object.values(categorySales),
       topSellingProducts,
+      salesTrend: trendBuckets,
     });
   } catch (error) {
     console.error("Admin analytics error:", error);

@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
 import { Search, Shield, User as UserIcon, KeyRound, Award, Plus, Minus, X, CheckCircle } from 'lucide-react';
-import { toPersianDigits } from '../../lib/utils';
+import { toPersianDigits, toEnglishDigits } from '../../lib/utils';
 import PageControls, { unwrapList } from '../../components/admin/PageControls';
 
 export default function AdminUsers() {
@@ -101,7 +101,7 @@ export default function AdminUsers() {
   const handleUpdatePointsSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!pointsModalUser) return;
-    const pts = parseInt(pointsInput);
+    const pts = parseInt(toEnglishDigits(pointsInput), 10);
     if (isNaN(pts) || pts < 0) {
       addToast('امتیاز باید یک عدد مثبت باشد', 'error');
       return;
@@ -352,11 +352,11 @@ export default function AdminUsers() {
               <div>
                 <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">مجموع امتیازات فعال کاربر *</label>
                 <input
-                  type="number"
-                  min={0}
+                  type="text"
+                  inputMode="numeric"
                   required
                   value={pointsInput}
-                  onChange={(e) => setPointsInput(e.target.value)}
+                  onChange={(e) => setPointsInput(toEnglishDigits(e.target.value).replace(/[^0-9]/g, ''))}
                   className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl p-3 text-xs font-bold text-gray-800 dark:text-gray-200 focus:outline-none focus:border-amber-500 font-mono text-left dir-ltr"
                 />
                 <span className="text-[10px] text-gray-400 mt-1 block">هر ۱۰۰ امتیاز معادل ۱۰,۰۰۰ تومان تخفیف روی خرید بعدی کاربر است.</span>

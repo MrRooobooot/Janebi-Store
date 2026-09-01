@@ -583,9 +583,8 @@ export default function AdminProducts() {
                   <div>
                     <label className="block text-gray-700 dark:text-gray-300 mb-1 text-[11px]">درصد تخفیف (٪)</label>
                     <input
-                      type="number"
-                      min={0}
-                      max={100}
+                      type="text"
+                      inputMode="numeric"
                       value={formData.discount}
                       onChange={(e) => handleDiscountChange(e.target.value)}
                       placeholder="۰"
@@ -614,11 +613,11 @@ export default function AdminProducts() {
                     موجودی انبار (تعداد) <span className="text-rose-500">*</span>
                   </label>
                   <input
-                    type="number"
-                    min={0}
+                    type="text"
+                    inputMode="numeric"
                     required
                     value={formData.stockQuantity}
-                    onChange={(e) => setFormData({ ...formData, stockQuantity: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, stockQuantity: toEnglishDigits(e.target.value).replace(/[^0-9]/g, '') })}
                     className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500"
                   />
                 </div>

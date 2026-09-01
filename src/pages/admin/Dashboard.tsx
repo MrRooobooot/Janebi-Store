@@ -1,7 +1,8 @@
 import { authFetch } from '../../lib/api';
 import React, { useEffect, useState } from "react";
-import { Users, Package, ShoppingCart, DollarSign, Award, TrendingUp, Sparkles, Tag, Rocket } from "lucide-react";
+import { Users, Package, ShoppingCart, DollarSign, Award, TrendingUp, Sparkles, Tag, Rocket, BarChart3 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { toPersianDigits, formatPrice } from "../../lib/utils";
 
 interface DashboardStats {
   metrics: {
@@ -27,6 +28,7 @@ interface AnalyticsData {
   };
   categoryPerformance: Array<{ category: string; count: number; revenue: number }>;
   topSellingProducts: Array<{ id: number; title: string; count: number; revenue: number }>;
+  salesTrend: Array<{ date: string; revenue: number; orders: number }>;
 }
 
 export default function Dashboard() {
@@ -182,6 +184,46 @@ export default function Dashboard() {
       {/* Analytics Insights */}
       {analytics && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Sales Trend Chart (real data from /api/admin/analytics) */}
+          <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs lg:col-span-3 space-y-4">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                <BarChart3 className="h-5 w-5" />
+                <h2 className="font-bold text-[var(--color-text-main-light)] dark:text-white text-sm">روند فروش ۱۴ روز اخیر</h2>
+              </div>
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                جمع دوره: {formatPrice(analytics.salesTrend.reduce((s, d) => s + d.revenue, 0))}
+              </span>
+            </div>
+            {analytics.salesTrend.every((d) => d.revenue === 0) ? (
+              <p className="text-xs text-gray-500 dark:text-gray-400 py-8 text-center">
+                در ۱۴ روز گذشته سفارش تکمیل‌شده‌ای ثبت نشده است.
+              </p>
+            ) : (
+              <div className="flex items-end gap-1 sm:gap-1.5 h-40 pt-2" role="img" aria-label="نمودار ستونی فروش روزانه چهارده روز اخیر">
+                {analytics.salesTrend.map((day) => {
+                  const maxRevenue = Math.max(...analytics.salesTrend.map((d) => d.revenue), 1);
+                  const heightPct = Math.max((day.revenue / maxRevenue) * 100, day.revenue > 0 ? 4 : 2);
+                  const dayLabel = new Date(day.date + "T00:00:00").toLocaleDateString("fa-IR", { day: "numeric", month: "short" });
+                  return (
+                    <div key={day.date} className="flex-1 flex flex-col items-center justify-end h-full min-w-0 group relative">
+                      <div
+                        className="w-full rounded-t-md bg-emerald-500/80 hover:bg-emerald-600 dark:bg-emerald-500/60 dark:hover:bg-emerald-400 transition-colors"
+                        style={{ height: `${heightPct}%` }}
+                      />
+                      <div className="absolute bottom-full mb-1 hidden group-hover:block z-10 px-2 py-1 rounded-lg bg-zinc-900 dark:bg-zinc-700 text-white text-[10px] whitespace-nowrap pointer-events-none shadow-lg">
+                        {dayLabel} — {formatPrice(day.revenue)} · {toPersianDigits(day.orders)} سفارش
+                      </div>
+                      <span className="text-[9px] sm:text-[10px] text-gray-400 dark:text-gray-500 mt-1 rotate-45 origin-top-right translate-x-1 whitespace-nowrap hidden sm:block">
+                        {dayLabel}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
           {/* Loyalty / VIP Points Card */}
           <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs space-y-4">
             <div className="flex items-center gap-2 text-amber-500">
