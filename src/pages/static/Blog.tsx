@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Clock, Calendar, ArrowLeft, ArrowRight, BookOpen, User, X } from 'lucide-react';
+import { Clock, Calendar, ArrowLeft, ArrowRight, BookOpen, User, X, Tag } from 'lucide-react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { useParams } from 'react-router-dom';
 import { toPersianDigits } from '../../lib/utils';
@@ -19,6 +19,7 @@ interface Article {
   author: string;
   createdAt?: string | null; // raw DB date, kept for JSON-LD only
   updatedAt?: string | null; // raw DB date, kept for JSON-LD only
+  tags?: string | null; // comma-separated SEO tags (DB column)
 }
 
 const FALLBACK_IMAGE = '/products/cas-4.svg';
@@ -70,6 +71,7 @@ export default function Blog() {
                 author: r.author || 'تیم جانبی آرنا',
                 createdAt: r.createdAt || null,
                 updatedAt: r.updatedAt || null,
+                tags: r.tags || null,
               }))
             : []
         );
@@ -145,6 +147,7 @@ export default function Blog() {
       return;
     }
     const jsonLd = buildBlogPostingJsonLd(openArticle, window.location.origin);
+    // tags carry into JSON-LD keywords (openArticle is Article-shaped; tags is optional)
     document.getElementById(scriptId)?.remove();
     if (!jsonLd) return;
     const script = document.createElement('script');
@@ -345,6 +348,24 @@ export default function Blog() {
                     </p>
                   ))}
                 </div>
+
+                {/* SEO tags: real comma-separated tags from the DB post */}
+                {openArticle.tags?.split(',').some((t) => t.trim()) && (
+                  <div className="mt-6 flex flex-wrap gap-2" aria-label="برچسب‌های مقاله">
+                    {openArticle.tags
+                      .split(',')
+                      .map((t) => t.trim())
+                      .filter(Boolean)
+                      .map((tag) => (
+                        <span
+                          key={tag}
+                          className="inline-flex items-center gap-1 rounded-full bg-orange-50 dark:bg-zinc-800/90 border border-orange-200/80 dark:border-zinc-700 px-3 py-1 text-[11px] font-bold text-orange-700 dark:text-orange-400"
+                        >
+                          <Tag className="h-3 w-3" aria-hidden="true" /> {tag}
+                        </span>
+                      ))}
+                  </div>
+                )}
 
                 {/* Related posts: same category, most recent first, excludes current */}
                 {related.length > 0 && (

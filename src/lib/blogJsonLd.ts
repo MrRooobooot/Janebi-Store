@@ -12,6 +12,7 @@ export interface BlogPostingInput {
   category?: string | null;
   createdAt?: string | null; // raw ISO date from DB
   updatedAt?: string | null; // raw ISO date from DB (may not exist)
+  tags?: string | null; // comma-separated SEO tags from DB
 }
 
 /** Resolve a possibly-relative image path against the site origin. */
@@ -87,6 +88,14 @@ export function buildBlogPostingJsonLd(
   // articleSection — the real category, when present
   const section = typeof post.category === 'string' ? post.category.trim() : '';
   if (section) jsonLd.articleSection = section;
+
+  // keywords — only the real comma-separated tags; empty/whitespace tags dropped
+  const tags = typeof post.tags === 'string' ? post.tags : '';
+  const keywords = tags
+    .split(',')
+    .map((t) => t.trim())
+    .filter(Boolean);
+  if (keywords.length) jsonLd.keywords = keywords;
 
   return jsonLd;
 }
