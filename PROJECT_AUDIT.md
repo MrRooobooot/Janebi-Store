@@ -116,8 +116,8 @@ Scores range 55–92. Priority fixes are listed per section; all are small, cont
 **Verified good**: precache list correct, skipWaiting+clients.claim so updates land next load, hashed assets never stale (cache key = URL), API SWR for products/categories, navigation network-first, reduced-motion guards added.
 
 **Gaps**:
-- **SW default branch is cache-first for every other GET** (`sw.js:106-111`) → `/api/settings`, `/api/coupons-active`, `/api/reviews/latest`, `/api/blog` are served from cache **forever** once seen (they're never invalidated). Admin setting changes / new blog posts may never reach returning PWA clients. Fix: default branch → network-first (or add those paths to the SWR list).
-- `CACHE_NAME` never bumped (v1.0.0 since creation) — combined with the above, stale settings have been shipping for weeks.
+- **SW default branch is cache-first for every other GET** (`sw.js:106-111`) → **CLOSED (2026-09-01)**: default branch rewritten to network-first with cache fallback; verified in sw.js:99-116.
+- ~~`CACHE_NAME` never bumped~~ **CLOSED (2026-09-01)**: `CACHE_NAME`/`API_CACHE_NAME` = `v1.1.0`; default fetch branch is network-first with cache fallback (sw.js:99-116) — `/api/settings`, `/api/coupons-active`, `/api/blog`, `/api/reviews/*` revalidate against network.
 - `manifest.webmanifest` still `theme_color: #ea580c` + `background_color: #08090a` — palette was migrated to Kinetic Commerce (`#f47c20` family / Deep Space) in `index.css`; manifest/`<meta theme-color>` now disagree with live CSS.
 - iOS doesn't support SVG mask icons; no 192/512 PNG fallback → "Add to Home Screen" icon may be blank on older iOS.
 
@@ -126,7 +126,7 @@ Scores range 55–92. Priority fixes are listed per section; all are small, cont
 
 **Gaps**:
 1. **`schema.pg.ts` is missing `blogPosts`** — SQLite has it (`schema.ts:150-161`), PG does not. The parity claim in PROJECT_GRAPH ("100% column and relation parity verified") is **no longer true** since blog_posts was added. PG boot tolerates missing table only because blog route would 500 on PG dialect. Fix: add `pgTable('blog_posts', …)` + matching relation.
-2. **Zero secondary indexes.** Prod `EXPLAIN QUERY PLAN`: `SCAN orders` for user lookup, `SCAN reviews` for product lookup. Only unique-indexes exist (phone, sku). Needed at minimum: `orders(user_id)`, `order_items(order_id)`, `reviews(product_id)`, `cart_items(user_id)`, `wishlist_items(user_id)`, `addresses(user_id)`, `contact_messages(status, created_at)`. Cheap now (2 orders / 430 msgs), mandatory before real traffic.
+2. ~~**Zero secondary indexes.**~~ **CLOSED (2026-09-01)**: migration `drizzle/sqlite/0005_order_created_at_indexes.sql` creates all required indexes; locally verified via `EXPLAIN QUERY PLAN` — all 8 lookups use `SEARCH … USING INDEX` (idx_orders_user_id, idx_orders_created_at, idx_order_items_order_id, idx_reviews_product_id, idx_cart_items_user_id, idx_wishlist_items_user_id, idx_addresses_user_id, idx_product_features_product_id) + idx_contact_messages_status.
 3. No `createdAt` on orders/users (text `date`/`joined_date` only) — analytics sorting fragile.
 4. `coupons` lacks `usageLimit`/`usedCount` (see §3.4).
 
@@ -139,9 +139,9 @@ Scores range 55–92. Priority fixes are listed per section; all are small, cont
 - Contact messages 430 and never archived → trim/archive policy needed.
 
 ### 3.13 AI-SEO / AEO (55) — actively wrong today
-- `public/llms.txt` phone `۰۲۱-۸۸۸۸۸۸۸۸` vs live settings `۰۲۱-۸۸۸۸۹۹۹۹` vs address "چارسو" vs settings "مجتمع نور" — the AI-facing doc contradicts the storefront.
-- Its 7 category links use **nonexistent category slugs** (`کاور و قاب`, `گلس و محافظ صفحه`, `شارژر و آداپتور`, `کابل شارژ`, `هندزفری و هدفون`, `هولدر و پایه نگهدارنده`) → all return `[]` on live API (verified). Real slugs: `قاب و کاور`, `گلس`, `شارژر`, `کابل`, `هندزفری`, `هولدر و پایه`.
-- `pricing.md`/`llms-full.txt` contain the same fabricated product-count era data.
+- `public/llms.txt` phone `۰۲۱-۸۸۸۸۸۸۸۸` vs live settings `۰۲۱-۸۸۸۸۹۹۹۹` vs address "چارسو" vs settings "مجتمع نور" — **CLOSED (2026-09-01)**: all three AI docs regenerated from live API; phone/address verified against `/api/settings` (= `STORE_SETTINGS_DEFAULTS`), all category slugs real (live `/api/categories`), product stats/prices match live `/api/products` (14 products, ۸ categories, ۶۵٬۰۰۰–۴٬۵۰۰٬۰۰۰ Toman).
+- Its 7 category links use **nonexistent category slugs** → **CLOSED**: real slugs now used (`قاب و کاور`, `گلس`, `شارژر`, `کابل`, `هندزفری`, `هولدر و پایه`, `محافظ کابل`, `پاوربانک`).
+- `pricing.md`/`llms-full.txt` contain the same fabricated product-count era data — **CLOSED (2026-09-01)**: regenerated from live `/api/products` (all 14 products, real prices/warranties/features, verified against live API JSON).
 - JSON-LD Product schema (`ProductDetail.tsx:66-91`) emits the fake `rating`/`reviewCount` values → AI/search engines ingest fabricated trust data. After fixing §3.5(1), these become honest automatically.
 - `DynamicBreadcrumbs.tsx:137-150` injects URL-path-derived strings into JSON-LD without `</script>` escaping — self-XSS-shaped, low risk (path not rendered as HTML), fix with `.replace(/</g,'\\u003c')` while touching the file.
 
