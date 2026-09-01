@@ -82,10 +82,10 @@ Key findings (P0 first):
 - [!] Fake aggregate ratings/counts seeded in prod (`reviewsCount` up to 450 vs 2 real reviews) + client fallbacks (`DEFAULT_REVIEWS`, ProductCard `'۴.۸'` default) — must recompute & remove.
 - [!] OTP login/reset dead in production (no SMS provider; code generated but never delivered).
 - [!] No reaper for abandoned `pending_payment` orders → stock stays deducted.
-- [ ] P1: SW default branch cache-first traps `/api/settings` etc.; `CACHE_NAME` never bumped; settings PUT doesn't invalidate appCache.
-- [ ] P1: `schema.pg.ts` missing `blog_posts` (PG parity regression); zero secondary indexes (prod EXPLAIN = full scans).
-- [ ] P1: `llms.txt`/`pricing.md` fabricated stats, wrong category slugs (7 dead links verified on live), phone/address conflicts across 3 sources.
-- [ ] P2: scratch tables (`scratch_t`,`scratch_t2`,`s3`,`s4`,`mutex_t`) + 9 stale test coupons in prod DB; manifest theme colors predate palette migration; JSON-LD `</script>` escape; coupon usageLimit schema; admin backup should use `VACUUM INTO`.
+- [x] P1: SW default branch cache-first traps — FIXED (SW v1.1.0 network-first default, CACHE bumped; P0 verified live).
+- [x] P1: `schema.pg.ts` missing `blog_posts` — FIXED (blogPosts pgTable present, schema.pg.ts:155; indexes 0005 SQLite+PG shipped).
+- [x] P1: `llms.txt`/`pricing.md` fabricated stats — FIXED (regenerated from live API, verified on prod).
+- [x] P2: scratch tables + 9 test coupons — CLEANED (backup janebi-pre-hygiene-1788234770.db, prod re-verified Sep 1); manifest colors, JSON-LD escape, coupon usageLimit, VACUUM INTO backup — all shipped (cluster B).
 
 ## Status: Remediation committed (Sep 1, 2026)
 - [x] P0 fixes committed: payment-reaper + `orders.created_at` + indexes (0005 SQLite/PG), seed aggregates zeroed, fake client fallbacks removed (ProductCard default rating, ProductReviews DEFAULT_REVIEWS), SW default network-first v1.1.0, llms.txt/pricing.md regenerated from live API.
