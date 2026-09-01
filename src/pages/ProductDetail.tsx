@@ -17,6 +17,7 @@ import { addRecentlyViewed } from '../lib/recentlyViewed';
 import { motion, AnimatePresence } from 'motion/react';
 import { Product } from '../types';
 import { formatPrice, toPersianDigits } from '../lib/utils';
+import { STORE_SETTINGS_DEFAULTS } from '../lib/constants';
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -82,7 +83,7 @@ export default function ProductDetail() {
             availability: data.inStock !== false ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
             seller: {
               '@type': 'Organization',
-              name: 'جانبی آرنا',
+              name: STORE_SETTINGS_DEFAULTS.storeName,
             },
           },
           aggregateRating: data.rating && data.reviewsCount > 0 ? {
@@ -122,7 +123,7 @@ export default function ProductDetail() {
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
-        title: product?.title || 'جانبی آرنا',
+        title: product?.title || STORE_SETTINGS_DEFAULTS.storeName,
         url: window.location.href,
       }).catch(() => {});
     } else {

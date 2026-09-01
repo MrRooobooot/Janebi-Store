@@ -68,7 +68,11 @@ app.use(
             imgSrc: ["'self'", "data:", "https:", "http:"],
             connectSrc: ["'self'", "https://api.zarinpal.com", "https://payment.zarinpal.com", "https://sandbox.zarinpal.com", "https://generativelanguage.googleapis.com"],
             // CSP violation observability: browsers POST violations here.
-            reportUri: ["/api/csp-report"],
+            // report-uri (legacy directive) is emitted only when CSP_REPORT_URI
+            // is configured in the environment — no placeholder URL in code.
+            // Modern report-to transport (Reporting-Endpoints header above)
+            // stays active regardless.
+            ...(process.env.CSP_REPORT_URI ? { reportUri: [process.env.CSP_REPORT_URI] } : {}),
             reportTo: ["csp-endpoint"],
           },
         }
