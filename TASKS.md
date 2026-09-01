@@ -227,6 +227,6 @@ Key findings (P0 first):
 - Next: JSON-LD detail live-check; rotate to next design/SEO cluster (footer or admin).
 
 ### Round 2026-09-10 (cron)
-- [x] Blog post 10 (گلس دوربین) — live
+- [x] Blog post 11 (پایه رومیزی موبایل) + copy-link button in article modal — live 2026-09-11 round
 - [x] Tag chips + JSON-LD keywords — live
 - Next: post 11 + rotating UI/SEO round

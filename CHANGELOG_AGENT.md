@@ -1,3 +1,8 @@
+## 2026-09-11 (cron round) — Blog post 11 + article-modal UX
+- Blog post 11 «پایه رومیزی موبایل» seeded to prod (id: rahnamaye-entekhab-stand-rumizi-mobile) — /api/blog now 11 posts; page 200, sitemap updated.
+- Blog article modal: copy-article-link button (clipboard, copied state, 44px touch target, a11y labels) shipped in Blog chunk (live-verified in Blog-DDFBn9YL.js).
+- Gate npm run verify 100% green (both rounds). Commits f8c31c8, d716657.
+
 ## 2026-09-03 — Image performance / LCP round (TEAM-FRONTEND)
 - 21 raw <img> tags patched: loading=lazy + decoding=async + explicit width/height (storefront, cart, checkout, profile, admin); LCP hero/preloads untouched.
 - ProductCard SmartImage: width/height + sizes attr -> card-grid srcset coverage via PictureImage (AVIF/WebP for raster, SVG passthrough).
