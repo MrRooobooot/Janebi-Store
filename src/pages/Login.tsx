@@ -1,20 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Phone, Lock, Eye, EyeOff, LogIn, ArrowLeft, KeyRound, ShieldCheck } from "lucide-react";
 import { motion } from "motion/react";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../contexts/ToastContext";
 import { isValidIranianMobile, normalizeIranianMobile, toPersianDigits } from "../lib/utils";
+import { resolveOtpStatus } from "../lib/otp";
 
 // OTP login is DEAD in production (no SMS provider — audit known blocker #5).
-// The OTP login tab/flow is removed; only password login + reset flow remain.
-// If the backend's /api/auth/otp/* endpoints return 503, a Persian error is shown.
+// The OTP UI is gated behind GET /api/auth/otp/status ({ enabled: boolean }),
+// fetched on mount with a plain fetch (no auth header). If the status request
+// fails, we default to enabled=false (fail-safe hide, prod-safe).
+const OTP_STATUS_ENDPOINT = "/api/auth/otp/status";
+const OTP_RESET_UNAVAILABLE_NOTICE =
+  "بازیابی رمز عبور با کد پیامکی در حال حاضر در دسترس نیست. لطفاً با پشتیبانی تماس بگیرید تا رمز عبور شما بازنشانی شود.";
+
 export default function Login() {
   const { login } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
 
   const [mode, setMode] = useState<"password" | "forgot">("password");
+  const [otpEnabled, setOtpEnabled] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch(OTP_STATUS_ENDPOINT, { headers: { Accept: "application/json" } })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: unknown) => {
+        if (!cancelled) setOtpEnabled(resolveOtpStatus(data).otpEnabled);
+      })
+      .catch(() => {
+        if (!cancelled) setOtpEnabled(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [otpCode, setOtpCode] = useState("");
@@ -197,7 +219,11 @@ export default function Login() {
             </div>
           </div>
 
-          {mode === "forgot" ? (
+          {mode === "forgot" && !otpEnabled ? (
+            <div className="rounded-2xl border border-amber-200 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-500/10 p-4 text-xs font-bold leading-6 text-amber-800 dark:text-amber-300 text-center">
+              {OTP_RESET_UNAVAILABLE_NOTICE}
+            </div>
+          ) : mode === "forgot" ? (
             <>
               <div>
                 <div className="flex items-center justify-between mb-1.5">
@@ -298,14 +324,16 @@ export default function Login() {
             </div>
           ) : null}
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-extrabold py-4 px-6 rounded-2xl shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 transition-all active:scale-98 text-sm mt-6 disabled:opacity-60"
-          >
-            <span>{mode === "forgot" ? "تغییر رمز عبور" : "ورود به حساب"}</span>
-            <ArrowLeft className="h-4 w-4" />
-          </button>
+          {!(mode === "forgot" && !otpEnabled) && (
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-extrabold py-4 px-6 rounded-2xl shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 transition-all active:scale-98 text-sm mt-6 disabled:opacity-60"
+            >
+              <span>{mode === "forgot" ? "تغییر رمز عبور" : "ورود به حساب"}</span>
+              <ArrowLeft className="h-4 w-4" />
+            </button>
+          )}
 
           {mode === "password" && (
             <button
