@@ -2,6 +2,9 @@
 
 ## Status: Completed (Aug 28, 2026)
 
+### Round 2026-09-05 — Blog Post 6 (SHIPPED, live)
+- [x] پست ششم «شیشه گیرات یا محافظ هیدروژل؟» (a3eada0) — محتوای تحریریه واقعی، تصویر واقعی /products/gls-3.svg، سید ایمپوتنت prod بدون دیپلوی (docker cp باندل esbuild + node درون کانتینر، --external:better-sqlite3). زنده: /api/blog=6، detail 200، sitemap شامل slug. BlogPosting JSON-LD client-side (SPA) — قابل مشاهده با curl نیست، کامپوننت src/lib/blogJsonLd.ts سر جاست. Next: UI polish round، پست ۷.
+
 ### Round 2026-09-04 — RelatedProducts + ItemList JSON-LD (SHIPPED, deployed)
 - [x] بخش «محصولات مشابه» در ProductDetail (commit bb792d9): واکشی واقعی `/api/products?category=&limit=8`، حذف محصول جاری، ۴ کارت ProductCard، ItemList JSON-LD از داده واقعی، اعداد فارسی، آیکون Lucide، escape JSON-LD. `npm run verify` سبز، jsxDEV=0. دیپلوی شد؛ باندل زنده index-DbkyNQN3.js == محلی؛ chunk زنده ProductDetail شامل «محصولات مشابه». گزارش: .hermes/reports/related-products-seo-2026-09-04.md
 
