@@ -3,7 +3,9 @@ import { validate } from "../middleware/validate.js";
 import { productQuerySchema, idParamSchema, reviewSubmitSchema } from "../validators/index.js";
 import { db } from "../db/index.js";
 import { products, reviews } from "../db/schema.js";
-import { eq, or, like, and, SQL, gte, lte, gt, inArray, desc, asc, sql } from "drizzle-orm";
+import { eq, or, and, SQL, gte, lte, gt, inArray, desc, asc, sql } from "drizzle-orm";
+import { likeWithEscape, containsLikePattern } from "../utils/like";
+
 import { appCache } from "../utils/cache.js";
 
 const router = Router();
@@ -31,11 +33,11 @@ router.get("/", validate(productQuerySchema), async (req, res) => {
   }
   
   if (search) {
-    const s = `%${search}%`;
+    const s = containsLikePattern(String(search));
     conditions.push(or(
-      like(products.title, s),
-      like(products.category, s),
-      like(products.brand, s)
+      likeWithEscape(products.title, s),
+      likeWithEscape(products.category, s),
+      likeWithEscape(products.brand, s)
     )!);
   }
   
