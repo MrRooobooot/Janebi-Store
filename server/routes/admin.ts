@@ -568,11 +568,24 @@ router.delete('/coupons/:code', async (req, res) => {
 // ---------------------------------------------------------
 // CONTACT MESSAGES MANAGEMENT
 // ---------------------------------------------------------
+// List contact messages. ?status= (unread|read|resolved|archived|all) filters
+// exactly; when omitted, archived rows are hidden (frontend sends an explicit
+// status — e.g. status=all or status=archived — to include them).
 router.get('/contact-messages', async (req, res) => {
   try {
     const { contactMessages } = await import('../db/schema.js');
-    const messages = await db.select().from(contactMessages);
-    res.json(messages);
+    const statusFilter = typeof req.query.status === 'string' ? req.query.status : '';
+    const allowed = ['unread', 'read', 'resolved', 'archived', 'all'];
+    if (statusFilter && !allowed.includes(statusFilter)) {
+      return res.status(400).json({ message: 'Invalid status filter' });
+    }
+    const messages = await db.select().from(contactMessages).orderBy(desc(contactMessages.createdAt));
+    const filtered = statusFilter && statusFilter !== 'all'
+      ? messages.filter((m: { status: string }) => m.status === statusFilter)
+      : statusFilter === 'all'
+        ? messages
+        : messages.filter((m: { status: string }) => m.status !== 'archived');
+    res.json(filtered);
   } catch (error) {
     console.error('Fetch contact messages error:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -585,7 +598,8 @@ router.put('/contact-messages/:id/status', async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
 
-    if (!['unread', 'read', 'resolved'].includes(status)) {
+    // STRICT validation — exact match against the allowed set.
+    if (!['unread', 'read', 'resolved', 'archived'].includes(status)) {
       return res.status(400).json({ message: 'Invalid status' });
     }
 

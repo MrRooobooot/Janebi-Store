@@ -13,6 +13,14 @@ export const SHIPPING_FEES = {
 export const MAX_CART_QUANTITY = 99;
 
 /**
+ * Contact messages with status 'read' older than this many days are archived
+ * automatically by the contact-archive reaper (server/routes/contact.ts).
+ * Admins can archive/unarchive manually via
+ * PUT /api/admin/contact-messages/:id/status.
+ */
+export const ARCHIVE_AFTER_DAYS = 90;
+
+/**
  * Canonical store settings defaults — SINGLE SOURCE OF TRUTH.
  * Imported by server/routes/settings.ts, server/routes/admin.ts (admin edit
  * allow-list) and src/hooks/useStoreSettings.ts (client fallback).

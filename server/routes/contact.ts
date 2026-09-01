@@ -1,9 +1,35 @@
 import { Router } from "express";
 import { db } from "../db/index.js";
 import { contactMessages, newsletterSubscribers } from "../db/schema.js";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
+import { ARCHIVE_AFTER_DAYS } from "../../src/lib/constants.js";
 
 const router = Router();
+
+// Reaper: auto-archive 'read' contact messages older than ARCHIVE_AFTER_DAYS.
+// Interval 1h. The transaction guard (`status = 'read'` re-check inside the
+// transaction) makes it idempotent against a concurrent admin status change —
+// same pattern as the payment-reaper in server/routes/payment.ts.
+setInterval(async () => {
+  try {
+    const cutoff = new Date(Date.now() - ARCHIVE_AFTER_DAYS * 24 * 60 * 60 * 1000).toISOString();
+    const stale = await db.select({ id: contactMessages.id }).from(contactMessages)
+      .where(sql`${contactMessages.status} = 'read' AND ${contactMessages.createdAt} < ${cutoff}`);
+    for (const { id } of stale) {
+      await db.transaction(async (tx: any) => {
+        const current = await tx.select().from(contactMessages).where(eq(contactMessages.id, id));
+        if (!current[0] || current[0].status !== 'read') return;
+        await tx.update(contactMessages)
+          .set({ status: 'archived' })
+          .where(eq(contactMessages.id, id));
+      });
+      console.log(`[contact-archive-reaper] archived message ${id}`);
+    }
+  } catch (err) {
+    console.error('[contact-archive-reaper] error:', err);
+  }
+}, 60 * 60 * 1000).unref();
+
 
 router.post("/", async (req, res) => {
   const { name, email, phone, subject, message } = req.body;

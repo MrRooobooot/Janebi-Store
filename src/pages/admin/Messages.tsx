@@ -1,9 +1,9 @@
 import { authFetch } from '../../lib/api';
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { 
-  Mail, CheckCircle2, Clock, Search, Eye, Filter, Phone, User, 
-  MessageSquare, ArrowLeft, X, Check, Trash2, Send
+import {
+  Mail, CheckCircle2, Clock, Search, Eye, Filter, Phone, User,
+  MessageSquare, ArrowLeft, X, Check, Trash2, Send, Archive, ArchiveRestore
 } from 'lucide-react';
 import { useToast } from '../../contexts/ToastContext';
 import { toPersianDigits } from '../../lib/utils';
@@ -15,9 +15,18 @@ interface ContactMessage {
   phone?: string | null;
   subject?: string | null;
   message: string;
-  status: 'unread' | 'read' | 'resolved';
+  status: 'unread' | 'read' | 'resolved' | 'archived';
   createdAt: string;
 }
+
+type StatusFilter = 'all' | 'unread' | 'read' | 'archived';
+
+/** ISO → fa-IR date string with Persian digits (e.g. ۱۴۰۵/۰۶/۱۱). */
+const faDate = (iso: string) => {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  return toPersianDigits(`${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`);
+};
 
 export default function AdminMessages() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
@@ -27,10 +36,12 @@ export default function AdminMessages() {
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
   const { addToast } = useToast();
 
-  const fetchMessages = async () => {
+  // Server-side status filter: archived messages are hidden unless explicitly
+  // requested (status=archived or status=all).
+  const fetchMessages = async (status: StatusFilter = 'all') => {
     try {
       const token = localStorage.getItem('token');
-      const res = await authFetch('/api/admin/contact-messages', {
+      const res = await authFetch(`/api/admin/contact-messages?status=${status}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -46,10 +57,10 @@ export default function AdminMessages() {
   };
 
   useEffect(() => {
-    fetchMessages();
-  }, []);
+    fetchMessages(filterStatus as StatusFilter);
+  }, [filterStatus]);
 
-  const handleUpdateStatus = async (id: string, newStatus: 'unread' | 'read' | 'resolved') => {
+  const handleUpdateStatus = async (id: string, newStatus: 'unread' | 'read' | 'resolved' | 'archived') => {
     try {
       const token = localStorage.getItem('token');
       const res = await authFetch(`/api/admin/contact-messages/${id}/status`, {
@@ -65,7 +76,7 @@ export default function AdminMessages() {
         if (selectedMessage && selectedMessage.id === id) {
           setSelectedMessage(prev => prev ? { ...prev, status: newStatus } : null);
         }
-        addToast('وضعیت پیام با موفقیت بروزرسانی شد', 'success');
+        addToast(newStatus === 'archived' ? 'پیام بایگانی شد' : newStatus === 'read' ? 'پیام از بایگانی خارج شد' : 'وضعیت پیام با موفقیت بروزرسانی شد', 'success');
       }
     } catch {
       addToast('خطا در بروزرسانی وضعیت', 'error');
@@ -73,13 +84,12 @@ export default function AdminMessages() {
   };
 
   const filteredMessages = messages.filter(m => {
-    const matchesFilter = filterStatus === 'all' || m.status === filterStatus;
     const matchesSearch = (m.name && m.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
       (m.email && m.email.toLowerCase().includes(searchQuery.toLowerCase())) ||
       (m.phone && m.phone.includes(searchQuery)) ||
       (m.subject && m.subject.toLowerCase().includes(searchQuery.toLowerCase())) ||
       (m.message && m.message.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchesFilter && matchesSearch;
+    return matchesSearch;
   });
 
   const getStatusBadge = (status: string) => {
@@ -90,6 +100,8 @@ export default function AdminMessages() {
         return <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-blue-100 dark:bg-blue-950/40 text-blue-600 border border-blue-200">خوانده شده</span>;
       case 'resolved':
         return <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 border border-emerald-200">پاسخ‌داده‌شده</span>;
+      case 'archived':
+        return <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-gray-100 dark:bg-gray-700/60 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-600">بایگانی‌شده</span>;
       default:
         return null;
     }
@@ -122,8 +134,8 @@ export default function AdminMessages() {
           {[
             { id: 'all', label: 'همه پیام‌ها', count: messages.length },
             { id: 'unread', label: 'خوانده نشده', count: messages.filter(m => m.status === 'unread').length },
-            { id: 'read', label: 'در دست بررسی', count: messages.filter(m => m.status === 'read').length },
-            { id: 'resolved', label: 'تکمیل‌شده', count: messages.filter(m => m.status === 'resolved').length },
+            { id: 'read', label: 'خوانده شده', count: messages.filter(m => m.status === 'read' || m.status === 'resolved').length },
+            { id: 'archived', label: 'بایگانی', count: messages.filter(m => m.status === 'archived').length },
           ].map(tab => (
             <button
               key={tab.id}
@@ -159,7 +171,19 @@ export default function AdminMessages() {
               <div>
                 <div className="flex items-center justify-between gap-2 mb-3">
                   {getStatusBadge(msg.status)}
-                  <span className="text-[10px] text-gray-400 font-medium">{msg.createdAt}</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] text-gray-400 font-medium">{faDate(msg.createdAt)}</span>
+                    <button
+                      aria-label={msg.status === 'archived' ? 'خروج از بایگانی' : 'بایگانی پیام'}
+                      title={msg.status === 'archived' ? 'خروج از بایگانی' : 'بایگانی پیام'}
+                      onClick={(e) => { e.stopPropagation(); handleUpdateStatus(msg.id, msg.status === 'archived' ? 'read' : 'archived'); }}
+                      className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    >
+                      {msg.status === 'archived'
+                        ? <ArchiveRestore className="h-3.5 w-3.5" />
+                        : <Archive className="h-3.5 w-3.5" />}
+                    </button>
+                  </div>
                 </div>
 
                 <h3 className="font-extrabold text-sm text-[var(--color-text-main-light)] dark:text-white mb-1 group-hover:text-orange-600 transition-colors line-clamp-1">
@@ -198,7 +222,7 @@ export default function AdminMessages() {
                 </div>
                 <div>
                   <h3 className="font-black text-[var(--color-text-main-light)] dark:text-white text-base">جزئیات پیام ارسالی</h3>
-                  <span className="text-[11px] text-gray-400">{selectedMessage.createdAt}</span>
+                  <span className="text-[11px] text-gray-400">{faDate(selectedMessage.createdAt)}</span>
                 </div>
               </div>
               <button onClick={() => setSelectedMessage(null)} className="p-2 text-gray-400 hover:text-gray-600">
@@ -267,9 +291,18 @@ export default function AdminMessages() {
                 </button>
                 <button
                   onClick={() => handleUpdateStatus(selectedMessage.id, 'resolved')}
-                  className="px-2.5 py-1.5 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 text-xs font-bold"
+                  className="px-2.5 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 hover:bg-emerald-100 text-xs font-bold"
                 >
                   پاسخ داده شد
+                </button>
+                <button
+                  aria-label={selectedMessage.status === 'archived' ? 'خروج از بایگانی' : 'بایگانی پیام'}
+                  onClick={() => handleUpdateStatus(selectedMessage.id, selectedMessage.status === 'archived' ? 'read' : 'archived')}
+                  className="px-2.5 py-1.5 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 text-xs font-bold flex items-center gap-1"
+                >
+                  {selectedMessage.status === 'archived'
+                    ? <><ArchiveRestore className="h-3.5 w-3.5" /> خروج از بایگانی</>
+                    : <><Archive className="h-3.5 w-3.5" /> بایگانی</>}
                 </button>
               </div>
 
