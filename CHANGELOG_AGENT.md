@@ -1,3 +1,8 @@
+## 2026-09-02 — OTP UI gating (audit P2: dead OTP in prod)
+- Login.tsx fetches GET /api/auth/otp/status on mount; enabled=false hides OTP login tab + OTP reset path (Persian notice), fail-safe = hidden on fetch error.
+- New src/lib/otp.ts resolver + tests/unit/login-otp-gate.test.ts. npm run verify green; jsxDEV=0, no /Users/ leaks.
+- Deployed: c11f9ca; live /api/auth/otp/status={"enabled":false}, bundle Login-D0G6tgAE.js contains gate, health ok.
+
 # CHANGELOG_AGENT.md — Janebi Store Agent Work Log
 
 ## [2026-09-02] - §3.15 Hardening Cluster (headers + settings single-sourcing)

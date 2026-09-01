@@ -34,6 +34,8 @@
 
 ## 🎯 Next Priority Backlog (Phase Next)
 
+- [x] OTP UI gated behind GET /api/auth/otp/status (prod enabled=false → OTP tab hidden, password reset shows Persian notice). Commit c11f9ca, live-verified 2026-09-02.
+
 - [x] Full automated visual & design audit across all storefront & admin routes via `browser_exec`.
 - [x] Zero horizontal scroll (CLS/Overflow) verified on all 16 core pages.
 - [x] Fixed interactive ARIA labels and button touch targets across Header, Footer, and ChatWidget.
