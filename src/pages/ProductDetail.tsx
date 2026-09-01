@@ -237,7 +237,7 @@ export default function ProductDetail() {
                           : 'border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] opacity-60 hover:opacity-100'
                       }`}
                     >
-                      <img src={img} alt={`تصویر ${idx + 1}`} className="w-full h-full object-contain" />
+                      <img src={img} alt={`تصویر ${idx + 1}`} width="96" height="96" loading="lazy" decoding="async" className="w-full h-full object-contain" />
                     </button>
                   ))}
                 </div>
@@ -600,6 +600,10 @@ export default function ProductDetail() {
                     <img
                       src={product.image}
                       alt={product.title}
+                      width="40"
+                      height="40"
+                      loading="lazy"
+                      decoding="async"
                       className="w-10 h-10 object-contain"
                     />
                   </div>

@@ -146,7 +146,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     return (
                       <div key={item.id} className="pt-3.5 first:pt-0 flex items-center gap-3.5 group">
                         <div className="w-16 h-16 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 p-1.5 border border-zinc-100 dark:border-zinc-800 shrink-0 flex items-center justify-center">
-                          <img src={item.image} alt={item.title} className="max-w-full max-h-full object-contain" />
+                          <img src={item.image} alt={item.title} width="56" height="56" loading="lazy" decoding="async" className="max-w-full max-h-full object-contain" />
                         </div>
 
                         <div className="flex-1 min-w-0">

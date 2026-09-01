@@ -167,6 +167,10 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
                     <img
                       src={item.image}
                       alt={item.title}
+                      width="48"
+                      height="48"
+                      loading="lazy"
+                      decoding="async"
                       className="w-12 h-12 rounded-xl object-contain bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] p-1 border border-gray-200 dark:border-gray-700 shrink-0"
                     />
                     <div className="min-w-0 flex-1 text-xs">

@@ -2,6 +2,13 @@
 
 ## Status: Completed (Aug 28, 2026)
 
+### Round 2026-09-03 — Image Performance / LCP (TEAM-FRONTEND, IN PROGRESS)
+- [x] Raster census: zero images >100KB in public/ (all product/brand imagery is SVG, largest asset is 6.6KB icon PNG) — compression round is an honest no-op, no WebP candidates exist.
+- [x] 21 raw `<img>` tags across storefront/profile/checkout/admin patched with `loading="lazy"` + `decoding="async"` + explicit width/height; LCP hero/preloads untouched (ProductCard.tsx, ProductDetail, Compare, Brands, Blog, Footer Enamad, HeaderSearch, cart ×2, checkout summary, profile ×4, admin ×4).
+- [x] ProductCard SmartImage now passes width/height + `sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 240px"` for card-grid srcset coverage.
+- [x] Image 404 audit: deleted 244 `/images/test.jpg` inventory-test residue rows from local dev DB; 14 real products all resolve to existing files (0 missing). Prod DB residue check deferred to next deploy on VPS.
+- [x] Gate: `npm run verify` 100% green (44 suites / 331 tests + tsc + build), jsxDEV=0, no /Users/ leaks. Report: `.hermes/reports/frontend-image-perf-2026-09-03.md`.
+
 ### Round 2026-09-02d — Blog Sitemap Slugs + Contrast r4/5 (SHIPPED, QA PASS)
 - [x] **Per-post blog sitemap** (95b72b9): GET /sitemap.xml dynamic from blog_posts (real slug + lastmod, none fabricated), /blog/:slug deep-link route, tests/api/sitemap.test.ts. Live: 0 post entries because prod /api/blog = [] (no published posts — content gap noted).
 - [x] **Contrast r4/5** (6d50ba7, 0bf6ba6): Header nav/user menu, MobileBottomNav, NotFound, ProductFilterSidebar, ProductSortHeader, AdminProducts — zinc/gray light-mode bumps.

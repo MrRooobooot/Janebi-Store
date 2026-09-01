@@ -106,7 +106,7 @@ export default function PersonalInfoTab() {
                     : 'border-transparent opacity-70 hover:opacity-100'
                 }`}
               >
-                <img src={av} alt="Avatar" className="w-14 h-14 object-cover" />
+                <img src={av} alt="آواتار" width="56" height="56" loading="lazy" decoding="async" className="w-14 h-14 object-cover" />
               </button>
             ))}
           </div>

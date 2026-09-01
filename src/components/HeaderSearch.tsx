@@ -285,6 +285,10 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
                             <img
                               src={product.image}
                               alt={product.title}
+                              width="40"
+                              height="40"
+                              loading="lazy"
+                              decoding="async"
                               className="w-10 h-10 object-contain mix-blend-multiply dark:mix-blend-normal"
                             />
                           </div>

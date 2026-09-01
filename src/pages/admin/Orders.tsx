@@ -570,7 +570,7 @@ export default function AdminOrders() {
                 {selectedOrder.items?.map((item: any, idx: number) => (
                   <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-[var(--color-surface-dark)]/60 border border-[var(--color-border-light)] dark:border-gray-700 text-xs">
                     <div className="flex items-center gap-3">
-                      <img src={item.image} alt={item.title} className="w-10 h-10 rounded-lg object-contain bg-[var(--color-surface-light)] dark:bg-gray-800 p-1 border border-gray-200 dark:border-gray-700" />
+                      <img src={item.image} alt={item.title} width="40" height="40" loading="lazy" decoding="async" className="w-10 h-10 rounded-lg object-contain bg-[var(--color-surface-light)] dark:bg-gray-800 p-1 border border-gray-200 dark:border-gray-700" />
                       <div>
                         <div className="font-bold text-[var(--color-text-main-light)] dark:text-white">{item.title}</div>
                         <div className="text-[11px] text-gray-500">{item.brand}</div>

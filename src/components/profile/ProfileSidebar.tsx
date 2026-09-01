@@ -35,6 +35,9 @@ export default function ProfileSidebar({
           <img
             src={user.avatar || '/avatar.svg'}
             alt={user.name}
+            width="56"
+            height="56"
+            decoding="async"
             className="w-14 h-14 rounded-2xl object-cover border-2 border-orange-500 shadow-md"
           />
           <span className="absolute -bottom-1 -right-1 bg-emerald-500 w-4 h-4 rounded-full border-2 border-white dark:border-gray-900" title="آنلاین" />

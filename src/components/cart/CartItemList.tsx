@@ -58,6 +58,10 @@ export default function CartItemList({
                   <img
                     src={item.image}
                     alt={item.title}
+                    width="64"
+                    height="64"
+                    loading="lazy"
+                    decoding="async"
                     className="max-w-full max-h-full object-contain"
                   />
                 </div>

@@ -37,6 +37,10 @@ export default function CheckoutOrderSummary({
               <img
                 src={item.image}
                 alt={item.title}
+                width="56"
+                height="56"
+                loading="lazy"
+                decoding="async"
                 className="max-w-full max-h-full object-contain"
               />
             </div>

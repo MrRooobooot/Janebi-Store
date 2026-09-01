@@ -179,7 +179,7 @@ export default function Blog() {
                 className="bg-zinc-50 dark:bg-zinc-900/60 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 overflow-hidden hover:shadow-lg dark:hover:shadow-black/30 hover:border-orange-300 dark:hover:border-zinc-700 transition-all duration-300 motion-reduce:transition-none flex flex-col group h-full cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
               >
                 <div className="aspect-video w-full relative overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50 dark:from-zinc-800 dark:to-zinc-900 flex items-center justify-center">
-                  <img src={art.image || FALLBACK_IMAGE} alt={art.title} loading="lazy" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 motion-reduce:transition-none motion-reduce:group-hover:scale-100" />
+                  <img src={art.image || FALLBACK_IMAGE} alt={art.title} loading="lazy" decoding="async" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 motion-reduce:transition-none motion-reduce:group-hover:scale-100" />
                   <span className="absolute top-3 right-3 bg-orange-600 text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
                     {art.category}
                   </span>
@@ -241,7 +241,7 @@ export default function Blog() {
               className="bg-zinc-50 dark:bg-zinc-900 w-full max-w-2xl max-h-[88vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-2xl"
             >
               <div className="relative aspect-video w-full overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50 dark:from-zinc-800 dark:to-zinc-900">
-                <img src={openArticle.image || FALLBACK_IMAGE} alt={openArticle.title} decoding="async" className="object-cover w-full h-full" />
+                <img src={openArticle.image || FALLBACK_IMAGE} alt={openArticle.title} decoding="async" loading="lazy" className="object-cover w-full h-full" />
                 <button
                   onClick={() => setOpenArticle(null)}
                   aria-label="بستن مقاله"

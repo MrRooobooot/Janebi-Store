@@ -1,3 +1,10 @@
+## 2026-09-03 — Image performance / LCP round (TEAM-FRONTEND)
+- 21 raw <img> tags patched: loading=lazy + decoding=async + explicit width/height (storefront, cart, checkout, profile, admin); LCP hero/preloads untouched.
+- ProductCard SmartImage: width/height + sizes attr -> card-grid srcset coverage via PictureImage (AVIF/WebP for raster, SVG passthrough).
+- Raster compression: no-op — zero images >100KB in public/ (largest is 6.6KB icon PNG; imagery is vector SVG). No fabricated work.
+- Image 404 audit: deleted 244 /images/test.jpg inventory-test residue rows from local dev DB; all 14 real product images resolve (0 missing). Prod DB check deferred to next VPS deploy.
+- npm run verify 100% green (44 suites / 331 tests + tsc + build); jsxDEV=0, no /Users/ leaks. Report: .hermes/reports/frontend-image-perf-2026-09-03.md.
+
 ## 2026-09-02 — OTP UI gating (audit P2: dead OTP in prod)
 - Login.tsx fetches GET /api/auth/otp/status on mount; enabled=false hides OTP login tab + OTP reset path (Persian notice), fail-safe = hidden on fetch error.
 - New src/lib/otp.ts resolver + tests/unit/login-otp-gate.test.ts. npm run verify green; jsxDEV=0, no /Users/ leaks.

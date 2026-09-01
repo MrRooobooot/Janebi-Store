@@ -397,6 +397,10 @@ export default function AdminProducts() {
                           <img
                             src={p.image}
                             alt={p.title}
+                            width="48"
+                            height="48"
+                            loading="lazy"
+                            decoding="async"
                             className="w-12 h-12 rounded-xl object-contain bg-gray-50 dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-gray-700 p-1 shrink-0"
                           />
                           <div className="min-w-0">
@@ -646,7 +650,10 @@ export default function AdminProducts() {
                 <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/40 rounded-2xl border border-gray-200 dark:border-gray-600 mb-3">
                   <img 
                     src={formData.image} 
-                    alt="Preview" 
+                    alt="پیش‌نمایش تصویر محصول" 
+                    width="64"
+                    height="64"
+                    decoding="async"
                     className="w-16 h-16 rounded-xl border border-gray-200 dark:border-gray-600 object-contain p-1.5 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] shadow-sm shrink-0" 
                   />
                   <div className="overflow-hidden grow">
@@ -677,7 +684,7 @@ export default function AdminProducts() {
                               : 'bg-[var(--color-surface-light)] dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-gray-200 dark:border-gray-700 hover:border-gray-400'
                         }`}
                       >
-                        <img src={item.url} alt={item.label} className="w-9 h-9 rounded-lg object-contain bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] p-0.5 shrink-0 shadow-xs" />
+                        <img src={item.url} alt={item.label} width="36" height="36" loading="lazy" decoding="async" className="w-9 h-9 rounded-lg object-contain bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] p-0.5 shrink-0 shadow-xs" />
                         <div className="min-w-0">
                           <span className="text-[11px] font-black truncate block leading-tight">{item.label}</span>
                           <span className={`text-[9px] block ${isSelected ? 'text-orange-100' : 'text-gray-400'}`}>{item.category}</span>

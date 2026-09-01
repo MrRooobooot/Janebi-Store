@@ -92,6 +92,9 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
             <SmartImage
               src={product.image}
               alt={product.title}
+              width="280"
+              height="280"
+              sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 240px"
               className="max-h-full max-w-full object-contain drop-shadow-sm group-hover:scale-108 transition-transform duration-500"
             />
 

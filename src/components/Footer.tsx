@@ -158,6 +158,8 @@ export default function Footer() {
                 alt="اینماد جانبی آرنا"
                 width="112"
                 height="112"
+                loading="lazy"
+                decoding="async"
                 onLoad={() => setImgLoaded(true)}
                 onError={() => {
                   setImgError(true);
