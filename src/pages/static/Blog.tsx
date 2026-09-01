@@ -23,6 +23,15 @@ interface Article {
 
 const FALLBACK_IMAGE = '/products/cas-4.svg';
 
+// Reading time computed from the post's real body length (Persian ≈ 200
+// words/min). Used only when the server doesn't supply a readTime — never
+// hardcoded, and null when there is no content to measure.
+function computeReadingTime(body: string): string | null {
+  const words = body.trim().split(/\s+/).filter(Boolean).length;
+  if (words === 0) return null;
+  return `${toPersianDigits(String(Math.max(1, Math.ceil(words / 200))))} دقیقه مطالعه`;
+}
+
 export default function Blog() {
   const prefersReducedMotion = useReducedMotion();
   const [articles, setArticles] = useState<Article[]>([]);
@@ -53,7 +62,10 @@ export default function Blog() {
                     new Date(r.createdAt)
                   )
                 ),
-                readTime: r.readTime ? toPersianDigits(r.readTime) : null,
+                readTime:
+                  r.readTime !== null && r.readTime !== undefined && r.readTime !== ''
+                    ? toPersianDigits(String(r.readTime))
+                    : computeReadingTime(r.body || ''),
                 category: r.category || 'مقالات',
                 author: r.author || 'تیم جانبی آرنا',
                 createdAt: r.createdAt || null,
@@ -202,7 +214,7 @@ export default function Blog() {
           <p className="text-sm text-red-600 dark:text-red-400 font-bold">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="mt-4 px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold transition-colors"
+            className="mt-4 inline-flex items-center justify-center min-h-[44px] px-5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold transition-colors"
           >
             تلاش مجدد
           </button>
@@ -234,7 +246,7 @@ export default function Blog() {
                 tabIndex={0}
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpenArticle(art); } }}
                 aria-label={`خواندن مقاله: ${art.title}`}
-                className="bg-zinc-50 dark:bg-zinc-900/60 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 overflow-hidden hover:shadow-lg dark:hover:shadow-black/30 hover:border-orange-300 dark:hover:border-zinc-700 transition-all duration-300 motion-reduce:transition-none flex flex-col group h-full cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+                className="bg-zinc-50 dark:bg-zinc-900/60 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 overflow-hidden hover:shadow-lg dark:hover:shadow-black/30 hover:border-orange-300 dark:hover:border-zinc-700 hover:-translate-y-1 motion-reduce:hover:translate-y-0 transition-all duration-300 motion-reduce:transition-none flex flex-col group h-full cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 will-change-transform"
               >
                 <div className="aspect-video w-full relative overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50 dark:from-zinc-800 dark:to-zinc-900 flex items-center justify-center">
                   <img src={art.image || FALLBACK_IMAGE} alt={art.title} loading="lazy" decoding="async" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 motion-reduce:transition-none motion-reduce:group-hover:scale-100" />
@@ -344,7 +356,7 @@ export default function Blog() {
                         <button
                           key={rel.id}
                           onClick={() => setOpenArticle(rel)}
-                          className="flex items-center gap-3 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60 p-3 text-right hover:border-orange-300 dark:hover:border-zinc-700 hover:shadow-md dark:hover:shadow-black/30 transition-all motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+                          className="flex min-h-[44px] items-center gap-3 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60 p-3 text-right hover:border-orange-300 dark:hover:border-zinc-700 hover:shadow-md dark:hover:shadow-black/30 transition-all motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
                         >
                           <img
                             src={rel.image || FALLBACK_IMAGE}
@@ -365,7 +377,7 @@ export default function Blog() {
 
                 <button
                   onClick={() => setOpenArticle(null)}
-                  className="mt-8 inline-flex items-center gap-2 text-sm font-bold text-orange-600 dark:text-orange-400 hover:gap-3 transition-all"
+                  className="mt-8 inline-flex items-center min-h-[44px] gap-2 text-sm font-bold text-orange-600 dark:text-orange-400 hover:gap-3 transition-all"
                 >
                   <ArrowRight className="h-4 w-4" /> بازگشت به مجله
                 </button>
