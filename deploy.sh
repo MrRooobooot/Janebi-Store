@@ -38,6 +38,22 @@ rsync -avz -e "ssh $SSH_OPTS" --delete "$DIST_DIR/" "$REMOTE:$APP_DIR/dist/" 2>&
 echo "📤 Syncing schema & config..."
 rsync -avz -e "ssh $SSH_OPTS" --delete "$DRIZZLE_DIR/" "$REMOTE:$APP_DIR/drizzle/" 2>&1 | tail -3
 rsync -avz -e "ssh $SSH_OPTS" ./package.json ./docker-compose*.yml "$REMOTE:$APP_DIR/" 2>&1 | tail -3
+# Ship SMS_* config to VPS .env — MERGE-SAFE: never overwrite prod secrets.
+# For each SMS_* key present locally, append it to the remote .env ONLY if the
+# key is missing there. Existing remote lines (APP_URL, JWT secrets, Zarinpal
+# keys, etc.) are never touched. The local .env itself is never copied over.
+echo "🔐 Merging SMS_* env keys into remote .env (append-only)..."
+LOCAL_ENV="$(pwd)/.env"
+if [ -f "$LOCAL_ENV" ]; then
+  ssh $SSH_OPTS "$REMOTE" "touch $APP_DIR/.env"
+  grep -E '^(SMS_|# ?SMS_)' "$LOCAL_ENV" | grep -vE '^#\s*SMS_' | while IFS='=' read -r KEY VALUE; do
+    [ -z "$KEY" ] && continue
+    ssh $SSH_OPTS "$REMOTE" "grep -q '^${KEY}=' $APP_DIR/.env || printf '%s=%s\n' '$KEY' '$VALUE' >> $APP_DIR/.env"
+  done
+  echo "✅ SMS_* keys merged (existing remote values preserved)"
+else
+  echo "⚠️ No local .env found — skipping env merge"
+fi
 
 # Step 4: Restart container
 CONTAINER_NAME="$([ "$IS_STAGING" = true ] && echo 'janebi-store-staging' || echo 'janebi-store')"

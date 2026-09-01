@@ -41,6 +41,7 @@
 ## 🎯 Next Priority Backlog (Phase Next)
 
 - [x] OTP UI gated behind GET /api/auth/otp/status (prod enabled=false → OTP tab hidden, password reset shows Persian notice). Commit c11f9ca, live-verified 2026-09-02.
+- [x] SMS.ir OTP dispatch (2026-09-02): server/routes/auth.ts sends OTP via api.sms.ir/v1/send/verify when SMS_API_KEY + real SMS_TEMPLATE_ID configured; '123456' placeholder treated as not-configured (graceful dev-sim/prod no-send, no 502 leak). P0 fixed: deploy.sh no longer rsyncs local .env over VPS .env — merge-safe per-key append of missing SMS_* keys only. `npm run verify` green; live-verified same day.
 - [x] Brand PNG cleanup (P2): verified no-op 2026-09-02 — only icon-192/512.png exist (both referenced, PWA-required); all brand logos are referenced SVGs; zero unreferenced PNGs. Item closed.
 - [x] Admin panel follow-up (admin-review): newsletter chain + rate limiter + bulk endpoints (9b0d2b9) + admin pagination/bulk UI (PageControls.tsx, d3dc6d9) — `npm run verify` green, deployed + live-verified 2026-09-02.
 

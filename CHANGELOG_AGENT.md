@@ -5,6 +5,15 @@
 
 # CHANGELOG_AGENT.md — Janebi Store Agent Work Log
 
+## [2026-09-02] - SMS.ir OTP dispatch (deploy.sh P0 env-overwrite fix + template gating)
+- **P0 fix — deploy.sh no longer syncs local `.env` to VPS:** the WIP `rsync ./.env $REMOTE:$APP_DIR/.env` (which would have overwritten prod APP_URL/JWT secrets/Zarinpal keys with local dev values) replaced with a merge-safe SSH step: for each `SMS_*` key present locally, append to remote `.env` ONLY if the key line is absent (per-key `grep -q || printf >>`). Existing remote lines are never touched.
+- **Placeholder template gating (`server/routes/auth.ts`):** `smsTemplateIdConfigured()` — real dispatch via `https://api.sms.ir/v1/send/verify` requires BOTH `SMS_API_KEY` and a real (non-`123456`) `SMS_TEMPLATE_ID`. Incomplete config → graceful fallback: dev simulator log in dev, warn + silent no-send in prod (no 502 leak). `smsProviderEnabled`/`smsTemplateIdConfigured` are dynamic getters so tests can toggle env at runtime.
+- **`server/env.ts`:** `SMS_TEMPLATE_ID` added as optional string (empty allowed).
+- **`.env.example`:** `SMS_API_KEY` optional (empty = OTP gracefully disabled), `SMS_TEMPLATE_ID` commented with placeholder warning.
+- **Test hermeticity (`tests/unit/otp-production-gate.test.ts`):** snapshots + stubs `SMS_*` env in beforeAll/afterAll so the 503 gate passes even on machines whose local `.env` sets SMS keys.
+- **Collateral fix:** `src/components/ProductReviews.tsx` destructured missing `initialRating` prop (TS2304 blocking the gate).
+- **Quality gate:** `npm run verify` 100% PASSED (tsc strict + 322 Vitest tests + Vite client & Esbuild server builds).
+
 ## [2026-09-02] - §3.15 Hardening Cluster (headers + settings single-sourcing)
 - **CSP report-uri via env (`1cd3b12`):** `server/app.ts` Helmet CSP now emits the legacy `report-uri` directive ONLY when `CSP_REPORT_URI` is set in the environment (no placeholder URL in code). Modern `report-to` transport (per-request `Reporting-Endpoints` header + rate-limited internal `/api/csp-report` 204 sink) stays active unconditionally.
 - **Settings fallback single-sourcing (`1cd3b12`):** remaining duplicated `'جانبی آرنا'` literals in `src/pages/ProductDetail.tsx` (JSON-LD seller name, share title) replaced with `STORE_SETTINGS_DEFAULTS.storeName` from `src/lib/constants.ts` — the same single source the server and `useStoreSettings` already use. Zero behavior change.

@@ -27,6 +27,7 @@ const envSchema = z.object({
   // prod, audit §3.1) until one of these is configured.
   SMS_API_KEY: z.string().optional().or(z.literal("")),
   SMS_PROVIDER: z.string().optional().or(z.literal("")),
+  SMS_TEMPLATE_ID: z.string().optional().or(z.literal("")),
 }).transform((data) => ({
   ...data,
   allowedOrigins: data.CORS_ORIGIN

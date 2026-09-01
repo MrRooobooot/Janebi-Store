@@ -218,11 +218,19 @@ setInterval(() => {
 // a simulator logs the code; in production without credentials the whole OTP
 // flow (send/verify/reset) is hard-disabled so users never hit an undeliverable
 // flow.
-export const smsProviderEnabled = Boolean(env.SMS_API_KEY) || Boolean(env.SMS_PROVIDER);
-const otpUnavailable = () => !smsProviderEnabled && env.NODE_ENV === "production";
+// Read dynamically (not module-load consts) so tests can toggle env and prod
+// picks up config at request time.
+const providerConfigured = () => Boolean(env.SMS_API_KEY) || Boolean(env.SMS_PROVIDER);
+// '123456' is the SMS.ir docs placeholder template, not a real one. Real
+// dispatch requires a configured template ID; otherwise OTP stays gracefully
+// disabled in production (dev uses the simulator).
+export const smsProviderEnabled = () => providerConfigured();
+export const smsTemplateIdConfigured = () =>
+  Boolean(env.SMS_TEMPLATE_ID) && env.SMS_TEMPLATE_ID !== "123456";
+const otpUnavailable = () => !providerConfigured() && env.NODE_ENV === "production";
 
 router.get("/otp/status", (_req, res) => {
-  res.json({ enabled: smsProviderEnabled || env.NODE_ENV !== "production" });
+  res.json({ enabled: smsProviderEnabled() || env.NODE_ENV !== "production" });
 });
 
 router.post("/otp/send", validate(otpSendSchema), async (req, res) => {
@@ -246,10 +254,44 @@ router.post("/otp/send", validate(otpSendSchema), async (req, res) => {
 
   otpStore.set(phone, { code, expiresAt, attempts: 0 });
 
-  // In production, integrate SMS provider (e.g. Kavehnegar / Ghasedak)
-  // For sandbox/development/test, return or log code
-  if (env.NODE_ENV !== "production") {
-    console.log(`[SMS Simulator] OTP Code for ${phone}: ${code}`);
+  // Dispatch OTP via SMS.ir verify API. Real dispatch requires BOTH a real
+  // API key AND a real template ID — the literal '123456' is the documented
+  // placeholder, not a real template. When config is incomplete we fall back
+  // to the previous behavior (dev simulator / graceful no-send in prod) so
+  // users never hit a 502 from a misconfigured template. Never leak the code.
+  if (env.SMS_API_KEY && smsTemplateIdConfigured()) {
+    try {
+      const smsRes = await fetch("https://api.sms.ir/v1/send/verify", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": env.SMS_API_KEY,
+        },
+        body: JSON.stringify({
+          mobile: phone.replace(/^0/, ""), // sms.ir expects 9xxxxxxxxx
+          templateId: Number(env.SMS_TEMPLATE_ID),
+          parameters: [{ name: "Code", value: code }],
+        }),
+        signal: AbortSignal.timeout(8000),
+      });
+      const smsData = (await smsRes.json()) as { status?: number; message?: string };
+      if (!smsRes.ok || smsData.status !== 1) {
+        console.error(`[SMS.ir] OTP dispatch failed: ${smsData?.status} ${smsData?.message}`);
+        otpStore.delete(phone);
+        return res.status(502).json({ error: "خطا در ارسال پیامک. لطفاً دوباره تلاش کنید." });
+      }
+    } catch (err) {
+      console.error("[SMS.ir] OTP dispatch error:", err);
+      otpStore.delete(phone);
+      return res.status(502).json({ error: "خطا در ارسال پیامک. لطفاً دوباره تلاش کنید." });
+    }
+  } else {
+    if (env.SMS_API_KEY && !smsTemplateIdConfigured()) {
+      console.warn("[SMS.ir] SMS_TEMPLATE_ID missing/placeholder — OTP not dispatched via provider");
+    }
+    if (env.NODE_ENV !== "production") {
+      console.log(`[SMS Simulator] OTP Code for ${phone}: ${code}`);
+    }
   }
 
   res.json({

@@ -1,4 +1,4 @@
-import { describe, it, expect, afterAll } from 'vitest';
+import { describe, it, expect, afterAll, beforeAll } from 'vitest';
 import request from '../setup/request.js';
 import { app } from '../../server/app.js';
 import { env } from '../../server/env.js';
@@ -7,10 +7,23 @@ import { env } from '../../server/env.js';
 // hard-disabled with 503 so users never reach an undeliverable flow.
 describe('OTP production gate (no SMS provider → 503)', () => {
   const phone = '09120000001';
-  const originalNodeEnv = env.NODE_ENV;
+  // Hermetic: force the "no provider configured" scenario regardless of any
+  // SMS_* keys present in the developer's local .env.
+  const snapshot = {
+    NODE_ENV: env.NODE_ENV,
+    SMS_API_KEY: env.SMS_API_KEY,
+    SMS_PROVIDER: env.SMS_PROVIDER,
+    SMS_TEMPLATE_ID: env.SMS_TEMPLATE_ID,
+  };
+
+  beforeAll(() => {
+    (env as any).SMS_API_KEY = '';
+    (env as any).SMS_PROVIDER = '';
+    (env as any).SMS_TEMPLATE_ID = '';
+  });
 
   afterAll(() => {
-    (env as any).NODE_ENV = originalNodeEnv;
+    Object.assign(env as any, snapshot);
   });
 
   it('returns 503 for /otp/send, /otp/verify and /reset-password in production', async () => {
