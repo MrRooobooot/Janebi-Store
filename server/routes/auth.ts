@@ -270,7 +270,13 @@ router.post("/otp/send", validate(otpSendSchema), async (req, res) => {
         body: JSON.stringify({
           mobile: phone.replace(/^0/, ""), // sms.ir expects 9xxxxxxxxx
           templateId: Number(env.SMS_TEMPLATE_ID),
-          parameters: [{ name: "Code", value: code }],
+          parameters: [
+            { name: "Code", value: code },
+            // Template «کد تایید شما: #CODE# / اعتبار این کد تا #TIME# است.»
+            // (id from panel) includes an expiry line — send the local expiry
+            // so the SMS matches the server-side TTL (2 minutes).
+            { name: "Time", value: "۲ دقیقه" },
+          ],
         }),
         signal: AbortSignal.timeout(8000),
       });
