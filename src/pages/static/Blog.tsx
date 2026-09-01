@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Clock, Calendar, ArrowLeft, ArrowRight, BookOpen, User, X, Tag, Link2, Check } from 'lucide-react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { useParams } from 'react-router-dom';
@@ -41,6 +41,9 @@ export default function Blog() {
   const [openArticle, setOpenArticle] = useState<Article | null>(null);
   const [copied, setCopied] = useState(false);
   const { slug } = useParams<{ slug?: string }>();
+  // Reading progress (r37): scroll position of the article reader modal, 0–100.
+  const articleScrollRef = useRef<HTMLDivElement>(null);
+  const [readProgress, setReadProgress] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -145,9 +148,12 @@ export default function Blog() {
     const scriptId = 'blog-posting-jsonld';
     if (!openArticle) {
       setCopied(false);
+      setReadProgress(0);
       document.getElementById(scriptId)?.remove();
       return;
     }
+    setReadProgress(0); // switching to another related post resets progress
+    articleScrollRef.current?.scrollTo({ top: 0 });
     const jsonLd = buildBlogPostingJsonLd(openArticle, window.location.origin);
     // tags carry into JSON-LD keywords (openArticle is Article-shaped; tags is optional)
     document.getElementById(scriptId)?.remove();
@@ -193,12 +199,12 @@ export default function Blog() {
           <p className="text-orange-100 text-sm leading-relaxed">
             بررسی جدیدترین گجت‌ها، تکنولوژی‌های شارژ و مقالات آموزشی برای نگهداری بهتر از لوازم جانبی.
           </p>
-          {/* r36 freshness stamp (SEO/AEO 20260912a): derived from the real latest
+          {/* r36 freshness stamp (SEO/AEO 20260913a): derived from the real latest
               post date — never hardcoded, hidden until articles are loaded. */}
           {articles.length > 0 && (
             <p
               className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-white/90 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full border border-white/20"
-              data-freshness="20260912a"
+              data-freshness="20260913a"
             >
               <Calendar className="h-3.5 w-3.5" aria-hidden="true" />
               آخرین به‌روزرسانی مجله:{' '}
@@ -331,8 +337,29 @@ export default function Blog() {
               role="dialog"
               aria-modal="true"
               aria-label={openArticle.title}
+              ref={articleScrollRef}
+              onScroll={(e) => {
+                const el = e.currentTarget;
+                const max = el.scrollHeight - el.clientHeight;
+                setReadProgress(max > 0 ? Math.min(100, Math.round((el.scrollTop / max) * 100)) : 0);
+              }}
               className="bg-zinc-50 dark:bg-zinc-900 w-full max-w-2xl max-h-[88vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-2xl"
             >
+              {/* Reading progress bar (r37 UX): sticky, dual-theme, motion-safe. */}
+              <div
+                className="sticky top-0 z-10 h-1.5 w-full bg-zinc-200/80 dark:bg-zinc-800"
+                role="progressbar"
+                aria-label="پیشرفت مطالعه مقاله"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={readProgress}
+              >
+                <div
+                  className="h-full bg-gradient-to-l from-orange-600 to-amber-500 rounded-l-full motion-reduce:transition-none transition-[width] duration-150"
+                  style={{ width: `${readProgress}%` }}
+                />
+              </div>
+
               <div className="relative aspect-video w-full overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50 dark:from-zinc-800 dark:to-zinc-900">
                 <img src={openArticle.image || FALLBACK_IMAGE} alt={openArticle.title} decoding="async" loading="lazy" className="object-cover w-full h-full" />
                 <button
