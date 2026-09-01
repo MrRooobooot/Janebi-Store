@@ -2,6 +2,9 @@
 
 ## Status: Completed (Aug 28, 2026)
 
+### Round 2026-09-09 — Blog Post 9 (SHIPPED, live)
+- [x] پست نهم «پایه نگهدارنده موبایل خودرو» (rahnamaye-entekhab-paye-negahdarande-khodro، commit 82973d8) — محتوای تحریریه واقعی (سگردان/داشبورد/CD-Slot، مگنت Mag-Safe، شارژر فندکی PD)، تصویر /products/hld-13.svg. سید ایمپوتنت prod (esbuild bundle → docker cp → node درون کانتینر؛ 8×exists، 1 inserted). زنده: /api/blog=9، health ok. گیت verify سبز. دیپلوی با lock (این راند: فقط seed، بدون تغییر باندل). Next: پست ۱۰ + روتشن UI/SEO.
+
 ### Round 2026-09-01b — Blog Post 8 + Blog Listing Polish (SHIPPED, live)
 - [x] پست هشتم «راهنمای خرید کابل شارژ» (rahnamaye-kharid-kabel-sharzh، commit 01a58a3) — scripts/seed-blog.ts، محتوای تحریریه واقعی (USB-C/Lightning/کابل تقلبی). سید ایمپوتنت prod (esbuild bundle --external:better-sqlite3 --external:pg → docker cp → node درون کانتینر؛ 8×exists، 1 inserted). زنده: /api/blog=8، sitemap شامل slug.
 - [x] پولیش لیست وبلاگ (src/pages/static/Blog.tsx): بج زمان مطالعه ارقام فارسی از محتوای واقعی، hover lift با motion-reduce، touch targets ≥44px. گیت verify سبز (341/341)، jsxDEV=0، دیپلوی با lock؛ باندل زنده index-D6DVro4s.js == محلی. Next: UI polish round بعدی، پست ۹.
