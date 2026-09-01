@@ -12,6 +12,7 @@ import { ProductDetailSkeleton } from '../components/Skeletons';
 import SmartImage from '../components/SmartImage';
 import BrandLogo from '../components/BrandLogo';
 import ProductReviews from '../components/ProductReviews';
+import RelatedProducts from '../components/RelatedProducts';
 import RecentlyViewed from '../components/RecentlyViewed';
 import { addRecentlyViewed } from '../lib/recentlyViewed';
 import { motion, AnimatePresence } from 'motion/react';
@@ -589,6 +590,9 @@ export default function ProductDetail() {
             </motion.div>
           )}
         </div>
+
+        {/* Related Products — same-category internal linking */}
+        <RelatedProducts product={product} />
 
         {/* Recently Viewed Carousel */}
         <RecentlyViewed currentProductId={product.id} />
