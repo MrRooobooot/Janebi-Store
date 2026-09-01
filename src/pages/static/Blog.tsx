@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Clock, Calendar, ArrowLeft, ArrowRight, BookOpen, User, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
+import { toPersianDigits } from '../../lib/utils';
 
 // Live blog posts from GET /api/blog (admin-managed blog_posts table).
 // The previous hardcoded 3-article array is gone.
@@ -19,6 +20,7 @@ interface Article {
 const FALLBACK_IMAGE = '/products/cas-4.svg';
 
 export default function Blog() {
+  const prefersReducedMotion = useReducedMotion();
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -41,8 +43,12 @@ export default function Blog() {
                 excerpt: r.excerpt,
                 body: r.body || '',
                 image: r.image || null,
-                date: new Date(r.createdAt).toLocaleDateString('fa-IR'),
-                readTime: r.readTime || null,
+                date: toPersianDigits(
+                  new Intl.DateTimeFormat('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' }).format(
+                    new Date(r.createdAt)
+                  )
+                ),
+                readTime: r.readTime ? toPersianDigits(r.readTime) : null,
                 category: r.category || 'مقالات',
                 author: r.author || 'تیم جانبی آرنا',
               }))
@@ -62,9 +68,9 @@ export default function Blog() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 15 }}
+      initial={prefersReducedMotion ? false : { opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
+      transition={{ duration: prefersReducedMotion ? 0 : 0.4 }}
       className="space-y-8"
     >
       <div className="bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 text-white rounded-3xl p-8 sm:p-10 relative overflow-hidden shadow-lg shadow-orange-500/20">
@@ -83,13 +89,13 @@ export default function Blog() {
       {loading && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] overflow-hidden animate-pulse">
-              <div className="aspect-video bg-gray-100 dark:bg-gray-800" />
+            <div key={i} className="bg-zinc-50 dark:bg-zinc-900/60 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 overflow-hidden animate-pulse motion-reduce:animate-none">
+              <div className="aspect-video bg-zinc-100 dark:bg-zinc-800" />
               <div className="p-6 space-y-3">
-                <div className="h-4 w-full bg-gray-100 dark:bg-gray-800 rounded" />
-                <div className="h-4 w-2/3 bg-gray-100 dark:bg-gray-800 rounded" />
-                <div className="h-3 w-full bg-gray-100 dark:bg-gray-800 rounded" />
-                <div className="h-3 w-5/6 bg-gray-100 dark:bg-gray-800 rounded" />
+                <div className="h-4 w-full bg-zinc-100 dark:bg-zinc-800 rounded" />
+                <div className="h-4 w-2/3 bg-zinc-100 dark:bg-zinc-800 rounded" />
+                <div className="h-3 w-full bg-zinc-100 dark:bg-zinc-800 rounded" />
+                <div className="h-3 w-5/6 bg-zinc-100 dark:bg-zinc-800 rounded" />
               </div>
             </div>
           ))}
@@ -98,7 +104,7 @@ export default function Blog() {
 
       {/* Error */}
       {!loading && error && (
-        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-red-100 dark:border-red-900/40 rounded-2xl p-8 text-center">
+        <div className="bg-zinc-50 dark:bg-zinc-900/60 border border-red-200/80 dark:border-red-900/40 rounded-2xl p-8 text-center">
           <p className="text-sm text-red-600 dark:text-red-400 font-bold">{error}</p>
           <button
             onClick={() => window.location.reload()}
@@ -111,9 +117,9 @@ export default function Blog() {
 
       {/* Empty */}
       {!loading && !error && articles.length === 0 && (
-        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-8 text-center">
-          <BookOpen className="h-8 w-8 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
-          <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+        <div className="bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800 rounded-2xl p-8 text-center">
+          <BookOpen className="h-8 w-8 text-zinc-300 dark:text-zinc-600 mx-auto mb-3" />
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">
             هنوز مقاله‌ای منتشر نشده است — به زودی اولین مطالب مجله اینجا قرار می‌گیرد.
           </p>
         </div>
@@ -126,18 +132,18 @@ export default function Blog() {
             return (
               <motion.article
                 key={art.id}
-                initial={{ opacity: 0, y: 10 }}
+                initial={prefersReducedMotion ? false : { opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: Math.min(idx * 0.08, 0.4) }}
+                transition={{ delay: prefersReducedMotion ? 0 : Math.min(idx * 0.08, 0.4) }}
                 onClick={() => setOpenArticle(art)}
                 role="button"
                 tabIndex={0}
-                onKeyDown={(e) => { if (e.key === 'Enter') setOpenArticle(art); }}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpenArticle(art); } }}
                 aria-label={`خواندن مقاله: ${art.title}`}
-                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] overflow-hidden hover:shadow-lg dark:hover:shadow-black/30 hover:border-orange-200 dark:hover:border-gray-700 transition-all duration-300 flex flex-col group h-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-400"
+                className="bg-zinc-50 dark:bg-zinc-900/60 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 overflow-hidden hover:shadow-lg dark:hover:shadow-black/30 hover:border-orange-300 dark:hover:border-zinc-700 transition-all duration-300 motion-reduce:transition-none flex flex-col group h-full cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
               >
-                <div className="aspect-video w-full relative overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center">
-                  <img src={art.image || FALLBACK_IMAGE} alt={art.title} loading="lazy" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" />
+                <div className="aspect-video w-full relative overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50 dark:from-zinc-800 dark:to-zinc-900 flex items-center justify-center">
+                  <img src={art.image || FALLBACK_IMAGE} alt={art.title} loading="lazy" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 motion-reduce:transition-none motion-reduce:group-hover:scale-100" />
                   <span className="absolute top-3 right-3 bg-orange-600 text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
                     {art.category}
                   </span>
@@ -145,28 +151,28 @@ export default function Blog() {
 
                 <div className="p-6 flex flex-col grow justify-between">
                   <div>
-                    <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400 mb-3">
+                    <div className="flex items-center gap-4 text-xs text-zinc-500 dark:text-zinc-400 mb-3">
                       <span className="flex items-center gap-1"><Calendar className="h-3.5 w-3.5" /> {art.date}</span>
                       {art.readTime && (
                         <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {art.readTime}</span>
                       )}
                     </div>
-                    <h3 className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-base leading-snug mb-3 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                    <h3 className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-base leading-snug mb-3 h-10 sm:h-11 line-clamp-2 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors motion-reduce:transition-none">
                       {art.title}
                     </h3>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-3 mb-6">
+                    <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed line-clamp-3 mb-6">
                       {art.excerpt}
                     </p>
                     {paragraphs[0] && (
-                      <p className="text-xs text-gray-500 dark:text-gray-500 leading-relaxed line-clamp-2 mb-2">{paragraphs[0]}</p>
+                      <p className="text-xs text-zinc-500 dark:text-zinc-500 leading-relaxed line-clamp-2 mb-2">{paragraphs[0]}</p>
                     )}
                   </div>
 
-                  <div className="pt-4 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex items-center justify-between text-xs font-bold text-orange-600 dark:text-orange-400">
-                    <span className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 font-medium text-[11px]">
+                  <div className="pt-4 border-t border-zinc-200/80 dark:border-zinc-800 flex items-center justify-between text-xs font-bold text-orange-600 dark:text-orange-400">
+                    <span className="flex items-center gap-1.5 text-zinc-500 dark:text-zinc-400 font-medium text-[11px]">
                       <User className="h-3.5 w-3.5" /> {art.author}
                     </span>
-                    <span className="flex items-center gap-1 group-hover:translate-x-[-4px] transition-transform">
+                    <span className="flex items-center gap-1 group-hover:translate-x-[-4px] transition-transform motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">
                       ادامه مقاله <ArrowLeft className="h-3.5 w-3.5" />
                     </span>
                   </div>
@@ -188,24 +194,24 @@ export default function Blog() {
             onClick={() => setOpenArticle(null)}
           >
             <motion.div
-              initial={{ y: 60, opacity: 0 }}
+              initial={prefersReducedMotion ? { opacity: 0 } : { y: 60, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 60, opacity: 0 }}
-              transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+              exit={prefersReducedMotion ? { opacity: 0 } : { y: 60, opacity: 0 }}
+              transition={prefersReducedMotion ? { duration: 0.15 } : { type: 'spring', damping: 28, stiffness: 300 }}
               onClick={(e) => e.stopPropagation()}
               role="dialog"
               aria-modal="true"
               aria-label={openArticle.title}
-              className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] w-full max-w-2xl max-h-[88vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-2xl"
+              className="bg-zinc-50 dark:bg-zinc-900 w-full max-w-2xl max-h-[88vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-2xl"
             >
-              <div className="relative aspect-video w-full overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50 dark:from-gray-800 dark:to-gray-900">
-                <img src={openArticle.image || FALLBACK_IMAGE} alt={openArticle.title} className="object-cover w-full h-full" />
+              <div className="relative aspect-video w-full overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50 dark:from-zinc-800 dark:to-zinc-900">
+                <img src={openArticle.image || FALLBACK_IMAGE} alt={openArticle.title} decoding="async" className="object-cover w-full h-full" />
                 <button
                   onClick={() => setOpenArticle(null)}
                   aria-label="بستن مقاله"
-                  className="absolute top-4 left-4 w-9 h-9 bg-black/50 hover:bg-black/70 backdrop-blur-md text-white rounded-full flex items-center justify-center transition-colors"
+                  className="absolute top-4 left-4 w-11 h-11 bg-black/50 hover:bg-black/70 backdrop-blur-md text-white rounded-full flex items-center justify-center transition-colors motion-reduce:transition-none"
                 >
-                  <X className="h-4.5 w-4.5" />
+                  <X className="h-5 w-5" />
                 </button>
                 <span className="absolute top-4 right-4 bg-orange-600 text-white text-[11px] font-bold px-3 py-1 rounded-full shadow">
                   {openArticle.category}
@@ -213,7 +219,7 @@ export default function Blog() {
               </div>
 
               <div className="p-6 sm:p-8">
-                <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400 mb-3">
+                <div className="flex items-center gap-4 text-xs text-zinc-500 dark:text-zinc-400 mb-3">
                   <span className="flex items-center gap-1"><Calendar className="h-3.5 w-3.5" /> {openArticle.date}</span>
                   {openArticle.readTime && (
                     <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {openArticle.readTime}</span>
@@ -227,7 +233,7 @@ export default function Blog() {
 
                 <div className="space-y-4">
                   {openArticle.body.split('\n\n').filter(Boolean).map((para, i) => (
-                    <p key={i} className="text-sm text-gray-700 dark:text-gray-300 leading-loose">
+                    <p key={i} className="text-sm text-zinc-700 dark:text-zinc-300 leading-loose">
                       {para}
                     </p>
                   ))}
