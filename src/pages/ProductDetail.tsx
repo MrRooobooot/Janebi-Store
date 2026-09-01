@@ -69,12 +69,23 @@ export default function ProductDetail() {
           '@context': 'https://schema.org',
           '@type': 'Product',
           name: data.title,
-          image: data.image?.startsWith('http') ? data.image : `https://janebiarena.ir${data.image}`,
+          image: [data.image?.startsWith('http') ? data.image : `https://janebiarena.ir${data.image}`],
           description: data.description || `${data.title} - اورجینال با ضمانت سلامت و اصالت فیزیکی کالا`,
           brand: {
             '@type': 'Brand',
             name: data.brand || 'Janebi Arena',
           },
+          ...(data.sku ? { sku: data.sku } : {}),
+          additionalProperty: [
+            { '@type': 'PropertyValue', name: 'دسته‌بندی', value: data.category },
+            ...(data.brand ? [{ '@type': 'PropertyValue', name: 'برند', value: data.brand }] : []),
+            ...(data.warranty ? [{ '@type': 'PropertyValue', name: 'گارانتی', value: data.warranty }] : []),
+            ...(data.features || []).map((feat: string) => ({
+              '@type': 'PropertyValue',
+              name: 'ویژگی',
+              value: feat,
+            })),
+          ],
           offers: {
             '@type': 'Offer',
             url: window.location.href,
@@ -261,8 +272,8 @@ export default function ProductDetail() {
                   </div>
                   <button
                     onClick={handleShare}
-                    className="p-2 rounded-xl text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                    title="اشتراک‌گذاری محصول"
+                    aria-label="اشتراک‌گذاری محصول"
+                    className="w-11 h-11 rounded-xl text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center justify-center"
                   >
                     <Share2 className="h-4 w-4" />
                   </button>
@@ -389,7 +400,7 @@ export default function ProductDetail() {
 
                 <button
                   onClick={() => toggleWishlist(product)}
-                  title={inWishlist ? 'حذف از علاقه‌مندی‌ها' : 'افزودن به علاقه‌مندی‌ها'}
+                  aria-label={inWishlist ? 'حذف از علاقه‌مندی‌ها' : 'افزودن به علاقه‌مندی‌ها'}
                   className={`w-14 h-14 rounded-2xl border flex items-center justify-center transition-all active:scale-95 shrink-0 ${
                     inWishlist
                       ? 'text-rose-500 bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-900/60'
@@ -401,7 +412,7 @@ export default function ProductDetail() {
 
                 <button
                   onClick={() => toggleCompare(product)}
-                  title={inCompare ? 'حذف از مقایسه' : 'افزودن به مقایسه'}
+                  aria-label={inCompare ? 'حذف از مقایسه' : 'افزودن به مقایسه'}
                   className={`w-14 h-14 rounded-2xl border flex items-center justify-center transition-all active:scale-95 shrink-0 ${
                     inCompare
                       ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-900/60'
@@ -555,7 +566,8 @@ export default function ProductDetail() {
           >
             <button
               onClick={() => setIsLightboxOpen(false)}
-              className="absolute top-6 left-6 text-white/80 hover:text-white bg-[var(--color-surface-light)]/10 p-2.5 rounded-full backdrop-blur-md transition-colors"
+              aria-label="بستن نمایش تصویر"
+              className="absolute top-6 left-6 w-11 h-11 flex items-center justify-center text-white/80 hover:text-white bg-[var(--color-surface-light)]/10 rounded-full backdrop-blur-md transition-colors"
             >
               <X className="h-6 w-6" />
             </button>
@@ -639,6 +651,95 @@ export default function ProductDetail() {
                     )}
                   </button>
                 </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {/* ── Sticky Desktop Buy-Box ── */}
+      <AnimatePresence>
+        {showStickyBar && (
+          <motion.div
+            initial={{ y: 80, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 80, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+            className="fixed bottom-6 left-0 right-0 z-40 hidden lg:flex justify-center pointer-events-none"
+          >
+            <div className="pointer-events-auto flex items-center gap-6 bg-[var(--color-surface-light)]/95 dark:bg-[var(--color-surface-dark)]/95 backdrop-blur-2xl rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-2xl px-6 py-3.5 w-full max-w-3xl mx-6">
+              <div className="min-w-0 flex-1">
+                <p className="text-[11px] text-gray-500 dark:text-gray-400 font-bold truncate leading-tight">
+                  {product.title}
+                </p>
+                <div className="flex items-center gap-3 mt-1">
+                  <span className="text-lg font-black text-orange-600 dark:text-orange-400 tracking-tight leading-none">
+                    {formatPrice(product.price)}
+                  </span>
+                  {product.discount && product.originalPrice && (
+                    <span className="text-xs text-gray-400 dark:text-gray-500 line-through font-medium leading-none">
+                      {formatPrice(product.originalPrice)}
+                    </span>
+                  )}
+                  <span
+                    className={`text-[10px] font-extrabold px-2 py-1 rounded-full leading-none ${
+                      outOfStock
+                        ? 'bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400'
+                        : 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400'
+                    }`}
+                  >
+                    {outOfStock ? 'ناموجود' : 'موجود در انبار'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2.5 shrink-0">
+                <button
+                  onClick={() => toggleWishlist(product)}
+                  aria-label={inWishlist ? 'حذف از علاقه‌مندی‌ها' : 'افزودن به علاقه‌مندی‌ها'}
+                  className={`w-11 h-11 rounded-xl border flex items-center justify-center transition-colors active:scale-95 ${
+                    inWishlist
+                      ? 'text-rose-500 bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-900/60'
+                      : 'text-gray-400 border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }`}
+                >
+                  <Heart className={`h-5 w-5 ${inWishlist ? 'fill-current' : ''}`} />
+                </button>
+                <button
+                  onClick={() => toggleCompare(product)}
+                  aria-label={inCompare ? 'حذف از مقایسه' : 'افزودن به مقایسه'}
+                  className={`w-11 h-11 rounded-xl border flex items-center justify-center transition-colors active:scale-95 ${
+                    inCompare
+                      ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-900/60'
+                      : 'text-gray-400 border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }`}
+                >
+                  <ArrowLeftRight className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={handleAddToCart}
+                  disabled={outOfStock}
+                  className={`h-11 px-6 rounded-xl font-black text-sm flex items-center gap-2 transition-all active:scale-95 shadow-md ${
+                    outOfStock
+                      ? 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed shadow-none'
+                      : addedToCart
+                      ? 'bg-emerald-600 text-white shadow-emerald-600/20'
+                      : 'bg-gradient-to-r from-orange-600 to-amber-500 text-white shadow-orange-600/25'
+                  }`}
+                >
+                  {outOfStock ? (
+                    'ناموجود'
+                  ) : addedToCart ? (
+                    <>
+                      <CheckCircle2 className="h-4 w-4" />
+                      اضافه شد
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingCart className="h-4 w-4" />
+                      افزودن به سبد خرید
+                    </>
+                  )}
+                </button>
               </div>
             </div>
           </motion.div>
