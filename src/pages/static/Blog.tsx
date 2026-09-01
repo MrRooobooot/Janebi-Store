@@ -81,6 +81,49 @@ export default function Blog() {
     if (match) setOpenArticle(match);
   }, [slug, articles]);
 
+  // JSON-LD Blog schema for the list view (SEO: structured data for the blog
+  // index). Emits a blogPost itemList built from the real fetched rows —
+  // honesty gate: only fields that exist on each post are included.
+  useEffect(() => {
+    const scriptId = 'blog-list-jsonld';
+    document.getElementById(scriptId)?.remove();
+    if (articles.length === 0 || openArticle) return;
+    const origin = window.location.origin.replace(/\/$/, '');
+    const jsonLd = {
+      '@context': 'https://schema.org',
+      '@type': 'Blog',
+      name: 'مجله تخصصی جانبی آرنا',
+      url: `${origin}/blog`,
+      blogPost: articles
+        .filter((a) => a.title?.trim())
+        .map((a) => {
+          const entry: Record<string, unknown> = {
+            '@type': 'BlogPosting',
+            headline: a.title,
+            mainEntityOfPage: `${origin}/blog/${encodeURIComponent(a.id)}`,
+          };
+          if (a.excerpt?.trim()) entry.description = a.excerpt;
+          if (a.createdAt) {
+            const d = new Date(a.createdAt);
+            if (!Number.isNaN(d.getTime())) entry.datePublished = d.toISOString();
+          }
+          if (a.author?.trim()) entry.author = { '@type': 'Person', name: a.author };
+          if (a.image?.trim()) {
+            entry.image = [a.image.startsWith('http') ? a.image : `${origin}${a.image}`];
+          }
+          return entry;
+        }),
+    };
+    const script = document.createElement('script');
+    script.id = scriptId;
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(jsonLd);
+    document.head.appendChild(script);
+    return () => {
+      document.getElementById(scriptId)?.remove();
+    };
+  }, [articles, openArticle]);
+
   // JSON-LD BlogPosting for the open article (SEO: structured data for search
   // engines). Honesty gate: builder emits only fields that exist on the post.
   useEffect(() => {
