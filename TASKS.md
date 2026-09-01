@@ -106,3 +106,8 @@ Key findings (P0 first):
 - [x] Gate: npm run verify — 37 suites / 300 tests PASS. Deployed via deploy.sh; prod verified: journal=7 entries (0000–0006), 9/9 idx_ indexes, integrity_check ok, health ok after keep-alive.
 - [x] QA PASS (TEAM-QA, commit 33bf5c6): verify 37/300 green; live /api/health ok, /api/products 14 items, /api/coupons-active exactly 4 real coupons, bundle index-Du9A2uvd.js matches local build. Report: .hermes/reports/qa-2026-09-01-migration-journal.md.
 - Next: §3.15 gaps (Permissions-Policy header, CSP report-uri), useStoreSettings fallback single-sourcing.
+
+## Status: Headers + settings single-sourcing cluster DONE (2026-09-01 round 3)
+- [x] Commit a6f601f: Permissions-Policy (deny camera/geo/mic/payment/usb/interest-cohort), CSP report endpoint `POST /api/csp-report` (pino-logged, rate-limited), shared `STORE_SETTINGS_DEFAULTS` (server settings DEFAULTS + useStoreSettings fallback single-sourced), Home.tsx hero 'فست' client hack removed (settings-driven with shared default), settings PUT invalidates appCache (admin.ts:684).
+- [x] QA (7c463d4): verify 37/300 green; live probes 200 on /,/products,/products/14,/login; csp-report 204; /api/settings byte-identical to defaults; PUT invalidation code-verified. FAIL item: `reportUris` → invalid CSP directive. Fixed in f2fb02c (`reportUri`), deployed; live header now `report-uri /api/csp-report` verified.
+- Next: §3.14 LIKE wildcard escaping; §3.8/3.9 blog seed posts or hide nav; §3.7 admin audit-log table.
