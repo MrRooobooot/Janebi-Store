@@ -2,6 +2,12 @@
 
 ## Status: Completed (Aug 28, 2026)
 
+### Round 2026-09-02d — Blog Sitemap Slugs + Contrast r4/5 (SHIPPED, QA PASS)
+- [x] **Per-post blog sitemap** (95b72b9): GET /sitemap.xml dynamic from blog_posts (real slug + lastmod, none fabricated), /blog/:slug deep-link route, tests/api/sitemap.test.ts. Live: 0 post entries because prod /api/blog = [] (no published posts — content gap noted).
+- [x] **Contrast r4/5** (6d50ba7, 0bf6ba6): Header nav/user menu, MobileBottomNav, NotFound, ProductFilterSidebar, ProductSortHeader, AdminProducts — zinc/gray light-mode bumps.
+- [x] QA PASS (.hermes/reports/qa-2026-09-02d.md): deploy health ok, bundle index-BEQ5_HOe.js, routes 200.
+- Next: image compression round (Novin-style), product reviews pagination, blog content seeding (prod has 0 posts).
+
 ### Round 2026-09-02b — Blog/Admin Design + CWV/SEO (SHIPPED, QA PASS)
 - [x] **Blog & Admin design polish** (978daf8): Blog.tsx card grid (h-10 sm:h-11 line-clamp-2 titles), dual-theme zinc tokens, toPersianDigits dates, 44px Persian aria-label touch targets, prefers-reduced-motion; AdminLayout.tsx surface/border tokens + 44px a11y buttons.
 - [x] **CWV/SEO** (6b1ccc1): Blog.tsx images loading=lazy + decoding=async (LCP preloads untouched), sitemap.xml /blog entry, /blog live 200.
