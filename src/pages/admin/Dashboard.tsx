@@ -1,6 +1,6 @@
 import { authFetch } from '../../lib/api';
 import React, { useEffect, useState } from "react";
-import { Users, Package, ShoppingCart, DollarSign, Award, TrendingUp, Sparkles, Tag } from "lucide-react";
+import { Users, Package, ShoppingCart, DollarSign, Award, TrendingUp, Sparkles, Tag, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface DashboardStats {
@@ -85,6 +85,8 @@ export default function Dashboard() {
 
   const { metrics, recentOrders } = stats;
 
+  const emptyState = metrics.totalProducts === 0 || metrics.totalOrders === 0;
+
   const statCards = [
     { title: "درآمد کل", value: `${metrics.totalRevenue.toLocaleString()} تومان`, icon: DollarSign, color: "text-emerald-500", bg: "bg-emerald-100 dark:bg-emerald-500/20" },
     { title: "سفارشات", value: metrics.totalOrders, icon: ShoppingCart, color: "text-blue-500", bg: "bg-blue-100 dark:bg-blue-500/20" },
@@ -125,6 +127,43 @@ export default function Dashboard() {
           </Link>
         </div>
       </div>
+
+      {/* Onboarding Empty-State Card */}
+      {emptyState && (
+        <div className="rounded-2xl p-6 border border-orange-200 dark:border-orange-900/40 bg-orange-50/70 dark:bg-orange-950/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <div className="p-3 rounded-xl bg-orange-100 dark:bg-orange-900/40 text-orange-600 shrink-0">
+              <Rocket className="h-6 w-6" />
+            </div>
+            <div className="space-y-1">
+              <h2 className="font-black text-sm text-[var(--color-text-main-light)] dark:text-white">
+                {metrics.totalProducts === 0 ? 'فروشگاه شما خالی است' : 'هنوز سفارشی ثبت نشده است'}
+              </h2>
+              <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                {metrics.totalProducts === 0
+                  ? 'برای شروع فروش، اولین محصول خود را از بخش مدیریت کالاها اضافه کنید تا مشتریان بتوانند خرید کنند.'
+                  : 'محصولات شما آماده است! با افزودن کد تخفیف یا اشتراک‌گذاری فروشگاه، اولین سفارش‌ها را جذب کنید.'}
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            <Link
+              to="/admin/products"
+              className="min-h-[44px] inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold transition-all shadow-sm"
+            >
+              <Package className="h-4 w-4" />
+              <span>افزودن محصول</span>
+            </Link>
+            <Link
+              to="/admin/orders"
+              className="min-h-[44px] inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 text-xs font-bold transition-all"
+            >
+              <ShoppingCart className="h-4 w-4 text-blue-500" />
+              <span>مشاهده سفارشات</span>
+            </Link>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statCards.map((stat, i) => (

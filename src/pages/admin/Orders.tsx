@@ -3,11 +3,12 @@ import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
-import { 
-  Search, ChevronDown, CheckCircle, Package, Truck, XCircle, Eye, X, 
-  MapPin, Phone, User, Calendar, CreditCard, Printer, Download, Share2, Copy 
+import {
+  Search, ChevronDown, CheckCircle, Package, Truck, XCircle, Eye, X,
+  MapPin, Phone, User, Calendar, CreditCard, Printer, Download, Share2, Copy, Trash2
 } from 'lucide-react';
 import { toPersianDigits, formatPrice } from '../../lib/utils';
+import PageControls, { unwrapList } from '../../components/admin/PageControls';
 
 export default function AdminOrders() {
   const token = localStorage.getItem('token');
@@ -17,6 +18,10 @@ export default function AdminOrders() {
   const [search, setSearch] = useState('');
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [page, setPage] = useState(1);
+  const [bulkBusy, setBulkBusy] = useState(false);
+  const PAGE_SIZE = 10;
 
   useEffect(() => {
     fetchOrders();
@@ -40,7 +45,8 @@ export default function AdminOrders() {
       });
       if (!res.ok) throw new Error();
       const data = await res.json();
-      setOrders(data);
+      setOrders(unwrapList<any>(data));
+      setSelectedIds(new Set());
     } catch (err) {
       addToast('خطا در دریافت لیست سفارشات', 'error');
     } finally {
@@ -225,13 +231,64 @@ export default function AdminOrders() {
   };
 
   const filteredOrders = orders.filter(o => {
-    const matchesSearch = o.id.toLowerCase().includes(search.toLowerCase()) || 
-      (o.recipientName && o.recipientName.includes(search)) || 
+    const matchesSearch = o.id.toLowerCase().includes(search.toLowerCase()) ||
+      (o.recipientName && o.recipientName.includes(search)) ||
       (o.recipientPhone && o.recipientPhone.includes(search)) ||
       (o.refId && o.refId.includes(search));
     const matchesStatus = statusFilter === 'all' || o.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
+
+  /** Toggle selection of a single order for bulk actions. */
+  const toggleSelected = (id: string) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  /** POST /api/admin/orders/bulk-delete {ids} — confirm + optimistic, graceful on 404. */
+  const handleBulkDelete = async () => {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0 || bulkBusy) return;
+    if (!window.confirm(`آیا از حذف ${toPersianDigits(ids.length)} سفارش انتخاب‌شده اطمینان دارید؟ این عمل قابل بازگشت نیست.`)) return;
+    setBulkBusy(true);
+    const prev = orders;
+    setOrders(prevOrders => prevOrders.filter(o => !selectedIds.has(o.id)));
+    try {
+      const res = await authFetch('/api/admin/orders/bulk-delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ ids })
+      });
+      if (res.ok) {
+        addToast('سفارش‌های انتخاب‌شده حذف شدند', 'success');
+        setSelectedIds(new Set());
+        fetchOrders();
+      } else if (res.status === 404) {
+        setOrders(prev);
+        addToast('این قابلیت هنوز در سرور فعال نشده است', 'error');
+      } else {
+        setOrders(prev);
+        addToast('خطا در حذف سفارش‌ها', 'error');
+      }
+    } catch {
+      setOrders(prev);
+      addToast('خطا در ارتباط با سرور', 'error');
+    } finally {
+      setBulkBusy(false);
+    }
+  };
+
+  const totalPagesCount = Math.max(1, Math.ceil(filteredOrders.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPagesCount);
+  const pagedOrders = filteredOrders.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+
+  useEffect(() => {
+    setPage(1);
+  }, [search, statusFilter]);
 
   return (
     <div className="space-y-6 text-right">
@@ -279,6 +336,23 @@ export default function AdminOrders() {
         ))}
       </div>
 
+      {/* Bulk Actions Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <button
+          type="button"
+          aria-label="حذف سفارش‌های انتخاب‌شده"
+          disabled={bulkBusy || selectedIds.size === 0}
+          onClick={handleBulkDelete}
+          className="min-h-[44px] inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 hover:bg-red-100 text-xs font-bold transition-all disabled:opacity-40 cursor-pointer"
+        >
+          <Trash2 className="h-4 w-4" />
+          <span>حذف سفارش‌های انتخاب‌شده {selectedIds.size > 0 && `(${toPersianDigits(selectedIds.size)})`}</span>
+        </button>
+        <span className="text-[11px] text-gray-400 font-bold">
+          {toPersianDigits(filteredOrders.length)} سفارش
+        </span>
+      </div>
+
       <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700 p-4 space-y-4">
         <div className="relative max-w-md">
           <input 
@@ -295,6 +369,21 @@ export default function AdminOrders() {
           <table className="w-full text-right">
             <thead>
               <tr className="bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 text-xs border-b border-[var(--color-border-light)] dark:border-gray-700">
+                <th className="p-3.5 font-bold">
+                  <input
+                    type="checkbox"
+                    aria-label="انتخاب همه سفارش‌های این صفحه"
+                    checked={pagedOrders.length > 0 && pagedOrders.every(o => selectedIds.has(o.id))}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedIds(prev => new Set([...prev, ...pagedOrders.map(o => o.id)]));
+                      } else {
+                        setSelectedIds(prev => new Set(Array.from(prev).filter(id => !pagedOrders.some(o => o.id === id))));
+                      }
+                    }}
+                    className="w-4 h-4 cursor-pointer accent-orange-600"
+                  />
+                </th>
                 <th className="p-3.5 font-bold">شماره سفارش</th>
                 <th className="p-3.5 font-bold">تاریخ</th>
                 <th className="p-3.5 font-bold">تحویل‌گیرنده</th>
@@ -306,11 +395,20 @@ export default function AdminOrders() {
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
               {loading ? (
-                <tr><td colSpan={7} className="text-center p-8 text-xs font-bold text-gray-400">در حال بارگذاری...</td></tr>
+                <tr><td colSpan={8} className="text-center p-8 text-xs font-bold text-gray-400">در حال بارگذاری...</td></tr>
               ) : filteredOrders.length === 0 ? (
-                <tr><td colSpan={7} className="text-center p-8 text-xs font-bold text-gray-400">هیچ سفارشی یافت نشد.</td></tr>
-              ) : filteredOrders.map(order => (
+                <tr><td colSpan={8} className="text-center p-8 text-xs font-bold text-gray-400">هیچ سفارشی یافت نشد.</td></tr>
+              ) : pagedOrders.map(order => (
                 <tr key={order.id} className="text-xs hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                  <td className="p-3.5">
+                    <input
+                      type="checkbox"
+                      aria-label={`انتخاب سفارش ${order.id}`}
+                      checked={selectedIds.has(order.id)}
+                      onChange={() => toggleSelected(order.id)}
+                      className="w-4 h-4 cursor-pointer accent-orange-600"
+                    />
+                  </td>
                   <td className="p-3.5 font-bold text-[var(--color-text-main-light)] dark:text-white font-mono dir-ltr text-left">{order.id}</td>
                   <td className="p-3.5 text-gray-600 dark:text-gray-300">{order.date}</td>
                   <td className="p-3.5 text-gray-600 dark:text-gray-300">
@@ -374,6 +472,14 @@ export default function AdminOrders() {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination */}
+        <PageControls
+          page={safePage}
+          pageSize={PAGE_SIZE}
+          totalItems={filteredOrders.length}
+          onPageChange={setPage}
+        />
       </div>
 
       {/* Order Details & Print Modal */}

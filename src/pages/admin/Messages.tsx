@@ -3,10 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import {
   Mail, CheckCircle2, Clock, Search, Eye, Filter, Phone, User,
-  MessageSquare, ArrowLeft, X, Check, Trash2, Send, Archive, ArchiveRestore
+  MessageSquare, ArrowLeft, X, Check, Trash2, Send, Archive, ArchiveRestore, CheckCheck
 } from 'lucide-react';
 import { useToast } from '../../contexts/ToastContext';
 import { toPersianDigits } from '../../lib/utils';
+import PageControls, { unwrapList } from '../../components/admin/PageControls';
 
 interface ContactMessage {
   id: string;
@@ -34,6 +35,10 @@ export default function AdminMessages() {
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [page, setPage] = useState(1);
+  const [bulkBusy, setBulkBusy] = useState(false);
+  const PAGE_SIZE = 12;
   const { addToast } = useToast();
 
   // Server-side status filter: archived messages are hidden unless explicitly
@@ -46,7 +51,8 @@ export default function AdminMessages() {
       });
       if (res.ok) {
         const data = await res.json();
-        setMessages(data);
+        setMessages(unwrapList<ContactMessage>(data));
+        setSelectedIds(new Set());
       }
     } catch (err) {
       console.error('Failed to fetch messages', err);
@@ -83,6 +89,85 @@ export default function AdminMessages() {
     }
   };
 
+  /** Toggle selection of a single message for bulk actions. */
+  const toggleSelected = (id: string) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  /** POST /api/admin/messages/read-all — optimistic, graceful on 404. */
+  const handleMarkAllRead = async () => {
+    if (bulkBusy) return;
+    setBulkBusy(true);
+    const prev = messages;
+    setMessages(prevMsgs => prevMsgs.map(m => (m.status === 'unread' ? { ...m, status: 'read' as const } : m)));
+    try {
+      const token = localStorage.getItem('token');
+      const res = await authFetch('/api/admin/messages/read-all', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({})
+      });
+      if (res.ok) {
+        addToast('همه پیام‌های خوانده‌نشده علامت‌گذاری شدند', 'success');
+        fetchMessages(filterStatus as StatusFilter);
+      } else if (res.status === 404) {
+        setMessages(prev);
+        addToast('این قابلیت هنوز در سرور فعال نشده است', 'error');
+      } else {
+        setMessages(prev);
+        addToast('خطا در علامت‌گذاری پیام‌ها', 'error');
+      }
+    } catch {
+      setMessages(prev);
+      addToast('خطا در ارتباط با سرور', 'error');
+    } finally {
+      setBulkBusy(false);
+    }
+  };
+
+  /** POST /api/admin/messages/bulk-delete {ids} — confirm + optimistic, graceful on 404. */
+  const handleBulkDelete = async () => {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0 || bulkBusy) return;
+    if (!window.confirm(`آیا از حذف ${toPersianDigits(ids.length)} پیام انتخاب‌شده اطمینان دارید؟ این عمل قابل بازگشت نیست.`)) return;
+    setBulkBusy(true);
+    const prev = messages;
+    setMessages(prevMsgs => prevMsgs.filter(m => !selectedIds.has(m.id)));
+    try {
+      const token = localStorage.getItem('token');
+      const res = await authFetch('/api/admin/messages/bulk-delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ ids })
+      });
+      if (res.ok) {
+        addToast('پیام‌های انتخاب‌شده حذف شدند', 'success');
+        setSelectedIds(new Set());
+        fetchMessages(filterStatus as StatusFilter);
+      } else if (res.status === 404) {
+        setMessages(prev);
+        addToast('این قابلیت هنوز در سرور فعال نشده است', 'error');
+      } else {
+        setMessages(prev);
+        addToast('خطا در حذف پیام‌ها', 'error');
+      }
+    } catch {
+      setMessages(prev);
+      addToast('خطا در ارتباط با سرور', 'error');
+    } finally {
+      setBulkBusy(false);
+    }
+  };
+
+  useEffect(() => {
+    setPage(1);
+  }, [filterStatus, searchQuery]);
+
   const filteredMessages = messages.filter(m => {
     const matchesSearch = (m.name && m.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
       (m.email && m.email.toLowerCase().includes(searchQuery.toLowerCase())) ||
@@ -91,6 +176,9 @@ export default function AdminMessages() {
       (m.message && m.message.toLowerCase().includes(searchQuery.toLowerCase()));
     return matchesSearch;
   });
+  const totalPagesCount = Math.max(1, Math.ceil(filteredMessages.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPagesCount);
+  const pagedMessages = filteredMessages.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -153,6 +241,35 @@ export default function AdminMessages() {
         </div>
       </div>
 
+      {/* Bulk Action Toolbar */}
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            aria-label="علامت‌گذاری همه پیام‌ها به عنوان خوانده‌شده"
+            disabled={bulkBusy}
+            onClick={handleMarkAllRead}
+            className="min-h-[44px] inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 hover:bg-blue-100 text-xs font-bold transition-all disabled:opacity-50 cursor-pointer"
+          >
+            <CheckCheck className="h-4 w-4" />
+            <span>خواندن همه پیام‌ها</span>
+          </button>
+          <button
+            type="button"
+            aria-label="حذف پیام‌های انتخاب‌شده"
+            disabled={bulkBusy || selectedIds.size === 0}
+            onClick={handleBulkDelete}
+            className="min-h-[44px] inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 hover:bg-red-100 text-xs font-bold transition-all disabled:opacity-40 cursor-pointer"
+          >
+            <Trash2 className="h-4 w-4" />
+            <span>حذف انتخاب‌شده‌ها {selectedIds.size > 0 && `(${toPersianDigits(selectedIds.size)})`}</span>
+          </button>
+        </div>
+        <span className="text-[11px] text-gray-400 font-bold">
+          {toPersianDigits(filteredMessages.length)} پیام
+        </span>
+      </div>
+
       {/* Messages Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {loading ? (
@@ -162,7 +279,7 @@ export default function AdminMessages() {
             هیچ پیامی در این دسته‌بندی یافت نشد.
           </div>
         ) : (
-          filteredMessages.map((msg) => (
+          pagedMessages.map((msg) => (
             <div
               key={msg.id}
               onClick={() => setSelectedMessage(msg)}
@@ -170,7 +287,17 @@ export default function AdminMessages() {
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-3">
-                  {getStatusBadge(msg.status)}
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      aria-label={`انتخاب پیام از ${msg.name}`}
+                      checked={selectedIds.has(msg.id)}
+                      onClick={(e) => e.stopPropagation()}
+                      onChange={() => toggleSelected(msg.id)}
+                      className="w-4 h-4 cursor-pointer accent-orange-600"
+                    />
+                    {getStatusBadge(msg.status)}
+                  </div>
                   <div className="flex items-center gap-1.5">
                     <span className="text-[10px] text-gray-400 font-medium">{faDate(msg.createdAt)}</span>
                     <button
@@ -210,6 +337,14 @@ export default function AdminMessages() {
           ))
         )}
       </div>
+
+      {/* Pagination */}
+      <PageControls
+        page={safePage}
+        pageSize={PAGE_SIZE}
+        totalItems={filteredMessages.length}
+        onPageChange={setPage}
+      />
 
       {/* Message View Modal */}
       {selectedMessage && createPortal(

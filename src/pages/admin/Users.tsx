@@ -5,6 +5,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
 import { Search, Shield, User as UserIcon, KeyRound, Award, Plus, Minus, X, CheckCircle } from 'lucide-react';
 import { toPersianDigits } from '../../lib/utils';
+import PageControls, { unwrapList } from '../../components/admin/PageControls';
 
 export default function AdminUsers() {
   const token = localStorage.getItem('token');
@@ -12,6 +13,8 @@ export default function AdminUsers() {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 10;
 
   // Modals state
   const [passwordModalUser, setPasswordModalUser] = useState<any | null>(null);
@@ -31,7 +34,7 @@ export default function AdminUsers() {
       });
       if (!res.ok) throw new Error();
       const data = await res.json();
-      setUsers(data);
+      setUsers(unwrapList<any>(data));
     } catch (err) {
       addToast('خطا در دریافت لیست کاربران', 'error');
     } finally {
@@ -129,11 +132,19 @@ export default function AdminUsers() {
     }
   };
 
-  const filteredUsers = users.filter(u => 
+  const filteredUsers = users.filter(u =>
     (u.name && u.name.toLowerCase().includes(search.toLowerCase())) ||
     (u.phone && u.phone.includes(search)) ||
     (u.email && u.email.toLowerCase().includes(search.toLowerCase()))
   );
+
+  useEffect(() => {
+    setPage(1);
+  }, [search]);
+
+  const totalPagesCount = Math.max(1, Math.ceil(filteredUsers.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPagesCount);
+  const pagedUsers = filteredUsers.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
   return (
     <div className="space-y-6 text-right">
@@ -178,11 +189,11 @@ export default function AdminUsers() {
                   <td colSpan={6} className="p-8 text-center text-gray-400">در حال بارگذاری لیست کاربران...</td>
                 </tr>
               ) : filteredUsers.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="p-8 text-center text-gray-400">کاربری یافت نشد.</td>
-                </tr>
-              ) : (
-                filteredUsers.map((u) => (
+ <tr>
+   <td colSpan={6} className="p-8 text-center text-gray-400">کاربری یافت نشد.</td>
+ </tr>
+ ) : (
+ pagedUsers.map((u) => (
                   <tr key={u.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors">
                     <td className="p-4 flex items-center gap-3">
                       <img 
@@ -255,6 +266,14 @@ export default function AdminUsers() {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination */}
+        <PageControls
+          page={safePage}
+          pageSize={PAGE_SIZE}
+          totalItems={filteredUsers.length}
+          onPageChange={setPage}
+        />
       </div>
 
       {/* Password Reset Modal */}
