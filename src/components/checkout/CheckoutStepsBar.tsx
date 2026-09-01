@@ -44,9 +44,9 @@ export default function CheckoutStepsBar({ currentStep = 2 }: CheckoutStepsBarPr
               <Link
                 to={href}
                 aria-label={`مرحله ${toPersianDigits(step)}: ${label} — تکمیل‌شده، بازگشت به این مرحله`}
-                className="group flex flex-col items-center gap-2 cursor-pointer"
+                className="group flex flex-col items-center gap-2 cursor-pointer rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-700 dark:focus-visible:ring-primary-200 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-canvas-light)] dark:focus-visible:ring-offset-[var(--color-canvas-dark)]"
               >
-                <span className="w-10 h-10 rounded-2xl bg-primary-300 dark:bg-primary-400 text-white flex items-center justify-center font-bold text-base shadow-md shadow-orange-500/30 transition-transform motion-safe:group-hover:scale-105">
+                <span className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary-300 to-primary-400 text-white flex items-center justify-center font-bold text-base shadow-md shadow-orange-500/30 transition-transform motion-safe:group-hover:scale-105 motion-safe:group-focus-visible:scale-105">
                   <CheckCircle className="h-5 w-5" />
                 </span>
                 <span className="text-xs font-bold text-primary-500 dark:text-primary-300 group-hover:text-primary-600 dark:group-hover:text-primary-200 transition-colors">

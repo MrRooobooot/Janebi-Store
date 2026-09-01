@@ -85,7 +85,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 <button
                   onClick={onClose}
                   aria-label="بستن سبد خرید"
-                  className="p-2 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
+                  className="min-touch-target p-2 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -179,10 +179,10 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                               <button
                                 onClick={() => updateQuantity(item.id, item.quantity + 1)}
                                 disabled={item.quantity >= MAX_CART_QUANTITY}
-                                className="w-5 h-5 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-orange-600 disabled:opacity-30 cursor-pointer"
+                                className="min-touch-target w-9 h-9 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-orange-600 disabled:opacity-30 cursor-pointer rounded-lg transition-colors"
                                 aria-label="افزایش تعداد"
                               >
-                                <Plus className="h-3 w-3" />
+                                <Plus className="h-4 w-4" />
                               </button>
                               <span className="font-mono text-xs font-bold w-4 text-center">
                                 {toPersianDigits(item.quantity)}
@@ -190,16 +190,16 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                               <button
                                 onClick={() => updateQuantity(item.id, item.quantity - 1)}
                                 disabled={item.quantity <= 1}
-                                className="w-5 h-5 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-orange-600 disabled:opacity-30 cursor-pointer"
+                                className="min-touch-target w-9 h-9 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-orange-600 disabled:opacity-30 cursor-pointer rounded-lg transition-colors"
                                 aria-label="کاهش تعداد"
                               >
-                                <Minus className="h-3 w-3" />
+                                <Minus className="h-4 w-4" />
                               </button>
                             </div>
 
                             <button
                               onClick={() => removeFromCart(item.id)}
-                              className="text-zinc-400 hover:text-rose-500 p-1 transition-colors cursor-pointer"
+                              className="min-touch-target text-zinc-400 hover:text-rose-500 p-2 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors cursor-pointer"
                               title="حذف از سبد"
                               aria-label="حذف این کالا"
                             >
