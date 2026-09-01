@@ -378,9 +378,17 @@ export const POSTS: (typeof blogPosts.$inferInsert)[] = [
 ];
 
 async function main() {
+  // SEED_BLOG_ONLY=<id>[,<id>] limits the run to specific post ids — used for
+  // one-off rotations so a concurrent round's not-yet-shipped post is not
+  // seeded ahead of its own deploy.
+  const only = (process.env.SEED_BLOG_ONLY || '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const posts = only.length ? POSTS.filter((p) => only.includes(p.id)) : POSTS;
   console.log('🌱 Seeding blog posts via Drizzle client...');
   let inserted = 0;
-  for (const post of POSTS) {
+  for (const post of posts) {
     const res = await db
       .insert(blogPosts)
       .values(post)

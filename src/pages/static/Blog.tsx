@@ -101,6 +101,22 @@ export default function Blog() {
     if (match) setOpenArticle(match);
   }, [slug, articles]);
 
+  // r39 UX: Escape closes the article reader, and background scroll is locked
+  // while the reader is open (modal no longer scrolls the page behind it).
+  useEffect(() => {
+    if (!openArticle) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpenArticle(null);
+    };
+    document.addEventListener('keydown', onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [openArticle]);
+
   // JSON-LD Blog schema for the list view (SEO: structured data for the blog
   // index). Emits a blogPost itemList built from the real fetched rows —
   // honesty gate: only fields that exist on each post are included.

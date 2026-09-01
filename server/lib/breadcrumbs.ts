@@ -63,6 +63,40 @@ export async function breadcrumbJsonLdFor(pathname: string): Promise<string | nu
   return jsonLdScript({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: crumbs });
 }
 
+/**
+ * Server-rendered BlogPosting JSON-LD for /blog/:slug (SEO cluster r39).
+ *
+ * The client injects BlogPosting JSON-LD only after React hydration; crawlers
+ * that read the raw HTML previously saw just the BreadcrumbList. This fetches
+ * the real DB row and reuses the shared client builder (src/lib/blogJsonLd.ts)
+ * so both layers emit identical, honesty-gated output. Unknown slug → null.
+ */
+export async function blogPostingJsonLdFor(pathname: string): Promise<string | null> {
+  if (!pathname.startsWith("/blog/")) return null;
+
+  const slug = decodeURIComponent(pathname.slice("/blog/".length)).replace(/\/+$/, "");
+  if (!slug) return null;
+
+  try {
+    const post = await db.query.blogPosts.findFirst({
+      where: eq(blogPosts.id, slug),
+    });
+    if (!post || !post.published) return null;
+    const { buildBlogPostingJsonLd } = await import("../../src/lib/blogJsonLd.js");
+    const jsonLd = buildBlogPostingJsonLd(
+      post as unknown as Parameters<typeof buildBlogPostingJsonLd>[0]
+    );
+    if (!jsonLd) return null;
+    return (
+      '<script type="application/ld+json" id="blog-posting-jsonld-prerender">' +
+      JSON.stringify(jsonLd).replace(/</g, "\\u003c") +
+      "</script>"
+    );
+  } catch {
+    return null; // DB unavailable → skip injection rather than serve partial markup
+  }
+}
+
 /** Inject the breadcrumb JSON-LD right before </head> in the HTML shell. */
 export function injectBreadcrumbIntoHtml(html: string, breadcrumbLd: string | null): string {
   if (!breadcrumbLd || !html.includes("</head>")) return html;
