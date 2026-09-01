@@ -2,6 +2,9 @@
 
 ## Status: Completed (Aug 28, 2026)
 
+### Round 2026-09-04 — RelatedProducts + ItemList JSON-LD (SHIPPED, deployed)
+- [x] بخش «محصولات مشابه» در ProductDetail (commit bb792d9): واکشی واقعی `/api/products?category=&limit=8`، حذف محصول جاری، ۴ کارت ProductCard، ItemList JSON-LD از داده واقعی، اعداد فارسی، آیکون Lucide، escape JSON-LD. `npm run verify` سبز، jsxDEV=0. دیپلوی شد؛ باندل زنده index-DbkyNQN3.js == محلی؛ chunk زنده ProductDetail شامل «محصولات مشابه». گزارش: .hermes/reports/related-products-seo-2026-09-04.md
+
 ### Round 2026-09-03b — Reviews Pagination (TEAM-FRONTEND, SHIPPED, QA pending→next round)
 - [x] GET product reviews paginated (?page&limit → {reviews,total,page,pages}, newest first, 6 new tests; ProductReviews.tsx Persian pagination). Commit 383f6cc, `npm run verify` green (44 suites/337 tests), deployed 2026-09-03 (live bundle index-2CuGcgTU.js == local), live endpoint verified {reviews:[],total:0,page:1,pages:1}.
 - [x] Prod DB residue check closed: 0 rows with image '/images/test.jpg' on VPS (in-container probe).
