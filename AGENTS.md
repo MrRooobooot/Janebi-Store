@@ -144,3 +144,10 @@ npm test            # vitest run (36 test suites)
 npm run build       # Vite client build + Esbuild server bundle
 npm start           # node dist/server.cjs (production start)
 ```
+
+## 🔒 Category Tree Rule (HARD, user-mandated)
+The store category structure is CLOSED/FIXED — exactly the user-approved list.
+- NEVER create, rename, merge, split, move, or delete any category/subcategory without the user's explicit approval in chat.
+- Brands, device models, and technical specs are Attributes/Filters — NEVER categories.
+- A product matching no existing category → report to the user first. Creating a category for it is forbidden.
+- Any proposed category change goes to the user BEFORE implementation.
