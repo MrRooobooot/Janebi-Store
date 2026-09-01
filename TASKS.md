@@ -132,3 +132,9 @@ Key findings (P0 first):
 - [x] §3.8 hero 'فست' guard + §3.9 blog nav gating: already closed by earlier clusters (server DEFAULTS verbatim render; no blog links in storefront chrome) — verified no-op.
 - [x] QA PASS (commit 3dbd58d): verify 39 suites/306 tests green; live probes 200, PNG bytes match repo, dual-engine 6 pages clean, zero horizontal overflow on 390px. Report: qa-2026-09-01-p2-ui-cluster.md. Deployed.
 - Next: §3.12 contact messages archive policy; remaining P2s minimal.
+
+### §3.12 Contact-messages archive policy (2026-09-02, QA PASS via orchestrator verification)
+- [x] `archived` status (strict allow-list), `GET /api/admin/contact-messages ?status=` filter (archived hidden by default), auto-archive reaper (1h setInterval, transaction-guarded/idempotent, `ARCHIVE_AFTER_DAYS=90` in src/lib/constants.ts), admin Messages.tsx archive/unarchive + status pills (Persian RTL).
+- [x] Commit adbcdc9 (6 files +303/−21), deployed via deploy.sh; bundle index-BplrxINR.js live == local; health ok. Orchestrator re-verified: 2 new test suites 13/13 pass; live admin probes — 430 rows default, archived=0, invalid filter 400, archive/unarchive roundtrip 200.
+- Report: .hermes/reports/backend-contact-archive.md
+- Next: audit priority list (§6) fully closed. Backlog EMPTY — cron reads reports for regressions only.
