@@ -1,0 +1,112 @@
+[
+ [
+  "HTTP 200 /index.html",
+  "PASS",
+  "status=200"
+ ],
+ [
+  "HTTP 200 /css/style.css",
+  "PASS",
+  "status=200"
+ ],
+ [
+  "HTTP 200 /css/installment.css",
+  "PASS",
+  "status=200"
+ ],
+ [
+  "HTTP 200 /css/responsive.css",
+  "PASS",
+  "status=200"
+ ],
+ [
+  "HTTP 200 /js/app.js",
+  "PASS",
+  "status=200"
+ ],
+ [
+  "HTTP 200 /js/cars-data.js",
+  "PASS",
+  "status=200"
+ ],
+ [
+  "HTTP 200 /sitemap.xml",
+  "PASS",
+  "status=200"
+ ],
+ [
+  "HTTP 200 /robots.txt",
+  "PASS",
+  "status=200"
+ ],
+ [
+  "HTTP 200 /llms.txt",
+  "PASS",
+  "status=200"
+ ],
+ [
+  "index.html contains phone 66120332",
+  "PASS",
+  "count=12"
+ ],
+ [
+  "canonical is http://185.231.183.51/",
+  "PASS",
+  "<link rel=\"canonical\" href=\"http://185.231.183.51/\">"
+ ],
+ [
+  "zero references to novinkhodro.shop",
+  "PASS",
+  "references=0"
+ ],
+ [
+  "JSON-LD AutoDealer present",
+  "PASS",
+  "['AutoDealer', 'PostalAddress', 'GeoCoordinates', 'OpeningHoursSpecification', 'OpeningHoursSpecification', 'FAQPage', 'Question', 'Answer', 'Question', 'Answer', 'Question', 'Answer', 'Question', 'Answer']"
+ ],
+ [
+  "JSON-LD FAQPage present",
+  "PASS",
+  "FAQPage marker search"
+ ],
+ [
+  "llms.txt has پلاک ۲۱",
+  "PASS",
+  "street address marker"
+ ],
+ [
+  "cars-data.js has exactly 4 cars",
+  "PASS",
+  "names=['همه برندها', 'اکستریم / مدیران خودرو', 'هیوندای', 'ایران خودرو']"
+ ],
+ [
+  "address consistent in live HTML",
+  "PASS",
+  "ستارخان/نصرت/پلاک markers"
+ ],
+ [
+  "phone consistent (>=2 occurrences, 021 prefix)",
+  "PASS",
+  "count=12"
+ ],
+ [
+  "no fake inventory claims",
+  "PASS",
+  "matches=[]"
+ ],
+ [
+  "sanity-diff title",
+  "PASS",
+  "local=<title>نوین خودرو | خرید از شما، اقساط از ما • نمایشگاه اتومبیل در تهران</title> | live=<title>نوین خودرو | خرید از شما، اقساط از ما • نمایشگاه اتومبیل در تهران</title>"
+ ],
+ [
+  "sanity-diff og:image",
+  "PASS",
+  "local=<meta property=\"og:image\" content=\"http://185.231.183.51/images/og-image.jpg\"> | live=<meta property=\"og:image\" content=\"http://185.231.183.51/images/og-image.jpg\">"
+ ],
+ [
+  "sanity-diff cache-bust v=",
+  "PASS",
+  "local=?v=20260901 | live=?v=20260901"
+ ]
+]
