@@ -2,6 +2,16 @@
 
 ## Status: Completed (Aug 28, 2026)
 
+### Round r39 (2026-09-15a) — Post 16 (Baseus Adaman) + BlogPosting Prerender + Reader UX (COMMITTED — deploy BLOCKED by SSH outage)
+
+- [x] Post 16 نوشته و به seed اضافه شد: «پاوربانک بیسوس Adaman ۲۰۰۰۰ با خروجی ۶۵ وات» (id: brasresi-powerbank-baseus-adaman-20000-65w) — بر اساس محصول واقعی فروشگاه (product id 7، SKU PB-BS-65W، image /products/pb-7.svg). Zero-fabrication: همه مشخصات از /api/products/7.
+- [x] SEO: prerender سمت سرور BlogPosting JSON-LD برای /blog/:slug (server/lib/breadcrumbs.ts → blogPostingJsonLdFor + اتصال در server/index.ts prod branch). Unknown/unpublished slug → بدون injection (honesty gate).
+- [x] UI/UX: مودال مقاله — Escape برای بستن + قفل اسکرول بک‌گراند (src/pages/static/Blog.tsx).
+- [x] scripts/seed-blog.ts: فیلتر SEED_BLOG_ONLY=<id> برای seed نقطه‌ای (جلوگیری از seed پستِ ران موازی).
+- [x] Gate: npm run verify 100% green؛ grep -c jsxDEV dist/assets/index-*.js = 0. Commit be76f19 + push.
+- [ ] DEPLOY BLOCKED: ssh 45.82.137.67:22 → Connection refused (~12 دقیقه retry؛ site 200 است، فقط SSH پایین). قدم بعدی: ./deploy.sh با lock + SEED_BLOG_ONLY=brasresi-powerbank-baseus-adaman-20000-65w node seed در کانتینر → انتظار /api/blog = 16.
+- [!] تداخل ران موازی: ران همزمان دیگری پست «باتری در سرما و گرما» (rahnamaye-battery-sarma-garma) را در seed-file به‌عنوان «پست ۱۶» کامیت کرده ولی هنوز seed/deploy نکرده — با فیلتر SEED_BLOG_ONLY پست آن ران در این دیپلوی seed نمی‌شود.
+
 ### Round r38 (2026-09-13b) — Blog Post 15 + Post-14 Body Repair + Sitemap Fix (SHIPPED, live)
 - [x] پست پانزدهم «چرا گوشی هنگام شارژ داغ می‌شود؟» (rahnamaye-garmi-goshi-hange-sharzh، commit aac0b52) — ۷ پاراگراف تحریریه واقعی، سید ایمپوتنت prod. زنده: /api/blog=15، در sitemap داینامیک.
 - [x] ریشه‌یابی P0: post-14 بدنه زنده فاقد پاراگراف بود — seed از `join('\\\\n\\\\n')` (لیترال بک‌اسلش) استفاده کرده بود؛ ریشه کلاس باگ: بازنویسی bulkِ r37 خود join را خراب کرد. seed اصلاح + repair-blog-texts.ts پست ۱۴ را پوشش داد (8/8 repaired، live literal-\\n = 0).
