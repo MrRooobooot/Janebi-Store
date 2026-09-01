@@ -1,0 +1,110 @@
+[
+  {
+    "engine": "chromium",
+    "consoleErrors": [
+      "[https://janebiarena.ir/products/] Failed to load resource: the server responded with a status of 408 ()",
+      "[https://janebiarena.ir/products/] Failed to load resource: the server responded with a status of 408 ()",
+      "[https://janebiarena.ir/products/] Failed to load resource: the server responded with a status of 408 ()",
+      "[https://janebiarena.ir/cart] Failed to load resource: the server responded with a status of 408 ()",
+      "[https://janebiarena.ir/cart] Failed to load resource: the server responded with a status of 408 ()",
+      "[https://janebiarena.ir/cart] Failed to load resource: the server responded with a status of 408 ()"
+    ],
+    "findings": {
+      "testimonials section visible": {
+        "hasUserName": true,
+        "hasSecond": true,
+        "hasPersianDate": false,
+        "reviewApiCount": 2,
+        "fabricatedThird": false
+      },
+      "hero imgs": [
+        {
+          "src": "https://janebiarena.ir/products/hld-13.svg?v=3.2.0",
+          "visible": true
+        },
+        {
+          "src": "https://janebiarena.ir/products/cas-8.svg?v=3.2.0",
+          "visible": true
+        },
+        {
+          "src": "https://janebiarena.ir/products/hld-13.svg?v=3.2.0",
+          "visible": true
+        },
+        {
+          "src": "https://janebiarena.ir/products/cbl-11.svg?v=3.2.0",
+          "visible": true
+        },
+        {
+          "src": "https://janebiarena.ir/products/cas-8.svg?v=3.2.0",
+          "visible": true
+        }
+      ],
+      "products title": "جانبی آرنا | فروشگاه آنلاین لوازم جانبی موبایل",
+      "product detail loaded": "NO LINK FOUND",
+      "cart loaded": "جانبی آرنا | فروشگاه آنلاین لوازم جانبی موبایل",
+      "console errors": [
+        "[https://janebiarena.ir/products/] Failed to load resource: the server responded with a status of 408 ()",
+        "[https://janebiarena.ir/products/] Failed to load resource: the server responded with a status of 408 ()",
+        "[https://janebiarena.ir/products/] Failed to load resource: the server responded with a status of 408 ()",
+        "[https://janebiarena.ir/cart] Failed to load resource: the server responded with a status of 408 ()",
+        "[https://janebiarena.ir/cart] Failed to load resource: the server responded with a status of 408 ()",
+        "[https://janebiarena.ir/cart] Failed to load resource: the server responded with a status of 408 ()"
+      ]
+    }
+  },
+  {
+    "engine": "webkit",
+    "consoleErrors": [
+      "[https://janebiarena.ir/products/] Failed to load resource: the server responded with a status of 408 ()",
+      "[https://janebiarena.ir/products/] Failed to load resource: the server responded with a status of 408 ()",
+      "[https://janebiarena.ir/products/] Failed to load resource: the server responded with a status of 408 ()",
+      "[https://janebiarena.ir/products/] Failed to load resource: the server responded with a status of 408 ()",
+      "[https://janebiarena.ir/cart] Failed to load resource: the server responded with a status of 408 ()",
+      "[https://janebiarena.ir/cart] Failed to load resource: the server responded with a status of 408 ()",
+      "[https://janebiarena.ir/cart] Failed to load resource: the server responded with a status of 408 ()"
+    ],
+    "findings": {
+      "testimonials section visible": {
+        "hasUserName": false,
+        "hasSecond": false,
+        "hasPersianDate": false,
+        "reviewApiCount": 2,
+        "fabricatedThird": false
+      },
+      "hero imgs": [
+        {
+          "src": "https://janebiarena.ir/products/hld-13.svg?v=3.2.0",
+          "visible": true
+        },
+        {
+          "src": "https://janebiarena.ir/products/cas-8.svg?v=3.2.0",
+          "visible": true
+        },
+        {
+          "src": "https://janebiarena.ir/products/hld-13.svg?v=3.2.0",
+          "visible": true
+        },
+        {
+          "src": "https://janebiarena.ir/products/cbl-11.svg?v=3.2.0",
+          "visible": true
+        },
+        {
+          "src": "https://janebiarena.ir/products/cas-8.svg?v=3.2.0",
+          "visible": true
+        }
+      ],
+      "products title": "جانبی آرنا | فروشگاه آنلاین لوازم جانبی موبایل",
+      "product detail loaded": "NO LINK FOUND",
+      "cart loaded": "جانبی آرنا | فروشگاه آنلاین لوازم جانبی موبایل",
+      "console errors": [
+        "[https://janebiarena.ir/products/] Failed to load resource: the server responded with a status of 408 ()",
+        "[https://janebiarena.ir/products/] Failed to load resource: the server responded with a status of 408 ()",
+        "[https://janebiarena.ir/products/] Failed to load resource: the server responded with a status of 408 ()",
+        "[https://janebiarena.ir/products/] Failed to load resource: the server responded with a status of 408 ()",
+        "[https://janebiarena.ir/cart] Failed to load resource: the server responded with a status of 408 ()",
+        "[https://janebiarena.ir/cart] Failed to load resource: the server responded with a status of 408 ()",
+        "[https://janebiarena.ir/cart] Failed to load resource: the server responded with a status of 408 ()"
+      ]
+    }
+  }
+]

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>داشبورد ایجنت‌ها</title>
+<style>
+  :root {
+    --fg: var(--foreground, #e8e8e8);
+    --fg2: var(--muted-foreground, #999);
+    --acc: var(--accent, #F47C20);
+    --bd: var(--border, #333);
+    --card: var(--card, #141414);
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    font: 13px/1.5 -apple-system, Vazirmatn, sans-serif;
+    color: var(--fg); padding: 14px 16px; min-width: 380px;
+  }
+  h1 { font-size: 14px; font-weight: 700; margin-bottom: 10px; display:flex; align-items:center; gap:8px; }
+  .dot { width:8px; height:8px; border-radius:50%; background:#22c55e; animation:pulse 2s infinite; }
+  @keyframes pulse { 50% { opacity:.4 } }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .card { background:var(--card); border:1px solid var(--bd); border-radius:10px; padding:10px 12px; }
+  .card h2 { font-size:12px; color:var(--fg2); font-weight:600; margin-bottom:8px; }
+  .agent { display:flex; justify-content:space-between; align-items:center; padding:5px 0; border-bottom:1px dashed var(--bd); }
+  .agent:last-child { border-bottom:0; }
+  .agent .nm { font-weight:600; font-size:12px; }
+  .agent .st { font-size:10px; padding:2px 8px; border-radius:99px; }
+  .st.ok { background:rgba(34,197,94,.15); color:#22c55e; }
+  .st.bad { background:rgba(239,68,68,.15); color:#ef4444; }
+  .timer { font-variant-numeric:tabular-nums; color:var(--acc); font-size:11px; }
+  .bar { height:7px; background:var(--bd); border-radius:99px; overflow:hidden; margin:6px 0 4px; }
+  .bar > i { display:block; height:100%; background:linear-gradient(90deg,var(--acc),#fbbf24); border-radius:99px; transition:width .6s; }
+  .pct-row { display:flex; justify-content:space-between; font-size:11px; }
+  .pct-row b { color:var(--acc); }
+  .sub { color:var(--fg2); font-size:10px; margin-top:2px; }
+  .live { display:flex; gap:10px; margin-top:10px; font-size:11px; }
+  .live .pill { padding:3px 10px; border-radius:99px; border:1px solid var(--bd); }
+  .live .up { color:#22c55e; } .live .down { color:#ef4444; }
+  footer { margin-top:10px; font-size:10px; color:var(--fg2); text-align:left; font-variant-numeric:tabular-nums; }
+</style>
+</head>
+<body>
+<h1><span class="dot"></span> وضعیت زندهٔ تیم‌های ایجنت</h1>
+<div class="grid">
+  <div class="card">
+    <h2>ایجنت‌ها و تایمر</h2>
+    <div id="agents"></div>
+  </div>
+  <div class="card">
+    <h2>پیشرفت پروژه‌ها</h2>
+    <div id="progress"></div>
+  </div>
+</div>
+<div class="live" id="live"></div>
+<footer id="foot"></footer>
+
+<script>
+const NAMES = {
+  "team-orchestrator-janebi": "اورکستراتور Janebi",
+  "team-orchestrator-novin": "اورکستراتور Novin",
+  "team-supervisor": "سرپرست تیم",
+  "harness-refiner": "بهبوددهنده هارنس",
+};
+function fmt(s) {
+  if (s == null) return "—";
+  if (s < 60) return s + "ث";
+  if (s < 3600) return Math.floor(s/60) + "دقیقه";
+  return Math.floor(s/3600) + "ساعت";
+}
+async function refresh() {
+  try {
+    const d = await (await fetch("agents-status.json?t=" + Date.now())).json();
+    document.getElementById("agents").innerHTML = d.jobs.map(j => `
+      <div class="agent">
+        <span><span class="nm">${NAMES[j.name] || j.name}</span>
+          <span class="st ${j.status==='ok'?'ok':'bad'}">${j.status==='ok'?'فعال':'خطا'}</span></span>
+        <span class="timer">${j.next_run_in_s != null && j.next_run_in_s >= 0 ? "⏱ " + fmt(j.next_run_in_s) : "—"}</span>
+      </div>`).join("");
+
+    const pr = d.progress, rp = pr.reports;
+    document.getElementById("progress").innerHTML = [
+      ["Janebi Arena", pr.janebi, rp.janebi],
+      ["Novin Khodro", pr.novin, rp.novin],
+    ].map(([n, t, r]) => `
+      <div class="pct-row"><span>${n}</span><b>${t ? t.pct : 0}%</b></div>
+      <div class="bar"><i style="width:${t ? t.pct : 0}%"></i></div>
+      <div class="sub">${t ? t.done + " تسک بسته · " + (t.open || 0) + " باز" : ""} · ${r} گزارش QA</div>
+    `).join("");
+
+    const P = d.prod;
+    document.getElementById("live").innerHTML = `
+      <span class="pill ${P.janebi===200?'up':'down'}">janebiarena.ir ${P.janebi===200?"✓ 200":P.janebi}</span>
+      <span class="pill ${P.novin===200?'up':'down'}">novin-khodro ${P.novin===200?"✓ 200":P.novin}</span>
+      <span class="pill">${d.sessions.by_source.cron||0} ران کرون</span>
+      <span class="pill">${d.sessions.by_source.subagent||0} سشن تیم</span>`;
+
+    document.getElementById("foot").textContent =
+      "بروزرسانی: " + new Date(d.ts * 1000).toLocaleTimeString("fa-IR");
+  } catch (e) {
+    document.getElementById("foot").textContent = "خطای خواندن وضعیت: " + e.message;
+  }
+}
+refresh();
+setInterval(refresh, 5000);
+</script>
+</body>
+</html>
