@@ -13,7 +13,7 @@ import {
   Clock, TrendingUp, Award, CheckCircle2, Navigation, Layers, ShieldAlert, PackageCheck
 } from 'lucide-react';
 import { Product } from '../types';
-import { toPersianDigits, formatPrice, getAssetUrl } from '../lib/utils';
+import { toPersianDigits, formatPrice, getAssetUrl, normalizePersianTypography } from '../lib/utils';
 import { useStoreSettings } from '../hooks/useStoreSettings';
 import { STORE_SETTINGS_DEFAULTS } from '../lib/constants';
 import PictureImage from '../components/PictureImage';
@@ -51,7 +51,7 @@ export default function Home() {
       buttonLink: settings.heroSlide1Link || STORE_SETTINGS_DEFAULTS.heroSlide1Link,
       badge: settings.heroSlide1Badge || STORE_SETTINGS_DEFAULTS.heroSlide1Badge,
       image: settings.heroSlide1Image || '/products/hld-13.svg',
-      borderColor: 'border-orange-500/40',
+      borderColor: 'border-orange-500/40 dark:border-orange-500/30',
       badgeBg: 'bg-orange-500/20 text-orange-300 border-orange-500/40',
     },
     {
@@ -63,7 +63,7 @@ export default function Home() {
       buttonLink: settings.heroSlide2Link || STORE_SETTINGS_DEFAULTS.heroSlide2Link,
       badge: settings.heroSlide2Badge || STORE_SETTINGS_DEFAULTS.heroSlide2Badge,
       image: settings.heroSlide2Image || '/products/cas-4.svg',
-      borderColor: 'border-blue-500/40',
+      borderColor: 'border-blue-500/40 dark:border-blue-500/30',
       badgeBg: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
     },
     {
@@ -75,13 +75,16 @@ export default function Home() {
       buttonLink: settings.heroSlide3Link || STORE_SETTINGS_DEFAULTS.heroSlide3Link,
       badge: settings.heroSlide3Badge || STORE_SETTINGS_DEFAULTS.heroSlide3Badge,
       image: settings.heroSlide3Image || '/products/cbl-1.svg',
-      borderColor: 'border-purple-500/40',
+      borderColor: 'border-purple-500/40 dark:border-purple-500/30',
       badgeBg: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
     },
   ], [settings]);
 
-  // Auto slide
+  // Auto slide — paused entirely when the user prefers reduced motion
   useEffect(() => {
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return;
+    }
     const timer = setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % heroSlides.length);
     }, 6000);
@@ -164,41 +167,41 @@ export default function Home() {
       
       {/* 1. Hero Showcase Section */}
       <section className="w-full box-border">
-        <div className={`relative rounded-3xl overflow-hidden bg-gradient-to-b from-orange-50/70 via-white to-zinc-50 dark:from-[#0e1422] dark:via-[#090d16] dark:to-[#05070c] border border-orange-200/80 dark:${currentSlide.borderColor} shadow-xl dark:shadow-2xl p-6 sm:p-8 lg:p-10 transition-all duration-700 min-h-[360px] sm:min-h-[420px] flex flex-col justify-between`}>
+        <div className={`relative rounded-3xl overflow-hidden bg-gradient-to-b from-orange-50/70 via-white to-zinc-50 dark:from-[var(--color-surface-elevated-dark)] dark:via-[var(--color-surface-dark)] dark:to-[var(--color-canvas-dark)] border ${currentSlide.borderColor} shadow-xl dark:shadow-2xl p-6 sm:p-8 lg:p-10 transition-colors duration-500 min-h-[360px] sm:min-h-[420px] flex flex-col justify-between`}>
           
-          {/* Subtle Ambient Dot Grid */}
-          <div className="absolute inset-0 bg-[radial-gradient(#0000000a_1px,transparent_1px)] dark:bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" />
+          {/* Ambient Dot Grid (dual-theme, non-hardcoded) */}
+          <div className="absolute inset-0 bg-[radial-gradient(var(--color-border-light)_1px,transparent_1px)] dark:bg-[radial-gradient(var(--color-border-dark)_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" />
 
           {/* Grid: Text Column & Graphic Column */}
-          <div className="relative z-10 w-full grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
+          <div key={activeSlide} className="hero-slide-content relative z-10 w-full grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
             
             {/* Text & Actions */}
             <div className="md:col-span-7 space-y-4 text-right">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 dark:bg-zinc-800/90 border border-orange-200 dark:border-zinc-700 text-orange-700 dark:text-amber-400 text-xs font-black shadow-xs">
                 <Sparkles className="h-3.5 w-3.5 animate-pulse text-orange-600 dark:text-amber-400 shrink-0" />
-                <span>{currentSlide.tag}</span>
+                <span>{normalizePersianTypography(currentSlide.tag)}</span>
               </div>
 
               <h1 className="text-xl sm:text-3xl lg:text-4xl font-black text-zinc-900 dark:text-white leading-snug tracking-tight">
-                {currentSlide.title}
+                {normalizePersianTypography(currentSlide.title)}
               </h1>
 
               <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-normal">
-                {currentSlide.subtitle}
+                {normalizePersianTypography(currentSlide.subtitle)}
               </p>
 
               <div className="pt-2 flex flex-wrap items-center gap-3">
                 <Link
                   to={currentSlide.buttonLink}
-                  className="bg-orange-600 hover:bg-orange-500 text-white font-black px-6 py-3 rounded-2xl text-xs sm:text-sm transition-all duration-200 shadow-lg shadow-orange-600/30 flex items-center gap-2 group active:scale-95"
+                  className="bg-primary-300 hover:bg-primary-500 active:bg-primary-600 text-white font-black px-6 py-3 rounded-2xl text-xs sm:text-sm transition-colors duration-200 shadow-lg shadow-primary-500/30 flex items-center gap-2 group active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700"
                 >
-                  <span>{currentSlide.buttonText}</span>
-                  <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+                  <span>{normalizePersianTypography(currentSlide.buttonText)}</span>
+                  <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
                 </Link>
 
                 <div className={`text-xs font-black px-4 py-2.5 rounded-2xl border bg-orange-100 text-orange-800 border-orange-200 dark:${currentSlide.badgeBg} flex items-center gap-2`}>
                   <Award className="h-4 w-4 shrink-0 text-orange-600 dark:text-inherit" />
-                  <span>{currentSlide.badge}</span>
+                  <span>{normalizePersianTypography(currentSlide.badge)}</span>
                 </div>
               </div>
             </div>
@@ -208,26 +211,30 @@ export default function Home() {
               <div className="relative w-64 h-64 lg:w-80 lg:h-80 rounded-3xl p-6 bg-white/80 dark:bg-zinc-800/60 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-md flex items-center justify-center shadow-lg dark:shadow-2xl group">
                 <PictureImage
                   src={currentSlide.image}
-                  alt={currentSlide.title}
+                  alt={normalizePersianTypography(currentSlide.title)}
                   width="320"
                   height="320"
                   priority={true}
-                  className="w-full h-full object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.15)] dark:drop-shadow-[0_20px_30px_rgba(0,0,0,0.6)] group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.15)] dark:drop-shadow-[0_20px_30px_rgba(0,0,0,0.6)] group-hover:scale-105 transition-transform duration-500 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                 />
               </div>
             </div>
           </div>
 
-          {/* Slide Indicator Dots (Centered) */}
-          <div className="relative z-10 flex items-center justify-center gap-2 mt-6 pt-3 border-t border-zinc-200/80 dark:border-zinc-800/80">
+          {/* Slide Indicator Dots (Centered — theme-aware contrast) */}
+          <div className="relative z-10 flex items-center justify-center gap-2 mt-6 pt-3 border-t border-zinc-200/80 dark:border-zinc-800/80" role="tablist" aria-label="اسلایدهای صفحه اصلی">
             {heroSlides.map((slide, idx) => (
               <button
                 key={slide.id}
                 onClick={() => setActiveSlide(idx)}
-                className={`h-2.5 rounded-full transition-all duration-300 ${
-                  activeSlide === idx ? 'w-8 bg-orange-500 shadow-md shadow-orange-500/50' : 'w-2.5 bg-zinc-300 dark:bg-zinc-700 hover:bg-zinc-400 dark:hover:bg-zinc-500'
+                role="tab"
+                aria-selected={activeSlide === idx}
+                aria-label={`اسلاید ${toPersianDigits(idx + 1)}`}
+                className={`h-2.5 rounded-full transition-all duration-300 motion-reduce:transition-none ${
+                  activeSlide === idx
+                    ? 'w-8 bg-primary-400 dark:bg-primary-300 shadow-md shadow-primary-500/50'
+                    : 'w-2.5 bg-zinc-400 dark:bg-zinc-600 hover:bg-zinc-500 dark:hover:bg-zinc-400'
                 }`}
-                aria-label={`اسلاید ${idx + 1}`}
               />
             ))}
           </div>

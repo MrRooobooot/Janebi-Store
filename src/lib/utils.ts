@@ -10,6 +10,27 @@ export function toPersianDigits(n: number | string | null | undefined): string {
 }
 
 /**
+ * Persian display typography normalizer for headings/hero copy:
+ * - Converts Arabic Yeh/Kaf to Persian forms
+ * - Repairs broken ZWNJ: "می شود" → "می‌شود", "سازنده ها" → "سازنده‌ها",
+ *   "بزرگ تر" → "بزرگ‌تر", "بی کیف" → "بی‌کیف"
+ * - Converts ASCII digits to Persian digits (via toPersianDigits)
+ */
+export function normalizePersianTypography(text: string | null | undefined): string {
+  if (!text) return '';
+  let out = text
+    .replace(/ي/g, 'ی')
+    .replace(/ك/g, 'ک')
+    // attach ZWNJ after prefixes that were split by a space
+    .replace(/(می|نمی|بی) +(?=[آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی])/g, '$1\u200c')
+    // attach ZWNJ before suffixes that were split by a space
+    .replace(/ +(?=(ها|های|هایی|تر|ترین|ام|ات|اش)(?![آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی]))/g, '\u200c')
+    // collapse doubled whitespace left behind
+    .replace(/[ \t]{2,}/g, ' ');
+  return toPersianDigits(out);
+}
+
+/**
  * Converts Persian and Arabic digits to ASCII English digits
  */
 export function toEnglishDigits(str: string): string {
