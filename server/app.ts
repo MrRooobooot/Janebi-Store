@@ -49,6 +49,10 @@ app.use((req: any, res: any, next: any) => {
   if (host) {
     res.setHeader("Reporting-Endpoints", `csp-endpoint="${proto}://${host}/api/csp-report"`);
   }
+  // X-Robots-Tag: explicit crawl directive for every response (incl. non-HTML
+  // assets) — mirrors the index.html meta robots tag so crawlers never fall
+  // back to an implied index/noarchive on stray endpoints.
+  res.setHeader("X-Robots-Tag", "index, follow");
   next();
 });
 
