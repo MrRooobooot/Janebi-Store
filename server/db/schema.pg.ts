@@ -161,6 +161,7 @@ export const blogPosts = pgTable('blog_posts', {
   category: text('category').default('مقالات').notNull(),
   author: text('author').default('تیم جانبی آرنا').notNull(),
   readTime: text('readTime'),
+  tags: text('tags'), // comma-separated SEO tags
   published: boolean('published').default(true).notNull(),
   createdAt: text('created_at').notNull()
 });

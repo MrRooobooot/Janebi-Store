@@ -162,6 +162,7 @@ export const blogPosts = sqliteTable('blog_posts', {
   category: text('category').default('مقالات').notNull(),
   author: text('author').default('تیم جانبی آرنا').notNull(),
   readTime: text('readTime'),
+  tags: text('tags'), // comma-separated SEO tags
   published: integer('published', { mode: 'boolean' }).default(true).notNull(),
   createdAt: text('created_at').notNull()
 });
