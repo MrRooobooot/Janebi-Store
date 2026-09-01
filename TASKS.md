@@ -185,3 +185,7 @@ Key findings (P0 first):
 - [x] Orchestrator live checks: health 200, live bundle index-BiBTCCwB.js == cluster build, sitemap 24× lastmod 2026-09-02, canonical + x-robots-tag present.
 - Reports: .hermes/reports/frontend-cart-checkout-2026-09-02.md, backend-seo-2026-09-02.md
 - Next: rotate to product/blog or admin design + next SEO item (Core Web Vitals).
+
+### Reviews-pagination cluster QA (2026-09-03b, PASS)
+- [x] TEAM-QA: npm run verify 44 files/337 tests GREEN + live bundle index-2CuGcgTU.js; 20/20 live checks (Persian pagination UI, ?page&limit meta, page1≠page2, empty-state 'جدید' no fabricated rating, dual-engine console clean, 390px no overflow). Report: .hermes/reports/qa-2026-09-03b-reviews.md
+- Next: blog seeding (prod 0 posts) + JSON-LD BlogPosting (SEO item).
