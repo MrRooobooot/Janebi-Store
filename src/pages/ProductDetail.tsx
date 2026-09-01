@@ -543,7 +543,6 @@ export default function ProductDetail() {
             >
               <ProductReviews
                 productId={product.id}
-                initialRating={product.rating || 0}
                 initialReviewsCount={product.reviewsCount || 0}
               />
             </motion.div>

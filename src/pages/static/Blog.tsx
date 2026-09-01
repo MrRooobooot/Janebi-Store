@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Clock, Calendar, ArrowLeft, ArrowRight, BookOpen, User, X } from 'lucide-react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { toPersianDigits } from '../../lib/utils';
+import { buildBlogPostingJsonLd } from '../../lib/blogJsonLd';
 
 // Live blog posts from GET /api/blog (admin-managed blog_posts table).
 // The previous hardcoded 3-article array is gone.
@@ -15,6 +16,8 @@ interface Article {
   readTime?: string | null;
   category: string;
   author: string;
+  createdAt?: string | null; // raw DB date, kept for JSON-LD only
+  updatedAt?: string | null; // raw DB date, kept for JSON-LD only
 }
 
 const FALLBACK_IMAGE = '/products/cas-4.svg';
@@ -51,6 +54,8 @@ export default function Blog() {
                 readTime: r.readTime ? toPersianDigits(r.readTime) : null,
                 category: r.category || 'مقالات',
                 author: r.author || 'تیم جانبی آرنا',
+                createdAt: r.createdAt || null,
+                updatedAt: r.updatedAt || null,
               }))
             : []
         );
@@ -65,6 +70,27 @@ export default function Blog() {
       cancelled = true;
     };
   }, []);
+
+  // JSON-LD BlogPosting for the open article (SEO: structured data for search
+  // engines). Honesty gate: builder emits only fields that exist on the post.
+  useEffect(() => {
+    const scriptId = 'blog-posting-jsonld';
+    if (!openArticle) {
+      document.getElementById(scriptId)?.remove();
+      return;
+    }
+    const jsonLd = buildBlogPostingJsonLd(openArticle, window.location.origin);
+    document.getElementById(scriptId)?.remove();
+    if (!jsonLd) return;
+    const script = document.createElement('script');
+    script.id = scriptId;
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(jsonLd);
+    document.head.appendChild(script);
+    return () => {
+      document.getElementById(scriptId)?.remove();
+    };
+  }, [openArticle]);
 
   return (
     <motion.div
