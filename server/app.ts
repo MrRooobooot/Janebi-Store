@@ -41,7 +41,7 @@ app.use((req: any, res: any, next: any) => {
   // uses (helmet v8 removed its permissionsPolicy middleware, set manually).
   res.setHeader(
     "Permissions-Policy",
-    "camera=(), geolocation=(), microphone=(), payment=(), usb=(), interest-cohort=()"
+    "camera=(), geolocation=(), microphone=(), payment=(self), usb=(), interest-cohort=()"
   );
   // Reporting-Endpoints (modern report-to transport for CSP violations).
   // Absolute URL per request, derived from the forwarded Host header, so it
