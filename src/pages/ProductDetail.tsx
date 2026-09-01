@@ -175,7 +175,22 @@ export default function ProductDetail() {
     }
   };
 
-  const galleryImages = product.image ? [product.image] : [];
+  const galleryImages = product.images?.length
+    ? product.images
+    : product.image
+    ? [product.image]
+    : [];
+  const hasGallery = galleryImages.length > 1;
+
+  const handleThumbKeyNav = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    e.preventDefault();
+    const dir = e.key === 'ArrowLeft' ? -1 : 1; // RTL: left = previous
+    const next = (selectedImageIndex + dir + galleryImages.length) % galleryImages.length;
+    setSelectedImageIndex(next);
+    const btns = e.currentTarget.querySelectorAll<HTMLButtonElement>('[data-thumb]');
+    btns[next]?.focus();
+  };
   const hasRating = !!product.rating && product.rating > 0;
   const stock = typeof product.stockQuantity === 'number' ? product.stockQuantity : 10;
   const outOfStock = stock <= 0;
@@ -198,7 +213,7 @@ export default function ProductDetail() {
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.4 }}
-                className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100/80 dark:from-gray-800/40 dark:to-gray-800/20 backdrop-blur-md rounded-3xl flex items-center justify-center p-8 mb-4 border border-gray-200/60 dark:border-[var(--color-border-dark)] relative overflow-hidden group shadow-inner"
+                className="aspect-square bg-gradient-to-br from-[var(--color-canvas-light)] to-[var(--color-canvas-light)]/70 dark:from-white/[0.05] dark:to-white/[0.02] backdrop-blur-md rounded-3xl flex items-center justify-center p-8 mb-4 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] relative overflow-hidden group shadow-inner"
               >
                 {product.discount && (
                   <div className="absolute top-5 right-5 bg-gradient-to-r from-rose-600 to-orange-600 text-white font-black px-3.5 py-1.5 rounded-xl z-10 text-xs shadow-md tracking-wider">
@@ -210,49 +225,75 @@ export default function ProductDetail() {
                 <button
                   onClick={() => setIsLightboxOpen(true)}
                   aria-label="مشاهده تصویر در اندازه بزرگ"
-                  className="absolute top-5 left-5 w-10 h-10 rounded-xl bg-[var(--color-surface-light)]/80 dark:bg-gray-800/80 backdrop-blur-md border border-gray-200/60 dark:border-gray-700 text-gray-700 dark:text-gray-200 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-105 z-10 shadow-sm"
+                  className="absolute top-5 left-5 w-10 h-10 rounded-xl bg-[var(--color-surface-light)]/80 dark:bg-white/[0.08] backdrop-blur-md border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-gray-700 dark:text-gray-200 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-105 z-10 shadow-sm"
                 >
                   <Maximize2 className="h-4 w-4" />
                 </button>
 
-                <SmartImage
-                  src={galleryImages[selectedImageIndex] || product.image}
-                  alt={product.title}
-                  priority
-                  className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-500 cursor-zoom-in"
-                  onClick={() => setIsLightboxOpen(true)}
-                />
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.div
+                    key={galleryImages[selectedImageIndex] || product.image}
+                    initial={{ opacity: 0, scale: 0.985 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.985 }}
+                    transition={{ duration: 0.22, ease: 'easeOut' }}
+                    className="w-full h-full flex items-center justify-center"
+                  >
+                    <SmartImage
+                      src={galleryImages[selectedImageIndex] || product.image}
+                      alt={product.title}
+                      priority={selectedImageIndex === 0}
+                      className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-500 cursor-zoom-in"
+                      onClick={() => setIsLightboxOpen(true)}
+                    />
+                  </motion.div>
+                </AnimatePresence>
               </motion.div>
 
               {/* Thumbnails */}
-              {galleryImages.length > 1 && (
-                <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-                  {galleryImages.map((img, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setSelectedImageIndex(idx)}
-                      className={`w-20 h-20 bg-[var(--color-surface-light)] dark:bg-gray-800/40 backdrop-blur-md rounded-2xl border-2 p-2 shrink-0 transition-all duration-300 ${
-                        selectedImageIndex === idx
-                          ? 'border-orange-500 shadow-md scale-105'
-                          : 'border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] opacity-60 hover:opacity-100'
-                      }`}
-                    >
-                      <img src={img} alt={`تصویر ${idx + 1}`} width="96" height="96" loading="lazy" decoding="async" className="w-full h-full object-contain" />
-                    </button>
-                  ))}
+              {hasGallery && (
+                <div
+                  role="group"
+                  aria-label="تصاویر محصول"
+                  onKeyDown={handleThumbKeyNav}
+                  className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide"
+                >
+                  {galleryImages.map((img, idx) => {
+                    const isActive = selectedImageIndex === idx;
+                    return (
+                      <button
+                        key={idx}
+                        data-thumb
+                        type="button"
+                        onClick={() => setSelectedImageIndex(idx)}
+                        onMouseEnter={() => setSelectedImageIndex(idx)}
+                        onFocus={() => setSelectedImageIndex(idx)}
+                        aria-label={`نمایش تصویر ${toPersianDigits(idx + 1)} از ${toPersianDigits(galleryImages.length)}`}
+                        aria-current={isActive ? 'true' : undefined}
+                        aria-pressed={isActive}
+                        className={`w-20 h-20 sm:w-[72px] sm:h-[72px] min-w-[44px] min-h-[44px] bg-[var(--color-surface-card-light)] dark:bg-white/[0.04] backdrop-blur-md rounded-2xl border-2 p-2 shrink-0 transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700 ${
+                          isActive
+                            ? 'border-primary-300 ring-2 ring-primary-300/60 shadow-[var(--shadow-glow-orange)] scale-105 opacity-100'
+                            : 'border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] opacity-60 hover:opacity-100 hover:border-primary-200 dark:hover:border-primary-300/50'
+                        }`}
+                      >
+                        <img src={img} alt={`تصویر ${toPersianDigits(idx + 1)} ${product.title}`} width="96" height="96" loading="lazy" decoding="async" className="w-full h-full object-contain" />
+                      </button>
+                    );
+                  })}
                 </div>
               )}
 
               {/* Trust Badges - Desktop view */}
               <div className="grid grid-cols-2 gap-3 mt-6 pt-6 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60">
-                <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-gray-50/70 dark:bg-gray-800/30 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/50">
+                <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-[var(--color-canvas-light)]/70 dark:bg-white/[0.035] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/50">
                   <Award className="h-5 w-5 text-amber-500 shrink-0" />
                   <div className="text-right">
                     <p className="text-xs font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">ضمانت ۱۰۰٪ اصالت</p>
                     <p className="text-[10px] text-gray-500 dark:text-gray-400">کالای اورجینال و شرکتی</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-gray-50/70 dark:bg-gray-800/30 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/50">
+                <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-[var(--color-canvas-light)]/70 dark:bg-white/[0.035] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/50">
                   <RotateCcw className="h-5 w-5 text-emerald-500 shrink-0" />
                   <div className="text-right">
                     <p className="text-xs font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">۷ روز مهلت تست</p>
@@ -273,7 +314,7 @@ export default function ProductDetail() {
                   <button
                     onClick={handleShare}
                     aria-label="اشتراک‌گذاری محصول"
-                    className="w-11 h-11 rounded-xl text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center justify-center"
+                    className="w-11 h-11 rounded-xl text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-[var(--color-canvas-light)] dark:hover:bg-white/[0.06] transition-colors flex items-center justify-center"
                   >
                     <Share2 className="h-4 w-4" />
                   </button>
@@ -311,7 +352,7 @@ export default function ProductDetail() {
                 </div>
 
                 {/* Price & Stock Status Box */}
-                <div className="bg-gray-50/80 dark:bg-gray-800/40 rounded-3xl p-6 mb-8 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/80">
+                <div className="bg-[var(--color-canvas-light)]/80 dark:bg-white/[0.045] rounded-3xl p-6 mb-8 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/80">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                       <span className="text-xs text-gray-500 dark:text-gray-400 font-medium block mb-1">
@@ -404,7 +445,7 @@ export default function ProductDetail() {
                   className={`w-14 h-14 rounded-2xl border flex items-center justify-center transition-all active:scale-95 shrink-0 ${
                     inWishlist
                       ? 'text-rose-500 bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-900/60'
-                      : 'text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800'
+                      : 'text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-700 hover:bg-[var(--color-canvas-light)] dark:hover:bg-white/[0.06]'
                   }`}
                 >
                   <Heart className={`h-5 w-5 ${inWishlist ? 'fill-current' : ''}`} />
@@ -416,7 +457,7 @@ export default function ProductDetail() {
                   className={`w-14 h-14 rounded-2xl border flex items-center justify-center transition-all active:scale-95 shrink-0 ${
                     inCompare
                       ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-900/60'
-                      : 'text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800'
+                      : 'text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-700 hover:bg-[var(--color-canvas-light)] dark:hover:bg-white/[0.06]'
                   }`}
                 >
                   <ArrowLeftRight className="h-5 w-5" />
@@ -489,27 +530,27 @@ export default function ProductDetail() {
               transition={{ duration: 0.3 }}
               className="max-w-3xl"
             >
-              <div className="bg-gray-50/60 dark:bg-gray-800/30 rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] overflow-hidden">
-                <dl className="divide-y divide-gray-100 dark:divide-gray-800/60 text-xs sm:text-sm">
-                  <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex justify-between">
+              <div className="bg-[var(--color-canvas-light)]/70 dark:bg-white/[0.035] rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] overflow-hidden">
+                <dl className="divide-y divide-[var(--color-border-subtle-light)] dark:divide-[var(--color-border-dark)] text-xs sm:text-sm">
+                  <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex justify-between even:bg-[var(--color-canvas-light)]/60 dark:even:bg-white/[0.035] transition-colors">
                     <dt className="font-bold text-gray-500 dark:text-gray-400">نام تجاری / برند</dt>
                     <dd className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] sm:col-span-2 flex items-center gap-2">
                       <span>{product.brand}</span>
                       <BrandLogo name={product.brand} size="sm" />
                     </dd>
                   </div>
-                  <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex justify-between">
+                  <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex justify-between even:bg-[var(--color-canvas-light)]/60 dark:even:bg-white/[0.035] transition-colors">
                     <dt className="font-bold text-gray-500 dark:text-gray-400">دسته‌بندی اصلی</dt>
                     <dd className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] sm:col-span-2">{product.category}</dd>
                   </div>
                   {product.sku && (
-                    <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex justify-between">
+                    <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex justify-between even:bg-[var(--color-canvas-light)]/60 dark:even:bg-white/[0.035] transition-colors">
                       <dt className="font-bold text-gray-500 dark:text-gray-400">شناسه اختصاصی (SKU)</dt>
                       <dd className="font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] sm:col-span-2">{product.sku}</dd>
                     </div>
                   )}
                   {product.warranty && (
-                    <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex justify-between">
+                    <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex justify-between even:bg-[var(--color-canvas-light)]/60 dark:even:bg-white/[0.035] transition-colors">
                       <dt className="font-bold text-gray-500 dark:text-gray-400">گارانتی و خدمات</dt>
                       <dd className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] sm:col-span-2 flex items-center gap-1.5">
                         <ShieldCheck className="h-4 w-4 text-emerald-500" />
@@ -518,7 +559,7 @@ export default function ProductDetail() {
                     </div>
                   )}
                   {product.features && product.features.length > 0 && (
-                    <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex flex-col gap-2">
+                    <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex flex-col gap-2 even:bg-[var(--color-canvas-light)]/60 dark:even:bg-white/[0.035] transition-colors">
                       <dt className="font-bold text-gray-500 dark:text-gray-400">سایر مشخصات و ویژگی‌ها</dt>
                       <dd className="font-medium text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] sm:col-span-2 space-y-1.5">
                         {product.features.map((feat: string, idx: number) => (
@@ -596,7 +637,7 @@ export default function ProductDetail() {
             <div className="mx-3 mb-[76px]">
               <div className="bg-[var(--color-surface-light)]/95 dark:bg-[var(--color-surface-dark)]/95 backdrop-blur-2xl rounded-2xl border border-gray-200/80 dark:border-gray-700/80 shadow-2xl p-3 flex items-center gap-3 text-right">
                 <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                  <div className="w-12 h-12 rounded-xl bg-gray-50 dark:bg-gray-800 border border-[var(--color-border-light)] dark:border-gray-700 flex items-center justify-center shrink-0 overflow-hidden">
+                  <div className="w-12 h-12 rounded-xl bg-[var(--color-canvas-light)] dark:bg-white/[0.045] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex items-center justify-center shrink-0 overflow-hidden">
                     <img
                       src={product.image}
                       alt={product.title}
@@ -623,7 +664,7 @@ export default function ProductDetail() {
                     className={`w-11 h-11 rounded-xl border flex items-center justify-center transition-colors active:scale-95 ${
                       inWishlist
                         ? 'text-rose-500 bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-900/50'
-                        : 'text-gray-400 border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        : 'text-gray-400 border-gray-200 dark:border-gray-700 hover:bg-[var(--color-canvas-light)] dark:hover:bg-white/[0.06]'
                     }`}
                   >
                     <Heart className={`h-5 w-5 ${inWishlist ? 'fill-current' : ''}`} />
@@ -702,7 +743,7 @@ export default function ProductDetail() {
                   className={`w-11 h-11 rounded-xl border flex items-center justify-center transition-colors active:scale-95 ${
                     inWishlist
                       ? 'text-rose-500 bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-900/60'
-                      : 'text-gray-400 border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] hover:bg-gray-100 dark:hover:bg-gray-800'
+                      : 'text-gray-400 border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] hover:bg-[var(--color-canvas-light)] dark:hover:bg-white/[0.06]'
                   }`}
                 >
                   <Heart className={`h-5 w-5 ${inWishlist ? 'fill-current' : ''}`} />
@@ -713,7 +754,7 @@ export default function ProductDetail() {
                   className={`w-11 h-11 rounded-xl border flex items-center justify-center transition-colors active:scale-95 ${
                     inCompare
                       ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-900/60'
-                      : 'text-gray-400 border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] hover:bg-gray-100 dark:hover:bg-gray-800'
+                      : 'text-gray-400 border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] hover:bg-[var(--color-canvas-light)] dark:hover:bg-white/[0.06]'
                   }`}
                 >
                   <ArrowLeftRight className="h-5 w-5" />
