@@ -145,6 +145,7 @@ Key findings (P0 first):
 - [x] `archived` status (strict allow-list), `GET /api/admin/contact-messages ?status=` filter (archived hidden by default), auto-archive reaper (1h setInterval, transaction-guarded/idempotent, `ARCHIVE_AFTER_DAYS=90` in src/lib/constants.ts), admin Messages.tsx archive/unarchive + status pills (Persian RTL).
 - [x] Commit adbcdc9 (6 files +303/−21), deployed via deploy.sh; bundle index-BplrxINR.js live == local; health ok. Orchestrator re-verified: 2 new test suites 13/13 pass; live admin probes — 430 rows default, archived=0, invalid filter 400, archive/unarchive roundtrip 200.
 - Report: .hermes/reports/backend-contact-archive.md
+- Close-out re-verification 2026-09-02 (session s312): npm run verify ALL GREEN (42 files/322 tests), all §3.12 criteria confirmed in current tree (UI tabs + archive buttons, API filters, reaper, unread-count exclusion invariant). Docs-only commit — no code change. Report: .hermes/reports/s312-contact-archive-2026-09-02.md
 - Next: audit priority list (§6) fully closed. Backlog EMPTY — cron reads reports for regressions only.
 
 ### Product-detail design+SEO cluster (2026-09-02, deployed + live-verified)
