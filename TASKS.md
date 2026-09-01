@@ -125,3 +125,10 @@ Key findings (P0 first):
 - [x] JSON-LD `</script>` escape in ProductDetail (\u003c/\u003e/\u0026)
 - [x] `scripts/backup-db.mjs` (`npm run db:backup`) — VACUUM INTO, keeps last 7
 - Commits 741b1b5 + 30ef18f, deployed, live probes 200. QA: .hermes/reports/qa-2026-09-01-otp-hide.md
+
+### P2 UI cluster (2026-09-01, QA PASS)
+- [x] §3.9 filter reuse: shared `src/lib/productQuery.ts` buildProductQuery() — NewProducts (newest) + Offers (onlyDiscounted+discount-desc) use identical query params as Products (commit da2d470).
+- [x] §3.10 iOS PNG icons: real rendered public/icon-192.png (2,812 B) + icon-512.png (6,668 B), manifest PNG-first + apple-touch-icon in index.html.
+- [x] §3.8 hero 'فست' guard + §3.9 blog nav gating: already closed by earlier clusters (server DEFAULTS verbatim render; no blog links in storefront chrome) — verified no-op.
+- [x] QA PASS (commit 3dbd58d): verify 39 suites/306 tests green; live probes 200, PNG bytes match repo, dual-engine 6 pages clean, zero horizontal overflow on 390px. Report: qa-2026-09-01-p2-ui-cluster.md. Deployed.
+- Next: §3.12 contact messages archive policy; remaining P2s minimal.
