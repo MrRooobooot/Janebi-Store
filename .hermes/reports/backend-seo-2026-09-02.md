@@ -1,32 +1,19 @@
-# TEAM-BACKEND/SEO — Crawlability & Discoverability — 2026-09-02
+# Backend/SEO — Crawlability & Discoverability Audit (2026-09-02)
 
-## Gate
-`npm run verify` — ✅ ALL HARDCORE QUALITY GATES PASSED (100% VERIFIED), exit 0.
+**Result: ALL 4 TASKS NO-OP** — live site already correct; prior commit `5eeec55` + `47f0395` shipped this cluster.
+**Gate:** `npm run verify` → `✅ ALL HARDCORE QUALITY GATES PASSED (100% VERIFIED)` (exit 0)
+**Commit:** no-op for code; this report committed separately.
 
-## Task results
+## 1. robots.txt & sitemap.xml
+- `curl -s https://janebiarena.ir/robots.txt` → correct: `Sitemap: https://janebiarena.ir/sitemap.xml`, disallows /admin/, /api/, /checkout/, /profile; AI bot block present (CCBot disallowed, GPTBot/ClaudeBot/PerplexityBot etc. allowed). Live file byte-identical to `public/robots.txt` (diff empty).
+- `curl -s https://janebiarena.ir/sitemap.xml` → 24 URLs, lastmod `2026-09-02` on every entry, zero example.com placeholders. Live file byte-identical to `public/sitemap.xml`.
+- Sitemap product URLs `/product/1..14` exactly match live DB: `GET /api/products` → 14 products, ids `1..14`. No blog posts exist; key static pages all present (/, /products, /offers, /new-products, /brands, /about, /contact, /faq, /terms, /privacy).
 
-### 1. robots.txt + sitemap.xml (live audit) — CHANGED
-- `https://janebiarena.ir/robots.txt` — OK, no-op. Correct Allow/Disallow (admin, api, checkout, profile disallowed; AI bots allowed; CCBot blocked; Sitemap directive present).
-- `https://janebiarena.ir/sitemap.xml` — had 10 static URLs but **no `<lastmod>` and no product URLs**. Regenerated `public/sitemap.xml`: 24 URLs (10 static + 14 `/product/:id` for real DB products, ids 1–14 fetched from live `GET /api/products`), every URL carries `<lastmod>2026-09-02</lastmod>`. No example.com placeholders. No blog posts exist (blog hidden from sitemap by design per f95acbd) — none listed.
+## 2. X-Robots-Tag header
+- Live evidence: `curl -sI https://janebiarena.ir` → `x-robots-tag: index, follow`. Already set in `server/app.ts:55` (`res.setHeader("X-Robots-Tag", "index, follow")`). No change needed.
 
-### 2. X-Robots-Tag header — CHANGED
-- Live `curl -sI https://janebiarena.ir` → **no X-Robots-Tag**. Added `res.setHeader("X-Robots-Tag", "index, follow")` to the pre-helmet header middleware in `server/app.ts` (helmet's own xRobotsTag defaults to noindex, so set manually).
+## 3. Canonical / robots meta on key pages
+- Live home HTML: `<link rel="canonical" href="https://janebiarena.ir/" />` and `<meta name="robots" content="index, follow" />` — absolute canonical, present in `index.html:10-11`. No relative/absent canonical. No change needed.
 
-### 3. Canonical / hreflang — CHANGED (partial)
-- Live home HTML and local `index.html`: **no `<link rel="canonical">`** present. Added `<link rel="canonical" href="https://janebiarena.ir/" />` to the index.html SEO block. og:url already absolute (`https://janebiarena.ir/`) — OK.
-- hreflang: no-op — single-locale Persian site, no alternate-language pages; adding hreflang would be incorrect.
-
-### 4. llms-full.txt counts — NO-OP
-- Live `GET /api/products` returns 14 products; `public/llms-full.txt` lists 14 `/product/:id` URLs (ids 1–14). No drift, file untouched.
-
-## Files
-- `public/sitemap.xml` — regenerated (24 URLs, lastmod 2026-09-02)
-- `server/app.ts` — X-Robots-Tag header
-- `index.html` — canonical link (SEO meta block only)
-
-## Post-deploy live verification (2026-09-02)
-- `GET /sitemap.xml` → 200; 24 `<lastmod>2026-09-02</lastmod>` entries; 14 `/product/:id` URLs; 0 example.com hits.
-- `HEAD /` → `x-robots-tag: index, follow`.
-- `GET /` → `<link rel="canonical" href="https://janebiarena.ir/" />` present.
-- `GET /api/health` → `{"status":"ok","database":"ok"}`.
-- `GET /product/1` → 200.
+## 4. llms-full.txt drift
+- `GET /api/products` → 14 products; `public/llms-full.txt` contains exactly 14 product URLs (`/product/1..14`), id sets match, all 14 live product titles present in the file. No drift → not regenerated.
