@@ -35,6 +35,8 @@
 ## 🎯 Next Priority Backlog (Phase Next)
 
 - [x] OTP UI gated behind GET /api/auth/otp/status (prod enabled=false → OTP tab hidden, password reset shows Persian notice). Commit c11f9ca, live-verified 2026-09-02.
+- [x] Brand PNG cleanup (P2): verified no-op 2026-09-02 — only icon-192/512.png exist (both referenced, PWA-required); all brand logos are referenced SVGs; zero unreferenced PNGs. Item closed.
+- [x] Admin panel follow-up (admin-review): newsletter chain + rate limiter + bulk endpoints (9b0d2b9) + admin pagination/bulk UI (PageControls.tsx, d3dc6d9) — `npm run verify` green, deployed + live-verified 2026-09-02.
 
 - [x] Full automated visual & design audit across all storefront & admin routes via `browser_exec`.
 - [x] Zero horizontal scroll (CLS/Overflow) verified on all 16 core pages.
