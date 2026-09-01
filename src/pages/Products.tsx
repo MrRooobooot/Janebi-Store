@@ -4,7 +4,9 @@ import ProductFilterSidebar from '../components/products/ProductFilterSidebar';
 import ProductSortHeader from '../components/products/ProductSortHeader';
 import ProductGrid from '../components/products/ProductGrid';
 import { ChevronRight, ChevronLeft, Sparkles } from 'lucide-react';
+import { useEffect } from 'react';
 import { toPersianDigits } from '../lib/utils';
+import { applyCatalogSeo, restoreCatalogSeo } from '../lib/catalogSeo';
 
 export default function Products() {
   const {
@@ -41,22 +43,60 @@ export default function Products() {
     totalProducts,
   } = useProductFilters();
 
+  const isCategoryFiltered = selectedCategory !== 'همه';
+  const realCount = totalProducts; // real count returned by the live API — never fabricated
+
+  // Category-aware <head> SEO (title / description / CollectionPage JSON-LD).
+  // Runs only on settled API data (loading=false) so meta always reflects the
+  // real live catalogue, not transient loading states.
+  useEffect(() => {
+    if (loading) return;
+    if (isCategoryFiltered) {
+      applyCatalogSeo({
+        title: `خرید ${selectedCategory} | جانبی آرنا`,
+        description: `خرید ${selectedCategory} اورجینال در جانبی آرنا — ${toPersianDigits(realCount)} محصول موجود با ضمانت اصالت، گارانتی تعویض فیزیکی و ارسال سریع به سراسر ایران.`,
+        itemCount: realCount,
+        category: selectedCategory,
+      });
+    } else {
+      restoreCatalogSeo();
+    }
+    return () => restoreCatalogSeo();
+  }, [isCategoryFiltered, selectedCategory, realCount, loading]);
+
   return (
     <div className="min-h-screen bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Page Title Header */}
         <div className="mb-8 text-right bg-gradient-to-r from-orange-500/10 via-amber-500/5 to-transparent dark:from-white/[0.04] dark:via-white/[0.02] dark:to-transparent p-6 rounded-3xl border border-orange-500/20 dark:border-white/[0.08]">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 dark:bg-orange-950/70 text-orange-700 dark:text-orange-300 text-xs font-bold mb-2">
-            <Sparkles className="h-3.5 w-3.5 text-orange-500" />
-            <span>کاتالوگ کامل جانبی آرنا</span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-[#f7f8f8] mb-2">
-            فروشگاه تجهیزات و لوازم جانبی اورجینال
-          </h1>
-          <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
-            بررسی، مقایسه تخصصی و خرید مستقیم انواع قاب، گلس، شارژر فست، کابل و پاوربانک با گارانتی تعویض فیزیکی
-          </p>
+          {isCategoryFiltered ? (
+            <>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 dark:bg-orange-950/70 text-orange-700 dark:text-orange-300 text-xs font-bold mb-2">
+                <Sparkles className="h-3.5 w-3.5 text-orange-500" />
+                <span>دسته‌بندی انتخاب‌شده</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-[#f7f8f8] mb-2">
+                خرید {selectedCategory}
+              </h1>
+              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
+                {toPersianDigits(realCount)} محصول اورجینال در دسته «{selectedCategory}» با ضمانت اصالت، گارانتی تعویض فیزیکی و ارسال سریع
+              </p>
+            </>
+          ) : (
+            <>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 dark:bg-orange-950/70 text-orange-700 dark:text-orange-300 text-xs font-bold mb-2">
+                <Sparkles className="h-3.5 w-3.5 text-orange-500" />
+                <span>کاتالوگ کامل جانبی آرنا</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-[#f7f8f8] mb-2">
+                فروشگاه تجهیزات و لوازم جانبی اورجینال
+              </h1>
+              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
+                بررسی، مقایسه تخصصی و خرید مستقیم انواع قاب، گلس، شارژر فست، کابل و پاوربانک با گارانتی تعویض فیزیکی
+              </p>
+            </>
+          )}
         </div>
 
         {/* Main Content Layout Grid */}
