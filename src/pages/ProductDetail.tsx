@@ -92,7 +92,12 @@ export default function ProductDetail() {
             bestRating: '5',
             worstRating: '1',
           } : undefined,
-        });
+        })
+          // Escape '<' so a product title/description containing '</script'
+          // (or any '<') cannot break out of the inline JSON-LD script tag.
+          .replace(/</g, '\\u003c')
+          .replace(/>/g, '\\u003e')
+          .replace(/&/g, '\\u0026');
         document.head.appendChild(schemaScript);
       })
       .catch(() => {

@@ -1,30 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Phone, Lock, Eye, EyeOff, LogIn, ArrowLeft, KeyRound, ShieldCheck } from "lucide-react";
 import { motion } from "motion/react";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../contexts/ToastContext";
-import { isValidIranianMobile, normalizeIranianMobile } from "../lib/utils";
+import { isValidIranianMobile, normalizeIranianMobile, toPersianDigits } from "../lib/utils";
 
+// OTP login is DEAD in production (no SMS provider — audit known blocker #5).
+// The OTP login tab/flow is removed; only password login + reset flow remain.
+// If the backend's /api/auth/otp/* endpoints return 503, a Persian error is shown.
 export default function Login() {
-  const { login, verifyOtp } = useAuth();
+  const { login } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
 
-  const [mode, setMode] = useState<"password" | "otp" | "forgot">("password");
-  // OTP is only offered when the server has an SMS provider wired
-  // (audit §3.1 — dead feature must not be exposed on live).
-  const [otpAvailable, setOtpAvailable] = useState(false);
-  useEffect(() => {
-    let cancelled = false;
-    fetch("/api/auth/otp/status")
-      .then((r) => (r.ok ? r.json() : { enabled: false }))
-      .then((d: { enabled?: boolean }) => {
-        if (!cancelled) setOtpAvailable(Boolean(d.enabled));
-      })
-      .catch(() => {});
-    return () => { cancelled = true; };
-  }, []);
+  const [mode, setMode] = useState<"password" | "forgot">("password");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [otpCode, setOtpCode] = useState("");
@@ -62,11 +52,13 @@ export default function Login() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone: normalizedPhone }),
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (res.ok) {
         setOtpSent(true);
         startCountdown(data.expiresIn || 120);
         addToast(data.message || "کد تایید ارسال شد", "success");
+      } else if (res.status === 503) {
+        addToast("سرویس پیامکی فعال نیست", "error");
       } else {
         addToast(data.message || "خطا در ارسال کد تایید", "error");
       }
@@ -108,7 +100,7 @@ export default function Login() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone: normalizedPhone, code: otpCode, newPassword }),
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (res.ok) {
         addToast(data.message || "رمز عبور با موفقیت تغییر کرد", "success");
         setMode("password");
@@ -117,6 +109,8 @@ export default function Login() {
         setOtpSent(false);
         setNewPassword("");
         setConfirmPassword("");
+      } else if (res.status === 503) {
+        addToast("سرویس پیامکی فعال نیست", "error");
       } else {
         addToast(data.message || "خطا در تغییر رمز عبور", "error");
       }
@@ -132,20 +126,6 @@ export default function Login() {
     const normalizedPhone = normalizeIranianMobile(phone);
     if (!isValidIranianMobile(normalizedPhone)) {
       addToast("لطفاً شماره موبایل معتبر وارد کنید (مثلا ۰۹۱۲۳۴۵۶۷۸۹)", "error");
-      return;
-    }
-
-    if (mode === "otp") {
-      if (!otpCode || otpCode.length !== 5) {
-        addToast("کد تایید باید ۵ رقم باشد", "error");
-        return;
-      }
-      setIsLoading(true);
-      const success = await verifyOtp(normalizedPhone, otpCode);
-      setIsLoading(false);
-      if (success) {
-        navigate("/profile");
-      }
       return;
     }
 
@@ -186,32 +166,13 @@ export default function Login() {
           </p>
         </div>
 
-        {/* Tab switch for Password vs OTP */}
+        {/* Single password-login mode (OTP login removed — dead feature) */}
         <div className="flex bg-gray-100 dark:bg-gray-800 p-1 rounded-2xl mb-6 text-xs font-bold">
-          <button
-            type="button"
-            onClick={() => setMode("password")}
-            className={`flex-1 py-2.5 rounded-xl transition-all ${
-              mode === "password"
-                ? "bg-[var(--color-surface-light)] dark:bg-gray-700 text-orange-600 dark:text-orange-400 shadow-sm"
-                : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-            }`}
+          <div
+            className="flex-1 py-2.5 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-700 text-orange-600 dark:text-orange-400 shadow-sm text-center"
           >
             ورود با رمز عبور
-          </button>
-          {otpAvailable && (
-          <button
-            type="button"
-            onClick={() => setMode("otp")}
-            className={`flex-1 py-2.5 rounded-xl transition-all ${
-              mode === "otp"
-                ? "bg-[var(--color-surface-light)] dark:bg-gray-700 text-orange-600 dark:text-orange-400 shadow-sm"
-                : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-            }`}
-          >
-            ورود با پیامک (OTP)
-          </button>
-          )}
+          </div>
         </div>
 
         <form
@@ -245,7 +206,7 @@ export default function Login() {
                   </label>
                   {otpSent && (
                     <span className="text-[11px] text-orange-600 dark:text-orange-400 font-mono">
-                      {otpCountdown > 0 ? `${otpCountdown} ثانیه تا ارسال مجدد` : "کد منقضی شد"}
+                      {otpCountdown > 0 ? `${toPersianDigits(otpCountdown)} ثانیه تا ارسال مجدد` : "کد منقضی شد"}
                     </span>
                   )}
                 </div>
@@ -335,49 +296,14 @@ export default function Login() {
                 </button>
               </div>
             </div>
-          ) : (
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300">
-                  کد تایید پیامک‌شده *
-                </label>
-                {otpSent && (
-                  <span className="text-[11px] text-orange-600 dark:text-orange-400 font-mono">
-                    {otpCountdown > 0 ? `${otpCountdown} ثانیه تا ارسال مجدد` : "کد منقضی شد"}
-                  </span>
-                )}
-              </div>
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <input
-                    type="text"
-                    dir="ltr"
-                    maxLength={5}
-                    value={otpCode}
-                    onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
-                    placeholder="12345"
-                    className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3.5 px-4 pl-10 text-center tracking-widest text-sm font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
-                  />
-                  <KeyRound className="h-4 w-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                </div>
-                <button
-                  type="button"
-                  onClick={handleSendOtp}
-                  disabled={isLoading || otpCountdown > 0}
-                  className="px-4 py-3.5 rounded-2xl bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 text-xs font-extrabold hover:bg-orange-200 transition-all disabled:opacity-50"
-                >
-                  {otpSent ? "ارسال مجدد" : "دریافت کد"}
-                </button>
-              </div>
-            </div>
-          )}
+          ) : null}
 
           <button
             type="submit"
             disabled={isLoading}
             className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-extrabold py-4 px-6 rounded-2xl shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 transition-all active:scale-98 text-sm mt-6 disabled:opacity-60"
           >
-            <span>{mode === "otp" ? "تایید و ورود" : mode === "forgot" ? "تغییر رمز عبور" : "ورود به حساب"}</span>
+            <span>{mode === "forgot" ? "تغییر رمز عبور" : "ورود به حساب"}</span>
             <ArrowLeft className="h-4 w-4" />
           </button>
 

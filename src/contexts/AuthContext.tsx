@@ -134,7 +134,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         body: JSON.stringify({ phone, code, name }),
         credentials: "include"
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (res.ok) {
         setUser(data.user);
         if (data.accessToken) {
@@ -142,6 +142,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
         addToast(data.message, "success");
         return true;
+      } else if (res.status === 503) {
+        // SMS provider is not wired in production — backend returns 503 on
+        // /api/auth/otp/* (audit known blocker #5).
+        addToast("سرویس پیامکی فعال نیست", "error");
+        return false;
       } else {
         addToast(data.message, "error");
         return false;
