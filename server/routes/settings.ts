@@ -8,9 +8,18 @@ const router = Router();
 // Public store settings — safe fields only, no auth required.
 // Safe keys are derived from the canonical shared defaults (single source of
 // truth in src/lib/constants.ts) so admin-editable fields stay in lockstep.
-const SAFE_KEYS = Object.keys(STORE_SETTINGS_DEFAULTS);
+// Hero slide imagery (audit §3.6) — previously hardcoded in the frontend.
+// Defaults are the exact paths the live frontend falls back to, so the
+// first render is visually identical; admins can now override per slide.
+export const HERO_IMAGE_DEFAULTS: Record<string, string> = {
+  heroSlide1Image: '/products/hld-13.svg',
+  heroSlide2Image: '/products/cas-4.svg',
+  heroSlide3Image: '/products/cbl-1.svg',
+};
 
-const DEFAULTS: Record<string, string> = STORE_SETTINGS_DEFAULTS;
+const SAFE_KEYS = [...Object.keys(STORE_SETTINGS_DEFAULTS), ...Object.keys(HERO_IMAGE_DEFAULTS)];
+
+const DEFAULTS: Record<string, string> = { ...STORE_SETTINGS_DEFAULTS, ...HERO_IMAGE_DEFAULTS };
 
 router.get('/', async (_req, res) => {
   try {

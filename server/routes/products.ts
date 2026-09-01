@@ -206,7 +206,8 @@ router.post("/:id/reviews", validate(reviewSubmitSchema), async (req, res) => {
 
   appCache.invalidate(`reviews:${productId}`);
   appCache.invalidate(`product:${productId}`);
-  appCache.invalidate("products");
+  appCache.invalidate('products');
+  appCache.invalidate('reviews:latest');
   
   res.status(201).json(newReview);
 });

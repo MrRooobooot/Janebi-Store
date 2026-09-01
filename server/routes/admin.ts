@@ -1,8 +1,9 @@
 import { Router } from 'express';
 import { db, isPostgres } from '../db/index.js';
-import { users, products, orders, orderItems, reviews, coupons, productFeatures, cartItems, wishlistItems, storeSettings } from '../db/schema.js';
+import { users, products, orders, orderItems, reviews, coupons, productFeatures, cartItems, wishlistItems, storeSettings, auditLogs } from '../db/schema.js';
 import { appCache } from '../utils/cache.js';
 import { STORE_SETTINGS_DEFAULTS } from '../../src/lib/constants.js';
+import { HERO_IMAGE_DEFAULTS } from './settings.js';
 import { eq, desc, sql } from 'drizzle-orm';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
 
@@ -10,6 +11,37 @@ const router = Router();
 
 // Apply middleware to all admin routes
 router.use(authenticate, requireAdmin);
+
+// ---------------------------------------------------------
+// AUDIT LOG — records every admin mutation (audit §3.7)
+// ---------------------------------------------------------
+function logAudit(req: any, action: string, entity: string, entityId: string | null, meta: Record<string, unknown> = {}): void {
+  db.insert(auditLogs).values({
+    id: `al-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    adminUserId: req.user?.id ?? null,
+    action,
+    entity,
+    entityId,
+    meta,
+    createdAt: new Date().toISOString()
+  }).catch((err) => console.error('Audit log write failed:', err));
+}
+
+router.get('/audit-logs', async (req, res) => {
+  try {
+    const page = Math.max(1, parseInt(String((req as any).query.page)) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(String((req as any).query.limit)) || 20));
+    const [{ count: total }] = await db.select({ count: sql<number>`count(*)` }).from(auditLogs);
+    const logs = await db.select().from(auditLogs)
+      .orderBy(desc(auditLogs.createdAt))
+      .limit(limit)
+      .offset((page - 1) * limit);
+    res.json({ logs, total: Number(total), page, limit });
+  } catch (error) {
+    console.error('Audit logs fetch error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 // ---------------------------------------------------------
 // STATS & DASHBOARD
@@ -233,6 +265,7 @@ router.put('/users/:id/role', async (req, res) => {
     if (!updated) {
       return res.status(404).json({ error: 'کاربر یافت نشد', message: 'User not found' });
     }
+    logAudit(req, 'user.role.update', 'user', id, { role });
     res.json({ message: 'User role updated successfully', user: updated });
   } catch (error) {
     res.status(500).json({ message: 'Internal server error' });
@@ -292,6 +325,7 @@ router.post('/products', async (req, res) => {
 
     appCache.invalidate('products');
     appCache.invalidate('categories');
+    logAudit(req, 'product.create', 'product', inserted.id, { title, category, price });
     res.status(201).json(inserted);
   } catch (error) {
     console.error('Add product error:', error);
@@ -324,6 +358,7 @@ router.put('/products/:id', async (req, res) => {
 
     appCache.invalidate('products');
     appCache.invalidate('categories');
+    logAudit(req, 'product.update', 'product', id, { title, category, price });
     res.json(updated);
   } catch (error) {
     console.error('Update product error:', error);
@@ -359,6 +394,7 @@ router.delete('/products/:id', async (req, res) => {
 
     appCache.invalidate('products');
     appCache.invalidate('categories');
+    logAudit(req, 'product.delete', 'product', String(prodId), { title: existing.title });
     res.json({ message: 'محصول با موفقیت حذف شد' });
   } catch (error: any) {
     console.error('Delete product error:', error);
@@ -629,6 +665,7 @@ router.delete('/reviews/:id', async (req, res) => {
   try {
     const { id } = req.params;
     await db.delete(reviews).where(eq(reviews.id, id));
+    appCache.invalidate('reviews:latest');
     res.json({ success: true, message: 'نظر با موفقیت حذف شد' });
   } catch (error) {
     res.status(500).json({ message: 'Internal server error' });
@@ -666,7 +703,11 @@ router.delete('/newsletter/:email', async (req, res) => {
 // Admin-editable settings allow-list — derived from the canonical shared
 // defaults (src/lib/constants.ts), so hero-slide fields are editable too and
 // no literals drift between admin, public GET and client fallback.
-const DEFAULT_SETTINGS: Record<string, string> = STORE_SETTINGS_DEFAULTS;
+// Hero image keys (audit §3.6) come from the shared server-side defaults.
+const DEFAULT_SETTINGS: Record<string, string> = {
+  ...STORE_SETTINGS_DEFAULTS,
+  ...HERO_IMAGE_DEFAULTS,
+};
 
 router.get('/settings', async (req, res) => {
   try {
@@ -684,7 +725,11 @@ router.get('/settings', async (req, res) => {
 router.put('/settings', async (req, res) => {
   try {
     const body = req.body || {};
-    const updates = Object.entries(body).filter(([key]) => key in DEFAULT_SETTINGS);
+    // Accept only known keys, and only string values (hero image fields are
+    // asset paths/URLs; anything non-string is rejected rather than coerced).
+    const updates = Object.entries(body).filter(
+      ([key, value]) => key in DEFAULT_SETTINGS && typeof value === 'string'
+    );
     if (updates.length === 0) {
       return res.status(400).json({ message: 'هیچ فیلد معتبری برای ذخیره ارسال نشده است' });
     }
@@ -698,6 +743,7 @@ router.put('/settings', async (req, res) => {
     // Bust any server-side cached settings (e.g. memoized public GET wrappers)
     // so admin edits are visible immediately, not stale.
     appCache.invalidate('settings');
+    logAudit(req, 'settings.update', 'settings', null, { keys: updates.map(([key]) => key) });
 
     const rows = await db.select().from(storeSettings);
     const merged: Record<string, string> = { ...DEFAULT_SETTINGS };
