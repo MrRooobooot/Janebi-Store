@@ -2,7 +2,13 @@
 
 ## Status: Completed (Aug 28, 2026)
 
-### Round r39 (2026-09-15a) — Post 16 (Baseus Adaman) + BlogPosting Prerender + Reader UX (COMMITTED — deploy BLOCKED by SSH outage)
+### Round r43 (2026-09-22) — Product JSON-LD Prerender + IRR×10 Bug Fix + Post 17 (SHIPPED, live)
+
+- [x] SEO P0 رفع شد: اسکیمای Product صفحه محصول قبلاً `priceCurrency: IRR` با قیمت ×10 می‌فرستاد (باگ واحد پول). Builder مشترک `src/lib/productJsonLd.ts` ساخته شد — `IRT` با قیمت خام، honesty gate برای aggregateRating (فقط وقتی reviewsCount>0)، بدون default جعلی (desc/brand fabrication حذف شد).
+- [x] SEO: پررندر سمت سرور Product JSON-LD برای `/product/:id` (server/lib/breadcrumbs.ts → productJsonLdFor + اتصال در server/index.ts prod branch). تأیید زنده: /product/6 شامل `"@type":"Product"` + `priceCurrency":"IRT` + `price:4500000`.
+- [x] پست ۱۷ «نقد و بررسی Galaxy Buds2 Pro» (naghdarie-galaxy-buds2-pro) — بر اساس محصول واقعی id 6 (SKU BD2-PRO، گارانتی ۱۸ ماه داریا همراه، /products/ear-6.svg). زنده: /api/blog=23، در sitemap، BlogPosting JSON-LD سمت سرور.
+- [x] گیت verify 100% سبز، jsxDEV=0، /Users/ leak=0، پارتی باندل index-Djud8qcP.js. دیپلوی با لاک. سوئیپ دو-موتوره (Chromium+WebKit) روی ۶ صفحه: 0 خطای اپ (فقط 408 خارجی Enamad seal = نویز شناخته‌شده).
+- [x] r39 قبلاً در ابتدای این راند تأیید شد که کامل لند شده (SSH برگشت بود).
 
 - [x] Post 16 نوشته و به seed اضافه شد: «پاوربانک بیسوس Adaman ۲۰۰۰۰ با خروجی ۶۵ وات» (id: brasresi-powerbank-baseus-adaman-20000-65w) — بر اساس محصول واقعی فروشگاه (product id 7، SKU PB-BS-65W، image /products/pb-7.svg). Zero-fabrication: همه مشخصات از /api/products/7.
 - [x] SEO: prerender سمت سرور BlogPosting JSON-LD برای /blog/:slug (server/lib/breadcrumbs.ts → blogPostingJsonLdFor + اتصال در server/index.ts prod branch). Unknown/unpublished slug → بدون injection (honesty gate).
