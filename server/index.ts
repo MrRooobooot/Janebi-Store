@@ -3,7 +3,7 @@ import { env } from './env.js';
 import { db, dbReady } from './db/index.js';
 import * as schema from './db/schema.js';
 import { ALL_PRODUCTS, REVIEWS_STORE, VALID_COUPONS } from './data/seed-data.js';
-import { blogPostingJsonLdFor, breadcrumbJsonLdFor, injectBreadcrumbIntoHtml } from "./lib/breadcrumbs.js";
+import { blogPostingJsonLdFor, productJsonLdFor, breadcrumbJsonLdFor, injectBreadcrumbIntoHtml } from "./lib/breadcrumbs.js";
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
@@ -129,13 +129,14 @@ async function startServer() {
       try {
         const shell = fs.readFileSync(path.join(distPath, "index.html"), "utf-8");
         const pathname = req.originalUrl.split("?")[0];
-        const [crumb, postingLd] = await Promise.all([
+        const [crumb, postingLd, productLd] = await Promise.all([
           breadcrumbJsonLdFor(pathname),
           blogPostingJsonLdFor(pathname),
+          productJsonLdFor(pathname),
         ]);
-        // Breadcrumb JSON-LD only differs on /blog routes; avoid re-reading on
-        // every request by falling back to a plain sendFile when not a blog path.
-        const structuredLd = [crumb, postingLd].filter(Boolean).join("\n");
+        // Structured JSON-LD only differs on /blog and /product routes; avoid
+        // re-reading on every request by falling back to a plain sendFile.
+        const structuredLd = [crumb, postingLd, productLd].filter(Boolean).join("\n");
         if (!structuredLd) return res.sendFile(path.join(distPath, "index.html"));
         return res
           .status(200)

@@ -12,6 +12,7 @@ import { ProductDetailSkeleton } from '../components/Skeletons';
 import SmartImage from '../components/SmartImage';
 import BrandLogo from '../components/BrandLogo';
 import ProductReviews from '../components/ProductReviews';
+import { buildProductJsonLd } from '../lib/productJsonLd';
 import RelatedProducts from '../components/RelatedProducts';
 import RecentlyViewed from '../components/RecentlyViewed';
 import { addRecentlyViewed } from '../lib/recentlyViewed';
@@ -59,59 +60,25 @@ export default function ProductDetail() {
           rating: data.rating,
         });
 
-        // Dynamic Product JSON-LD Schema for AI Crawlers and Search Engines
+        // Dynamic Product JSON-LD Schema for AI Crawlers and Search Engines —
+        // shared honesty-gated builder (src/lib/productJsonLd.ts). Server
+        // prerender emits the identical payload for raw-HTML crawlers.
         const existingScript = document.getElementById('product-schema-jsonld');
         if (existingScript) existingScript.remove();
 
-        const schemaScript = document.createElement('script');
-        schemaScript.id = 'product-schema-jsonld';
-        schemaScript.type = 'application/ld+json';
-        schemaScript.text = JSON.stringify({
-          '@context': 'https://schema.org',
-          '@type': 'Product',
-          name: data.title,
-          image: [data.image?.startsWith('http') ? data.image : `https://janebiarena.ir${data.image}`],
-          description: data.description || `${data.title} - اورجینال با ضمانت سلامت و اصالت فیزیکی کالا`,
-          brand: {
-            '@type': 'Brand',
-            name: data.brand || 'Janebi Arena',
-          },
-          ...(data.sku ? { sku: data.sku } : {}),
-          additionalProperty: [
-            { '@type': 'PropertyValue', name: 'دسته‌بندی', value: data.category },
-            ...(data.brand ? [{ '@type': 'PropertyValue', name: 'برند', value: data.brand }] : []),
-            ...(data.warranty ? [{ '@type': 'PropertyValue', name: 'گارانتی', value: data.warranty }] : []),
-            ...(data.features || []).map((feat: string) => ({
-              '@type': 'PropertyValue',
-              name: 'ویژگی',
-              value: feat,
-            })),
-          ],
-          offers: {
-            '@type': 'Offer',
-            url: window.location.href,
-            priceCurrency: 'IRR',
-            price: (data.price * 10).toString(),
-            availability: data.inStock !== false ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-            seller: {
-              '@type': 'Organization',
-              name: STORE_SETTINGS_DEFAULTS.storeName,
-            },
-          },
-          aggregateRating: data.rating && data.reviewsCount > 0 ? {
-            '@type': 'AggregateRating',
-            ratingValue: data.rating.toString(),
-            reviewCount: data.reviewsCount.toString(),
-            bestRating: '5',
-            worstRating: '1',
-          } : undefined,
-        })
-          // Escape '<' so a product title/description containing '</script'
-          // (or any '<') cannot break out of the inline JSON-LD script tag.
-          .replace(/</g, '\\u003c')
-          .replace(/>/g, '\\u003e')
-          .replace(/&/g, '\\u0026');
-        document.head.appendChild(schemaScript);
+        const jsonLd = buildProductJsonLd(data, 'https://janebiarena.ir', window.location.href);
+        if (jsonLd) {
+          const schemaScript = document.createElement('script');
+          schemaScript.id = 'product-schema-jsonld';
+          schemaScript.type = 'application/ld+json';
+          schemaScript.text = JSON.stringify(jsonLd)
+            // Escape '<' so a product title/description containing '</script'
+            // (or any '<') cannot break out of the inline JSON-LD script tag.
+            .replace(/</g, '\\u003c')
+            .replace(/>/g, '\\u003e')
+            .replace(/&/g, '\\u0026');
+          document.head.appendChild(schemaScript);
+        }
       })
       .catch(() => {
         setProduct(null);

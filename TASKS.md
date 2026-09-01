@@ -9,7 +9,7 @@
 - [x] UI/UX: مودال مقاله — Escape برای بستن + قفل اسکرول بک‌گراند (src/pages/static/Blog.tsx).
 - [x] scripts/seed-blog.ts: فیلتر SEED_BLOG_ONLY=<id> برای seed نقطه‌ای (جلوگیری از seed پستِ ران موازی).
 - [x] Gate: npm run verify 100% green؛ grep -c jsxDEV dist/assets/index-*.js = 0. Commit be76f19 + push.
-- [ ] DEPLOY BLOCKED: ssh 45.82.137.67:22 → Connection refused (~12 دقیقه retry؛ site 200 است، فقط SSH پایین). قدم بعدی: ./deploy.sh با lock + SEED_BLOG_ONLY=brasresi-powerbank-baseus-adaman-20000-65w node seed در کانتینر → انتظار /api/blog = 16.
+- [x] DEPLOY UNBLOCKED: SSH برگشت (2026-09-XX probe OK)، پست ۱۶ زنده (/api/blog شامل brasresi-adaman)، پارتی باندل index-D8BhX27m.js == محلی، BlogPosting JSON-LD سمت سرور روی /blog/:slug تأیید شد. r39 کامل SHIPPED.
 - [!] تداخل ران موازی: ران همزمان دیگری پست «باتری در سرما و گرما» (rahnamaye-battery-sarma-garma) را در seed-file به‌عنوان «پست ۱۶» کامیت کرده ولی هنوز seed/deploy نکرده — با فیلتر SEED_BLOG_ONLY پست آن ران در این دیپلوی seed نمی‌شود.
 
 ### Round r38 (2026-09-13b) — Blog Post 15 + Post-14 Body Repair + Sitemap Fix (SHIPPED, live)

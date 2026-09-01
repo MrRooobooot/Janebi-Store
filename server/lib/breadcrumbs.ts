@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { db } from "../db/index.js";
-import { blogPosts } from "../db/schema.js";
+import { blogPosts, products, productFeatures } from "../db/schema.js";
 
 /**
  * Server-rendered BreadcrumbList JSON-LD injection for blog routes
@@ -89,6 +89,62 @@ export async function blogPostingJsonLdFor(pathname: string): Promise<string | n
     if (!jsonLd) return null;
     return (
       '<script type="application/ld+json" id="blog-posting-jsonld-prerender">' +
+      JSON.stringify(jsonLd).replace(/</g, "\\u003c") +
+      "</script>"
+    );
+  } catch {
+    return null; // DB unavailable → skip injection rather than serve partial markup
+  }
+}
+
+/**
+ * Server-rendered Product JSON-LD for /product/:id (SEO cluster r43).
+ *
+ * Product pages are client-rendered; crawlers reading the raw HTML previously
+ * saw no Product schema. This fetches the real DB row (+ real product_features
+ * rows) and reuses the shared client builder (src/lib/productJsonLd.ts) so
+ * both layers emit identical, honesty-gated output. Unknown id → null.
+ */
+export async function productJsonLdFor(pathname: string): Promise<string | null> {
+  const match = pathname.match(/^\/product\/(\d+)\/?$/);
+  if (!match) return null;
+
+  try {
+    const productId = Number(match[1]);
+    const product = await db.query.products.findFirst({
+      where: eq(products.id, productId),
+    });
+    if (!product) return null;
+
+    const featureRows = await db
+      .select({ feature: productFeatures.feature })
+      .from(productFeatures)
+      .where(eq(productFeatures.productId, productId));
+
+    const { buildProductJsonLd } = await import("../../src/lib/productJsonLd.js");
+    const jsonLd = buildProductJsonLd(
+      {
+        id: product.id,
+        title: product.title,
+        description: product.description,
+        image: product.image,
+        brand: product.brand,
+        sku: product.sku,
+        category: product.category,
+        warranty: product.warranty,
+        price: product.price,
+        discount: product.discount,
+        stockQuantity: product.stockQuantity,
+        rating: product.rating,
+        reviewsCount: product.reviewsCount,
+        features: featureRows.map((f) => f.feature),
+      },
+      "https://janebiarena.ir",
+      `https://janebiarena.ir/product/${product.id}`
+    );
+    if (!jsonLd) return null;
+    return (
+      '<script type="application/ld+json" id="product-jsonld-prerender">' +
       JSON.stringify(jsonLd).replace(/</g, "\\u003c") +
       "</script>"
     );
