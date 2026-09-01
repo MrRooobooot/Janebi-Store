@@ -188,3 +188,101 @@ describe('Reviews API Integration Tests', () => {
     expect(res.status).toBe(400);
   });
 });
+
+describe('Reviews API — pagination (?page & ?limit)', () => {
+  const timestamp = Date.now();
+  let testProductId: number;
+
+  beforeAll(async () => {
+    const [p] = await db.insert(products).values({
+      title: `محصول صفحه‌بندی نظرات ${timestamp}`,
+      category: 'audio',
+      price: 100000,
+      image: '/rev-page.jpg',
+      brand: 'انکر',
+      stockQuantity: 10,
+      sku: `SKU-REV-PAGE-${timestamp}`
+    }).returning();
+    testProductId = p.id;
+
+    // 7 reviews with staggered dates so ordering is deterministic
+    for (let i = 1; i <= 7; i++) {
+      const revId = `rev-page-${timestamp}-${i}`;
+      await db.insert(reviews).values({
+        id: revId,
+        productId: testProductId,
+        userName: `بازدیدکننده ${i}`,
+        rating: 3 + (i % 2),
+        title: `نظر شماره ${i}`,
+        comment: 'متن آزمایشی برای صفحه‌بندی دیدگاه‌ها',
+        date: `2026-08-${String(10 + i).padStart(2, '0')}T10:00:00.000Z`
+      });
+    }
+  });
+
+  afterAll(async () => {
+    if (testProductId) {
+      await db.delete(reviews).where(eq(reviews.productId, testProductId));
+      await db.delete(products).where(eq(products.id, testProductId));
+    }
+  });
+
+  it('returns {reviews, total, page, pages} when ?page and ?limit are provided', async () => {
+    const res = await request(app).get(`/api/products/${testProductId}/reviews?page=1&limit=3`);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(false);
+    expect(res.body.reviews).toHaveLength(3);
+    expect(res.body.total).toBe(7);
+    expect(res.body.page).toBe(1);
+    expect(res.body.pages).toBe(3);
+    expect(res.body.limit).toBe(3);
+    expect(Array.isArray(res.body.reviews)).toBe(true);
+  });
+
+  it('orders reviews newest first within pages', async () => {
+    const res = await request(app).get(`/api/products/${testProductId}/reviews?page=1&limit=3`);
+    expect(res.status).toBe(200);
+    const dates: string[] = res.body.reviews.map((r: any) => r.date);
+    const sorted = [...dates].sort().reverse();
+    expect(dates).toEqual(sorted);
+    // newest review (index 7) lands on the first page
+    expect(res.body.reviews.some((r: any) => r.id === `rev-page-${timestamp}-7`)).toBe(true);
+  });
+
+  it('returns the requested page slice', async () => {
+    const res = await request(app).get(`/api/products/${testProductId}/reviews?page=2&limit=3`);
+    expect(res.status).toBe(200);
+    expect(res.body.page).toBe(2);
+    expect(res.body.reviews).toHaveLength(3);
+    const ids: string[] = res.body.reviews.map((r: any) => r.id);
+    // page 1 holds indexes 7,6,5 (newest first) → page 2 holds 4,3,2
+    for (const idx of [4, 3, 2]) {
+      expect(ids).toContain(`rev-page-${timestamp}-${idx}`);
+    }
+  });
+
+  it('returns a partial final page and clamps out-of-range pages', async () => {
+    const last = await request(app).get(`/api/products/${testProductId}/reviews?page=3&limit=3`);
+    expect(last.body.reviews).toHaveLength(1);
+
+    const overflow = await request(app).get(`/api/products/${testProductId}/reviews?page=99&limit=3`);
+    expect(overflow.status).toBe(200);
+    expect(overflow.body.page).toBe(3);
+    expect(overflow.body.reviews).toHaveLength(1);
+  });
+
+  it('falls back to sane defaults for invalid page/limit values', async () => {
+    const res = await request(app).get(`/api/products/${testProductId}/reviews?page=abc&limit=-5`);
+    expect(res.status).toBe(200);
+    expect(res.body.page).toBe(1);
+    expect(res.body.limit).toBe(6); // default page size
+    expect(res.body.reviews.length).toBeLessThanOrEqual(6);
+  });
+
+  it('keeps the legacy plain-array shape without query params', async () => {
+    const res = await request(app).get(`/api/products/${testProductId}/reviews`);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+    expect(res.body).toHaveLength(7);
+  });
+});

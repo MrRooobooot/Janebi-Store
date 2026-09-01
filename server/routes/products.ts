@@ -141,6 +141,36 @@ router.get("/", validate(productQuerySchema), async (req, res) => {
 
 router.get("/:id/reviews", validate(idParamSchema), async (req, res) => {
   const productId = parseInt(req.params.id as string);
+
+  // Pagination mode: when ?page or ?limit is provided, respond with
+  // { reviews, total, page, pages }. Without params, keep the legacy
+  // plain-array shape for backward compatibility.
+  const pageParam = req.query.page !== undefined ? parseInt(String(req.query.page), 10) : undefined;
+  const limitParam = req.query.limit !== undefined ? parseInt(String(req.query.limit), 10) : undefined;
+  const paginated = pageParam !== undefined || limitParam !== undefined;
+
+  if (paginated) {
+    const page = Number.isFinite(pageParam) && pageParam! > 0 ? pageParam! : 1;
+    const limit = Number.isFinite(limitParam) && limitParam! > 0 ? Math.min(limitParam!, 50) : 6;
+
+    const countRows = await db
+      .select({ count: sql<number>`COUNT(*)` })
+      .from(reviews)
+      .where(eq(reviews.productId, productId));
+    const total = Number(countRows[0]?.count) || 0;
+    const pages = Math.max(1, Math.ceil(total / limit));
+    const safePage = Math.min(page, pages);
+
+    const rows = await db.query.reviews.findMany({
+      where: eq(reviews.productId, productId),
+      orderBy: [desc(reviews.date), desc(reviews.id)],
+      limit,
+      offset: (safePage - 1) * limit,
+    });
+
+    return res.json({ reviews: rows, total, page: safePage, pages, limit });
+  }
+
   const cacheKey = `reviews:${productId}`;
   const cached = appCache.get(cacheKey);
 
@@ -150,7 +180,8 @@ router.get("/:id/reviews", validate(idParamSchema), async (req, res) => {
   }
   
   const productReviews = await db.query.reviews.findMany({
-    where: eq(reviews.productId, productId)
+    where: eq(reviews.productId, productId),
+    orderBy: [desc(reviews.date), desc(reviews.id)]
   });
 
   appCache.set(cacheKey, productReviews, 60);

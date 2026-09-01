@@ -53,6 +53,10 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
 
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [pages, setPages] = useState(1);
+  const [total, setTotal] = useState(0);
+  const REVIEWS_PAGE_SIZE = 6;
   const [ratingFilter, setRatingFilter] = useState<number | 'all'>('all');
   const [sortBy, setSortBy] = useState<'newest' | 'highest' | 'helpful'>('helpful');
   const [showForm, setShowForm] = useState(false);
@@ -66,21 +70,38 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
   const [recommend, setRecommend] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Load reviews from API (no fabricated fallback: empty/error = honest state)
-  useEffect(() => {
+  const loadReviews = React.useCallback((targetPage: number) => {
     setLoading(true);
-    fetch(`/api/products/${productId}/reviews`)
+    fetch(`/api/products/${productId}/reviews?page=${targetPage}&limit=${REVIEWS_PAGE_SIZE}`)
       .then(res => res.json())
       .then(data => {
-        setReviews(Array.isArray(data) ? data : []);
+        if (Array.isArray(data)) {
+          // Legacy (non-paginated) shape: full array
+          setReviews(data);
+          setPages(1);
+          setTotal(data.length);
+          setPage(1);
+        } else {
+          setReviews(Array.isArray(data.reviews) ? data.reviews : []);
+          setPages(Math.max(1, Number(data.pages) || 1));
+          setTotal(Number(data.total) || 0);
+          setPage(Math.max(1, Number(data.page) || targetPage));
+        }
       })
       .catch(() => {
         setReviews([]);
+        setTotal(0);
+        setPages(1);
       })
       .finally(() => {
         setLoading(false);
       });
   }, [productId]);
+
+  // Load reviews from API (no fabricated fallback: empty/error = honest state)
+  useEffect(() => {
+    loadReviews(1);
+  }, [loadReviews]);
 
   // Calculate Rating Statistics — honest: no rating shown when there are no reviews
   const totalReviews = reviews.length;
@@ -140,7 +161,8 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
         return res.json();
       })
       .then((newReview: Review) => {
-        setReviews(prev => [newReview, ...prev]);
+        // Refresh to page 1 so the new (newest-first) review appears
+        loadReviews(1);
         setShowForm(false);
         setUserName('');
         setReviewTitle('');
@@ -236,7 +258,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
 
           <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-4">
             {hasReviews
-              ? `از مجموع ${toPersianDigits(totalReviews.toLocaleString('fa-IR'))} دیدگاه ثبت‌شده`
+              ? `از مجموع ${toPersianDigits((total || totalReviews).toLocaleString('fa-IR'))} دیدگاه ثبت‌شده`
               : 'هنوز دیدگاهی برای این محصول ثبت نشده است'}
           </p>
 
@@ -640,6 +662,41 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
           </div>
         )}
       </div>
+
+      {/* Pagination Controls (Persian) */}
+      {!loading && pages > 1 && (
+        <nav
+          aria-label="صفحه‌بندی نظرات"
+          className="flex items-center justify-center gap-3 pt-2"
+        >
+          <button
+            type="button"
+            onClick={() => loadReviews(page - 1)}
+            disabled={page <= 1}
+            aria-label="صفحه قبل"
+            className="flex items-center justify-center gap-1.5 min-h-[44px] min-w-[44px] px-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-xs font-bold text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+          >
+            قبلی
+          </button>
+
+          <span
+            className="text-xs font-bold text-zinc-500 dark:text-zinc-400 px-2 select-none"
+            aria-live="polite"
+          >
+            صفحه {toPersianDigits(page)} از {toPersianDigits(pages)}
+          </span>
+
+          <button
+            type="button"
+            onClick={() => loadReviews(page + 1)}
+            disabled={page >= pages}
+            aria-label="صفحه بعد"
+            className="flex items-center justify-center gap-1.5 min-h-[44px] min-w-[44px] px-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-xs font-bold text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+          >
+            بعدی
+          </button>
+        </nav>
+      )}
     </div>
   );
 }
