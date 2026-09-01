@@ -41,6 +41,8 @@ export default function Blog() {
   const [openArticle, setOpenArticle] = useState<Article | null>(null);
   const [copied, setCopied] = useState(false);
   const { slug } = useParams<{ slug?: string }>();
+  // Category filter (r39): client-side, derived from real article categories.
+  const [activeCategory, setActiveCategory] = useState<string>('all');
   // Reading progress (r37): scroll position of the article reader modal, 0–100.
   const articleScrollRef = useRef<HTMLDivElement>(null);
   const [readProgress, setReadProgress] = useState(0);
@@ -183,6 +185,12 @@ export default function Blog() {
         .slice(0, 2)
     : [];
 
+  // Category chips derived from real fetched rows (never hardcoded) and the
+  // filtered list feeding the grid. The JSON-LD list stays on the full set.
+  const categories = Array.from(new Set(articles.map((a) => a.category).filter(Boolean)));
+  const filteredArticles =
+    activeCategory === 'all' ? articles : articles.filter((a) => a.category === activeCategory);
+
   return (
     <motion.div
       initial={prefersReducedMotion ? false : { opacity: 0, y: 15 }}
@@ -260,9 +268,42 @@ export default function Blog() {
         </div>
       )}
 
-      {!loading && !error && articles.length > 0 && (
+      {/* Category filter chips (r39) — only when real categories exist */}
+      {!loading && !error && categories.length > 1 && (
+        <div className="flex flex-wrap items-center gap-2" role="group" aria-label="فیلتر دسته‌بندی مقالات">
+          {['all', ...categories].map((cat) => {
+            const isAll = cat === 'all';
+            const active = activeCategory === cat;
+            const count = isAll ? articles.length : articles.filter((a) => a.category === cat).length;
+            return (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setActiveCategory(cat)}
+                aria-pressed={active}
+                className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-bold border transition-colors motion-reduce:transition-none min-h-[36px] ${
+                  active
+                    ? 'bg-orange-600 border-orange-600 text-white shadow-sm'
+                    : 'bg-zinc-50 dark:bg-zinc-900/60 border-zinc-200/80 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300 hover:border-orange-300 dark:hover:border-zinc-700'
+                }`}
+              >
+                {isAll ? 'همه مقالات' : cat}
+                <span
+                  className={`text-[10px] font-black rounded-full px-1.5 ${
+                    active ? 'bg-white/20 text-white' : 'bg-zinc-200/80 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400'
+                  }`}
+                >
+                  {toPersianDigits(String(count))}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {!loading && !error && filteredArticles.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {articles.map((art, idx) => {
+          {filteredArticles.map((art, idx) => {
             const paragraphs = art.body.split('\n\n').filter(Boolean);
             return (
               <motion.article
