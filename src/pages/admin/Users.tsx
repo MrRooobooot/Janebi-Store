@@ -151,7 +151,7 @@ export default function AdminUsers() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-white mb-1">مدیریت کاربران و باشگاه وفاداری</h1>
-          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">مشاهده لیست اعضا، تغییر نقش، بازنشانی رمز عبور و اعطای امتیازات VIP</p>
+          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">مشاهده لیست اعضا، تغییر نقش، بازنشانی رمز عبور و اعطای امتیازات VIP</p>
         </div>
       </div>
 
@@ -165,7 +165,7 @@ export default function AdminUsers() {
             onChange={(e) => setSearch(e.target.value)}
             className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl pr-10 pl-4 py-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500"
           />
-          <Search className="h-4 w-4 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="h-4 w-4 text-gray-500 absolute right-3.5 top-1/2 -translate-y-1/2" />
         </div>
       </div>
 
@@ -173,7 +173,7 @@ export default function AdminUsers() {
       <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl border border-[var(--color-border-light)] dark:border-gray-700 overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-right text-xs">
-            <thead className="bg-gray-50/80 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 border-b border-[var(--color-border-light)] dark:border-gray-700">
+            <thead className="bg-gray-50/80 dark:bg-gray-700/50 text-gray-600 dark:text-gray-400 border-b border-[var(--color-border-light)] dark:border-gray-700">
               <tr>
                 <th className="p-4 font-bold">نام و تصویر</th>
                 <th className="p-4 font-bold">شماره موبایل</th>
@@ -186,11 +186,11 @@ export default function AdminUsers() {
             <tbody className="divide-y divide-gray-100 dark:divide-gray-700/60">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-gray-400">در حال بارگذاری لیست کاربران...</td>
+                  <td colSpan={6} className="p-8 text-center text-gray-500">در حال بارگذاری لیست کاربران...</td>
                 </tr>
               ) : filteredUsers.length === 0 ? (
  <tr>
-   <td colSpan={6} className="p-8 text-center text-gray-400">کاربری یافت نشد.</td>
+   <td colSpan={6} className="p-8 text-center text-gray-500">کاربری یافت نشد.</td>
  </tr>
  ) : (
  pagedUsers.map((u) => (
@@ -199,11 +199,15 @@ export default function AdminUsers() {
                       <img 
                         src={u.avatar || '/avatar.svg'} 
                         alt={u.name} 
+                        width="40"
+                        height="40"
+                        loading="lazy"
+                        decoding="async"
                         className="w-10 h-10 rounded-full border border-gray-200 dark:border-gray-700 object-cover shrink-0"
                       />
                       <div>
                         <div className="font-extrabold text-[var(--color-text-main-light)] dark:text-white">{u.name}</div>
-                        <div className="text-[10px] text-gray-400 font-mono mt-0.5">{u.email || 'بدون ایمیل'}</div>
+                        <div className="text-[10px] text-gray-500 font-mono mt-0.5">{u.email || 'بدون ایمیل'}</div>
                       </div>
                     </td>
                     <td className="p-4 font-mono font-bold text-gray-700 dark:text-gray-300">{u.phone}</td>
@@ -233,7 +237,7 @@ export default function AdminUsers() {
                           : 'مشتری عادی'}
                       </span>
                     </td>
-                    <td className="p-4 text-gray-500 dark:text-gray-400">{u.joinedDate || '-'}</td>
+                    <td className="p-4 text-gray-600 dark:text-gray-400">{u.joinedDate || '-'}</td>
                     <td className="p-4 text-center">
                       <div className="flex items-center justify-center gap-2">
                         <button
@@ -285,7 +289,7 @@ export default function AdminUsers() {
                 <KeyRound className="h-5 w-5 text-orange-500" />
                 <span>تغییر رمز عبور کاربر</span>
               </h3>
-              <button onClick={() => setPasswordModalUser(null)} className="p-1.5 text-gray-400 hover:text-gray-600">
+              <button onClick={() => setPasswordModalUser(null)} aria-label="بستن پنجره تغییر رمز" className="p-3 -m-2 flex items-center justify-center rounded-xl text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
                 <X className="h-5 w-5" />
               </button>
             </div>
@@ -339,7 +343,7 @@ export default function AdminUsers() {
                 <Award className="h-5 w-5 text-amber-500" />
                 <span>مدیریت امتیازات باشگاه VIP</span>
               </h3>
-              <button onClick={() => setPointsModalUser(null)} className="p-1.5 text-gray-400 hover:text-gray-600">
+              <button onClick={() => setPointsModalUser(null)} aria-label="بستن پنجره امتیازات" className="p-3 -m-2 flex items-center justify-center rounded-xl text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
                 <X className="h-5 w-5" />
               </button>
             </div>
@@ -359,7 +363,7 @@ export default function AdminUsers() {
                   onChange={(e) => setPointsInput(toEnglishDigits(e.target.value).replace(/[^0-9]/g, ''))}
                   className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl p-3 text-xs font-bold text-gray-800 dark:text-gray-200 focus:outline-none focus:border-amber-500 font-mono text-left dir-ltr"
                 />
-                <span className="text-[10px] text-gray-400 mt-1 block">هر ۱۰۰ امتیاز معادل ۱۰,۰۰۰ تومان تخفیف روی خرید بعدی کاربر است.</span>
+                <span className="text-[10px] text-gray-500 mt-1 block">هر ۱۰۰ امتیاز معادل ۱۰,۰۰۰ تومان تخفیف روی خرید بعدی کاربر است.</span>
               </div>
 
               <div className="flex justify-end gap-2 pt-3 border-t border-[var(--color-border-light)] dark:border-gray-700">

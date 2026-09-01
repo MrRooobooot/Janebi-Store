@@ -200,7 +200,7 @@ export default function AdminMessages() {
       {/* Header */}
       <div>
         <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-white mb-1">پیام‌های تماس و پشتیبانی</h1>
-        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">بررسی سوالات کاربران، پیگیری نظرات و ارتباط مستقیم با مشتریان</p>
+        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">بررسی سوالات کاربران، پیگیری نظرات و ارتباط مستقیم با مشتریان</p>
       </div>
 
       {/* Filter Tabs & Search */}
@@ -214,7 +214,7 @@ export default function AdminMessages() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl pr-10 pl-4 py-2.5 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500"
           />
-          <Search className="h-4 w-4 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="h-4 w-4 text-gray-500 absolute right-3.5 top-1/2 -translate-y-1/2" />
         </div>
 
         {/* Status Tabs */}
@@ -265,7 +265,7 @@ export default function AdminMessages() {
             <span>حذف انتخاب‌شده‌ها {selectedIds.size > 0 && `(${toPersianDigits(selectedIds.size)})`}</span>
           </button>
         </div>
-        <span className="text-[11px] text-gray-400 font-bold">
+        <span className="text-[11px] text-gray-500 dark:text-gray-400 font-bold">
           {toPersianDigits(filteredMessages.length)} پیام
         </span>
       </div>
@@ -273,9 +273,9 @@ export default function AdminMessages() {
       {/* Messages Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {loading ? (
-          <div className="col-span-full p-12 text-center text-gray-400">در حال دریافت پیام‌ها...</div>
+          <div className="col-span-full p-12 text-center text-gray-500">در حال دریافت پیام‌ها...</div>
         ) : filteredMessages.length === 0 ? (
-          <div className="col-span-full p-12 bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl text-center text-gray-400 border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs">
+          <div className="col-span-full p-12 bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl text-center text-gray-500 border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs">
             هیچ پیامی در این دسته‌بندی یافت نشد.
           </div>
         ) : (
@@ -299,12 +299,12 @@ export default function AdminMessages() {
                     {getStatusBadge(msg.status)}
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] text-gray-400 font-medium">{faDate(msg.createdAt)}</span>
+                    <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">{faDate(msg.createdAt)}</span>
                     <button
                       aria-label={msg.status === 'archived' ? 'خروج از بایگانی' : 'بایگانی پیام'}
                       title={msg.status === 'archived' ? 'خروج از بایگانی' : 'بایگانی پیام'}
                       onClick={(e) => { e.stopPropagation(); handleUpdateStatus(msg.id, msg.status === 'archived' ? 'read' : 'archived'); }}
-                      className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                      className="p-3 -m-1.5 rounded-lg text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                     >
                       {msg.status === 'archived'
                         ? <ArchiveRestore className="h-3.5 w-3.5" />
@@ -322,7 +322,7 @@ export default function AdminMessages() {
                 </p>
               </div>
 
-              <div className="pt-3 border-t border-[var(--color-border-light)] dark:border-gray-700 flex items-center justify-between text-xs text-gray-500">
+              <div className="pt-3 border-t border-[var(--color-border-light)] dark:border-gray-700 flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
                 <div className="flex items-center gap-1.5 truncate max-w-[160px]">
                   <User className="h-3.5 w-3.5 text-orange-500 shrink-0" />
                   <span className="font-bold text-gray-800 dark:text-gray-200 truncate">{msg.name}</span>
@@ -357,10 +357,10 @@ export default function AdminMessages() {
                 </div>
                 <div>
                   <h3 className="font-black text-[var(--color-text-main-light)] dark:text-white text-base">جزئیات پیام ارسالی</h3>
-                  <span className="text-[11px] text-gray-400">{faDate(selectedMessage.createdAt)}</span>
+                  <span className="text-[11px] text-gray-500 dark:text-gray-400">{faDate(selectedMessage.createdAt)}</span>
                 </div>
               </div>
-              <button onClick={() => setSelectedMessage(null)} className="p-2 text-gray-400 hover:text-gray-600">
+              <button onClick={() => setSelectedMessage(null)} aria-label="بستن پنجره پیام" className="p-3 -m-1 flex items-center justify-center rounded-xl text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
                 <X className="h-5 w-5" />
               </button>
             </div>
@@ -368,29 +368,29 @@ export default function AdminMessages() {
             {/* Sender Info Grid */}
             <div className="grid grid-cols-2 gap-3 bg-gray-50 dark:bg-[var(--color-surface-dark)]/60 p-4 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700 mb-4 text-xs">
               <div>
-                <span className="text-gray-400 block mb-0.5">نام فرستنده:</span>
+                <span className="text-gray-500 dark:text-gray-400 block mb-0.5">نام فرستنده:</span>
                 <strong className="text-[var(--color-text-main-light)] dark:text-white">{selectedMessage.name}</strong>
               </div>
 
               <div>
-                <span className="text-gray-400 block mb-0.5">وضعیت:</span>
+                <span className="text-gray-500 dark:text-gray-400 block mb-0.5">وضعیت:</span>
                 <div>{getStatusBadge(selectedMessage.status)}</div>
               </div>
 
               <div>
-                <span className="text-gray-400 block mb-0.5">شماره تماس:</span>
+                <span className="text-gray-500 dark:text-gray-400 block mb-0.5">شماره تماس:</span>
                 {selectedMessage.phone ? (
                   <a href={`tel:${selectedMessage.phone}`} className="font-mono font-bold text-orange-600 hover:underline flex items-center gap-1">
                     <Phone className="h-3.5 w-3.5" />
                     <span>{selectedMessage.phone}</span>
                   </a>
                 ) : (
-                  <span className="text-gray-400">ثبت نشده</span>
+                  <span className="text-gray-500 dark:text-gray-400">ثبت نشده</span>
                 )}
               </div>
 
               <div>
-                <span className="text-gray-400 block mb-0.5">ایمیل فرستنده:</span>
+                <span className="text-gray-500 dark:text-gray-400 block mb-0.5">ایمیل فرستنده:</span>
                 <a href={`mailto:${selectedMessage.email}`} className="font-mono text-orange-600 hover:underline truncate block">
                   {selectedMessage.email}
                 </a>
@@ -400,14 +400,14 @@ export default function AdminMessages() {
             {/* Subject & Message */}
             <div className="space-y-3 mb-6">
               <div>
-                <span className="text-xs font-bold text-gray-400 block mb-1">موضوع پیام:</span>
+                <span className="text-xs font-bold text-gray-500 dark:text-gray-400 block mb-1">موضوع پیام:</span>
                 <div className="font-extrabold text-sm text-[var(--color-text-main-light)] dark:text-white">
                   {selectedMessage.subject || 'بدون موضوع'}
                 </div>
               </div>
 
               <div>
-                <span className="text-xs font-bold text-gray-400 block mb-1">متن کامل پیام:</span>
+                <span className="text-xs font-bold text-gray-500 dark:text-gray-400 block mb-1">متن کامل پیام:</span>
                 <div className="p-4 rounded-2xl bg-gray-50 dark:bg-[var(--color-surface-dark)]/60 text-gray-800 dark:text-gray-200 text-xs leading-relaxed max-h-48 overflow-y-auto whitespace-pre-wrap border border-[var(--color-border-light)] dark:border-gray-700">
                   {selectedMessage.message}
                 </div>
@@ -417,7 +417,7 @@ export default function AdminMessages() {
             {/* Status Change & Action Footer */}
             <div className="pt-4 border-t border-[var(--color-border-light)] dark:border-gray-700 flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-1.5">
-                <span className="text-xs font-bold text-gray-500">تغییر وضعیت:</span>
+                <span className="text-xs font-bold text-gray-600 dark:text-gray-400">تغییر وضعیت:</span>
                 <button
                   onClick={() => handleUpdateStatus(selectedMessage.id, 'read')}
                   className="px-2.5 py-1.5 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 text-xs font-bold"

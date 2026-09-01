@@ -54,7 +54,7 @@ export default function AdminLayout() {
             <ShieldAlert className="h-16 w-16 text-red-500" />
           </div>
           <h1 className="text-2xl font-black text-[var(--color-text-main-light)] dark:text-white mb-4">دسترسی غیرمجاز</h1>
-          <p className="text-gray-500 dark:text-gray-400 mb-8">
+          <p className="text-gray-600 dark:text-gray-400 mb-8">
             شما اجازه دسترسی به پنل مدیریت را ندارید. لطفاً با حساب کاربری مدیر وارد شوید.
           </p>
           <button 
@@ -104,7 +104,7 @@ export default function AdminLayout() {
             <span className="text-sm font-black text-[var(--color-text-main-light)] dark:text-white">
               جانبی <span className="text-orange-500">آرنا</span>
             </span>
-            <span className="block text-[9px] text-zinc-400 dark:text-zinc-500 font-bold uppercase tracking-widest font-mono">ADMIN PANEL</span>
+            <span className="block text-[9px] text-zinc-500 dark:text-zinc-400 font-bold uppercase tracking-widest font-mono">ADMIN PANEL</span>
           </div>
         </Link>
         <div className="flex items-center gap-1">
@@ -131,6 +131,9 @@ export default function AdminLayout() {
         <img 
           src={user.avatar || '/avatar.svg'} 
           alt={user.name} 
+          width="40"
+          height="40"
+          decoding="async"
           className="w-10 h-10 rounded-xl border border-orange-500/30 object-cover shrink-0"
         />
         <div className="overflow-hidden grow">
@@ -185,7 +188,7 @@ export default function AdminLayout() {
             <ExternalLink className="h-4 w-4 text-orange-500" />
             <span>مشاهده فروشگاه</span>
           </div>
-          <ArrowRight className="h-3.5 w-3.5 text-gray-400" />
+          <ArrowRight className="h-3.5 w-3.5 text-gray-500 dark:text-gray-400" />
         </Link>
         <button
           onClick={() => { logout(); navigate('/'); }}

@@ -99,7 +99,7 @@ export default function AdminSettings() {
           <Settings className="h-6 w-6 text-orange-600" />
           تنظیمات عمومی و محتوای فروشگاه
         </h1>
-        <p className="text-sm text-gray-500 mt-1">مدیریت اطلاعات تماس، آستانه ارسال رایگان، بنرها و اسلایدرهای صفحه اصلی</p>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">مدیریت اطلاعات تماس، آستانه ارسال رایگان، بنرها و اسلایدرهای صفحه اصلی</p>
       </div>
 
       <form onSubmit={handleSave} className="space-y-6">
@@ -197,7 +197,7 @@ export default function AdminSettings() {
                 className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500 text-left dir-ltr"
                 required
               />
-              <p className="text-[11px] text-gray-400 mt-1">
+              <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1">
                 معادل: {settings.freeShippingThreshold.toLocaleString('fa-IR')} تومان
               </p>
             </div>
