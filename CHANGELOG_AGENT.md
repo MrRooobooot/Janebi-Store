@@ -86,3 +86,8 @@
 - Digit consistency: admin numeric inputs (Users VIP points, Settings free-shipping threshold, Coupons discount value, Products discount/stock) moved from `type=number` to `text+inputMode=numeric` with `toEnglishDigits` normalization; Coupons percent>99 guard added.
 - Gates: `npm run verify` PASS; artifact audit clean (jsxDEV=0, no /Users/ leaks); `./deploy.sh` OK; live verified on janebiarena.ir (analytics endpoint returns 14-bucket trend — currently all zeros, honest: only 2 cancelled orders exist in prod).
 - Report: `.hermes/reports/orchestrator-2026-09-02-sales-trend.md`
+
+## 2026-09-02c
+- DESIGN: product reviews UX polish — honest "جدید" empty state (removed fake 4.7 fallback), dual-theme cards, Persian digits/dates, 44px a11y targets, reduced-motion. (9c1cc49)
+- SEO: JSON-LD BlogPosting on blog reader via src/lib/blogJsonLd.ts, honesty-gated fields, 7 new vitest tests. (9c1cc49)
+- Also landed: SMS.ir OTP dispatch cluster (9c3ffe2). Deploy OK, live bundle Dj3Salu_, jsxDEV=0, /blog 200. Gate: 329 tests.
