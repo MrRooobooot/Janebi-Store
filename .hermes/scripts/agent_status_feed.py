@@ -107,12 +107,48 @@ def prod_health():
     return {"janebi": probe("https://janebiarena.ir/api/health"),
             "novin": probe("http://185.231.183.51/")}
 
+def openrouter_credit():
+    """OpenRouter account credits for the notch widget (total_credits in USD,
+    total_usage spent; remaining = total - usage). Key read from profile .env."""
+    import urllib.request, re, os
+    try:
+        envp = os.path.expanduser("~/.hermes/profiles/code-pro/.env")
+        m = re.search(r"^OPENROUTER_API_KEY=(\S+)", open(envp).read(), re.M)
+        if not m:
+            return {"error": "no-key"}
+        req = urllib.request.Request("https://openrouter.ai/api/v1/credits",
+                                     headers={"Authorization": f"Bearer {m.group(1)}"})
+        d = json.load(urllib.request.urlopen(req, timeout=5))["data"]
+        total = float(d.get("total_credits") or 0)
+        used = float(d.get("total_usage") or 0)
+        return {"total": round(total, 2), "used": round(used, 2),
+                "remaining": round(total - used, 2)}
+    except Exception:
+        return {"error": "fetch-failed"}
+
+def sms_credit():
+    """SMS.ir remaining message credits for the notch widget."""
+    import urllib.request, re, os
+    try:
+        envp = os.path.expanduser("~/Desktop/Janebi-Store/.env")
+        m = re.search(r"^SMS_API_KEY=(\S+)", open(envp).read(), re.M)
+        if not m:
+            return {"error": "no-key"}
+        req = urllib.request.Request("https://api.sms.ir/v1/credit",
+                                     headers={"x-api-key": m.group(1)})
+        d = json.load(urllib.request.urlopen(req, timeout=5))
+        return {"remaining": int(d.get("data") or 0)}
+    except Exception:
+        return {"error": "fetch-failed"}
+
 data = {
     "ts": int(time.time()),
     "jobs": jobs_status(),
     "sessions": sessions_summary(),
     "progress": progress(),
     "prod": prod_health(),
+    "openrouter": openrouter_credit(),
+    "sms": sms_credit(),
 }
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 tmp = OUT + ".tmp"
