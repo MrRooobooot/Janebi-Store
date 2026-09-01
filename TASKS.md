@@ -2,6 +2,10 @@
 
 ## Status: Completed (Aug 28, 2026)
 
+### Round 2026-09-01b — Blog Post 8 + Blog Listing Polish (SHIPPED, live)
+- [x] پست هشتم «راهنمای خرید کابل شارژ» (rahnamaye-kharid-kabel-sharzh، commit 01a58a3) — scripts/seed-blog.ts، محتوای تحریریه واقعی (USB-C/Lightning/کابل تقلبی). سید ایمپوتنت prod (esbuild bundle --external:better-sqlite3 --external:pg → docker cp → node درون کانتینر؛ 8×exists، 1 inserted). زنده: /api/blog=8، sitemap شامل slug.
+- [x] پولیش لیست وبلاگ (src/pages/static/Blog.tsx): بج زمان مطالعه ارقام فارسی از محتوای واقعی، hover lift با motion-reduce، touch targets ≥44px. گیت verify سبز (341/341)، jsxDEV=0، دیپلوی با lock؛ باندل زنده index-D6DVro4s.js == محلی. Next: UI polish round بعدی، پست ۹.
+
 ### Round 2026-09-06 — Blog Post 7 + Related Posts (SHIPPED, live)
 - [x] پست هفتم «شارژر بی‌سیم چیست و برای چه کسی منطقی است؟» (rahnamaye-sharzh-bisim-mag-safe، commit 99de0a2) — محتوای تحریریه واقعی Qi/Mag-Safe/گرما، seed ایمپوتنت prod (ssh → docker cp باندل esbuild --external:better-sqlite3 --external:pg → node درون کانتینر). زنده: /api/blog=7.
 - [x] بخش «مطالب مرتبط» در مودال مقاله (Blog.tsx): هم‌دسته‌ها جدیدترین اول، حذف مقاله جاری، cap=2، fallback به جدیدترین‌ها، a11y focus ring، motion-reduce. گیت verify سبز، jsxDEV=0، دیپلوی OK (lock رعایت شد)، chunk زنده Blog-CD-DezN_.js == محلی و شامل «مطالب مرتبط». Next: UI polish round بعدی، پست ۸.

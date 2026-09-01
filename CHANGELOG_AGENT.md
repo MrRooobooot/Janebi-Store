@@ -98,3 +98,10 @@
 - DESIGN: product reviews UX polish — honest "جدید" empty state (removed fake 4.7 fallback), dual-theme cards, Persian digits/dates, 44px a11y targets, reduced-motion. (9c1cc49)
 - SEO: JSON-LD BlogPosting on blog reader via src/lib/blogJsonLd.ts, honesty-gated fields, 7 new vitest tests. (9c1cc49)
 - Also landed: SMS.ir OTP dispatch cluster (9c3ffe2). Deploy OK, live bundle Dj3Salu_, jsxDEV=0, /blog 200. Gate: 329 tests.
+
+## 2026-09-01 — Blog Post 8 + Blog listing polish (01a58a3, SHIPPED live)
+- scripts/seed-blog.ts: post 8 «راهنمای خرید کابل شارژ» (rahnamaye-kharid-kabel-sharzh) — real editorial content, no stubs.
+- src/pages/static/Blog.tsx: Persian-digit reading-time badge from real content length, hover lift with prefers-reduced-motion, 44px touch targets + Persian aria-labels.
+- Gate: npm run verify ALL PASS (45 suites/341 tests); artifact audit jsxDEV=0, /Users/=0.
+- Deploy: deploy.sh with /tmp/janebi-deploy.lock; prod seed via esbuild bundle (--external:better-sqlite3 --external:pg) → docker cp → node in-container (8 exists, 1 inserted).
+- Live verify: /api/blog=8, served bundle index-D6DVro4s.js == local, sitemap.xml includes blog slugs (9 urls), health ok.
