@@ -193,6 +193,24 @@ export default function Blog() {
           <p className="text-orange-100 text-sm leading-relaxed">
             بررسی جدیدترین گجت‌ها، تکنولوژی‌های شارژ و مقالات آموزشی برای نگهداری بهتر از لوازم جانبی.
           </p>
+          {/* r36 freshness stamp (SEO/AEO 20260912a): derived from the real latest
+              post date — never hardcoded, hidden until articles are loaded. */}
+          {articles.length > 0 && (
+            <p
+              className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-white/90 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full border border-white/20"
+              data-freshness="20260912a"
+            >
+              <Calendar className="h-3.5 w-3.5" aria-hidden="true" />
+              آخرین به‌روزرسانی مجله:{' '}
+              {toPersianDigits(
+                new Intl.DateTimeFormat('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' }).format(
+                  new Date(
+                    Math.max(...articles.map((a) => new Date(a.createdAt || 0).getTime()))
+                  )
+                )
+              )}
+            </p>
+          )}
         </div>
       </div>
 
