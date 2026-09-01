@@ -3,6 +3,7 @@ import ProductCard from '../../components/ProductCard';
 import { ProductCardSkeleton } from '../../components/Skeletons';
 import { Sparkles, Zap } from 'lucide-react';
 import { motion } from 'motion/react';
+import { buildProductQuery } from '../../lib/productQuery';
 
 export default function NewProducts() {
   const [products, setProducts] = useState<any[]>([]);
@@ -11,7 +12,7 @@ export default function NewProducts() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch('/api/products?sort=newest')
+    fetch(`/api/products?${buildProductQuery({ sortBy: 'newest' })}`)
       .then(async (res) => {
         if (!res.ok) throw new Error('fetch failed');
         return res.json();

@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Product } from '../types';
+import { buildProductQuery } from '../lib/productQuery';
 
 export interface PricePreset {
   label: string;
@@ -79,19 +80,18 @@ export function useProductFilters() {
 
   // Fetch filtered products with instant Client Cache
   useEffect(() => {
-    const params = new URLSearchParams();
-    if (selectedCategory && selectedCategory !== 'همه') params.append('category', selectedCategory);
-    if (debouncedQuery) params.append('search', debouncedQuery);
-    if (selectedBrands.length > 0) params.append('brands', selectedBrands.join(','));
-    if (minPrice !== '') params.append('minPrice', minPrice.toString());
-    if (maxPrice !== '') params.append('maxPrice', maxPrice.toString());
-    if (onlyInStock) params.append('inStock', 'true');
-    if (onlyDiscounted) params.append('hasDiscount', 'true');
-    if (sortBy && sortBy !== 'default') params.append('sort', sortBy);
-    params.append('page', page.toString());
-    params.append('limit', '20');
-
-    const cacheKey = params.toString();
+    const cacheKey = buildProductQuery({
+      category: selectedCategory,
+      search: debouncedQuery,
+      brands: selectedBrands,
+      minPrice,
+      maxPrice,
+      onlyInStock,
+      onlyDiscounted,
+      sortBy,
+      page,
+      limit: 20,
+    });
     if (clientFilterCache.has(cacheKey)) {
       const cached = clientFilterCache.get(cacheKey)!;
       setProducts(cached.products);

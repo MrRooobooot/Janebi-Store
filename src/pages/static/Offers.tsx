@@ -3,6 +3,7 @@ import ProductCard from '../../components/ProductCard';
 import { ProductCardSkeleton } from '../../components/Skeletons';
 import { Sparkles, Clock, Flame } from 'lucide-react';
 import { motion } from 'motion/react';
+import { buildProductQuery } from '../../lib/productQuery';
 
 export default function Offers() {
   const [products, setProducts] = useState<any[]>([]);
@@ -35,7 +36,7 @@ export default function Offers() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch('/api/products?hasDiscount=true&sort=discount-desc')
+    fetch(`/api/products?${buildProductQuery({ onlyDiscounted: true, sortBy: 'discount-desc' })}`)
       .then(async (res) => {
         if (!res.ok) throw new Error('fetch failed');
         return res.json();
