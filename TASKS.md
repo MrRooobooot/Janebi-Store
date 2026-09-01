@@ -116,6 +116,10 @@ Key findings (P0 first):
 - [x] QA (7c463d4): verify 37/300 green; live probes 200 on /,/products,/products/14,/login; csp-report 204; /api/settings byte-identical to defaults; PUT invalidation code-verified. FAIL item: `reportUris` → invalid CSP directive. Fixed in f2fb02c (`reportUri`), deployed; live header now `report-uri /api/csp-report` verified.
 - Next: §3.14 LIKE wildcard escaping; §3.8/3.9 blog seed posts or hide nav; §3.7 admin audit-log table.
 
+### §3.14 LIKE wildcard escaping (2026-09-01, QA PASS)
+- [x] `server/utils/like.ts` `escapeLikePattern` (\ % _) + `containsLikePattern` با `escape '\\'` applied to title/category/brand search in `server/routes/products.ts` (commit 0393582) + `tests/unit/like-escape.test.ts` — gate 39 files / 306 tests PASS.
+- [x] QA PASS (commit 9a77fd0, report `.hermes/reports/qa-like-escape.md`); deployed via deploy.sh (health ok); live probes: `?search=%25` → `[]` (literal), `?search=قاب` → real Nillkin results.
+
 ### OTP Dead-Feature Removal + DB Backup (2026-09-01, QA PASS)
 - [x] OTP login/reset UI hidden (dead feature, no SMS provider); endpoints hard-503 in prod — live verified: `POST /api/auth/otp/send` → 503 «سرویس پیامکی فعال نیست»
 - [x] JSON-LD `</script>` escape in ProductDetail (\u003c/\u003e/\u0026)
