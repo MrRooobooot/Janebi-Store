@@ -67,7 +67,7 @@ app.use(
             imgSrc: ["'self'", "data:", "https:", "http:"],
             connectSrc: ["'self'", "https://api.zarinpal.com", "https://payment.zarinpal.com", "https://sandbox.zarinpal.com", "https://generativelanguage.googleapis.com"],
             // CSP violation observability: browsers POST violations here.
-            reportUris: ["/api/csp-report"],
+            reportUri: ["/api/csp-report"],
             reportTo: ["csp-endpoint"],
           },
         }
