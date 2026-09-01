@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_FEES } from '../lib/constants';
+
+const fmt = (n: number) => n.toLocaleString('fa-IR');
 
 const faqs = [
   {
@@ -17,12 +19,35 @@ const faqs = [
   },
   {
     question: 'هزینه ارسال چقدر است؟',
-    answer: `ارسال برای خریدهای بالای ${FREE_SHIPPING_THRESHOLD.toLocaleString('fa-IR')} تومان رایگان است. برای سفارش‌های کمتر از این مبلغ، هزینه پست پیشتاز ${SHIPPING_FEES.express.toLocaleString('fa-IR')} و پست سفارشی ${SHIPPING_FEES.standard.toLocaleString('fa-IR')} تومان محاسبه می‌شود.`,
+    answer: `ارسال برای خریدهای بالای ${fmt(FREE_SHIPPING_THRESHOLD)} تومان رایگان است. برای سفارش‌های کمتر از این مبلغ، هزینه پست پیشتاز ${fmt(SHIPPING_FEES.express)} و پست سفارشی ${fmt(SHIPPING_FEES.standard)} تومان محاسبه می‌شود.`,
   },
 ];
 
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  // FAQPage JSON-LD (SEO cluster 2026-09-04) — built from the exact same `faqs`
+  // array that renders on the page. No fabricated Q&A: every question/answer is
+  // the real on-page content; shipping values come from lib/constants.
+  useEffect(() => {
+    const jsonLd = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqs.map((faq) => ({
+        '@type': 'Question',
+        name: faq.question,
+        acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+      })),
+    };
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.id = 'faq-page-jsonld';
+    script.textContent = JSON.stringify(jsonLd);
+    document.head.appendChild(script);
+    return () => {
+      document.getElementById('faq-page-jsonld')?.remove();
+    };
+  }, []);
 
   const toggle = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
