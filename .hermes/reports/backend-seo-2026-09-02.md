@@ -24,6 +24,9 @@
 - `server/app.ts` — X-Robots-Tag header
 - `index.html` — canonical link (SEO meta block only)
 
-## Post-deploy live verification
-To be filled after deploy:
-- sitemap 200 + lastmod 2026-09-02: (see final report in commit)
+## Post-deploy live verification (2026-09-02)
+- `GET /sitemap.xml` → 200; 24 `<lastmod>2026-09-02</lastmod>` entries; 14 `/product/:id` URLs; 0 example.com hits.
+- `HEAD /` → `x-robots-tag: index, follow`.
+- `GET /` → `<link rel="canonical" href="https://janebiarena.ir/" />` present.
+- `GET /api/health` → `{"status":"ok","database":"ok"}`.
+- `GET /product/1` → 200.
