@@ -1,0 +1,48 @@
+=== PRE-INSERT VALIDATION ===
+Total Records: 125
+Verified: 125
+Unverified: 0
+Rejected (would skip): 0
+Duplicates: ids=0 pairs=0
+
+=== CATEGORY CLASSIFICATION ===
+Exact Match: 125
+Logical Match: 0 (conservative — only deterministic mapping used)
+UNMATCHED: 0
+
+=== CATEGORY DISTRIBUTION ===
+قاب و کاور موبایل: 8
+گلس و محافظ صفحه: 8
+کابل و سیم: 8
+شارژر و آداپتور: 8
+هولدر و نگهدارنده: 8
+هندزفری و ایرباد: 16
+هدفون و هدست: 16
+پاوربانک: 8
+تبدیل و مبدل: 8
+لوازم گیمینگ موبایل: 8
+لوازم جانبی خودرو: 5
+لوازم جانبی ساعت هوشمند: 16
+دانگل و تجهیزات اتصال: 8
+
+=== SOURCE INTEGRITY ===
+Valid Sources: 125
+Invalid Sources: 0
+Missing Sources: 0
+
+=== DATA INTEGRITY ===
+Duplicate SKU: 0 (no SKU field claimed — dk_id used as external ref, all unique: True)
+Duplicate Product: 0
+Missing Required Fields: 0
+Synthetic/Unsupported Records: 0 (all fields taken verbatim from API; brand from data_layer; no invented SKU/model/specs)
+
+=== WRITE PLAN ===
+Products To Insert: 125
+Products To Skip: 0
+Products That Require Review: 0 UNMATCHED
+
+Initial Stock Plan: stock=10, reserved=0 per product (never negative)
+Category Changes: NONE
+Schema Changes: NONE
+
+WRITE AUTHORIZATION: BLOCKED (awaiting admin approval)
