@@ -2,6 +2,12 @@
 
 ## Status: Completed (Aug 28, 2026)
 
+### Round 2026-09-01c (r37) — Blog Post 14 + Corrupted-Text Repair + Reading Progress (SHIPPED, live)
+- [x] پست چهاردهم «چند وات شارژر برای گوشی شما کافی است؟ راهنمای واقعی PD، QC و شارژ سریع» (rahnamaye-vate-sharzhe-divari، commit 42f136d) — محتوای تحریریه واقعی، سید ایمپوتنت prod. زنده: /api/blog=14، در sitemap داینامیک.
+- [x] تعمیر P0: پاراگراف‌های خراب/به‌هم‌ریخته در ۷ پست زنده (fandaki، gols-doorbin، paye-negahdarande، shishe-gherat، powerbank، kabel، asrar) — seed اصلاح شد و scripts/repair-blog-texts.ts (commit eaa539d) بدنه/excerpt را از seed اصلاح‌شده آپدیت کرد: 7/7 repaired، live bad-marker scan = 0.
+- [x] UI: نوار پیشرفت مطالعه در مودال مقاله (Blog.tsx) — sticky، dual-theme، role=progressbar، motion-reduce، reset هنگام تعویض مقاله. گیت verify سبز (ALL GATES PASSED)، jsxDEV=0، دیپلوی با لاک، chunk زنده Blog-wHzWFrzX.js شامل progressbar، freshness 20260913a در index.html زنده.
+- [x] نکته عملیاتی: هنگام ssh/HTTP timeout گذرا روی VPS (چند دقیقه)، صبر و تست مجدد قبل از هر اقدام — سرور خودش برگشت (load 0.01) و repair اجرا شد. Next: پست ۱۵ + روتشن UI/SEO.
+
 ### Round 2026-09-09 — Blog Post 9 (SHIPPED, live)
 - [x] پست دوازدهم «شارژر فندکی خودرو» (fandaki-khodro، commit 40f0ba3) + پست سیزدهم «پایه شارژ مغناطیسی» (magnisi، commit 7788af0، از child تیم) — محتوای تحریریه واقعی. سید ایمپوتنت prod (esbuild → docker cp → node درون کانتینر؛ 11×exists، 2 inserted). زنده: /api/blog=13، هر دو slug در sitemap.xml. Next: پست ۱۴ + روتشن UI/SEO.
 - [x] پست نهم «پایه نگهدارنده موبایل خودرو» (rahnamaye-entekhab-paye-negahdarande-khodro، commit 82973d8) — محتوای تحریریه واقعی (سگردان/داشبورد/CD-Slot، مگنت Mag-Safe، شارژر فندکی PD)، تصویر /products/hld-13.svg. سید ایمپوتنت prod (esbuild bundle → docker cp → node درون کانتینر؛ 8×exists، 1 inserted). زنده: /api/blog=9، health ok. گیت verify سبز. دیپلوی با lock (این راند: فقط seed، بدون تغییر باندل). Next: پست ۱۰ + روتشن UI/SEO.
