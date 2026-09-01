@@ -66,7 +66,7 @@ export default function MobileBottomNav() {
               className={`relative flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-300 min-touch-target ${
                 isActive
                   ? 'text-orange-600 dark:text-orange-400 font-bold'
-                  : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-[var(--color-surface-light)]/[0.04]'
+                  : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-[var(--color-surface-light)]/[0.04]'
               }`}
             >
               {isActive && (

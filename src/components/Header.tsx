@@ -49,7 +49,7 @@ export default function Header() {
             <Sparkles className="h-3.5 w-3.5 animate-pulse shrink-0" />
             <span className="text-zinc-800 dark:text-zinc-200 truncate font-semibold">{settings.announcement}</span>
           </div>
-          <div className="hidden md:flex items-center gap-4 text-[11px] text-zinc-500 dark:text-zinc-400 font-medium shrink-0">
+          <div className="hidden md:flex items-center gap-4 text-[11px] text-zinc-600 dark:text-zinc-400 font-medium shrink-0">
             <span>تلفن پشتیبانی: <span dir="ltr" className="font-mono font-bold text-zinc-700 dark:text-zinc-300">{toPersianDigits(settings.phone)}</span></span>
             <span className="h-3 w-px bg-zinc-300 dark:bg-zinc-700" />
             <span>ساعت کاری: {toPersianDigits(settings.supportHours)}</span>
@@ -157,7 +157,7 @@ export default function Header() {
                 >
                   <User className="h-4 w-4 text-orange-600" />
                   <span className="max-w-[80px] sm:max-w-[100px] truncate">{user?.name || 'حساب کاربری'}</span>
-                  <ChevronDown className="h-3.5 w-3.5 text-zinc-400" />
+                  <ChevronDown className="h-3.5 w-3.5 text-zinc-500 dark:text-zinc-400" />
                 </button>
 
                 {userDropdownOpen && (
@@ -167,7 +167,7 @@ export default function Header() {
                   >
                     <div className="px-4 py-2 border-b border-zinc-100 dark:border-zinc-800">
                       <p className="text-xs font-bold text-zinc-900 dark:text-white">{user?.name}</p>
-                      <p className="text-[10px] text-zinc-500 truncate">{user?.phone || user?.email}</p>
+                      <p className="text-[10px] text-zinc-600 dark:text-zinc-400 truncate">{user?.phone || user?.email}</p>
                     </div>
 
                     <Link
@@ -263,7 +263,7 @@ export default function Header() {
             ))}
           </div>
 
-          <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 flex justify-between text-xs text-zinc-500">
+          <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 flex justify-between text-xs text-zinc-600 dark:text-zinc-400">
             <Link to="/wishlist" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-1.5 p-2">
               <Heart className="h-4 w-4 text-rose-500" />
               علاقه‌مندی‌ها ({toPersianDigits(wishlist.length)})

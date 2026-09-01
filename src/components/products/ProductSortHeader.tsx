@@ -71,7 +71,7 @@ export default function ProductSortHeader({
 
       {/* Sorting Dropdown */}
       <div className="flex items-center gap-2 self-end sm:self-auto w-full sm:w-auto">
-        <span className="text-xs font-bold text-gray-500 whitespace-nowrap hidden sm:inline">
+        <span className="text-xs font-bold text-gray-600 dark:text-gray-400 whitespace-nowrap hidden sm:inline">
           مرتب‌سازی:
         </span>
         <div className="relative w-full sm:w-48">
@@ -87,7 +87,7 @@ export default function ProductSortHeader({
             <option value="rating-desc">بالاترین امتیاز</option>
             <option value="reviews-desc">بیشترین نظرات</option>
           </select>
-          <ChevronDown className="h-4 w-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <ChevronDown className="h-4 w-4 text-gray-500 dark:text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
         </div>
       </div>
     </div>

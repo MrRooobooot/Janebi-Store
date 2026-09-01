@@ -23,7 +23,7 @@ export default function NotFound() {
         صفحه‌ای که به دنبال آن بودید پیدا نشد!
       </h2>
       
-      <p className="text-sm text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto leading-relaxed">
+      <p className="text-sm text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto leading-relaxed">
         ممکن است آدرس را اشتباه وارد کرده باشید یا صفحه مورد نظر شما حذف شده باشد.
       </p>
 

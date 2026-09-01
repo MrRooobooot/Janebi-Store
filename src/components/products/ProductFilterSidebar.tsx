@@ -82,11 +82,11 @@ export default function ProductFilterSidebar({
             placeholder="نام، مدل یا برند..."
             className="w-full bg-[var(--color-surface-light)] dark:bg-gray-800/80 border-2 border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl py-3 px-4 pr-10 text-xs font-medium text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500/50 focus:ring-4 focus:ring-orange-500/10 dark:focus:ring-orange-500/5 transition-all shadow-xs group-hover:border-gray-200 dark:group-hover:border-gray-700"
           />
-          <Search className="h-4 w-4 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2 transition-colors group-hover:text-orange-500" />
+          <Search className="h-4 w-4 text-gray-500 absolute right-3.5 top-1/2 -translate-y-1/2 transition-colors group-hover:text-orange-500" />
           {inPageQuery && (
             <button
               onClick={() => setInPageQuery('')}
-              className="absolute left-2.5 top-1/2 -translate-y-1/2 p-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full text-gray-500 transition-colors"
+              className="absolute left-2.5 top-1/2 -translate-y-1/2 p-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full text-gray-600 dark:text-gray-400 transition-colors"
             >
               <X className="h-3 w-3" />
             </button>
@@ -119,7 +119,7 @@ export default function ProductFilterSidebar({
               className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition-colors ${
                 selectedCategory === 'همه'
                   ? 'bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400'
-                  : 'bg-gray-100 dark:bg-gray-800 text-gray-500'
+                  : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
               }`}
             >
               {productsCount}
@@ -144,7 +144,7 @@ export default function ProductFilterSidebar({
                 className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition-colors ${
                   selectedCategory === cat.name
                     ? 'bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400'
-                    : 'bg-gray-100 dark:bg-gray-800 text-gray-500'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
                 }`}
               >
                 {cat.count}
@@ -199,7 +199,7 @@ export default function ProductFilterSidebar({
                 </div>
                 <span
                   className={`text-[10px] font-bold ${
-                    isChecked ? 'text-orange-500' : 'text-gray-400'
+                    isChecked ? 'text-orange-500' : 'text-gray-500 dark:text-gray-400'
                   }`}
                 >
                   {b.count}
@@ -222,7 +222,7 @@ export default function ProductFilterSidebar({
         {/* Min & Max Inputs */}
         <div className="grid grid-cols-2 gap-3 mb-4">
           <div className="group">
-            <label className="block text-[10px] font-medium text-gray-500 mb-1.5 group-focus-within:text-orange-500 transition-colors">
+            <label className="block text-[10px] font-medium text-gray-600 dark:text-gray-400 mb-1.5 group-focus-within:text-orange-500 transition-colors">
               از قیمت
             </label>
             <input
@@ -235,7 +235,7 @@ export default function ProductFilterSidebar({
             />
           </div>
           <div className="group">
-            <label className="block text-[10px] font-medium text-gray-500 mb-1.5 group-focus-within:text-orange-500 transition-colors">
+            <label className="block text-[10px] font-medium text-gray-600 dark:text-gray-400 mb-1.5 group-focus-within:text-orange-500 transition-colors">
               تا قیمت
             </label>
             <input
@@ -400,7 +400,7 @@ export default function ProductFilterSidebar({
                     </h3>
                     <button
                       onClick={() => setMobileFilterOpen(false)}
-                      className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl text-gray-500 transition-colors cursor-pointer"
+                      className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl text-gray-600 dark:text-gray-400 transition-colors cursor-pointer"
                     >
                       <X className="h-5 w-5" />
                     </button>
