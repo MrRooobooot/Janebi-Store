@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Clock, Calendar, ArrowLeft, ArrowRight, BookOpen, User, X } from 'lucide-react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
+import { useParams } from 'react-router-dom';
 import { toPersianDigits } from '../../lib/utils';
 import { buildBlogPostingJsonLd } from '../../lib/blogJsonLd';
 
@@ -28,6 +29,7 @@ export default function Blog() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [openArticle, setOpenArticle] = useState<Article | null>(null);
+  const { slug } = useParams<{ slug?: string }>();
 
   useEffect(() => {
     let cancelled = false;
@@ -70,6 +72,14 @@ export default function Blog() {
       cancelled = true;
     };
   }, []);
+
+  // Deep link support: /blog/<slug> where slug is the post's DB id (the only
+  // unique identifier in blog_posts). Opens the matching article on load.
+  useEffect(() => {
+    if (!slug || articles.length === 0) return;
+    const match = articles.find((a) => a.id === slug);
+    if (match) setOpenArticle(match);
+  }, [slug, articles]);
 
   // JSON-LD BlogPosting for the open article (SEO: structured data for search
   // engines). Honesty gate: builder emits only fields that exist on the post.

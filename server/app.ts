@@ -23,6 +23,7 @@ import paymentRoutes from "./routes/payment.js";
 import settingsRoutes from "./routes/settings.js";
 import reviewsRoutes from "./routes/reviews.js";
 import blogRoutes from "./routes/blog.js";
+import sitemapRoutes from "./routes/sitemap.js";
 import adminRoutes from "./routes/admin.js";
 import { isPostgres, pool, sqlite } from "./db/index.js";
 
@@ -238,6 +239,7 @@ app.use("/api/settings", settingsRoutes);
 app.use("/api/reviews", reviewsRoutes);
 app.use("/api/blog", blogRoutes);
 app.use("/api/admin", adminRoutes);
+app.use(sitemapRoutes); // GET /sitemap.xml — dynamic, includes blog_posts slugs
 
 // Health / readiness probe — verifies the process is up AND the database
 // answers a real query. Uses the raw connection per dialect (pool for PG,

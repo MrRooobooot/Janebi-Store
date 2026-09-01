@@ -88,6 +88,7 @@ export default function App() {
                         <Route path="privacy" element={<Privacy />} />
                         <Route path="faq" element={<FAQPage />} />
                         <Route path="blog" element={<Blog />} />
+                        <Route path="blog/:slug" element={<Blog />} />
                         <Route path="offers" element={<Offers />} />
                         <Route path="new-products" element={<NewProducts />} />
                         <Route path="brands" element={<Brands />} />
