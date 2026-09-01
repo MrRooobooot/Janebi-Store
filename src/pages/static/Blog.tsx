@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Clock, Calendar, ArrowLeft, ArrowRight, BookOpen, User, X, Tag } from 'lucide-react';
+import { Clock, Calendar, ArrowLeft, ArrowRight, BookOpen, User, X, Tag, Link2, Check } from 'lucide-react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { useParams } from 'react-router-dom';
 import { toPersianDigits } from '../../lib/utils';
@@ -39,6 +39,7 @@ export default function Blog() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [openArticle, setOpenArticle] = useState<Article | null>(null);
+  const [copied, setCopied] = useState(false);
   const { slug } = useParams<{ slug?: string }>();
 
   useEffect(() => {
@@ -143,6 +144,7 @@ export default function Blog() {
   useEffect(() => {
     const scriptId = 'blog-posting-jsonld';
     if (!openArticle) {
+      setCopied(false);
       document.getElementById(scriptId)?.remove();
       return;
     }
@@ -325,6 +327,21 @@ export default function Blog() {
                 <span className="absolute top-4 right-4 bg-orange-600 text-white text-[11px] font-bold px-3 py-1 rounded-full shadow">
                   {openArticle.category}
                 </span>
+                <button
+                  onClick={() => {
+                    const url = `${window.location.origin}/blog/${openArticle.id}`;
+                    if (navigator.clipboard?.writeText) {
+                      navigator.clipboard.writeText(url).then(() => {
+                        setCopied(true);
+                        setTimeout(() => setCopied(false), 2000);
+                      }).catch(() => {});
+                    }
+                  }}
+                  aria-label={copied ? 'لینک مقاله کپی شد' : 'کپی لینک مقاله'}
+                  className="absolute top-16 left-4 w-11 h-11 bg-black/50 hover:bg-black/70 backdrop-blur-md text-white rounded-full flex items-center justify-center transition-colors motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+                >
+                  {copied ? <Check className="h-5 w-5" /> : <Link2 className="h-5 w-5" />}
+                </button>
               </div>
 
               <div className="p-6 sm:p-8">
