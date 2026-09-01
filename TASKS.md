@@ -189,3 +189,8 @@ Key findings (P0 first):
 ### Reviews-pagination cluster QA (2026-09-03b, PASS)
 - [x] TEAM-QA: npm run verify 44 files/337 tests GREEN + live bundle index-2CuGcgTU.js; 20/20 live checks (Persian pagination UI, ?page&limit meta, page1≠page2, empty-state 'جدید' no fabricated rating, dual-engine console clean, 390px no overflow). Report: .hermes/reports/qa-2026-09-03b-reviews.md
 - Next: blog seeding (prod 0 posts) + JSON-LD BlogPosting (SEO item).
+
+## Round 2026-09-03c
+- [x] Design: product gallery interaction + spec-table zebra/dark tokens + Persian a11y (3ef7b25) — QA PASS, deployed, live bundle index-DNtSEzq_.js
+- [x] SEO groundwork: blog_posts tags column + PG parity migration 0008 (5bdb8d5) — QA PASS, deployed
+- [ ] SEO: blog seed content (4 Persian posts) + JSON-LD BlogPosting + sitemap blog URLs — child failed twice, reschedule with smaller scope (seed script only)
