@@ -3,7 +3,8 @@
 ## [2026-09-02] - §3.15 Hardening Cluster (headers + settings single-sourcing)
 - **CSP report-uri via env (`1cd3b12`):** `server/app.ts` Helmet CSP now emits the legacy `report-uri` directive ONLY when `CSP_REPORT_URI` is set in the environment (no placeholder URL in code). Modern `report-to` transport (per-request `Reporting-Endpoints` header + rate-limited internal `/api/csp-report` 204 sink) stays active unconditionally.
 - **Settings fallback single-sourcing (`1cd3b12`):** remaining duplicated `'جانبی آرنا'` literals in `src/pages/ProductDetail.tsx` (JSON-LD seller name, share title) replaced with `STORE_SETTINGS_DEFAULTS.storeName` from `src/lib/constants.ts` — the same single source the server and `useStoreSettings` already use. Zero behavior change.
-- **Permissions-Policy (pre-existing, live-verified):** header was already shipped in the earlier headers cluster; stricter-than-spec `payment=()` confirmed correct (store uses Zarinpal redirects, no Payment Request API).
+- **Permissions-Policy (pre-existing, live-verified):** header was already shipped in the earlier headers cluster; aligned to spec `payment=(self)` (commit `b7e3d82`, 2026-09-02) — live header now `camera=(), geolocation=(), microphone=(), payment=(self), usb=(), interest-cohort=()`.
+- **Re-deploy + re-verify (b7e3d82):** `npm run verify` ALL PASS (tsc strict + 319 tests + builds + post-build audit). Deployed via `./deploy.sh` (health ok). Live evidence: `curl -sI https://janebiarena.ir | grep -i permissions-policy` shows `payment=(self)`; `/api/health` 200.
 - **Quality gate:** `npm run verify` 100% PASSED (tsc strict + Vitest + builds + post-build audit). Deployed via `./deploy.sh` (health ok). Live evidence 2026-09-02: Permissions-Policy header present on janebiarena.ir, `/api/health` 200, homepage bundle hash changed (`index-8xinYUga.js`). TASKS.md §3.15 marked closed.
 
 ## [2026-09-01] - Remediation Commit, Skill Refactor & Repo Hygiene
