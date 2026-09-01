@@ -146,3 +146,8 @@ Key findings (P0 first):
 - [x] Commit adbcdc9 (6 files +303/−21), deployed via deploy.sh; bundle index-BplrxINR.js live == local; health ok. Orchestrator re-verified: 2 new test suites 13/13 pass; live admin probes — 430 rows default, archived=0, invalid filter 400, archive/unarchive roundtrip 200.
 - Report: .hermes/reports/backend-contact-archive.md
 - Next: audit priority list (§6) fully closed. Backlog EMPTY — cron reads reports for regressions only.
+
+### Product-detail design+SEO cluster (2026-09-02, deployed + live-verified)
+- [x] TEAM-FRONTEND commit 58e34f7: sticky desktop buy-box + image lightbox polish (theme tokens, Persian digits, ≥44px a11y targets) + Product JSON-LD enrichment (image array absolute URLs, sku, additionalProperty from real category/brand/warranty/features; FAQPage skipped — no real FAQ source).
+- [x] Gate npm run verify ALL GREEN (orchestrator re-ran). Deployed via deploy.sh — health ok, bundle index-DPcNgX2n.js live, /products/1 → 200.
+- Next: rotate to cart/checkout or admin design + next SEO item.
