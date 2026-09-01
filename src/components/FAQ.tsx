@@ -32,7 +32,7 @@ export default function FAQ() {
     <section className="mt-16">
       <div className="text-center mb-10">
         <h2 className="text-2xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] mb-2">سوالات متداول</h2>
-        <p className="text-gray-500 dark:text-gray-400">پاسخ پرتکرارترین سوالات شما درباره خرید و ارسال</p>
+        <p className="text-gray-600 dark:text-gray-400">پاسخ پرتکرارترین سوالات شما درباره خرید و ارسال</p>
       </div>
       <div className="max-w-3xl mx-auto space-y-4">
         {faqs.map((faq, index) => (
@@ -44,7 +44,7 @@ export default function FAQ() {
               <span className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] pr-2 border-r-4 border-transparent group-hover:border-orange-500 transition-colors text-sm sm:text-base">
                 {faq.question}
               </span>
-              <ChevronDown className={`h-5 w-5 text-gray-500 dark:text-gray-400 transition-transform duration-300 ${openIndex === index ? 'rotate-180 text-orange-600 dark:text-orange-400' : ''}`} />
+              <ChevronDown className={`h-5 w-5 text-gray-600 dark:text-gray-400 transition-transform duration-300 ${openIndex === index ? 'rotate-180 text-orange-600 dark:text-orange-400' : ''}`} />
             </button>
             <div
               className={`px-5 sm:px-6 text-gray-600 dark:text-gray-300 text-sm leading-relaxed overflow-hidden transition-all duration-300 ${

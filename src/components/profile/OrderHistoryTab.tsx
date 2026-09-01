@@ -80,7 +80,7 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
             placeholder="جستجو کد سفارش یا عنوان کالا..."
             className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-4 pr-10 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
           />
-          <Search className="h-4 w-4 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="h-4 w-4 text-gray-500 absolute right-3.5 top-1/2 -translate-y-1/2" />
         </div>
       </div>
 
@@ -106,7 +106,7 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
               className={`text-[10px] px-2 py-0.5 rounded-full ${
                 activeTab === tab.id
                   ? 'bg-[var(--color-surface-light)]/20 text-white'
-                  : 'bg-gray-100 dark:bg-gray-800 text-gray-500'
+                  : 'bg-gray-100 dark:bg-gray-800 text-gray-600'
               }`}
             >
               {toPersianDigits(tab.count)}
@@ -117,7 +117,7 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
 
       {/* Orders List */}
       {filteredOrders.length === 0 ? (
-        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-12 text-center text-gray-400 font-bold text-sm">
+        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-12 text-center text-gray-500 font-bold text-sm">
           هیچ سفارشی متناسب با جستجوی شما یافت نشد.
         </div>
       ) : (
@@ -146,7 +146,7 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
                   </span>
                 </div>
 
-                <div className="flex items-center gap-4 text-gray-500 dark:text-gray-400 font-medium">
+                <div className="flex items-center gap-4 text-gray-600 dark:text-gray-400 font-medium">
                   <span className="flex items-center gap-1">
                     <Calendar className="h-3.5 w-3.5" />
                     {order.date}
@@ -173,7 +173,7 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
                       <div className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] truncate">
                         {item.title}
                       </div>
-                      <div className="text-[11px] text-gray-400 mt-0.5">
+                      <div className="text-[11px] text-gray-500 mt-0.5">
                         {toPersianDigits(item.qty)} عدد × {formatPrice(item.price)}
                       </div>
                     </div>
@@ -183,8 +183,8 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
 
               {/* Recipient details & Actions */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-xs">
-                <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 font-medium">
-                  <MapPin className="h-4 w-4 text-gray-400 shrink-0" />
+                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 font-medium">
+                  <MapPin className="h-4 w-4 text-gray-500 shrink-0" />
                   <span>تحویل گیرنده: {order.recipient.name} ({order.recipient.address})</span>
                 </div>
 
@@ -193,7 +193,7 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
                     onClick={() => handlePrint(order.id)}
                     className="px-3.5 py-2 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 font-bold text-xs flex items-center gap-1.5 transition-colors"
                   >
-                    <Printer className="h-3.5 w-3.5 text-gray-500" />
+                    <Printer className="h-3.5 w-3.5 text-gray-600" />
                     چاپ فاکتور
                   </button>
 

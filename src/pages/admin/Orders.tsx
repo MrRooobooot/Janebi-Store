@@ -295,7 +295,7 @@ export default function AdminOrders() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-white mb-1">مدیریت سفارشات مشتریان</h1>
-          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">بررسی، چاپ فاکتور، انتساب کد رهگیری پستی و تغییر وضعیت سفارشات</p>
+          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">بررسی، چاپ فاکتور، انتساب کد رهگیری پستی و تغییر وضعیت سفارشات</p>
         </div>
 
         <button
@@ -328,7 +328,7 @@ export default function AdminOrders() {
           >
             <span>{tab.label}</span>
             <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono ${
-              statusFilter === tab.id ? 'bg-[var(--color-surface-light)]/25 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-500'
+              statusFilter === tab.id ? 'bg-[var(--color-surface-light)]/25 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600'
             }`}>
               {tab.count}
             </span>
@@ -348,7 +348,7 @@ export default function AdminOrders() {
           <Trash2 className="h-4 w-4" />
           <span>حذف سفارش‌های انتخاب‌شده {selectedIds.size > 0 && `(${toPersianDigits(selectedIds.size)})`}</span>
         </button>
-        <span className="text-[11px] text-gray-400 font-bold">
+        <span className="text-[11px] text-gray-500 font-bold">
           {toPersianDigits(filteredOrders.length)} سفارش
         </span>
       </div>
@@ -362,13 +362,13 @@ export default function AdminOrders() {
             onChange={e => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[var(--color-surface-dark)] focus:outline-none focus:border-orange-500 text-xs font-bold"
           />
-          <Search className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
+          <Search className="w-4 h-4 text-gray-500 absolute left-3 top-3" />
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-right">
             <thead>
-              <tr className="bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 text-xs border-b border-[var(--color-border-light)] dark:border-gray-700">
+              <tr className="bg-gray-50 dark:bg-gray-700/50 text-gray-600 dark:text-gray-400 text-xs border-b border-[var(--color-border-light)] dark:border-gray-700">
                 <th className="p-3.5 font-bold">
                   <input
                     type="checkbox"
@@ -395,9 +395,9 @@ export default function AdminOrders() {
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
               {loading ? (
-                <tr><td colSpan={8} className="text-center p-8 text-xs font-bold text-gray-400">در حال بارگذاری...</td></tr>
+                <tr><td colSpan={8} className="text-center p-8 text-xs font-bold text-gray-500">در حال بارگذاری...</td></tr>
               ) : filteredOrders.length === 0 ? (
-                <tr><td colSpan={8} className="text-center p-8 text-xs font-bold text-gray-400">هیچ سفارشی یافت نشد.</td></tr>
+                <tr><td colSpan={8} className="text-center p-8 text-xs font-bold text-gray-500">هیچ سفارشی یافت نشد.</td></tr>
               ) : pagedOrders.map(order => (
                 <tr key={order.id} className="text-xs hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                   <td className="p-3.5">
@@ -413,7 +413,7 @@ export default function AdminOrders() {
                   <td className="p-3.5 text-gray-600 dark:text-gray-300">{order.date}</td>
                   <td className="p-3.5 text-gray-600 dark:text-gray-300">
                     <div className="font-bold text-gray-800 dark:text-gray-200">{order.recipientName}</div>
-                    <div className="text-[11px] text-gray-400 font-mono" dir="ltr">{order.recipientPhone}</div>
+                    <div className="text-[11px] text-gray-500 font-mono" dir="ltr">{order.recipientPhone}</div>
                   </td>
                   <td className="p-3.5 font-black text-orange-600 dark:text-orange-400">{formatPrice(order.total)}</td>
                   <td className="p-3.5 text-gray-600 dark:text-gray-300 font-mono text-[11px]">
@@ -422,7 +422,7 @@ export default function AdminOrders() {
                         {order.refId}
                       </span>
                     ) : (
-                      <span className="text-gray-400">ثبت نشده</span>
+                      <span className="text-gray-500">ثبت نشده</span>
                     )}
                   </td>
                   <td className="p-3.5 text-center">
@@ -495,7 +495,7 @@ export default function AdminOrders() {
               </div>
               <button
                 onClick={() => setSelectedOrder(null)}
-                className="p-2 rounded-xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                className="p-2 rounded-xl text-gray-500 hover:text-gray-600 dark:hover:text-gray-200"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -530,19 +530,19 @@ export default function AdminOrders() {
             {/* Status and metadata */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-gray-50 dark:bg-[var(--color-surface-dark)]/60 p-4 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700 text-xs">
               <div>
-                <span className="text-gray-400 block mb-1">وضعیت:</span>
+                <span className="text-gray-500 block mb-1">وضعیت:</span>
                 <span className="font-bold text-orange-600">{selectedOrder.statusText}</span>
               </div>
               <div>
-                <span className="text-gray-400 block mb-1">تاریخ ثبت:</span>
+                <span className="text-gray-500 block mb-1">تاریخ ثبت:</span>
                 <span className="font-bold text-gray-800 dark:text-gray-200">{selectedOrder.date}</span>
               </div>
               <div>
-                <span className="text-gray-400 block mb-1">روش ارسال:</span>
+                <span className="text-gray-500 block mb-1">روش ارسال:</span>
                 <span className="font-bold text-gray-800 dark:text-gray-200">{selectedOrder.shippingMethod === 'express' ? 'پیشتاز اکسپرس' : 'معمولی'}</span>
               </div>
               <div>
-                <span className="text-gray-400 block mb-1">مبلغ کل:</span>
+                <span className="text-gray-500 block mb-1">مبلغ کل:</span>
                 <span className="font-black text-orange-600">{formatPrice(selectedOrder.total)}</span>
               </div>
             </div>
@@ -573,7 +573,7 @@ export default function AdminOrders() {
                       <img src={item.image} alt={item.title} className="w-10 h-10 rounded-lg object-contain bg-[var(--color-surface-light)] dark:bg-gray-800 p-1 border border-gray-200 dark:border-gray-700" />
                       <div>
                         <div className="font-bold text-[var(--color-text-main-light)] dark:text-white">{item.title}</div>
-                        <div className="text-[11px] text-gray-400">{item.brand}</div>
+                        <div className="text-[11px] text-gray-500">{item.brand}</div>
                       </div>
                     </div>
                     <div className="text-left font-bold text-gray-700 dark:text-gray-300">
