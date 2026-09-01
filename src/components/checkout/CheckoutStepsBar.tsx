@@ -24,7 +24,7 @@ export default function CheckoutStepsBar({ currentStep = 2 }: CheckoutStepsBarPr
         className="absolute top-1/2 left-4 right-4 h-1.5 bg-zinc-200 dark:bg-zinc-800 -z-10 -translate-y-1/2 rounded-full overflow-hidden"
       >
         <div
-          className="h-full bg-primary-300 rounded-full transition-all duration-500"
+          className="h-full bg-gradient-to-l from-primary-300 to-primary-400 rounded-full transition-all duration-500"
           style={{ width: `${((currentStep - 1) / (STEPS.length - 1)) * 100}%` }}
         ></div>
       </div>
@@ -44,7 +44,7 @@ export default function CheckoutStepsBar({ currentStep = 2 }: CheckoutStepsBarPr
               <Link
                 to={href}
                 aria-label={`مرحله ${toPersianDigits(step)}: ${label} — تکمیل‌شده، بازگشت به این مرحله`}
-                className="group flex flex-col items-center gap-2 cursor-pointer rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-700 dark:focus-visible:ring-primary-200 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-canvas-light)] dark:focus-visible:ring-offset-[var(--color-canvas-dark)]"
+                className="group flex flex-col items-center gap-2 cursor-pointer rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#994700] dark:focus-visible:ring-primary-200 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-canvas-light)] dark:focus-visible:ring-offset-[var(--color-canvas-dark)]"
               >
                 <span className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary-300 to-primary-400 text-white flex items-center justify-center font-bold text-base shadow-md shadow-orange-500/30 transition-transform motion-safe:group-hover:scale-105 motion-safe:group-focus-visible:scale-105">
                   <CheckCircle className="h-5 w-5" />
@@ -63,8 +63,8 @@ export default function CheckoutStepsBar({ currentStep = 2 }: CheckoutStepsBarPr
                 <span
                   className={`w-10 h-10 rounded-2xl flex items-center justify-center text-base transition-colors ${
                     isCurrent
-                      ? 'bg-gradient-to-br from-primary-300 to-primary-500 text-white font-black shadow-md shadow-orange-500/30 ring-2 ring-primary-200 dark:ring-primary-800 ring-offset-2 ring-offset-[var(--color-canvas-light)] dark:ring-offset-[var(--color-canvas-dark)]'
-                      : 'bg-[var(--color-surface-light)] dark:bg-zinc-800 border-2 border-zinc-200 dark:border-zinc-700 text-zinc-400 dark:text-zinc-500 font-bold'
+                      ? 'bg-gradient-to-br from-primary-300 to-primary-400 text-white font-black shadow-md shadow-orange-500/30 ring-2 ring-primary-200 dark:ring-primary-800 ring-offset-2 ring-offset-[var(--color-canvas-light)] dark:ring-offset-[var(--color-canvas-dark)]'
+                      : 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border-2 border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-zinc-400 dark:text-zinc-500 font-bold'
                   }`}
                 >
                   {toPersianDigits(step)}

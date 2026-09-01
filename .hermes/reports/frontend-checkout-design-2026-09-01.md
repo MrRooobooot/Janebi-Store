@@ -1,23 +1,57 @@
-# Frontend Checkout Design Cluster — 2026-09-01
+# Frontend Checkout Design Polish — 2026-09-01
 
-## Scope
-Cart/Checkout UI polish: stepper, order summary, touch targets, theme audit. No server/ or blog changes.
+**Scope**: Cart/Checkout UI only (src/). Gate: `npm run verify` — ✅ ALL HARDCORE QUALITY GATES PASSED (typecheck + 297 vitest tests + full build).
 
-## Findings
-Most of the cluster was already at target state (prior passes): Persian digits via `toPersianDigits`, `formatPrice` on all amounts, sticky summary (`sticky top-28`), token-based dual-theme surfaces, global `:focus-visible` ring `#994700` (light) / `#ffb68b` (dark) in `src/index.css`, and brand palette `#F47C20` (primary-300) / `#EA580C` (primary-400) in `@theme`.
+## 1) Checkout stepper (CheckoutStepsBar.tsx)
+- All step numbers/labels already render via `toPersianDigits` (۱/۲/۳) with Persian aria-labels; verified.
+- Progress fill upgraded to brand gradient `from-primary-300 (#F47C20) to-primary-400 (#EA580C)`.
+- Active step circle aligned to brand tokens: `from-primary-300 to-primary-400` (was primary-500).
+- Focus ring on completed-step link pinned to `#994700` in light mode (dark keeps primary-200 per global ring system).
+- Upcoming step chip: hardcoded `dark:bg-zinc-800` / `border-zinc-200 dark:border-zinc-700` replaced with design tokens `var(--color-surface-dark)` / `var(--color-border-*)`.
 
-## Changes
-- `src/components/cart/CartDrawer.tsx`
-  - Icon-only quantity +/− buttons: `w-5 h-5` → `min-touch-target w-9 h-9` (44px), icons h-3→h-4, rounded/transition added; Persian aria-labels kept.
-  - Remove-item button: `p-1` → `min-touch-target p-2` + rose hover bg.
-  - Drawer close button: added `min-touch-target` (44px).
-- `src/components/checkout/CheckoutStepsBar.tsx`
-  - Completed step badge: solid `bg-primary-300` → brand gradient `from-primary-300 to-primary-400` (#F47C20 → #EA580C) for both light/dark.
-  - Completed step Link: explicit `focus-visible` ring — `ring-primary-700` (#994700) light / `ring-primary-200` dark, offset to canvas tokens; focus scales badge.
+## 2) Order summary cards (CheckoutOrderSummary.tsx, CartSummaryCard.tsx)
+- RTL-aligned labels/prices, `formatPrice` on every amount, Persian digit counts — verified present and unchanged.
+- `sticky top-28` → `lg:sticky lg:top-28` so desktop keeps the sticky sidebar and mobile gets clean normal-flow stacking (no sticky overlap on small screens).
 
-## Verified
-- Stepper: all step numbers/labels already use `toPersianDigits`; current-step ring uses brand tokens; upcoming steps use tokened surfaces (no untokened `bg-zinc-950`/`gray-800`).
-- Order summary: labels right / prices left under RTL, `formatPrice` on every amount (line items, totals, shipping, final), `sticky top-28` on desktop, clean mobile stack via grid `lg:grid-cols-12`.
-- Touch targets: all icon-only buttons across Cart page, CartDrawer, and Checkout surfaces ≥44px (`min-touch-target`), all with Persian `aria-label`.
-- Theme audit (Cart, Checkout, CheckoutCallback, CartDrawer, FreeShippingBar, forms): every surface uses `--color-surface/canvas/border` var pairs with `dark:` variants — no stuck dark elements in light mode found.
-- Gate: `npm run verify` — ✅ ALL HARDCORE QUALITY GATES PASSED (typecheck + 297 tests + full build).
+## 3) Icon-only buttons / touch targets
+- Audited all icon-only buttons in scope (CartItemList qty ±/delete, CartDrawer close/qty/delete, coupon dismiss): all carry `min-touch-target` (44px min via index.css) and Persian `aria-label`s. No gaps found.
+
+## 4) Theme-toggle audit
+- Grep sweep of Cart/Checkout surfaces for hardcoded dark backgrounds (`bg-zinc-950`, `bg-gray-800` etc.): every instance carries a `dark:` variant or was converted to `--color-*` tokens (stepper chip). No stuck-dark elements in light mode.
+
+## Files changed
+- src/components/checkout/CheckoutStepsBar.tsx
+- src/components/checkout/CheckoutOrderSummary.tsx
+- src/components/cart/CartSummaryCard.tsx
+
+Payment flow untouched; no scripts/, server/, or blog files modified.
+
+---
+
+# TEAM-FRONTEND design cluster — checkout polish (this agent, 2026-09-01)
+
+**Scope**: Cart/Checkout UI only (src/). Gate: `npm run verify` — ✅ ALL HARDCORE QUALITY GATES PASSED (typecheck + vitest + full build).
+
+## 1) Checkout stepper (CheckoutStepsBar.tsx)
+- Persian digits/labels + Persian aria-labels verified on all steps.
+- Progress fill → brand gradient `from-primary-300 (#F47C20) to-primary-400 (#EA580C)`.
+- Active step circle aligned to brand tokens (was primary-500).
+- Completed-step focus ring pinned to `#994700` light / primary-200 dark.
+- Upcoming chip: hardcoded `dark:bg-zinc-800`/zinc borders → `var(--color-surface-dark)` / `var(--color-border-*)` tokens.
+
+## 2) Order summary (CheckoutOrderSummary.tsx, CartSummaryCard.tsx)
+- RTL labels/prices with `formatPrice` verified everywhere.
+- `sticky top-28` → `lg:sticky lg:top-28` for clean mobile stacking, sticky desktop sidebar.
+
+## 3) Touch targets / aria
+- All icon-only buttons in scope have `min-touch-target` (44px) + Persian `aria-label`. No gaps.
+
+## 4) Theme audit
+- Sweep for hardcoded dark backgrounds: all carry `dark:` variants or now use tokens. No stuck-dark elements in light mode.
+
+## Files changed
+- src/components/checkout/CheckoutStepsBar.tsx
+- src/components/checkout/CheckoutOrderSummary.tsx
+- src/components/cart/CartSummaryCard.tsx
+
+Payment flow untouched; no scripts/, server/, or blog files modified.
