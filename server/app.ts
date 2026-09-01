@@ -175,6 +175,21 @@ const couponLimiter = rateLimit({
 app.use("/api/coupons/validate", couponLimiter);
 app.use("/api/coupons", couponLimiter);
 
+// Newsletter signup — public POST from the site footer. Stricter than the
+// general limiter to stop list-bombing of the subscribers table.
+const newsletterLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5, // 5 subscribe attempts per IP per 15 minutes
+  skip: () => process.env.NODE_ENV === "test" || env.NODE_ENV === "test",
+  message: {
+    message: "تعداد درخواست‌های عضویت در خبرنامه بیش از حد مجاز است. لطفاً بعداً تلاش کنید.",
+    error: "Too many newsletter requests",
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use("/api/contact/newsletter", newsletterLimiter);
+
 // CSP violation reporting endpoint (§3.15 observability).
 // Browsers POST violation reports (report-uri legacy shape or report-to
 // report lists) here; they are logged via pino for security triage.

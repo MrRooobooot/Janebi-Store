@@ -174,3 +174,20 @@ export const resetPasswordSchema = z.object({
     newPassword: z.string().min(6, "رمز عبور جدید باید حداقل ۶ کاراکتر باشد")
   })
 });
+
+// Admin bulk operations — ids are primary keys of contact_messages / orders
+// (text PKs). Numbers sent by clients are coerced to strings; anything else is
+// rejected. Capped at 500 per request.
+export const bulkIdsSchema = z.object({
+  body: z.object({
+    ids: z
+      .array(
+        z.preprocess(
+          (v) => (typeof v === "number" || typeof v === "bigint" ? String(v) : v),
+          z.string().min(1).max(128)
+        )
+      )
+      .min(1, "حداقل یک شناسه لازم است")
+      .max(500, "حداکثر ۵۰۰ شناسه در هر درخواست"),
+  }),
+});

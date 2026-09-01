@@ -4,8 +4,10 @@ import { users, products, orders, orderItems, reviews, coupons, productFeatures,
 import { appCache } from '../utils/cache.js';
 import { STORE_SETTINGS_DEFAULTS } from '../../src/lib/constants.js';
 import { HERO_IMAGE_DEFAULTS } from './settings.js';
-import { eq, desc, sql } from 'drizzle-orm';
+import { eq, desc, sql, inArray } from 'drizzle-orm';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
+import { validate } from '../middleware/validate.js';
+import { bulkIdsSchema } from '../validators/index.js';
 
 const router = Router();
 
@@ -611,6 +613,70 @@ router.put('/contact-messages/:id/status', async (req, res) => {
   } catch (error) {
     console.error('Update contact message status error:', error);
     res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// ---------------------------------------------------------
+// ADMIN BULK OPERATIONS (messages & orders)
+// All: requireAdmin (router-wide), strict Zod validation,
+// db.transaction, return {deleted:n} (or {updated:n}).
+// ---------------------------------------------------------
+
+// POST /api/admin/messages/read-all — mark every unread message as read.
+router.post('/messages/read-all', async (req, res) => {
+  try {
+    const { contactMessages } = await import('../db/schema.js');
+    const updated = await db.transaction(async (tx) => {
+      const rows = await tx
+        .update(contactMessages)
+        .set({ status: 'read' })
+        .where(eq(contactMessages.status, 'unread'))
+        .returning({ id: contactMessages.id });
+      return rows.length;
+    });
+    res.json({ updated, deleted: 0 });
+  } catch (error) {
+    console.error('Bulk mark-all-read error:', error);
+    res.status(500).json({ message: 'خطا در علامت‌گذاری پیام‌ها' });
+  }
+});
+
+// POST /api/admin/messages/bulk-delete — {ids: (string|number)[]}
+router.post('/messages/bulk-delete', validate(bulkIdsSchema), async (req, res) => {
+  try {
+    const { ids } = req.body as { ids: string[] };
+    const { contactMessages } = await import('../db/schema.js');
+    const deleted = await db.transaction(async (tx) => {
+      const rows = await tx
+        .delete(contactMessages)
+        .where(inArray(contactMessages.id, ids))
+        .returning({ id: contactMessages.id });
+      return rows.length;
+    });
+    res.json({ deleted });
+  } catch (error) {
+    console.error('Bulk delete messages error:', error);
+    res.status(500).json({ message: 'خطا در حذف پیام‌ها' });
+  }
+});
+
+// POST /api/admin/orders/bulk-delete — {ids: (string|number)[]}
+// Deletes order items and orders atomically (items first, FK-safe).
+router.post('/orders/bulk-delete', validate(bulkIdsSchema), async (req, res) => {
+  try {
+    const { ids } = req.body as { ids: string[] };
+    const deleted = await db.transaction(async (tx) => {
+      await tx.delete(orderItems).where(inArray(orderItems.orderId, ids));
+      const rows = await tx
+        .delete(orders)
+        .where(inArray(orders.id, ids))
+        .returning({ id: orders.id });
+      return rows.length;
+    });
+    res.json({ deleted });
+  } catch (error) {
+    console.error('Bulk delete orders error:', error);
+    res.status(500).json({ message: 'خطا در حذف سفارش‌ها' });
   }
 });
 

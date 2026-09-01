@@ -2,6 +2,7 @@ import { Router } from "express";
 import { db } from "../db/index.js";
 import { contactMessages, newsletterSubscribers } from "../db/schema.js";
 import { eq, sql } from "drizzle-orm";
+import { toEnglishDigits } from "../../src/lib/utils.js";
 import { ARCHIVE_AFTER_DAYS } from "../../src/lib/constants.js";
 
 const router = Router();
@@ -74,7 +75,12 @@ router.post("/newsletter", async (req, res) => {
   }
 
   try {
-    const normalized = String(email).trim().toLowerCase();
+    // Normalize Persian/Arabic digits before validation so ۰۱۲… emails (paste
+    // from Persian keyboards) are not rejected.
+    const normalized = toEnglishDigits(String(email)).trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized)) {
+      return res.status(400).json({ error: "لطفا یک آدرس ایمیل معتبر وارد کنید" });
+    }
     const existing = await db.query.newsletterSubscribers.findFirst({
       where: eq(newsletterSubscribers.email, normalized),
     });
