@@ -101,6 +101,10 @@ Key findings (P0 first):
 - Evidence: .hermes/reports/backend-db-hygiene.md (commit 7a86682). Independent orchestrator probes: health ok, /api/coupons-active = 4 real coupons only, idx census 9/9.
 - Follow-up: SQLite migration runner lacks journaling (`__drizzle_migrations` absent) — partial-application risk remains; track as P2.
 
+## Status: Prod DB hygiene round 2 (2026-09-01, independent re-verification)
+- [x] Line 88 P2 prod-DB portion re-verified: backup taken first (`/home/ubuntu/backups/janebi-pre-hygiene-1788234770.db`); sqlite_master census = ZERO scratch/test tables (`scratch_t`,`scratch_t2`,`s3`,`s4`,`mutex_t` absent); coupons = only 4 real marketing coupons (JANEBI100/OFF20/SUMMER30/WELCOME10), zero test coupons; live `/api/coupons-active` = same 4. Nothing to drop or deactivate.
+- Evidence: .hermes/reports/backend-db-hygiene-round2.md
+
 ## Status: Migration journaling fixed (2026-09-01 round 2)
 - [x] P2 follow-up DONE (commit f8b953f): `server/db/index.ts` journaled migrations — `__drizzle_migrations` (sha256/file, SQLite+PG), per-file transaction with journal insert inside the tx, loud failure (file+statement+error to stderr, abort) instead of the old empty-catch silent swallow; legacy backfill for existing prod DB. New tests/unit/migration-journal.test.ts (3 tests).
 - [x] Gate: npm run verify — 37 suites / 300 tests PASS. Deployed via deploy.sh; prod verified: journal=7 entries (0000–0006), 9/9 idx_ indexes, integrity_check ok, health ok after keep-alive.
