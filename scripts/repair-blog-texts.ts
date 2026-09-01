@@ -19,6 +19,7 @@ const AFFECTED = [
   'rahnamaye-entekhab-paye-negahdarande-khodro',
   'rahnamaye-kharid-kabel-sharzh',
   'rahnamaye-sharzh-fandaki-khodro',
+  'rahnamaye-vate-sharzhe-divari',
 ];
 
 async function main() {
