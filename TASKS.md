@@ -225,3 +225,8 @@ Key findings (P0 first):
 - [x] SEO groundwork: blog_posts tags column + PG parity migration 0008 (5bdb8d5) — QA PASS, deployed
 - [x] SEO: blog seed content (3 authentic Persian posts) + JSON-LD BlogPosting + sitemap blog URLs — commit 24fd04f, verify 44/337 GREEN, deployed; prod DB seeded via docker cp into /app; live: /api/blog=3, sitemap 3 blog URLs, /blog/:slug 200. Report: qa-2026-09-03b-reviews.md / session 2026-09-03d.
 - Next: JSON-LD detail live-check; rotate to next design/SEO cluster (footer or admin).
+
+### Round 2026-09-10 (cron)
+- [x] Blog post 10 (گلس دوربین) — live
+- [x] Tag chips + JSON-LD keywords — live
+- Next: post 11 + rotating UI/SEO round

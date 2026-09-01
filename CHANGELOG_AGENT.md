@@ -105,3 +105,9 @@
 - Gate: npm run verify ALL PASS (45 suites/341 tests); artifact audit jsxDEV=0, /Users/=0.
 - Deploy: deploy.sh with /tmp/janebi-deploy.lock; prod seed via esbuild bundle (--external:better-sqlite3 --external:pg) → docker cp → node in-container (8 exists, 1 inserted).
 - Live verify: /api/blog=8, served bundle index-D6DVro4s.js == local, sitemap.xml includes blog slugs (9 urls), health ok.
+
+## 2026-09-10 (cron round) — Blog post 10 + tag SEO/UI
+- Blog post 10 «گلس دوربین و محافظ لنز» seeded to prod (id: rahnamaye-gols-doorbin-mohafez-lanz) — /api/blog now 10 posts.
+- Blog article modal: real DB tag chips (Lucide Tag icon, orange pill, RTL, 44px-safe) + BlogPosting JSON-LD `keywords` from tags (blogJsonLd.ts).
+- OG image meta (og:image/twitter:image 1200x630) shipped by concurrent actor (fe06350).
+- Gate: npm run verify ALL PASSED. Commit 2c484e9, deploy OK, live-verified (API post present + Blog-UTDO_GPA.js chunk contains tag UI).
