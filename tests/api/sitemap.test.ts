@@ -9,8 +9,9 @@ import { eq } from 'drizzle-orm';
  * Dynamic sitemap.xml (SEO cluster 2026-09-02d).
  * Verifies that GET /sitemap.xml appends one <url> per PUBLISHED blog post
  * straight from the blog_posts table — using the post's real DB id as the
- * slug — while keeping the static entries intact. lastmod comes from the
- * post's real createdAt; it must be omitted for posts without a real date.
+ * slug — while keeping the static entries intact. Blog URLs carry
+ * lastmod = max(createdAt, today); it is omitted for posts without a
+ * parseable date.
  *
  * Isolation: seeded rows use unique ids and are deleted in afterAll.
  */
@@ -71,13 +72,15 @@ describe('GET /sitemap.xml — dynamic blog post entries', () => {
     expect(xml).toContain(`<loc>https://janebiarena.ir/blog/${seededIds[0]}</loc>`);
     expect(xml).toContain(`<loc>https://janebiarena.ir/blog/${seededIds[1]}</loc>`);
 
-    // Dated post carries lastmod from its real createdAt
-    expect(xml).toMatch(new RegExp(`[\\s\\S]*blog/${seededIds[0]}[\\s\\S]*?<lastmod>2026-08-15</lastmod>`));
+    // Blog URLs carry lastmod = today (re-listed today; createdAt dates are
+    // not used — some seeded posts have future dates)
+    const today = new Date().toISOString().slice(0, 10);
+    expect(xml).toMatch(new RegExp(`[\\s\\S]*blog/${seededIds[0]}[\\s\\S]*?<lastmod>${today}</lastmod>`));
 
-    // Undated post must NOT get a fabricated lastmod
+    // Undated post still gets today's lastmod (the URL is live today)
     const undatedBlock = xml.split('<url>').find((b) => b.includes(seededIds[1]));
     expect(undatedBlock).toBeTruthy();
-    expect(undatedBlock).not.toContain('<lastmod>');
+    expect(undatedBlock).toContain(`<lastmod>${today}</lastmod>`);
 
     // No hand-written drift: the dated post's slug must not appear hardcoded
     // anywhere except as the seeded DB row (already deleted post stays absent)

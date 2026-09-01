@@ -3,6 +3,7 @@ import { env } from './env.js';
 import { db, dbReady } from './db/index.js';
 import * as schema from './db/schema.js';
 import { ALL_PRODUCTS, REVIEWS_STORE, VALID_COUPONS } from './data/seed-data.js';
+import { breadcrumbJsonLdFor, injectBreadcrumbIntoHtml } from './lib/breadcrumbs.js';
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
@@ -113,6 +114,8 @@ async function startServer() {
       try {
         let template = fs.readFileSync(path.resolve(process.cwd(), 'index.html'), 'utf-8');
         template = await vite.transformIndexHtml(req.originalUrl, template);
+        const crumb = await breadcrumbJsonLdFor(req.originalUrl.split('?')[0]);
+        template = injectBreadcrumbIntoHtml(template, crumb);
         res.status(200).set({ 'Content-Type': 'text/html' }).end(template);
       } catch (e) {
         vite.ssrFixStacktrace(e as Error);
@@ -122,8 +125,20 @@ async function startServer() {
   } else {
     const distPath = path.join(process.cwd(), "dist");
     app.use(express.static(distPath));
-    app.get("/{*splat}", (req, res) => {
-      res.sendFile(path.join(distPath, "index.html"));
+    app.get("/{*splat}", async (req, res) => {
+      try {
+        const shell = fs.readFileSync(path.join(distPath, "index.html"), "utf-8");
+        const crumb = await breadcrumbJsonLdFor(req.originalUrl.split("?")[0]);
+        // Breadcrumb JSON-LD only differs on /blog routes; avoid re-reading on
+        // every request by falling back to a plain sendFile when not a blog path.
+        if (!crumb) return res.sendFile(path.join(distPath, "index.html"));
+        return res
+          .status(200)
+          .set("Content-Type", "text/html")
+          .send(injectBreadcrumbIntoHtml(shell, crumb));
+      } catch {
+        return res.sendFile(path.join(distPath, "index.html"));
+      }
     });
   }
 

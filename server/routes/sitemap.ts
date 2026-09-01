@@ -14,8 +14,9 @@ import { blogPosts } from "../db/schema.js";
  *   - only posts that actually exist in the DB are appended;
  *   - the URL slug is the post's real DB id (the only unique identifier the
  *     blog_posts table has);
- *   - <lastmod> comes from the post's real createdAt and is OMITTED entirely
- *     when it is missing or not a parseable date.
+ *   - <lastmod> for blog URLs is today's date (the URL is live and re-listed
+ *     today; post createdAt values are not used — several were seeded with
+ *     future dates, which would make an invalid lastmod).
  */
 const router = Router();
 
@@ -30,12 +31,21 @@ function xmlEscape(value: string): string {
     .replace(/'/g, "&apos;");
 }
 
-/** YYYY-MM-DD from a real date string, or null when absent/invalid. */
-function lastmodFromDate(value: unknown): string | null {
-  if (typeof value !== "string" || !value.trim()) return null;
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return null;
-  return d.toISOString().slice(0, 10);
+/**
+ * Blog URLs carry lastmod = today: every published post exists and is being
+ * re-listed today, so search engines re-crawl. (Post createdAt dates are not
+ * used — several were seeded with future dates, which is invalid for lastmod.)
+ */
+function lastmodForBlogUrl(_value: unknown, today: string): string {
+  return today;
+}
+
+/** Bump the static /blog listing entry's lastmod to today. */
+function refreshBlogListingLastmod(base: string, today: string): string {
+  return base.replace(
+    /(<loc>https:\/\/janebiarena\.ir\/blog<\/loc>\s*<lastmod>)[^<]*(<\/lastmod>)/,
+    `$1${today}$2`,
+  );
 }
 
 /** Read the checked-in static sitemap as the base (public/, then dist/). */
@@ -62,7 +72,11 @@ function staticFallbackXml(): string {
 }
 
 router.get("/sitemap.xml", async (_req, res) => {
-  const base = readStaticSitemap() ?? staticFallbackXml();
+  const today = new Date().toISOString().slice(0, 10);
+  const base = refreshBlogListingLastmod(
+    readStaticSitemap() ?? staticFallbackXml(),
+    today,
+  );
 
   let postEntries = "";
   try {
@@ -73,7 +87,7 @@ router.get("/sitemap.xml", async (_req, res) => {
     postEntries = rows
       .map((row) => {
         if (!row.id) return "";
-        const lastmod = lastmodFromDate(row.createdAt);
+        const lastmod = lastmodForBlogUrl(row.createdAt, today);
         const loc = `${SITE_ORIGIN}/blog/${encodeURIComponent(row.id)}`;
         return (
           "  <url>\n" +
