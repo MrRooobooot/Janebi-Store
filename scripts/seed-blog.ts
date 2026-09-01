@@ -15,7 +15,7 @@
 import { db } from '../server/db/index.js';
 import { blogPosts } from '../server/db/schema.js';
 
-const POSTS: (typeof blogPosts.$inferInsert)[] = [
+export const POSTS: (typeof blogPosts.$inferInsert)[] = [
   {
     id: 'rahnamaye-entekhab-qab-e-mobile',
     title: 'راهنمای کامل انتخاب قاب موبایل: از سیلیکون تا کیوتی‌پی',
@@ -328,7 +328,9 @@ async function main() {
   process.exit(0);
 }
 
-main().catch((err) => {
-  console.error('Blog seed failed:', err);
-  process.exit(1);
-});
+if (!process.env.SEED_BLOG_SKIP) {
+  main().catch((err) => {
+    console.error('Blog seed failed:', err);
+    process.exit(1);
+  });
+}
