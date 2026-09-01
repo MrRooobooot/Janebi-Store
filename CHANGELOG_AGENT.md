@@ -70,3 +70,10 @@
 - `npm run test`: 32 test suites passed (288 tests).
 - `npm run build`: Production client and server build succeeded.
 - Live VPS deployment (`janebiarena.ir`): 200 OK, healthy DB, zero downtime.
+
+## 2026-09-02 — Admin dashboard sales trend + admin form digit consistency (625d33c)
+- `GET /api/admin/analytics` now returns `salesTrend` (14 daily buckets of real completed-order revenue/counts; `created_at` first, `ORD-<base36>` id fallback for legacy rows). Zero fabricated data.
+- Admin Dashboard: full-width dual-theme bar chart (pure CSS, Persian day labels, formatPrice/toPersianDigits tooltips, honest empty state).
+- Digit consistency: admin numeric inputs (Users VIP points, Settings free-shipping threshold, Coupons discount value, Products discount/stock) moved from `type=number` to `text+inputMode=numeric` with `toEnglishDigits` normalization; Coupons percent>99 guard added.
+- Gates: `npm run verify` PASS; artifact audit clean (jsxDEV=0, no /Users/ leaks); `./deploy.sh` OK; live verified on janebiarena.ir (analytics endpoint returns 14-bucket trend — currently all zeros, honest: only 2 cancelled orders exist in prod).
+- Report: `.hermes/reports/orchestrator-2026-09-02-sales-trend.md`
