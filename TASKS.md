@@ -2,7 +2,13 @@
 
 ## Status: Completed (Aug 28, 2026)
 
-### Round 2026-09-03 — Image Performance / LCP (TEAM-FRONTEND, IN PROGRESS)
+### Round 2026-09-03b — Reviews Pagination (TEAM-FRONTEND, SHIPPED, QA pending→next round)
+- [x] GET product reviews paginated (?page&limit → {reviews,total,page,pages}, newest first, 6 new tests; ProductReviews.tsx Persian pagination). Commit 383f6cc, `npm run verify` green (44 suites/337 tests), deployed 2026-09-03 (live bundle index-2CuGcgTU.js == local), live endpoint verified {reviews:[],total:0,page:1,pages:1}.
+- [x] Prod DB residue check closed: 0 rows with image '/images/test.jpg' on VPS (in-container probe).
+- [x] QA PASS 2026-09-03 on image-perf/contrast-r7 cluster (.hermes/reports/qa-2026-09-03.md, 8/8 checks).
+- Next: QA reviews cluster, blog content seeding (prod 0 posts), JSON-LD BlogPosting.
+
+### Round 2026-09-03 — Image Performance / LCP (TEAM-FRONTEND, SHIPPED, QA PASS)
 - [x] Raster census: zero images >100KB in public/ (all product/brand imagery is SVG, largest asset is 6.6KB icon PNG) — compression round is an honest no-op, no WebP candidates exist.
 - [x] 21 raw `<img>` tags across storefront/profile/checkout/admin patched with `loading="lazy"` + `decoding="async"` + explicit width/height; LCP hero/preloads untouched (ProductCard.tsx, ProductDetail, Compare, Brands, Blog, Footer Enamad, HeaderSearch, cart ×2, checkout summary, profile ×4, admin ×4).
 - [x] ProductCard SmartImage now passes width/height + `sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 240px"` for card-grid srcset coverage.
