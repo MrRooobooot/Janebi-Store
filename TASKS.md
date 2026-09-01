@@ -151,3 +151,10 @@ Key findings (P0 first):
 - [x] TEAM-FRONTEND commit 58e34f7: sticky desktop buy-box + image lightbox polish (theme tokens, Persian digits, ≥44px a11y targets) + Product JSON-LD enrichment (image array absolute URLs, sku, additionalProperty from real category/brand/warranty/features; FAQPage skipped — no real FAQ source).
 - [x] Gate npm run verify ALL GREEN (orchestrator re-ran). Deployed via deploy.sh — health ok, bundle index-DPcNgX2n.js live, /products/1 → 200.
 - Next: rotate to cart/checkout or admin design + next SEO item.
+
+### Cart/Checkout design + SEO crawlability cluster (2026-09-02, deployed + orchestrator live-verified)
+- [x] TEAM-FRONTEND commit 78226bd: kinetic palette tokens on Cart/Checkout summary + coupon feedback (role=status/alert, authFetch), rewritten data-driven CheckoutStepsBar (aria-current, Persian digits, reused on Cart), EmptyState polish, ≥44px a11y targets + prefers-reduced-motion. Gate 42 files/322 tests GREEN.
+- [x] TEAM-BACKEND/SEO commit 5eeec55: sitemap lastmod 2026-09-02 + real product URLs, X-Robots-Tag header, absolute canonical — rest audited no-op with live evidence.
+- [x] Orchestrator live checks: health 200, live bundle index-BiBTCCwB.js == cluster build, sitemap 24× lastmod 2026-09-02, canonical + x-robots-tag present.
+- Reports: .hermes/reports/frontend-cart-checkout-2026-09-02.md, backend-seo-2026-09-02.md
+- Next: rotate to product/blog or admin design + next SEO item (Core Web Vitals).
