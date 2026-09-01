@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useCart } from '../contexts/CartContext';
 import { useToast } from '../contexts/ToastContext';
+import { authFetch } from '../lib/api';
 import { FREE_SHIPPING_THRESHOLD } from '../lib/constants';
 
 export function useCartSummary() {
@@ -11,6 +12,7 @@ export function useCartSummary() {
   const [couponLoading, setCouponLoading] = useState(false);
   const [appliedDiscount, setAppliedDiscount] = useState(0);
   const [couponLabel, setCouponLabel] = useState('');
+  const [couponError, setCouponError] = useState('');
 
   const isFreeShipping = cartTotal >= FREE_SHIPPING_THRESHOLD;
   const amountLeft = Math.max(0, FREE_SHIPPING_THRESHOLD - cartTotal);
@@ -24,7 +26,8 @@ export function useCartSummary() {
     if (!couponInput.trim()) return;
 
     setCouponLoading(true);
-    fetch('/api/coupons/validate', {
+    setCouponError('');
+    authFetch('/api/coupons/validate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ code: couponInput.trim(), cartTotal }),
@@ -44,10 +47,13 @@ export function useCartSummary() {
           setAppliedCoupon(coupon.code);
           addToast(`کد تخفیف ${coupon.code} با موفقیت اعمال شد`, 'success');
         } else {
-          addToast(data.message || 'کد تخفیف نامعتبر است', 'error');
+          const message = data.message || 'کد تخفیف نامعتبر است';
+          setCouponError(message);
+          addToast(message, 'error');
         }
       })
       .catch(() => {
+        setCouponError('خطا در اعتبارسنجی کد تخفیف');
         addToast('خطا در اعتبارسنجی کد تخفیف', 'error');
       })
       .finally(() => {
@@ -69,6 +75,8 @@ export function useCartSummary() {
     couponLoading,
     appliedDiscount,
     couponLabel,
+    couponError,
+    dismissCouponError: () => setCouponError(''),
     handleApplyCoupon,
     isFreeShipping,
     amountLeft,

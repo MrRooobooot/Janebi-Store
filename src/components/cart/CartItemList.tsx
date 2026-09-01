@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { CartItem } from '../../types';
 import { MAX_CART_QUANTITY } from '../../lib/constants';
 import { formatPrice, toPersianDigits } from '../../lib/utils';
+import { useReducedMotion } from 'motion/react';
 
 interface CartItemListProps {
   cart: CartItem[];
@@ -19,6 +20,7 @@ export default function CartItemList({
   updateQuantity,
   clearCart,
 }: CartItemListProps) {
+  const shouldReduceMotion = useReducedMotion();
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between px-2 mb-2">
@@ -30,7 +32,8 @@ export default function CartItemList({
         </h2>
         <button
           onClick={clearCart}
-          className="text-xs font-bold text-rose-500 hover:text-rose-600 dark:hover:text-rose-400 flex items-center gap-1.5 hover:bg-rose-50 dark:hover:bg-rose-500/10 px-3 py-1.5 rounded-xl transition-colors active:scale-95"
+          aria-label="پاک کردن تمام اقلام سبد خرید"
+          className="min-touch-target text-xs font-bold text-rose-500 hover:text-rose-600 dark:hover:text-rose-400 flex items-center gap-1.5 hover:bg-rose-50 dark:hover:bg-rose-500/10 px-3 py-1.5 rounded-xl transition-colors active:scale-95"
         >
           <Trash2 className="h-4 w-4" />
           پاک کردن سبد
@@ -42,9 +45,9 @@ export default function CartItemList({
           <motion.div
             key={item.id}
             layout
-            initial={{ opacity: 0, y: 15, scale: 0.98 }}
+            initial={shouldReduceMotion ? false : { opacity: 0, y: 15, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, x: -60, scale: 0.95 }}
+            exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: -60, scale: 0.95 }}
             transition={{ duration: 0.3 }}
             className="bg-[var(--color-surface-light)]/90 dark:bg-[var(--color-surface-dark)]/90 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/80 rounded-3xl p-5 sm:p-6 shadow-sm hover:border-orange-200 dark:hover:border-gray-700 transition-all flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-6 group"
           >
@@ -94,8 +97,8 @@ export default function CartItemList({
                 <button
                   onClick={() => updateQuantity(item.id, item.quantity + 1)}
                   disabled={item.quantity >= MAX_CART_QUANTITY}
-                  className="w-8 h-8 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center justify-center font-bold shadow-xs hover:bg-orange-500 hover:text-white transition-all disabled:opacity-30 active:scale-95"
-                  title="افزایش تعداد"
+                  aria-label={`افزایش تعداد ${item.title}`}
+                  className="min-touch-target w-11 h-11 sm:w-10 sm:h-10 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center justify-center font-bold shadow-xs hover:bg-primary-400 hover:text-white transition-all disabled:opacity-30 active:scale-95"
                 >
                   <Plus className="h-4 w-4" />
                 </button>
@@ -105,8 +108,8 @@ export default function CartItemList({
                 <button
                   onClick={() => updateQuantity(item.id, item.quantity - 1)}
                   disabled={item.quantity <= 1}
-                  className="w-8 h-8 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center justify-center font-bold shadow-xs hover:bg-orange-500 hover:text-white transition-all disabled:opacity-30 active:scale-95"
-                  title="کاهش تعداد"
+                  aria-label={`کاهش تعداد ${item.title}`}
+                  className="min-touch-target w-11 h-11 sm:w-10 sm:h-10 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center justify-center font-bold shadow-xs hover:bg-primary-400 hover:text-white transition-all disabled:opacity-30 active:scale-95"
                 >
                   <Minus className="h-4 w-4" />
                 </button>
@@ -125,8 +128,8 @@ export default function CartItemList({
 
               <button
                 onClick={() => removeFromCart(item.id)}
-                className="text-gray-400 hover:text-rose-500 p-2 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all active:scale-95"
-                title="حذف از سبد خرید"
+                aria-label={`حذف ${item.title} از سبد خرید`}
+                className="min-touch-target text-gray-400 hover:text-rose-500 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all active:scale-95"
               >
                 <Trash2 className="h-4 w-4" />
               </button>

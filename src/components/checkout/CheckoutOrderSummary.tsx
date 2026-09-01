@@ -24,7 +24,7 @@ export default function CheckoutOrderSummary({
     <div className="bg-[var(--color-surface-light)]/90 dark:bg-[var(--color-surface-dark)]/90 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 sm:p-7 shadow-sm sticky top-28 space-y-6">
       <h3 className="font-black text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex items-center justify-between">
         <span>فاکتور نهایی سفارش</span>
-        <span className="text-xs font-bold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2.5 py-1 rounded-xl">
+        <span className="text-xs font-bold text-primary-500 dark:text-primary-300 bg-primary-50 dark:bg-primary-950/40 px-2.5 py-1 rounded-xl">
           {toPersianDigits(cart.length)} قلم کالا
         </span>
       </h3>
@@ -79,7 +79,7 @@ export default function CheckoutOrderSummary({
 
         <div className="border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pt-4 flex justify-between items-center text-sm">
           <span className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">مبلغ نهایی فاکتور:</span>
-          <div className="font-black text-2xl text-orange-600 dark:text-orange-400 tracking-tight">
+          <div className="font-black text-2xl text-primary-400 dark:text-primary-300 tracking-tight">
             {formatPrice(finalPayable)}
           </div>
         </div>
@@ -89,16 +89,17 @@ export default function CheckoutOrderSummary({
       <button
         type="submit"
         disabled={submitting}
-        className="w-full bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 hover:from-orange-700 hover:to-amber-600 text-white font-black py-4 px-6 rounded-2xl shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2.5 transition-all active:scale-98 text-sm sm:text-base disabled:opacity-50 group"
+        aria-label="ثبت نهایی سفارش و انتقال به درگاه پرداخت امن"
+        className="w-full bg-primary-300 hover:bg-primary-500 dark:bg-primary-400 dark:hover:bg-primary-500 text-white font-black py-4 px-6 rounded-2xl shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2.5 transition-all active:scale-98 text-sm sm:text-base disabled:opacity-50 group"
       >
         {submitting ? (
           <div className="flex items-center gap-2">
-            <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full motion-safe:animate-spin" />
             <span>در حال ایجاد سفارش...</span>
           </div>
         ) : (
           <>
-            <Lock className="h-4 w-4 text-orange-200" />
+            <Lock className="h-4 w-4 text-white/80" />
             <span>تأیید و پرداخت امن فاکتور</span>
             <ArrowLeft className="h-5 w-5 group-hover:translate-x-[-3px] transition-transform mr-auto" />
           </>

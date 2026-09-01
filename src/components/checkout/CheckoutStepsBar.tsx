@@ -3,38 +3,86 @@ import { Link } from 'react-router-dom';
 import { CheckCircle } from 'lucide-react';
 import { toPersianDigits } from '../../lib/utils';
 
-export default function CheckoutStepsBar() {
+interface CheckoutStepsBarProps {
+  currentStep?: 1 | 2 | 3;
+}
+
+const STEPS = [
+  { step: 1, label: 'سبد خرید', href: '/cart' },
+  { step: 2, label: 'اطلاعات ارسال', href: '/checkout' },
+  { step: 3, label: 'پرداخت', href: '/payment' },
+] as const;
+
+export default function CheckoutStepsBar({ currentStep = 2 }: CheckoutStepsBarProps) {
   return (
-    <div className="flex items-center justify-between max-w-2xl mx-auto mb-12 relative px-4">
-      <div className="absolute top-1/2 left-4 right-4 h-1.5 bg-zinc-200 dark:bg-zinc-800 -z-10 -translate-y-1/2 rounded-full overflow-hidden">
-        <div className="h-full bg-orange-500 w-[60%] rounded-full"></div>
-      </div>
-
-      <Link
-        to="/cart"
-        className="flex flex-col items-center gap-2 bg-zinc-50 dark:bg-zinc-950 px-2 sm:px-4 group cursor-pointer hover:scale-105 transition-transform"
+    <ol
+      aria-label="مراحل ثبت سفارش"
+      className="list-none flex items-center justify-between max-w-2xl mx-auto mb-12 relative px-4"
+    >
+      <div
+        aria-hidden="true"
+        className="absolute top-1/2 left-4 right-4 h-1.5 bg-zinc-200 dark:bg-zinc-800 -z-10 -translate-y-1/2 rounded-full overflow-hidden"
       >
-        <div className="w-10 h-10 rounded-2xl bg-orange-500 text-white flex items-center justify-center font-bold text-base shadow-md shadow-orange-500/30">
-          <CheckCircle className="h-5 w-5" />
-        </div>
-        <span className="text-xs font-bold text-orange-600 dark:text-orange-400 group-hover:text-orange-700 dark:group-hover:text-orange-300">
-          سبد خرید
-        </span>
-      </Link>
-
-      <div className="flex flex-col items-center gap-2 bg-zinc-50 dark:bg-zinc-950 px-2 sm:px-4">
-        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 text-white flex items-center justify-center font-black text-base shadow-md shadow-orange-500/30">
-          {toPersianDigits(2)}
-        </div>
-        <span className="text-xs font-black text-orange-600 dark:text-orange-400">اطلاعات ارسال</span>
+        <div
+          className="h-full bg-primary-300 rounded-full transition-all duration-500"
+          style={{ width: `${((currentStep - 1) / (STEPS.length - 1)) * 100}%` }}
+        ></div>
       </div>
 
-      <div className="flex flex-col items-center gap-2 bg-zinc-50 dark:bg-zinc-950 px-2 sm:px-4">
-        <div className="w-10 h-10 rounded-2xl bg-white dark:bg-zinc-800 border-2 border-zinc-200 dark:border-zinc-700 text-zinc-400 dark:text-zinc-500 flex items-center justify-center font-bold text-base">
-          {toPersianDigits(3)}
-        </div>
-        <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">پرداخت</span>
-      </div>
-    </div>
+      {STEPS.map(({ step, label, href }) => {
+        const isComplete = step < currentStep;
+        const isCurrent = step === currentStep;
+        const isUpcoming = step > currentStep;
+
+        return (
+          <li
+            key={step}
+            aria-current={isCurrent ? 'step' : undefined}
+            className="flex flex-col items-center gap-2 bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] px-2 sm:px-4"
+          >
+            {isComplete ? (
+              <Link
+                to={href}
+                aria-label={`مرحله ${toPersianDigits(step)}: ${label} — تکمیل‌شده، بازگشت به این مرحله`}
+                className="group flex flex-col items-center gap-2 cursor-pointer"
+              >
+                <span className="w-10 h-10 rounded-2xl bg-primary-300 dark:bg-primary-400 text-white flex items-center justify-center font-bold text-base shadow-md shadow-orange-500/30 transition-transform motion-safe:group-hover:scale-105">
+                  <CheckCircle className="h-5 w-5" />
+                </span>
+                <span className="text-xs font-bold text-primary-500 dark:text-primary-300 group-hover:text-primary-600 dark:group-hover:text-primary-200 transition-colors">
+                  {label}
+                </span>
+              </Link>
+            ) : (
+              <span
+                className="flex flex-col items-center gap-2"
+                aria-label={`مرحله ${toPersianDigits(step)}: ${label}${
+                  isCurrent ? ' — مرحله فعلی' : ' — در انتظار'
+                }`}
+              >
+                <span
+                  className={`w-10 h-10 rounded-2xl flex items-center justify-center text-base transition-colors ${
+                    isCurrent
+                      ? 'bg-gradient-to-br from-primary-300 to-primary-500 text-white font-black shadow-md shadow-orange-500/30 ring-2 ring-primary-200 dark:ring-primary-800 ring-offset-2 ring-offset-[var(--color-canvas-light)] dark:ring-offset-[var(--color-canvas-dark)]'
+                      : 'bg-[var(--color-surface-light)] dark:bg-zinc-800 border-2 border-zinc-200 dark:border-zinc-700 text-zinc-400 dark:text-zinc-500 font-bold'
+                  }`}
+                >
+                  {toPersianDigits(step)}
+                </span>
+                <span
+                  className={`text-xs ${
+                    isCurrent
+                      ? 'font-black text-primary-500 dark:text-primary-300'
+                      : 'font-medium text-zinc-500 dark:text-zinc-400'
+                  }`}
+                >
+                  {label}
+                </span>
+              </span>
+            )}
+          </li>
+        );
+      })}
+    </ol>
   );
 }

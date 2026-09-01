@@ -1,6 +1,6 @@
 import React from 'react';
 import { ShoppingCart } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion, useReducedMotion } from 'motion/react';
 import EmptyState from '../components/EmptyState';
 import { useCheckoutForm } from '../hooks/useCheckoutForm';
 import CheckoutStepsBar from '../components/checkout/CheckoutStepsBar';
@@ -9,6 +9,7 @@ import CheckoutShippingPaymentForm from '../components/checkout/CheckoutShipping
 import CheckoutOrderSummary from '../components/checkout/CheckoutOrderSummary';
 
 export default function Checkout() {
+  const shouldReduceMotion = useReducedMotion();
   const {
     cart,
     cartTotal,
@@ -24,7 +25,7 @@ export default function Checkout() {
   if (cart.length === 0) {
     return (
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={shouldReduceMotion ? false : { opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
@@ -42,7 +43,7 @@ export default function Checkout() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-right"

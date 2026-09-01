@@ -5,10 +5,12 @@ import EmptyState from '../components/EmptyState';
 import FreeShippingBar from '../components/cart/FreeShippingBar';
 import CartItemList from '../components/cart/CartItemList';
 import CartSummaryCard from '../components/cart/CartSummaryCard';
-import { motion } from 'motion/react';
+import CheckoutStepsBar from '../components/checkout/CheckoutStepsBar';
+import { motion, useReducedMotion } from 'motion/react';
 import { toPersianDigits } from '../lib/utils';
 
 export default function Cart() {
+  const shouldReduceMotion = useReducedMotion();
   const {
     cart,
     removeFromCart,
@@ -21,6 +23,8 @@ export default function Cart() {
     couponLoading,
     appliedDiscount,
     couponLabel,
+    couponError,
+    dismissCouponError,
     handleApplyCoupon,
     isFreeShipping,
     amountLeft,
@@ -30,7 +34,7 @@ export default function Cart() {
   if (cart.length === 0) {
     return (
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={shouldReduceMotion ? false : { opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
       >
@@ -48,7 +52,7 @@ export default function Cart() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-right"
@@ -66,31 +70,8 @@ export default function Cart() {
         </h1>
       </div>
 
-      {/* Checkout Stepper Progress */}
-      <div className="flex items-center justify-between max-w-2xl mx-auto mb-12 relative px-4">
-        <div className="absolute top-1/2 left-4 right-4 h-1.5 bg-zinc-200 dark:bg-zinc-800 -z-10 -translate-y-1/2 rounded-full overflow-hidden">
-          <div className="h-full bg-orange-500 w-1/4 rounded-full"></div>
-        </div>
-
-        <div className="flex flex-col items-center gap-2 bg-zinc-50 dark:bg-zinc-950 px-2 sm:px-4">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 text-white flex items-center justify-center font-black text-base shadow-md shadow-orange-500/30">
-            {toPersianDigits(1)}
-          </div>
-          <span className="text-xs font-black text-orange-600 dark:text-orange-400">سبد خرید</span>
-        </div>
-        <div className="flex flex-col items-center gap-2 bg-zinc-50 dark:bg-zinc-950 px-2 sm:px-4">
-          <div className="w-10 h-10 rounded-2xl bg-white dark:bg-zinc-800 border-2 border-zinc-200 dark:border-zinc-700 text-zinc-400 dark:text-zinc-500 flex items-center justify-center font-bold text-base">
-            {toPersianDigits(2)}
-          </div>
-          <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">اطلاعات ارسال</span>
-        </div>
-        <div className="flex flex-col items-center gap-2 bg-zinc-50 dark:bg-zinc-950 px-2 sm:px-4">
-          <div className="w-10 h-10 rounded-2xl bg-white dark:bg-zinc-800 border-2 border-zinc-200 dark:border-zinc-700 text-zinc-400 dark:text-zinc-500 flex items-center justify-center font-bold text-base">
-            {toPersianDigits(3)}
-          </div>
-          <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">پرداخت</span>
-        </div>
-      </div>
+      {/* Checkout Stepper Progress — مرحله ۱: سبد خرید */}
+      <CheckoutStepsBar currentStep={1} />
 
       {/* Free Shipping Progress Indicator */}
       <FreeShippingBar
@@ -121,6 +102,8 @@ export default function Cart() {
             couponLoading={couponLoading}
             appliedDiscount={appliedDiscount}
             couponLabel={couponLabel}
+            couponError={couponError}
+            dismissCouponError={dismissCouponError}
             handleApplyCoupon={handleApplyCoupon}
             isFreeShipping={isFreeShipping}
           />
