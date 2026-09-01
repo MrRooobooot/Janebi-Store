@@ -145,6 +145,21 @@ export default function Blog() {
     };
   }, [openArticle]);
 
+  // Related posts: same category as the open article, newest first, current
+  // excluded, capped at 2. Falls back to newest other posts when the category
+  // has no siblings.
+  const related = openArticle
+    ? articles
+        .filter((a) => a.id !== openArticle.id)
+        .sort((a, b) => {
+          const aSame = a.category === openArticle.category ? 1 : 0;
+          const bSame = b.category === openArticle.category ? 1 : 0;
+          if (aSame !== bSame) return bSame - aSame;
+          return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+        })
+        .slice(0, 2)
+    : [];
+
   return (
     <motion.div
       initial={prefersReducedMotion ? false : { opacity: 0, y: 15 }}
@@ -317,6 +332,36 @@ export default function Blog() {
                     </p>
                   ))}
                 </div>
+
+                {/* Related posts: same category, most recent first, excludes current */}
+                {related.length > 0 && (
+                  <div className="mt-8 pt-6 border-t border-zinc-200/80 dark:border-zinc-800">
+                    <h3 className="flex items-center gap-2 text-sm font-black text-[var(--color-text-main-light)] dark:text-white mb-4">
+                      <BookOpen className="h-4 w-4 text-orange-600 dark:text-orange-400" /> مطالب مرتبط
+                    </h3>
+                    <div className="grid gap-3">
+                      {related.map((rel) => (
+                        <button
+                          key={rel.id}
+                          onClick={() => setOpenArticle(rel)}
+                          className="flex items-center gap-3 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60 p-3 text-right hover:border-orange-300 dark:hover:border-zinc-700 hover:shadow-md dark:hover:shadow-black/30 transition-all motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+                        >
+                          <img
+                            src={rel.image || FALLBACK_IMAGE}
+                            alt=""
+                            loading="lazy"
+                            decoding="async"
+                            className="h-14 w-20 shrink-0 rounded-xl object-cover bg-gradient-to-br from-orange-50 to-amber-50 dark:from-zinc-800 dark:to-zinc-900"
+                          />
+                          <span className="min-w-0">
+                            <span className="block text-xs font-bold text-[var(--color-text-main-light)] dark:text-zinc-200 line-clamp-2 mb-1">{rel.title}</span>
+                            <span className="block text-[11px] text-orange-600 dark:text-orange-400 font-bold">{rel.category} · {rel.readTime || 'مقاله'}</span>
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 <button
                   onClick={() => setOpenArticle(null)}
