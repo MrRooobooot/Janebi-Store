@@ -230,3 +230,14 @@ export const wishlistItemsRelations = relations(wishlistItems, ({ one }) => ({
     references: [products.id],
   }),
 }));
+
+// Audit log — records every admin mutation (audit §3.7).
+export const auditLogs = sqliteTable('audit_logs', {
+  id: text('id').primaryKey(),
+  adminUserId: text('admin_user_id'), // plain ref (no FK) so audit rows survive user deletion
+  action: text('action').notNull(), // e.g. 'user.role.update', 'product.create'
+  entity: text('entity').notNull(), // 'user' | 'product' | 'settings'
+  entityId: text('entity_id'),
+  meta: text('meta', { mode: 'json' }), // JSON payload with before/after context
+  createdAt: text('created_at').notNull()
+});

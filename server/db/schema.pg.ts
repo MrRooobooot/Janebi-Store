@@ -1,4 +1,4 @@
-import { pgTable, text, integer, real, boolean, serial } from 'drizzle-orm/pg-core';
+import { pgTable, text, integer, real, boolean, serial, jsonb } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 export const users = pgTable('users', {
@@ -231,3 +231,15 @@ export const wishlistItemsRelations = relations(wishlistItems, ({ one }) => ({
     references: [products.id],
   }),
 }));
+
+// Audit log — records every admin mutation (audit §3.7). PG parity with
+// schema.ts auditLogs (meta stored as jsonb here, json-mode text on SQLite).
+export const auditLogs = pgTable('audit_logs', {
+  id: text('id').primaryKey(),
+  adminUserId: text('admin_user_id'), // plain ref (no FK) so audit rows survive user deletion
+  action: text('action').notNull(),
+  entity: text('entity').notNull(),
+  entityId: text('entity_id'),
+  meta: jsonb('meta'),
+  createdAt: text('created_at').notNull()
+});

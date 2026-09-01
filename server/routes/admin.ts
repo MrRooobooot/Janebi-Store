@@ -325,7 +325,7 @@ router.post('/products', async (req, res) => {
 
     appCache.invalidate('products');
     appCache.invalidate('categories');
-    logAudit(req, 'product.create', 'product', inserted.id, { title, category, price });
+    logAudit(req, 'product.create', 'product', String(inserted.id), { title, category, price });
     res.status(201).json(inserted);
   } catch (error) {
     console.error('Add product error:', error);
