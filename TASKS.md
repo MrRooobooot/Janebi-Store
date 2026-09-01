@@ -2,6 +2,12 @@
 
 ## Status: Completed (Aug 28, 2026)
 
+### Round 2026-09-02b — Blog/Admin Design + CWV/SEO (SHIPPED, QA PASS)
+- [x] **Blog & Admin design polish** (978daf8): Blog.tsx card grid (h-10 sm:h-11 line-clamp-2 titles), dual-theme zinc tokens, toPersianDigits dates, 44px Persian aria-label touch targets, prefers-reduced-motion; AdminLayout.tsx surface/border tokens + 44px a11y buttons.
+- [x] **CWV/SEO** (6b1ccc1): Blog.tsx images loading=lazy + decoding=async (LCP preloads untouched), sitemap.xml /blog entry, /blog live 200.
+- [x] QA PASS (.hermes/reports/qa-blog-admin-cwv-2026-09-02.md): verify 100% green, commits on origin, live bundle sha256 == local (cluster already live).
+- Next: blog per-post sitemap slugs (none exist yet), product-page reviews UX, JSON-LD BlogPosting.
+
 ### 0. Automated Asset WebP/AVIF Image Pipeline & LCP Optimization
 - [x] Implemented reusable `<PictureImage>` component supporting `image/avif`, `image/webp`, and SVG/PNG fallbacks.
 - [x] Added `priority={true}` with `loading="eager"` and `fetchPriority="high"` for Hero and LCP banners.
