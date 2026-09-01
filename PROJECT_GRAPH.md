@@ -99,7 +99,7 @@
 
 Full evidence + remediation list: `PROJECT_AUDIT.md`. Highest-priority debts:
 1. **Fake aggregate ratings — FIXED & COMMITTED (2026-09-01):** seed aggregates zeroed (`seed-data.ts`), client fallbacks removed (`ProductCard` default rating, `ProductReviews` fake list). Remaining: prod DB recompute of `products.rating/reviewsCount` from real `reviews`.
-2. **OTP dead in prod** — no SMS provider wired (`auth.ts:231-241`); login/reset OTP UI non-functional on live.
+2. **OTP dead in prod — GATED (2026-09-01):** no SMS provider wired (`auth.ts`); `smsProviderEnabled` from `SMS_API_KEY`/`SMS_PROVIDER`; in production **all** OTP-driven endpoints (`/otp/send`, `/otp/verify`, `/reset-password`) return 503 `{error:'سرویس پیامکی فعال نیست'}`; dev/test keep the in-memory simulator flow. Add Kavenegar/Ghasedak adapter + env keys to re-enable.
 3. **PG parity regression — FIXED (2026-08-31):** `blogPosts` added to `schema.pg.ts` (schema.pg.ts:152).
 4. **Zero secondary indexes — FIXED & COMMITTED (2026-09-01):** migration `0005` (SQLite+PG) adds FK indexes: orders(user_id/created_at), order_items(order_id), reviews(product_id), cart_items(user_id), wishlist_items(user_id), addresses(user_id), product_features(product_id), contact_messages(status,created_at). Post-deploy: verify `PRAGMA table_info(orders)` has `created_at` + `EXPLAIN QUERY PLAN` no SCAN.
 5. **SW default branch cache-first — FIXED & COMMITTED (2026-09-01):** default branch now network-first with cache-only-offline fallback; `CACHE_NAME`/`API_CACHE_NAME` bumped to v1.1.0 (old caches purged on activate).
@@ -108,8 +108,12 @@ Full evidence + remediation list: `PROJECT_AUDIT.md`. Highest-priority debts:
 8. **Abandoned `pending_payment` orders — FIXED & COMMITTED (2026-09-01):** in-process reaper in `payment.ts` (5min interval, 60min cutoff, transaction-guarded restock + VIP refund, legacy NULL `created_at` falls back to base36 id timestamp; `orders.created_at` column added via migration 0005).
 9. **Coupon hardening — FIXED (2026-09-01):** `coupons.usage_limit`/`used_count` columns (migration 0006 SQLite+PG, schema.ts + schema.pg.ts parity); order transaction increments `usedCount` and rejects exhausted codes («ظرفیت استفاده … تکمیل شده است»); validate endpoint enforces the cap too; per-IP `couponLimiter` (10/15min) on `/api/coupons`; admin create accepts `usageLimit`.
 10. **Admin backup — FIXED (2026-09-01):** `/api/admin/backup` snapshots via SQLite `VACUUM INTO` into a temp file (consistent under WAL) and streams it; PG dialect returns explicit 400.
-11. **OTP dead feature — GATED (2026-09-01):** `smsProviderEnabled` flag from `SMS_API_KEY`/`SMS_PROVIDER` env; `GET /api/auth/otp/status` drives the Login UI (OTP tab hidden when disabled); `POST /api/auth/otp/send` hard-503 in production without provider. Add Kavenegar/Ghasedak adapter + env keys to re-enable.
+11. **OTP dead feature — GATED (2026-09-01):** `smsProviderEnabled` flag from `SMS_API_KEY`/`SMS_PROVIDER` env; `GET /api/auth/otp/status` drives the Login UI (OTP tab hidden when disabled); in production without a provider, `POST /api/auth/otp/send`, `/otp/verify` and `/reset-password` all hard-503 (`{error:'سرویس پیامکی فعال نیست'}`). Add Kavenegar/Ghasedak adapter + env keys to re-enable.
 12. **Dead `/api/reviews/latest` — REMOVED (2026-09-01):** route + mount deleted (no consumer, homepage has no testimonials section). Reintroduce only with a real reviews-driven section.
 13. **PWA manifest + JSON-LD hygiene — FIXED (2026-09-01):** `theme_color` #F47C20 / `background_color` #0B1536 (Kinetic Commerce palette); `DynamicBreadcrumbs` JSON-LD escapes `<` as `\u003c` (self-XSS shape closed).
 
 **Also removed (2026-09-01 repo hygiene):** `sketches/`, `firebase.json`/`.firebaserc`/`.firebase/`, `metadata.json`, `.neural_graph.json` from repo & disk; `SECRETS_MAP.md` gitignored (local-only ops map).
+
+## 6. Ops
+
+- **DB backup (2026-09-01):** `npm run db:backup` → `scripts/backup-db.mjs` uses better-sqlite3 `VACUUM INTO` (consistent under WAL) to write `backups/janebi-<timestamp>.db` (override dir with `BACKUP_DIR`, db with `DATABASE_URL`); keeps the last 7, prunes older, exits non-zero on failure. `backups/` is gitignored.

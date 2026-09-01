@@ -12,6 +12,7 @@
     "lint": "tsc --noEmit",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "db:backup": "node scripts/backup-db.mjs",
     "db:generate": "drizzle-kit generate",
     "db:generate:pg": "drizzle-kit generate --config=drizzle.pg.config.ts",
     "db:push": "drizzle-kit push",

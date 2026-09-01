@@ -147,6 +147,10 @@ router.post("/logout", (req, res) => {
 // password. Reuses otpStore (send via /otp/send first). Rate-limited by
 // the OTP attempts counter; single-use because verification deletes the code.
 router.post("/reset-password", validate(resetPasswordSchema), async (req, res) => {
+  // Reset-by-OTP reuses the SMS OTP, so it is unavailable whenever OTP is.
+  if (otpUnavailable()) {
+    return res.status(503).json({ error: "سرویس پیامکی فعال نیست" });
+  }
   const { phone, code, newPassword } = req.body;
 
   const entry = otpStore.get(phone);
@@ -211,19 +215,19 @@ setInterval(() => {
 }, 5 * 60 * 1000).unref();
 
 // OTP delivery is only enabled when an SMS provider is configured. In dev/test
-// a simulator logs the code; in production without credentials the feature is
-// hard-disabled so users never hit an undeliverable flow.
+// a simulator logs the code; in production without credentials the whole OTP
+// flow (send/verify/reset) is hard-disabled so users never hit an undeliverable
+// flow.
 export const smsProviderEnabled = Boolean(env.SMS_API_KEY) || Boolean(env.SMS_PROVIDER);
+const otpUnavailable = () => !smsProviderEnabled && env.NODE_ENV === "production";
 
 router.get("/otp/status", (_req, res) => {
   res.json({ enabled: smsProviderEnabled || env.NODE_ENV !== "production" });
 });
 
 router.post("/otp/send", validate(otpSendSchema), async (req, res) => {
-  if (!smsProviderEnabled && env.NODE_ENV === "production") {
-    return res.status(503).json({
-      message: "ورود با پیامک در حال حاضر در دسترس نیست. لطفاً از ورود با رمز عبور استفاده کنید."
-    });
+  if (otpUnavailable()) {
+    return res.status(503).json({ error: "سرویس پیامکی فعال نیست" });
   }
   const { phone } = req.body;
   
@@ -256,6 +260,9 @@ router.post("/otp/send", validate(otpSendSchema), async (req, res) => {
 });
 
 router.post("/otp/verify", validate(otpVerifySchema), async (req, res) => {
+  if (otpUnavailable()) {
+    return res.status(503).json({ error: "سرویس پیامکی فعال نیست" });
+  }
   const { phone, code, name } = req.body;
 
   const entry = otpStore.get(phone);
