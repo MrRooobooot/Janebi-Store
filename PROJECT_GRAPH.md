@@ -117,3 +117,5 @@ Full evidence + remediation list: `PROJECT_AUDIT.md`. Highest-priority debts:
 ## 6. Ops
 
 - **DB backup (2026-09-01):** `npm run db:backup` → `scripts/backup-db.mjs` uses better-sqlite3 `VACUUM INTO` (consistent under WAL) to write `backups/janebi-<timestamp>.db` (override dir with `BACKUP_DIR`, db with `DATABASE_URL`); keeps the last 7, prunes older, exits non-zero on failure. `backups/` is gitignored.
+
+## Ops (2026-09-01): OTP disabled in prod (503, no SMS provider — wire Kavenegar/Ghasedak to re-enable). DB backup: `npm run db:backup` → backups/*.db, keeps last 7.

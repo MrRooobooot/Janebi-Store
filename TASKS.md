@@ -115,3 +115,9 @@ Key findings (P0 first):
 - [x] Commit a6f601f: Permissions-Policy (deny camera/geo/mic/payment/usb/interest-cohort), CSP report endpoint `POST /api/csp-report` (pino-logged, rate-limited), shared `STORE_SETTINGS_DEFAULTS` (server settings DEFAULTS + useStoreSettings fallback single-sourced), Home.tsx hero 'فست' client hack removed (settings-driven with shared default), settings PUT invalidates appCache (admin.ts:684).
 - [x] QA (7c463d4): verify 37/300 green; live probes 200 on /,/products,/products/14,/login; csp-report 204; /api/settings byte-identical to defaults; PUT invalidation code-verified. FAIL item: `reportUris` → invalid CSP directive. Fixed in f2fb02c (`reportUri`), deployed; live header now `report-uri /api/csp-report` verified.
 - Next: §3.14 LIKE wildcard escaping; §3.8/3.9 blog seed posts or hide nav; §3.7 admin audit-log table.
+
+### OTP Dead-Feature Removal + DB Backup (2026-09-01, QA PASS)
+- [x] OTP login/reset UI hidden (dead feature, no SMS provider); endpoints hard-503 in prod — live verified: `POST /api/auth/otp/send` → 503 «سرویس پیامکی فعال نیست»
+- [x] JSON-LD `</script>` escape in ProductDetail (\u003c/\u003e/\u0026)
+- [x] `scripts/backup-db.mjs` (`npm run db:backup`) — VACUUM INTO, keeps last 7
+- Commits 741b1b5 + 30ef18f, deployed, live probes 200. QA: .hermes/reports/qa-2026-09-01-otp-hide.md
