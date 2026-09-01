@@ -21,6 +21,9 @@ export interface StoreSettings {
   heroSlide3Subtitle?: string;
   heroSlide3Link?: string;
   heroSlide3Badge?: string;
+  heroSlide1Image?: string;
+  heroSlide2Image?: string;
+  heroSlide3Image?: string;
 }
 
 // Client fallback derived from the canonical shared defaults (single source of

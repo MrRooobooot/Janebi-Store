@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import { ProductCardSkeleton } from '../components/Skeletons';
 import FAQ from '../components/FAQ';
+import LatestReviews from '../components/LatestReviews';
 import RecentlyViewed from '../components/RecentlyViewed';
 import BrandShowcase from '../components/BrandShowcase';
 import VipClubBanner from '../components/VipClubBanner';
@@ -49,7 +50,7 @@ export default function Home() {
       buttonText: 'مشاهده انواع هولدر و استند',
       buttonLink: settings.heroSlide1Link || STORE_SETTINGS_DEFAULTS.heroSlide1Link,
       badge: settings.heroSlide1Badge || STORE_SETTINGS_DEFAULTS.heroSlide1Badge,
-      image: '/products/hld-13.svg',
+      image: settings.heroSlide1Image || '/products/hld-13.svg',
       borderColor: 'border-orange-500/40',
       badgeBg: 'bg-orange-500/20 text-orange-300 border-orange-500/40',
     },
@@ -61,7 +62,7 @@ export default function Home() {
       buttonText: 'انتخاب قاب و محافظ صفحه',
       buttonLink: settings.heroSlide2Link || STORE_SETTINGS_DEFAULTS.heroSlide2Link,
       badge: settings.heroSlide2Badge || STORE_SETTINGS_DEFAULTS.heroSlide2Badge,
-      image: '/products/cas-4.svg',
+      image: settings.heroSlide2Image || '/products/cas-4.svg',
       borderColor: 'border-blue-500/40',
       badgeBg: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
     },
@@ -73,7 +74,7 @@ export default function Home() {
       buttonText: 'مشاهده کابل‌ها و محافظ‌ها',
       buttonLink: settings.heroSlide3Link || STORE_SETTINGS_DEFAULTS.heroSlide3Link,
       badge: settings.heroSlide3Badge || STORE_SETTINGS_DEFAULTS.heroSlide3Badge,
-      image: '/products/cbl-1.svg',
+      image: settings.heroSlide3Image || '/products/cbl-1.svg',
       borderColor: 'border-purple-500/40',
       badgeBg: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
     },
@@ -441,16 +442,19 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 7. VIP Loyalty Club Banner */}
+      {/* 7. Customer Reviews */}
+      <LatestReviews />
+
+      {/* 8. VIP Loyalty Club Banner */}
       <VipClubBanner />
 
-      {/* 8. Brands Showcase */}
+      {/* 9. Brands Showcase */}
       <BrandShowcase />
 
-      {/* 9. FAQ Section */}
+      {/* 10. FAQ Section */}
       <FAQ />
 
-      {/* 10. Recently Viewed */}
+      {/* 11. Recently Viewed */}
       <RecentlyViewed />
     </div>
   );
