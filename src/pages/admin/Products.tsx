@@ -361,7 +361,7 @@ export default function AdminProducts() {
         <div className="overflow-x-auto">
           <table className="w-full text-right border-collapse">
             <thead>
-              <tr className="border-b border-[var(--color-border-light)] dark:border-gray-700 bg-gray-50/75 dark:bg-gray-800/50 text-[11px] font-black text-gray-500 dark:text-gray-400">
+              <tr className="border-b border-[var(--color-border-light)] dark:border-gray-700 bg-gray-50/75 dark:bg-gray-800/50 text-[11px] font-black text-gray-600 dark:text-gray-300">
                 <th className="p-4 pr-6">کالا و دسته‌بندی</th>
                 <th className="p-4">برند</th>
                 <th className="p-4">قیمت اصلی</th>
@@ -374,15 +374,15 @@ export default function AdminProducts() {
             <tbody className="divide-y divide-gray-100 dark:divide-gray-700/60 text-xs">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="p-12 text-center text-gray-400">
+                  <td colSpan={7} className="p-12 text-center text-gray-500">
                     <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-orange-500 border-t-transparent mb-2" />
                     <p className="font-bold">در حال بارگذاری لیست محصولات...</p>
                   </td>
                 </tr>
               ) : filteredProducts.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="p-12 text-center text-gray-400">
-                    <Package className="h-12 w-12 mx-auto text-gray-300 dark:text-gray-600 mb-2 stroke-[1.5]" />
+                  <td colSpan={7} className="p-12 text-center text-gray-500">
+                    <Package className="h-12 w-12 mx-auto text-gray-400 dark:text-gray-600 mb-2 stroke-[1.5]" />
                     <p className="font-bold">هیچ محصولی با این مشخصات یافت نشد.</p>
                   </td>
                 </tr>
@@ -492,12 +492,12 @@ export default function AdminProducts() {
                   <h2 className="text-base sm:text-lg font-black text-[var(--color-text-main-light)] dark:text-white">
                     {editingProduct ? `ویرایش کالا: ${editingProduct.title}` : 'افزودن کالای جدید به فروشگاه'}
                   </h2>
-                  <span className="text-[11px] text-gray-400">اطلاعات کالا به صورت زنده در کاتالوگ و انبار ذخیره خواهد شد</span>
+                  <span className="text-[11px] text-gray-500">اطلاعات کالا به صورت زنده در کاتالوگ و انبار ذخیره خواهد شد</span>
                 </div>
               </div>
               <button 
                 onClick={() => setIsModalOpen(false)} 
-                className="p-2 rounded-xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+                className="p-2 rounded-xl text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer"
               >
                 <X className="h-5 w-5" />
               </button>
