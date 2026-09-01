@@ -110,11 +110,15 @@ Key findings (P0 first):
 - [x] Gate: npm run verify — 37 suites / 300 tests PASS. Deployed via deploy.sh; prod verified: journal=7 entries (0000–0006), 9/9 idx_ indexes, integrity_check ok, health ok after keep-alive.
 - [x] QA PASS (TEAM-QA, commit 33bf5c6): verify 37/300 green; live /api/health ok, /api/products 14 items, /api/coupons-active exactly 4 real coupons, bundle index-Du9A2uvd.js matches local build. Report: .hermes/reports/qa-2026-09-01-migration-journal.md.
 - Next: §3.15 gaps (Permissions-Policy header, CSP report-uri), useStoreSettings fallback single-sourcing.
-
-## Status: Headers + settings single-sourcing cluster DONE (2026-09-01 round 3)
 - [x] Commit f95acbd + 7cffe99 (2026-09-01, QA PASS): hero slide imagery now settings-driven (`heroSlide1Image/2/3` in server DEFAULTS + admin PUT allow-list, zero visual change) — operator can change hero images without a deploy; homepage testimonials section `LatestReviews.tsx` consumes real `GET /api/reviews/latest` (hidden on empty/error); audit_logs table + audit-logged admin mutations (§3.7); blog hidden from sitemap while empty (§3.8/3.9). Deployed + live-verified.
 - [x] QA (7c463d4): verify 37/300 green; live probes 200 on /,/products,/products/14,/login; csp-report 204; /api/settings byte-identical to defaults; PUT invalidation code-verified. FAIL item: `reportUris` → invalid CSP directive. Fixed in f2fb02c (`reportUri`), deployed; live header now `report-uri /api/csp-report` verified.
 - Next: §3.14 LIKE wildcard escaping; §3.8/3.9 blog seed posts or hide nav; §3.7 admin audit-log table.
+
+## Status: §3.15 headers + settings single-sourcing cluster CLOSED (2026-09-02)
+- [x] Permissions-Policy header live (commit 7cffe99-era, verified 2026-09-02): `camera=(), geolocation=(), microphone=(), payment=(), usb=(), interest-cohort=()` — helmet v8 removed its middleware, set manually in server/app.ts. Stricter than spec suggestion (`payment=()` vs `(self)`); store uses gateway redirects, no Payment Request API.
+- [x] CSP report-uri via optional env (commit 1cd3b12): `CSP_REPORT_URI` env var drives the legacy `report-uri` directive, emitted only when set (no placeholder URL in code); modern `report-to` transport (Reporting-Endpoints header, internal `/api/csp-report` endpoint with rate-limited 204 sink) stays active regardless.
+- [x] useStoreSettings single-source fallback: src/hooks/useStoreSettings.ts + admin Settings.tsx already spread shared `STORE_SETTINGS_DEFAULTS` (src/lib/constants.ts, also consumed by server/routes/settings.ts) — remaining duplicated `'جانبی آرنا'` literals in ProductDetail.tsx (JSON-LD seller name, share title) now import it (commit 1cd3b12). Zero behavior change.
+- [x] Gate: npm run verify ALL PASS. Deployed via deploy.sh (health ok). Live evidence 2026-09-02: `curl -sI https://janebiarena.ir | grep -i permissions-policy` → header present; `/api/health` 200 ok; homepage bundle `index-8xinYUga.js` (hash changed from index-Du9A2uvd.js); live CSP has no `report-uri` (CSP_REPORT_URI unset, by design) but `Reporting-Endpoints: csp-endpoint=...` present. Report: .hermes/reports/s315-headers-2026-09-02.md.
 
 ### §3.14 LIKE wildcard escaping (2026-09-01, QA PASS)
 - [x] `server/utils/like.ts` `escapeLikePattern` (\ % _) + `containsLikePattern` با `escape '\\'` applied to title/category/brand search in `server/routes/products.ts` (commit 0393582) + `tests/unit/like-escape.test.ts` — gate 39 files / 306 tests PASS.
