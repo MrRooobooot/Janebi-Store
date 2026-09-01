@@ -333,7 +333,7 @@ export const POSTS: (typeof blogPosts.$inferInsert)[] = [
     createdAt: '2026-09-14T09:00:00.000Z',
   },
   {
-    id: 'rahnamaye-battery-sarma-garma',
+    id: 'post-1788275415863-lmo4gg', // live id — created via admin API during r39 SSH outage; keep in sync to avoid duplicate seed
     title: 'باتری گوشی در سرما و گرما: راهنمای نگهداری فصلی که عمر باتری را واقعاً بالا می‌برد',
     excerpt:
       'دما، ساکت‌ترین دشمن باتری گوشی شماست: سرما شارژ را ناگهان خالی می‌کند و گرما ظرفیت را برای همیشه می‌سوزاند. در این راهنما می‌گوییم چرا باتری در فصل‌های مختلف رفتار عجیب دارد و چطور از آن در تابستان و زمستان محافظت کنید.',
