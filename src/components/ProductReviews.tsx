@@ -221,7 +221,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
   return (
     <div className="space-y-8 text-right">
       {/* Top Overview & Ratings Summary Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-gradient-to-br from-gray-50 to-orange-50/30 dark:from-gray-800/60 dark:to-gray-900/60 rounded-3xl p-6 sm:p-8 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-gradient-to-br from-zinc-50 to-orange-50/30 dark:from-zinc-800/60 dark:to-zinc-900/60 rounded-3xl p-6 sm:p-8 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
         
         {/* Rating Score Card */}
         <div className="lg:col-span-4 flex flex-col items-center justify-center p-6 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/80 shadow-xs text-center">
@@ -250,29 +250,31 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
                 className={`h-5 w-5 ${
                   avgRating !== null && s <= Math.round(Number(avgRating))
                     ? 'fill-current text-yellow-500'
-                    : 'text-gray-200 dark:text-gray-700'
+                    : 'text-zinc-200 dark:text-zinc-700'
                 }`}
               />
             ))}
           </div>
 
-          <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-4">
+          <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-4">
             {hasReviews
               ? `از مجموع ${toPersianDigits((total || totalReviews).toLocaleString('fa-IR'))} دیدگاه ثبت‌شده`
               : 'هنوز دیدگاهی برای این محصول ثبت نشده است'}
           </p>
 
-          <div className="w-full pt-4 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex items-center justify-center gap-2 text-xs text-emerald-600 dark:text-emerald-400 font-bold">
-            <Award className="h-4 w-4" />
-            <span>{toPersianDigits(recommendPercent)}٪ خریداران این محصول را پیشنهاد داده‌اند</span>
-          </div>
+          {totalReviews > 0 && (
+            <div className="w-full pt-4 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex items-center justify-center gap-2 text-xs text-emerald-600 dark:text-emerald-400 font-bold">
+              <Award className="h-4 w-4" />
+              <span>{toPersianDigits(recommendPercent)}٪ خریداران این محصول را پیشنهاد داده‌اند</span>
+            </div>
+          )}
         </div>
 
         {/* Rating Bars Breakdown */}
         <div className="lg:col-span-8 flex flex-col justify-center space-y-2.5 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] p-6 rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/80 shadow-xs">
-          <h4 className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-1 flex items-center gap-1.5">
+          <h4 className="text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1 flex items-center gap-1.5">
             <Sparkles className="h-4 w-4 text-orange-500" />
-            توزیع امتیاز کاربران:
+            توزیع امتیاز خریداران (تحلیل امتیاز خریداران):
           </h4>
 
           {starCounts.map(({ star, count, percentage }) => (
@@ -280,24 +282,24 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
               key={star}
               onClick={() => setRatingFilter(ratingFilter === star ? 'all' : star)}
               className={`flex items-center gap-3 text-xs cursor-pointer group p-1 rounded-lg transition-colors ${
-                ratingFilter === star ? 'bg-orange-50 dark:bg-orange-950/40 font-bold' : 'hover:bg-gray-50 dark:hover:bg-gray-800/40'
+                ratingFilter === star ? 'bg-orange-50 dark:bg-orange-950/40 font-bold' : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/40'
               }`}
             >
-              <div className="flex items-center gap-1 w-14 shrink-0 font-bold text-gray-700 dark:text-gray-300">
-                <span>{star}</span>
+              <div className="flex items-center gap-1 w-14 shrink-0 font-bold text-zinc-700 dark:text-zinc-300">
+                <span>{toPersianDigits(star)}</span>
                 <Star className="h-3.5 w-3.5 fill-current text-yellow-500" />
               </div>
 
               {/* Progress Bar */}
-              <div className="flex-1 bg-gray-100 dark:bg-gray-800 h-2.5 rounded-full overflow-hidden">
+              <div className="flex-1 bg-zinc-100 dark:bg-zinc-800 h-2.5 rounded-full overflow-hidden">
                 <div
                   className="bg-orange-500 group-hover:bg-orange-600 h-full rounded-full transition-all duration-500"
                   style={{ width: `${percentage}%` }}
                 />
               </div>
 
-              <span className="w-12 text-left text-[11px] font-semibold text-gray-500 dark:text-gray-400">
-                {count.toLocaleString('fa-IR')} نظر ({percentage}٪)
+              <span className="w-12 text-left text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
+                {toPersianDigits(count)} نظر ({toPersianDigits(percentage)}٪)
               </span>
             </div>
           ))}
@@ -313,7 +315,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
               {filteredReviews.length.toLocaleString('fa-IR')}
             </span>
           </h3>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
             شما هم می‌توانید تجربه استفاده خود را از این کالا با دیگران به اشتراک بگذارید.
           </p>
         </div>
@@ -327,7 +329,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
             <span>{showForm ? 'بستن فرم ثبت نظر' : 'افزودن نظر جدید'}</span>
           </button>
         ) : (
-          <div className="text-xs font-bold text-gray-500 bg-gray-100 dark:bg-gray-800 px-4 py-2.5 rounded-xl">
+          <div className="text-xs font-bold text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-4 py-2.5 rounded-xl">
             برای ثبت نظر ابتدا وارد حساب کاربری خود شوید
           </div>
         )}
@@ -349,13 +351,13 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
                 <Send className="h-4 w-4 text-orange-600" />
                 ثبت نظر و امتیاز برای این محصول
               </h4>
-              <span className="text-xs text-gray-400">تمام فیلدها الزامی هستند</span>
+              <span className="text-xs text-zinc-400">تمام فیلدها الزامی هستند</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Name */}
               <div>
-                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-2">
                   نام و نام خانوادگی شما
                 </label>
                 <input
@@ -363,14 +365,14 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
                   value={userName}
                   onChange={(e) => setUserName(e.target.value)}
                   placeholder="مثلاً: علی محمدی"
-                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3 text-xs text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
+                  className="w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl p-3 text-xs text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
                   required
                 />
               </div>
 
               {/* Title */}
               <div>
-                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-2">
                   عنوان خلاصه نظر
                 </label>
                 <input
@@ -378,7 +380,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
                   value={reviewTitle}
                   onChange={(e) => setReviewTitle(e.target.value)}
                   placeholder="مثلاً: کیفیـت ساخت عالی و شارژدهی فوق‌العاده"
-                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3 text-xs text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
+                  className="w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl p-3 text-xs text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
                   required
                 />
               </div>
@@ -386,10 +388,10 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
 
             {/* Interactive Star Rating Picker */}
             <div>
-              <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-2">
                 امتیاز شما به کیفیت محصول:
               </label>
-              <div className="flex flex-wrap items-center gap-3 bg-gray-50 dark:bg-gray-800/60 p-4 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700/60">
+              <div className="flex flex-wrap items-center gap-3 bg-zinc-50 dark:bg-zinc-800/60 p-4 rounded-2xl border border-[var(--color-border-light)] dark:border-zinc-700/60">
                 <div dir="ltr" className="flex items-center gap-1.5 [direction:ltr]">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
@@ -398,7 +400,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
                       onClick={() => setUserRating(star)}
                       onMouseEnter={() => setHoverRating(star)}
                       onMouseLeave={() => setHoverRating(0)}
-                      aria-label={`ثبت امتیاز ${star} از ۵`}
+                      aria-label={`ثبت امتیاز ${toPersianDigits(star)} از ۵`}
                       aria-pressed={star === userRating}
                       className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center transition-transform hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 rounded-lg motion-reduce:transition-none motion-reduce:hover:scale-100"
                     >
@@ -407,7 +409,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
                         className={`h-7 w-7 transition-colors motion-reduce:transition-none ${
                           star <= (hoverRating || userRating)
                             ? 'text-yellow-500 fill-yellow-500 drop-shadow-xs'
-                            : 'text-gray-300 dark:text-gray-600'
+                            : 'text-zinc-300 dark:text-zinc-600'
                         }`}
                       />
                     </button>
@@ -422,7 +424,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
 
             {/* Comment Text Area */}
             <div>
-              <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-2">
                 متن کامل نظر و تجربه شما
               </label>
               <textarea
@@ -430,14 +432,14 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
                 value={reviewComment}
                 onChange={(e) => setReviewComment(e.target.value)}
                 placeholder="نقاط قوت، نقاط ضعف و نحوه عملکرد محصول در استفاده روزمره را توضیح دهید..."
-                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3.5 text-xs text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500 transition-colors resize-none"
+                className="w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl p-3.5 text-xs text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500 transition-colors resize-none"
                 required
               />
             </div>
 
             {/* Recommendation Toggle */}
-            <div className="flex items-center justify-between bg-gray-50 dark:bg-gray-800/60 p-4 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700/60">
-              <span className="text-xs font-bold text-gray-800 dark:text-gray-200">
+            <div className="flex items-center justify-between bg-zinc-50 dark:bg-zinc-800/60 p-4 rounded-2xl border border-[var(--color-border-light)] dark:border-zinc-700/60">
+              <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200">
                 آیا خرید این محصول را به سایر کاربران پیشنهاد می‌کنید؟
               </span>
 
@@ -448,7 +450,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
                   className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
                     recommend
                       ? 'bg-emerald-600 text-white shadow-xs'
-                      : 'bg-[var(--color-surface-light)] dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100'
+                      : 'bg-[var(--color-surface-light)] dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100'
                   }`}
                 >
                   <ThumbsUp className="h-3.5 w-3.5" />
@@ -461,7 +463,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
                   className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
                     !recommend
                       ? 'bg-red-600 text-white shadow-xs'
-                      : 'bg-[var(--color-surface-light)] dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100'
+                      : 'bg-[var(--color-surface-light)] dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100'
                   }`}
                 >
                   <ThumbsDown className="h-3.5 w-3.5" />
@@ -475,7 +477,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
               <button
                 type="button"
                 onClick={() => setShowForm(false)}
-                className="px-5 py-2.5 rounded-xl text-xs font-bold text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                className="px-5 py-2.5 rounded-xl text-xs font-bold text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
               >
                 انصراف
               </button>
@@ -500,9 +502,9 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
       </AnimatePresence>
 
       {/* Sorting & Filter Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-gray-50 dark:bg-gray-800/50 p-3 rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-zinc-50 dark:bg-zinc-800/50 p-3 rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
         <div className="flex flex-wrap items-center gap-2 text-xs">
-          <span className="font-bold text-gray-500 dark:text-gray-400 flex items-center gap-1 ml-1">
+          <span className="font-bold text-zinc-500 dark:text-zinc-400 flex items-center gap-1 ml-1">
             <Filter className="h-3.5 w-3.5" />
             فیلتر بر اساس امتیاز:
           </span>
@@ -512,7 +514,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
               ratingFilter === 'all'
                 ? 'bg-orange-600 text-white shadow-xs'
-                : 'bg-[var(--color-surface-light)] dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100'
+                : 'bg-[var(--color-surface-light)] dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100'
             }`}
           >
             همه نظرات
@@ -525,10 +527,10 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 ${
                 ratingFilter === star
                   ? 'bg-orange-600 text-white shadow-xs'
-                  : 'bg-[var(--color-surface-light)] dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100'
+                  : 'bg-[var(--color-surface-light)] dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100'
               }`}
             >
-              <span>{star}</span>
+              <span>{toPersianDigits(star)}</span>
               <Star className="h-3 w-3 fill-current" />
             </button>
           ))}
@@ -536,11 +538,11 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
 
         {/* Sort selector */}
         <div className="flex items-center gap-2 text-xs">
-          <span className="text-gray-500 dark:text-gray-400">مرتب‌سازی:</span>
+          <span className="text-zinc-500 dark:text-zinc-400">مرتب‌سازی:</span>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="bg-[var(--color-surface-light)] dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-1.5 text-xs font-bold text-gray-800 dark:text-gray-200 focus:outline-none"
+            className="bg-[var(--color-surface-light)] dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl px-3 py-1.5 text-xs font-bold text-zinc-800 dark:text-zinc-200 focus:outline-none"
           >
             <option value="helpful">مفیدترین نظرات</option>
             <option value="newest">جدیدترین نظرات</option>
@@ -615,13 +617,13 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
                 <h5 className="font-bold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] mb-1">
                   {review.title}
                 </h5>
-                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
+                <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-medium">
                   {review.comment}
                 </p>
               </div>
 
               {/* Helpful Votes Footer */}
-              <div className="pt-3 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex items-center justify-between text-xs text-gray-400">
+              <div className="pt-3 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex items-center justify-between text-xs text-zinc-400">
                 <span>آیا این دیدگاه برای شما مفید بود؟</span>
 
                 <div className="flex items-center gap-2">
@@ -632,7 +634,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
                     className={`flex items-center gap-1 px-2.5 min-h-[44px] rounded-lg border text-[11px] font-bold transition-all motion-reduce:transition-none ${
                       review.userVoted === 'helpful'
                         ? 'bg-emerald-50 dark:bg-emerald-950/50 border-emerald-300 text-emerald-600'
-                        : 'border-gray-200 dark:border-gray-700 text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800'
+                        : 'border-zinc-200 dark:border-zinc-700 text-zinc-500 hover:bg-zinc-50 dark:hover:bg-zinc-800'
                     }`}
                   >
                     <ThumbsUp className="h-3 w-3" aria-hidden="true" />
@@ -646,7 +648,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
                     className={`flex items-center gap-1 px-2.5 min-h-[44px] rounded-lg border text-[11px] font-bold transition-all motion-reduce:transition-none ${
                       review.userVoted === 'unhelpful'
                         ? 'bg-red-50 dark:bg-red-950/50 border-red-300 text-red-600'
-                        : 'border-gray-200 dark:border-gray-700 text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800'
+                        : 'border-zinc-200 dark:border-zinc-700 text-zinc-500 hover:bg-zinc-50 dark:hover:bg-zinc-800'
                     }`}
                   >
                     <ThumbsDown className="h-3 w-3" aria-hidden="true" />
@@ -657,7 +659,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
             </motion.div>
           ))
         ) : (
-          <div className="text-center p-8 bg-gray-50 dark:bg-gray-800/40 rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-gray-400 text-xs">
+          <div className="text-center p-8 bg-zinc-50 dark:bg-zinc-800/40 rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-zinc-400 text-xs">
             هیچ نظری با فیلتر انتخابی شما وجود ندارد.
           </div>
         )}
