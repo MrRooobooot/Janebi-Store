@@ -68,6 +68,14 @@
 
 ---
 
+### Round 2026-09-05 — Product Reviews Tab Polish (TEAM-FRONTEND, SHIPPED, live-verified)
+- [x] Persian-digit localization in ProductReviews (star counts, percentages, aria labels).
+- [x] Zero-review honesty gate: recommend-percentage badge hidden when no reviews (was "۰٪ ...").
+- [x] gray→zinc token normalization across the component (file grep gray = CLEAN).
+- [x] npm run verify green; artifact audit jsxDEV=0, /Users/=0; live chunk ProductDetail-BWHXF9Vv.js contains «تحلیل امتیاز خریداران», jsxDEV=0.
+- [x] Deploy: lock ACTIVE (cron actor mid-deploy same tree) → commit+push only (71745ad); concurrent deploy shipped it; live 200 + health ok after lock cleared.
+- Next: blog post 7 editorial content; rotate to cart/checkout or footer polish cluster.
+
 ## 🎯 Next Priority Backlog (Phase Next)
 
 - [x] OTP UI gated behind GET /api/auth/otp/status (prod enabled=false → OTP tab hidden, password reset shows Persian notice). Commit c11f9ca, live-verified 2026-09-02.
