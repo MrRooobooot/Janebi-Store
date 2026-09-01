@@ -1,4 +1,4 @@
-# SYSTEM Closure — 2026-09-18 (wind-down verification tick)
+# SYSTEM Closure — wind-down verified (re-verified 2026-09-18 tick)
 
 Both teams verified FINISHED per final wind-down protocol; supervisor run ended with ALL-TEAMS-DONE.
 
