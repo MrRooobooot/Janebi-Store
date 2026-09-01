@@ -3,6 +3,7 @@
 ## Status: Completed (Aug 28, 2026)
 
 ### Round 2026-09-09 — Blog Post 9 (SHIPPED, live)
+- [x] پست دوازدهم «شارژر فندکی خودرو» (fandaki-khodro، commit 40f0ba3) + پست سیزدهم «پایه شارژ مغناطیسی» (magnisi، commit 7788af0، از child تیم) — محتوای تحریریه واقعی. سید ایمپوتنت prod (esbuild → docker cp → node درون کانتینر؛ 11×exists، 2 inserted). زنده: /api/blog=13، هر دو slug در sitemap.xml. Next: پست ۱۴ + روتشن UI/SEO.
 - [x] پست نهم «پایه نگهدارنده موبایل خودرو» (rahnamaye-entekhab-paye-negahdarande-khodro، commit 82973d8) — محتوای تحریریه واقعی (سگردان/داشبورد/CD-Slot، مگنت Mag-Safe، شارژر فندکی PD)، تصویر /products/hld-13.svg. سید ایمپوتنت prod (esbuild bundle → docker cp → node درون کانتینر؛ 8×exists، 1 inserted). زنده: /api/blog=9، health ok. گیت verify سبز. دیپلوی با lock (این راند: فقط seed، بدون تغییر باندل). Next: پست ۱۰ + روتشن UI/SEO.
 
 ### Round 2026-09-01b — Blog Post 8 + Blog Listing Polish (SHIPPED, live)
