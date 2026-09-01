@@ -2,6 +2,10 @@
 
 ## Status: Completed (Aug 28, 2026)
 
+### Round 2026-09-06 — Blog Post 7 + Related Posts (SHIPPED, live)
+- [x] پست هفتم «شارژر بی‌سیم چیست و برای چه کسی منطقی است؟» (rahnamaye-sharzh-bisim-mag-safe، commit 99de0a2) — محتوای تحریریه واقعی Qi/Mag-Safe/گرما، seed ایمپوتنت prod (ssh → docker cp باندل esbuild --external:better-sqlite3 --external:pg → node درون کانتینر). زنده: /api/blog=7.
+- [x] بخش «مطالب مرتبط» در مودال مقاله (Blog.tsx): هم‌دسته‌ها جدیدترین اول، حذف مقاله جاری، cap=2، fallback به جدیدترین‌ها، a11y focus ring، motion-reduce. گیت verify سبز، jsxDEV=0، دیپلوی OK (lock رعایت شد)، chunk زنده Blog-CD-DezN_.js == محلی و شامل «مطالب مرتبط». Next: UI polish round بعدی، پست ۸.
+
 ### Round 2026-09-05 — Blog Post 6 (SHIPPED, live)
 - [x] پست ششم «شیشه گیرات یا محافظ هیدروژل؟» (a3eada0) — محتوای تحریریه واقعی، تصویر واقعی /products/gls-3.svg، سید ایمپوتنت prod بدون دیپلوی (docker cp باندل esbuild + node درون کانتینر، --external:better-sqlite3). زنده: /api/blog=6، detail 200، sitemap شامل slug. BlogPosting JSON-LD client-side (SPA) — قابل مشاهده با curl نیست، کامپوننت src/lib/blogJsonLd.ts سر جاست. Next: UI polish round، پست ۷.
 
