@@ -6,7 +6,7 @@
 - [x] GET product reviews paginated (?page&limit → {reviews,total,page,pages}, newest first, 6 new tests; ProductReviews.tsx Persian pagination). Commit 383f6cc, `npm run verify` green (44 suites/337 tests), deployed 2026-09-03 (live bundle index-2CuGcgTU.js == local), live endpoint verified {reviews:[],total:0,page:1,pages:1}.
 - [x] Prod DB residue check closed: 0 rows with image '/images/test.jpg' on VPS (in-container probe).
 - [x] QA PASS 2026-09-03 on image-perf/contrast-r7 cluster (.hermes/reports/qa-2026-09-03.md, 8/8 checks).
-- Next: QA reviews cluster, blog content seeding (prod 0 posts), JSON-LD BlogPosting.
+- Next: JSON-LD BlogPosting live-check on detail pages, next design/SEO cluster.
 
 ### Round 2026-09-03 — Image Performance / LCP (TEAM-FRONTEND, SHIPPED, QA PASS)
 - [x] Raster census: zero images >100KB in public/ (all product/brand imagery is SVG, largest asset is 6.6KB icon PNG) — compression round is an honest no-op, no WebP candidates exist.
@@ -193,4 +193,5 @@ Key findings (P0 first):
 ## Round 2026-09-03c
 - [x] Design: product gallery interaction + spec-table zebra/dark tokens + Persian a11y (3ef7b25) — QA PASS, deployed, live bundle index-DNtSEzq_.js
 - [x] SEO groundwork: blog_posts tags column + PG parity migration 0008 (5bdb8d5) — QA PASS, deployed
-- [ ] SEO: blog seed content (4 Persian posts) + JSON-LD BlogPosting + sitemap blog URLs — child failed twice, reschedule with smaller scope (seed script only)
+- [x] SEO: blog seed content (3 authentic Persian posts) + JSON-LD BlogPosting + sitemap blog URLs — commit 24fd04f, verify 44/337 GREEN, deployed; prod DB seeded via docker cp into /app; live: /api/blog=3, sitemap 3 blog URLs, /blog/:slug 200. Report: qa-2026-09-03b-reviews.md / session 2026-09-03d.
+- Next: JSON-LD detail live-check; rotate to next design/SEO cluster (footer or admin).
