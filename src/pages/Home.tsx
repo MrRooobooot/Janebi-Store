@@ -14,6 +14,7 @@ import {
 import { Product } from '../types';
 import { toPersianDigits, formatPrice, getAssetUrl } from '../lib/utils';
 import { useStoreSettings } from '../hooks/useStoreSettings';
+import { STORE_SETTINGS_DEFAULTS } from '../lib/constants';
 import PictureImage from '../components/PictureImage';
 
 export default function Home() {
@@ -43,11 +44,11 @@ export default function Home() {
     {
       id: 1,
       tag: 'مرجع تخصصی هولدر و استند موبایل',
-      title: settings.heroSlide1Title && !settings.heroSlide1Title.includes('فست') ? settings.heroSlide1Title : 'هولدرهای مگنتی خودرو و پایه‌های رومیزی ضدلغزش',
-      subtitle: settings.heroSlide1Subtitle && !settings.heroSlide1Subtitle.includes('انکر') ? settings.heroSlide1Subtitle : 'هولدرهای آهنربایی قدرتمند N52 سازگار با مگ‌سیف آیفون و انواع گوشی‌ها، مناسب رانندگی شهری و اسنپ بدون لغزش و تکان',
+      title: settings.heroSlide1Title || STORE_SETTINGS_DEFAULTS.heroSlide1Title,
+      subtitle: settings.heroSlide1Subtitle || STORE_SETTINGS_DEFAULTS.heroSlide1Subtitle,
       buttonText: 'مشاهده انواع هولدر و استند',
-      buttonLink: settings.heroSlide1Link || '/products?category=هولدر و پایه',
-      badge: settings.heroSlide1Badge || 'فروش تکی و عمده کارتنی',
+      buttonLink: settings.heroSlide1Link || STORE_SETTINGS_DEFAULTS.heroSlide1Link,
+      badge: settings.heroSlide1Badge || STORE_SETTINGS_DEFAULTS.heroSlide1Badge,
       image: '/products/hld-13.svg',
       borderColor: 'border-orange-500/40',
       badgeBg: 'bg-orange-500/20 text-orange-300 border-orange-500/40',
@@ -55,11 +56,11 @@ export default function Home() {
     {
       id: 2,
       tag: 'محافظت ۱۰۰٪ از بدنه، لنز و صفحه نمایش',
-      title: settings.heroSlide2Title || 'قاب‌های مگ‌سیف و گلس‌های سوپردی فول‌چسب',
-      subtitle: settings.heroSlide2Subtitle || 'تنوع بیش از ۵۰۰ مدل کاور سیلیکونی پاک‌کنی، قاب‌های ضدضربه و گلس‌های نشکن برای انواع مدل‌های آیفون، سامسونگ و شیائومی',
+      title: settings.heroSlide2Title || STORE_SETTINGS_DEFAULTS.heroSlide2Title,
+      subtitle: settings.heroSlide2Subtitle || STORE_SETTINGS_DEFAULTS.heroSlide2Subtitle,
       buttonText: 'انتخاب قاب و محافظ صفحه',
-      buttonLink: settings.heroSlide2Link || '/products?category=قاب و کاور',
-      badge: settings.heroSlide2Badge || 'تخفیف ویژه سفارش‌های پک و تعدادی',
+      buttonLink: settings.heroSlide2Link || STORE_SETTINGS_DEFAULTS.heroSlide2Link,
+      badge: settings.heroSlide2Badge || STORE_SETTINGS_DEFAULTS.heroSlide2Badge,
       image: '/products/cas-4.svg',
       borderColor: 'border-blue-500/40',
       badgeBg: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
@@ -67,11 +68,11 @@ export default function Home() {
     {
       id: 3,
       tag: 'کابل‌های فست و محافظ‌های ضدقطعی',
-      title: settings.heroSlide3Title || 'کابل‌های کنفی تقویت‌شده و محافظ‌های فنری کابل',
-      subtitle: settings.heroSlide3Subtitle || 'کابل‌های تایپ‌سی، لایتنینگ و محافظ‌های سیلیکونی سر کابل برای جلوگیری از پارگی و افزایش چندبرابری طول عمر شارژر',
+      title: settings.heroSlide3Title || STORE_SETTINGS_DEFAULTS.heroSlide3Title,
+      subtitle: settings.heroSlide3Subtitle || STORE_SETTINGS_DEFAULTS.heroSlide3Subtitle,
       buttonText: 'مشاهده کابل‌ها و محافظ‌ها',
-      buttonLink: settings.heroSlide3Link || '/products?category=کابل',
-      badge: settings.heroSlide3Badge || 'تضمین سلامت فیزیکی ۱۰۰٪',
+      buttonLink: settings.heroSlide3Link || STORE_SETTINGS_DEFAULTS.heroSlide3Link,
+      badge: settings.heroSlide3Badge || STORE_SETTINGS_DEFAULTS.heroSlide3Badge,
       image: '/products/cbl-1.svg',
       borderColor: 'border-purple-500/40',
       badgeBg: 'bg-purple-500/20 text-purple-300 border-purple-500/40',

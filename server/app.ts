@@ -30,7 +30,28 @@ export const app = express();
 // Trust reverse proxy (Nginx)
 app.set("trust proxy", 1);
 
-// Request ID tracing — must run before everything else
+// Reporting-Endpoints (modern report-to transport for CSP violations).
+// Absolute URL per request, derived from the forwarded Host header, so it
+// works behind the production reverse proxy without hardcoding the domain.
+app.use((req: any, res: any, next: any) => {
+  const host = (req.headers["x-forwarded-host"] as string) || (req.headers.host as string);
+  const proto = (req.headers["x-forwarded-proto"] as string) || "https";
+  // Permissions-Policy: deny powerful browser features the storefront never
+  // uses (helmet v8 removed its permissionsPolicy middleware, set manually).
+  res.setHeader(
+    "Permissions-Policy",
+    "camera=(), geolocation=(), microphone=(), payment=(), usb=(), interest-cohort=()"
+  );
+  // Reporting-Endpoints (modern report-to transport for CSP violations).
+  // Absolute URL per request, derived from the forwarded Host header, so it
+  // works behind the production reverse proxy without hardcoding the domain.
+  if (host) {
+    res.setHeader("Reporting-Endpoints", `csp-endpoint="${proto}://${host}/api/csp-report"`);
+  }
+  next();
+});
+
+// Middleware - Request ID tracing — must run before everything else
 app.use(requestIdMiddleware);
 
 // Middleware - Security Headers with CSP
@@ -45,6 +66,9 @@ app.use(
             fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
             imgSrc: ["'self'", "data:", "https:", "http:"],
             connectSrc: ["'self'", "https://api.zarinpal.com", "https://payment.zarinpal.com", "https://sandbox.zarinpal.com", "https://generativelanguage.googleapis.com"],
+            // CSP violation observability: browsers POST violations here.
+            reportUris: ["/api/csp-report"],
+            reportTo: ["csp-endpoint"],
           },
         }
       : false,
@@ -145,6 +169,33 @@ const couponLimiter = rateLimit({
 });
 app.use("/api/coupons/validate", couponLimiter);
 app.use("/api/coupons", couponLimiter);
+
+// CSP violation reporting endpoint (§3.15 observability).
+// Browsers POST violation reports (report-uri legacy shape or report-to
+// report lists) here; they are logged via pino for security triage.
+// Light rate limit — reports are low-value noise at high volume.
+const cspReportLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 60,
+  skip: () => process.env.NODE_ENV === "test" || env.NODE_ENV === "test",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use("/api/csp-report", cspReportLimiter);
+app.post(
+  "/api/csp-report",
+  // CSP report bodies arrive with non-JSON content types the global parser
+  // skips (application/csp-report, application/reports+json).
+  express.json({ type: () => true }),
+  (req, res) => {
+    const report = (req.body as any)?.["csp-report"] ?? req.body;
+    req.log?.warn(
+      { cspReport: report, requestId: req.id },
+      "CSP violation report received"
+    );
+    res.status(204).end();
+  }
+);
 
 // Routes
 app.use("/api/products", productsRoutes);

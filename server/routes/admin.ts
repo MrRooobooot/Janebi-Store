@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { db, isPostgres } from '../db/index.js';
 import { users, products, orders, orderItems, reviews, coupons, productFeatures, cartItems, wishlistItems, storeSettings } from '../db/schema.js';
 import { appCache } from '../utils/cache.js';
+import { STORE_SETTINGS_DEFAULTS } from '../../src/lib/constants.js';
 import { eq, desc, sql } from 'drizzle-orm';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
 
@@ -662,15 +663,10 @@ router.delete('/newsletter/:email', async (req, res) => {
 // STORE SETTINGS — persisted in the store_settings table so
 // they survive container restarts (previously RAM-only).
 // ---------------------------------------------------------
-const DEFAULT_SETTINGS: Record<string, string> = {
-  storeName: 'جانبی آرنا',
-  phone: '۰۲۱-۸۸۸۸۹۹۹۹',
-  email: 'info@janebi-arena.ir',
-  supportHours: 'همه‌روزه از ساعت ۹:۰۰ الی ۲۱:۰۰',
-  address: 'تهران، خیابان ولیعصر، تقاطع طالقانی، مجتمع نور، طبقه ۲، واحد ۱۰۴',
-  freeShippingThreshold: '2000000',
-  announcement: 'ارسال رایگان برای تمامی سفارش‌های بالای ۲ میلیون تومان | کد تخفیف: WELCOME10'
-};
+// Admin-editable settings allow-list — derived from the canonical shared
+// defaults (src/lib/constants.ts), so hero-slide fields are editable too and
+// no literals drift between admin, public GET and client fallback.
+const DEFAULT_SETTINGS: Record<string, string> = STORE_SETTINGS_DEFAULTS;
 
 router.get('/settings', async (req, res) => {
   try {
@@ -699,8 +695,9 @@ router.put('/settings', async (req, res) => {
         .onConflictDoUpdate({ target: storeSettings.key, set: { value: String(value) } });
     }
 
-    // NOTE: GET /api/settings is not app-cached server-side (nginx 15s window
-    // only); nothing to invalidate here. Kept as documentation anchor.
+    // Bust any server-side cached settings (e.g. memoized public GET wrappers)
+    // so admin edits are visible immediately, not stale.
+    appCache.invalidate('settings');
 
     const rows = await db.select().from(storeSettings);
     const merged: Record<string, string> = { ...DEFAULT_SETTINGS };

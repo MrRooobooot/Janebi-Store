@@ -2,6 +2,7 @@ import { authFetch } from '../../lib/api';
 import React, { useState, useEffect } from 'react';
 import { Settings, Save, Phone, Mail, MapPin, Clock, Truck, Megaphone, Check, Loader2, Database, Download, Sparkles, Layers } from 'lucide-react';
 import { useToast } from '../../contexts/ToastContext';
+import { STORE_SETTINGS_DEFAULTS } from '../../lib/constants';
 
 interface StoreSettingsData {
   storeName: string;
@@ -27,26 +28,9 @@ interface StoreSettingsData {
 
 export default function AdminSettings() {
   const [settings, setSettings] = useState<StoreSettingsData>({
-    storeName: 'جانبی آرنا',
-    phone: '۰۲۱-۸۸۸۸۹۹۹۹',
-    email: 'info@janebi-arena.ir',
-    supportHours: 'همه‌روزه از ساعت ۹:۰۰ الی ۲۱:۰۰',
-    address: 'تهران، خیابان ولیعصر، تقاطع طالقانی، مجتمع نور، طبقه ۲، واحد ۱۰۴',
-    freeShippingThreshold: 2000000,
-    announcement: 'ارسال رایگان برای تمامی سفارش‌های بالای ۲ میلیون تومان | کد تخفیف: WELCOME10',
-    heroSlide1Title: 'فست‌شارژهای هوشمند با محافظت ولتاژ',
-    heroSlide1Subtitle: 'شارژرهای اورجینال انکر، باسئوس و مک‌دودو مجهز به فناوری GaN و قطع‌کن خودکار برای سلامت باتری گوشی',
-    heroSlide1Link: '/products?category=شارژر',
-    heroSlide1Badge: 'گارانتی تعویض ۶ ماهه',
-    heroSlide2Title: 'کاورهای مگ‌سیف و گلس‌های ضدضربه سوپردی',
-    heroSlide2Subtitle: 'تنوع بی‌نظیر قاب‌های ضدضربه، شفاف و چرمی سازگار با شارژ بیسیم برای تمامی مدل‌های آیفون، سامسونگ و شیائومی',
-    heroSlide2Link: '/products?category=قاب و کاور',
-    heroSlide2Badge: 'تست فیزیکی قبل از ارسال',
-    heroSlide3Title: 'ایرپادها و هندزفری‌های مجهز به نویز کنسلینگ',
-    heroSlide3Subtitle: 'مکالمه بدون نویز محیطی، درایورهای بیس تقویت‌شده و ماندگاری باتری تا ۳۰ ساعت برای مکالمه و موسیقی',
-    heroSlide3Link: '/products?category=هندزفری',
-    heroSlide3Badge: 'مهلت تست ۷ روزه',
-  });
+    ...STORE_SETTINGS_DEFAULTS,
+    freeShippingThreshold: parseInt(STORE_SETTINGS_DEFAULTS.freeShippingThreshold) || 0,
+  } as StoreSettingsData);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const { addToast } = useToast();

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { STORE_SETTINGS_DEFAULTS } from '../lib/constants';
 
 export interface StoreSettings {
   storeName: string;
@@ -22,27 +23,13 @@ export interface StoreSettings {
   heroSlide3Badge?: string;
 }
 
+// Client fallback derived from the canonical shared defaults (single source of
+// truth in src/lib/constants.ts, also consumed by the server). Only the
+// numeric threshold is converted at the API boundary.
 const FALLBACK: StoreSettings = {
-  storeName: 'جانبی آرنا',
-  phone: '۰۲۱-۸۸۸۸۹۹۹۹',
-  email: 'info@janebi-arena.ir',
-  supportHours: 'همه‌روزه از ساعت ۹:۰۰ الی ۲۱:۰۰',
-  address: 'تهران، خیابان ولیعصر، تقاطع طالقانی، مجتمع نور، طبقه ۲، واحد ۱۰۴',
-  freeShippingThreshold: 2_000_000,
-  announcement: 'ارسال رایگان برای تمامی سفارش‌های بالای ۲ میلیون تومان | کد تخفیف: WELCOME10',
-  heroSlide1Title: 'فست‌شارژهای هوشمند با محافظت ولتاژ',
-  heroSlide1Subtitle: 'شارژرهای اورجینال انکر، باسئوس و مک‌دودو مجهز به فناوری GaN و قطع‌کن خودکار برای سلامت باتری گوشی',
-  heroSlide1Link: '/products?category=شارژر',
-  heroSlide1Badge: 'گارانتی تعویض ۶ ماهه',
-  heroSlide2Title: 'کاورهای مگ‌سیف و گلس‌های ضدضربه سوپردی',
-  heroSlide2Subtitle: 'تنوع بی‌نظیر قاب‌های ضدضربه، شفاف و چرمی سازگار با شارژ بیسیم برای تمامی مدل‌های آیفون، سامسونگ و شیائومی',
-  heroSlide2Link: '/products?category=قاب و کاور',
-  heroSlide2Badge: 'تست فیزیکی قبل از ارسال',
-  heroSlide3Title: 'ایرپادها و هندزفری‌های مجهز به نویز کنسلینگ',
-  heroSlide3Subtitle: 'مکالمه بدون نویز محیطی، درایورهای بیس تقویت‌شده و ماندگاری باتری تا ۳۰ ساعت برای مکالمه و موسیقی',
-  heroSlide3Link: '/products?category=هندزفری',
-  heroSlide3Badge: 'مهلت تست ۷ روزه',
-};
+  ...STORE_SETTINGS_DEFAULTS,
+  freeShippingThreshold: parseInt(STORE_SETTINGS_DEFAULTS.freeShippingThreshold) || 0,
+} as StoreSettings;
 
 let cache: StoreSettings | null = null;
 
