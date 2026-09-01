@@ -70,5 +70,23 @@ export function buildBlogPostingJsonLd(
   const articleBody = typeof post.body === 'string' ? post.body.trim() : '';
   if (articleBody) jsonLd.articleBody = articleBody;
 
+  // AEO (answer-engine optimization): the site is fully Persian — declare the
+  // language explicitly so voice assistants and AI answer engines serve it
+  // to the right locale.
+  jsonLd.inLanguage = 'fa-IR';
+
+  // speakable — tell answer engines which parts of the article are safe to
+  // read aloud / quote as a direct answer (headline + article body block).
+  if (articleBody) {
+    jsonLd.speakable = {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['.blog-article-title', '.blog-article-body'],
+    };
+  }
+
+  // articleSection — the real category, when present
+  const section = typeof post.category === 'string' ? post.category.trim() : '';
+  if (section) jsonLd.articleSection = section;
+
   return jsonLd;
 }

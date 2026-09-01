@@ -28,6 +28,22 @@ describe('buildBlogPostingJsonLd — honesty gate', () => {
     expect(parsed.description).toBe(basePost.excerpt);
     expect(parsed.articleBody).toBe(basePost.body);
     expect(parsed.mainEntityOfPage).toBe('https://janebiarena.ir/blog');
+    expect(parsed.inLanguage).toBe('fa-IR');
+    expect(parsed.articleSection).toBeUndefined();
+    expect(parsed.speakable).toEqual({
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['.blog-article-title', '.blog-article-body'],
+    });
+  });
+
+  it('emits articleSection only when the post has a category', () => {
+    const jsonLd = buildBlogPostingJsonLd({ ...basePost, category: 'شارژ و باتری' }) as Record<string, unknown>;
+    expect(jsonLd.articleSection).toBe('شارژ و باتری');
+  });
+
+  it('omits speakable when the post has no body', () => {
+    const jsonLd = buildBlogPostingJsonLd({ ...basePost, body: '' }) as Record<string, unknown>;
+    expect('speakable' in jsonLd).toBe(false);
   });
 
   it('omits dateModified when the post has no updatedAt', () => {

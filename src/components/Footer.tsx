@@ -44,7 +44,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Value Propositions */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-12 border-b border-zinc-200/80 dark:border-zinc-800 pb-12">
-          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/80 dark:border-zinc-800">
+          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/80 dark:border-zinc-800 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:bg-white dark:hover:bg-zinc-800/70 focus-within:ring-2 focus-within:ring-orange-500/40">
             <div className="p-2.5 rounded-xl bg-orange-100/80 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 shrink-0">
               <Truck className="h-6 w-6" strokeWidth={2} />
             </div>
@@ -54,7 +54,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/80 dark:border-zinc-800">
+          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/80 dark:border-zinc-800 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:bg-white dark:hover:bg-zinc-800/70 focus-within:ring-2 focus-within:ring-orange-500/40">
             <div className="p-2.5 rounded-xl bg-blue-100/80 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 shrink-0">
               <HeadphonesIcon className="h-6 w-6" strokeWidth={2} />
             </div>
@@ -64,7 +64,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/80 dark:border-zinc-800">
+          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/80 dark:border-zinc-800 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:bg-white dark:hover:bg-zinc-800/70 focus-within:ring-2 focus-within:ring-orange-500/40">
             <div className="p-2.5 rounded-xl bg-emerald-100/80 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 shrink-0">
               <Shield className="h-6 w-6" strokeWidth={2} />
             </div>
@@ -74,7 +74,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/80 dark:border-zinc-800">
+          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/80 dark:border-zinc-800 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:bg-white dark:hover:bg-zinc-800/70 focus-within:ring-2 focus-within:ring-orange-500/40">
             <div className="p-2.5 rounded-xl bg-amber-100/80 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 shrink-0">
               <CheckCircle className="h-6 w-6" strokeWidth={2} />
             </div>

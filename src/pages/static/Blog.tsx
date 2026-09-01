@@ -333,11 +333,12 @@ export default function Blog() {
                   <span className="flex items-center gap-1"><User className="h-3.5 w-3.5" /> {openArticle.author}</span>
                 </div>
 
-                <h2 className="text-xl sm:text-2xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] leading-relaxed mb-6">
+                <h2 className="blog-article-title text-xl sm:text-2xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] leading-relaxed mb-6">
                   {openArticle.title}
                 </h2>
 
-                <div className="space-y-4">
+                {/* blog-article-body: speakable target for the BlogPosting JSON-LD */}
+                <div className="blog-article-body space-y-4">
                   {openArticle.body.split('\n\n').filter(Boolean).map((para, i) => (
                     <p key={i} className="text-sm text-zinc-700 dark:text-zinc-300 leading-loose">
                       {para}
