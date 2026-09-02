@@ -2,6 +2,7 @@ import { app } from './app.js';
 import { env } from './env.js';
 import { db, dbReady } from './db/index.js';
 import * as schema from './db/schema.js';
+import { startBaleBot } from './bot/bale.js';
 import { ALL_PRODUCTS, REVIEWS_STORE, VALID_COUPONS } from './data/seed-data.js';
 import { blogPostingJsonLdFor, productJsonLdFor, breadcrumbJsonLdFor, injectBreadcrumbIntoHtml } from "./lib/breadcrumbs.js";
 import express from 'express';
@@ -153,6 +154,13 @@ async function startServer() {
   app.listen(PORT, () => {
     console.log(`✅ Server is running on port ${PORT} in ${env.NODE_ENV} mode`);
   });
+
+  // Bale bot (product upload) — starts only when BALE_BOT_TOKEN is set.
+  if (env.BALE_BOT_TOKEN) {
+    startBaleBot(env.BALE_BOT_TOKEN, env.BALE_ADMIN_CHAT_IDS).catch((e) =>
+      console.error('❌ Bale bot failed to start:', e.message)
+    );
+  }
 }
 
 startServer().catch(console.error);

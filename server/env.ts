@@ -28,6 +28,11 @@ const envSchema = z.object({
   SMS_API_KEY: z.string().optional().or(z.literal("")),
   SMS_PROVIDER: z.string().optional().or(z.literal("")),
   SMS_TEMPLATE_ID: z.string().optional().or(z.literal("")),
+  // Bale (بله) bot — product upload assistant. Empty = bot disabled.
+  BALE_BOT_TOKEN: z.string().optional().or(z.literal("")),
+  BALE_ADMIN_CHAT_IDS: z.string().default("").transform((val: string) =>
+    val.split(",").map((s) => parseInt(s.trim(), 10)).filter(Number.isFinite)
+  ),
 }).transform((data) => ({
   ...data,
   allowedOrigins: data.CORS_ORIGIN
