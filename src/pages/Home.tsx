@@ -407,7 +407,7 @@ export default function Home() {
           style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch' }}
         >
           {categories.slice(0, 8).map((cat, idx) => (
-            <div key={`${cat.slug}-${idx}`} className="shrink-0 w-[30vw] sm:w-[23%] min-w-[118px] max-w-[190px]">
+            <div key={`${cat.slug}-${idx}`} className="shrink-0 w-[30vw] sm:w-[23%] min-w-[118px]">
               {renderCategoryCard(cat, idx)}
             </div>
           ))}
