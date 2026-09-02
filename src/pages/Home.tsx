@@ -162,6 +162,34 @@ export default function Home() {
 
   const currentSlide = heroSlides[activeSlide];
 
+  const renderCategoryCard = (cat: any, idx: number, featured: boolean) => {
+    const Icon = cat.icon || Smartphone;
+    return (
+      <Link
+        key={`${cat.slug}-${idx}`}
+        to={`/products?category=${encodeURIComponent(cat.title)}`}
+        className={`relative flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-[var(--color-surface-light)] dark:bg-[#0d121c] border transition-colors group text-center shadow-xs ${
+          featured
+            ? 'border-orange-400/70 dark:border-orange-500/50 hover:border-orange-500'
+            : 'border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500'
+        }`}
+      >
+        {featured && (
+          <Star className="absolute top-1.5 right-1.5 h-3 w-3 text-orange-500 fill-orange-500" aria-hidden="true" />
+        )}
+        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800/80 flex items-center justify-center text-zinc-700 dark:text-zinc-200 group-hover:bg-orange-600 group-hover:text-white transition-all mb-2">
+          <Icon className="h-5 w-5 sm:h-6 sm:w-6 stroke-[1.8]" />
+        </div>
+        <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+          {cat.title}
+        </span>
+        <span className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">
+          {toPersianDigits(cat.count || 0)} کالا
+        </span>
+      </Link>
+    );
+  };
+
   return (
     <div className="space-y-8 sm:space-y-12 pb-16 w-full max-w-full overflow-hidden box-border">
       
@@ -379,27 +407,10 @@ export default function Home() {
           </Link>
         </div>
 
+        {/* Featured 4 first, remainder continues left-to-right */}
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 sm:gap-4">
-          {categories.map((cat, idx) => {
-            const Icon = cat.icon || Smartphone;
-            return (
-              <Link
-                key={idx}
-                to={`/products?category=${encodeURIComponent(cat.title)}`}
-                className="flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-[var(--color-surface-light)] dark:bg-[#0d121c] border border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 transition-colors group text-center shadow-xs"
-              >
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800/80 flex items-center justify-center text-zinc-700 dark:text-zinc-200 group-hover:bg-orange-600 group-hover:text-white transition-all mb-2">
-                  <Icon className="h-5 w-5 sm:h-6 sm:w-6 stroke-[1.8]" />
-                </div>
-                <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
-                  {cat.title}
-                </span>
-                <span className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">
-                  {toPersianDigits(cat.count || 0)} کالا
-                </span>
-              </Link>
-            );
-          })}
+          {categories.slice(0, 4).map((cat, idx) => renderCategoryCard(cat, idx, true))}
+          {categories.slice(4).map((cat, idx) => renderCategoryCard(cat, idx + 4, false))}
         </div>
       </section>
 

@@ -33,6 +33,23 @@ router.get("/", async (req, res) => {
     slug: r.category.toLowerCase().replace(/\s+/g, "-"),
   }));
 
+  // Homepage priority order (user-approved ⭐1..8) — featured first, rest after.
+  const HOMEPAGE_PRIORITY = [
+    "قاب و کاور موبایل",
+    "گلس و محافظ صفحه",
+    "کابل و سیم",
+    "شارژر و آداپتور",
+    "هندزفری و ایرباد",
+    "پاوربانک",
+    "هولدر و نگهدارنده",
+    "هدفون و هدست",
+  ];
+  result.sort((a, b) => {
+    const ia = HOMEPAGE_PRIORITY.indexOf(a.title);
+    const ib = HOMEPAGE_PRIORITY.indexOf(b.title);
+    return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+  });
+
   appCache.set(cacheKey, result, 120);
   res.setHeader("X-Cache", "MISS");
   res.setHeader("Cache-Control", "public, max-age=120");
