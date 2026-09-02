@@ -25,6 +25,7 @@ import reviewsRoutes from "./routes/reviews.js";
 import blogRoutes from "./routes/blog.js";
 import sitemapRoutes from "./routes/sitemap.js";
 import adminRoutes from "./routes/admin.js";
+import uploadRoutes from "./routes/upload.js";
 import { isPostgres, pool, sqlite } from "./db/index.js";
 
 export const app = express();
@@ -239,6 +240,7 @@ app.use("/api/settings", settingsRoutes);
 app.use("/api/reviews", reviewsRoutes);
 app.use("/api/blog", blogRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/admin/upload", uploadRoutes);
 app.use(sitemapRoutes); // GET /sitemap.xml — dynamic, includes blog_posts slugs
 
 // Health / readiness probe — verifies the process is up AND the database

@@ -161,7 +161,48 @@ function botFor(env: Env): Bot {
   });
 
   bot.on('message:photo', async (ctx) => {
-    if (isAdmin(ctx)) await ctx.reply('فعلاً فقط لینک عکس. آپلود مستقیم فایل در نسخه بعد.');
+    if (!isAdmin(ctx)) return;
+    const key = String(ctx.from!.id);
+    const raw = await env.DRAFTS.get(key);
+    if (!raw) { await ctx.reply('برای شروع /new را بفرست.'); return; }
+    const d = JSON.parse(raw) as Record<string, any>;
+    if (d.step !== 'photo') { await ctx.reply('الان عکس لازم نیست — مراحل را با متن جلو ببر.'); return; }
+    await ctx.reply('⏳ در حال دریافت عکس...');
+    try {
+      // Highest-resolution photo variant Bale sent
+      const photos = ctx.message.photo as Array<{ file_id: string; file_size?: number }>;
+      const best = photos[photos.length - 1];
+      const file = await bot.api.getFile(best.file_id);
+      const binRes = await fetch(`https://tapi.bale.ai/file/bot${env.BALE_BOT_TOKEN}/${file.file_path}`);
+      if (!binRes.ok) throw new Error(`دانلود عکس از بله ناموفق (${binRes.status})`);
+      const bin = await binRes.arrayBuffer();
+      if (bin.byteLength > 5 * 1024 * 1024) throw new Error('عکس بزرگ‌تر از ۵ مگابایت است');
+      const form = new FormData();
+      form.append('image', new Blob([bin], { type: 'image/jpeg' }), 'photo.jpg');
+      const upRes = await fetch(`${env.STORE_API}/admin/upload/product-image`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${env.STORE_ADMIN_TOKEN}` },
+        body: form,
+      });
+      if (!upRes.ok) throw new Error(`آپلود عکس به فروشگاه ناموفق (${upRes.status})`);
+      const { url } = (await upRes.json()) as { url: string };
+      d.photoUrl = url;
+      d.step = 'confirm';
+      await env.DRAFTS.put(key, JSON.stringify(d), { expirationTtl: 3600 });
+      await ctx.reply(
+        '✅ تأیید؟\n' +
+        `نام: ${d.title}\nدسته: ${d.category}\nقیمت: ${fmt(d.price)} تومان\n` +
+        `موجودی: ${d.stock}\nبرند: ${d.brand}\nگارانتی: ${d.warranty || '—'}\n` +
+        `توضیحات: ${d.description || '—'}\nعکس: آپلود شد ✓ ${url}\n\n/yes ثبت — /cancel لغو`
+      );
+    } catch (e: any) {
+      await ctx.reply(`❌ ${e.message}\nمی‌توانید دوباره عکس بفرستید یا /skip بزنید.`);
+    }
+  });
+
+  bot.on('message:document', async (ctx) => {
+    if (!isAdmin(ctx)) return;
+    await ctx.reply('لطفاً عکس را به‌صورت عکس (نه فایل) بفرستید یا لینک بدهید.');
   });
 
   return bot;
