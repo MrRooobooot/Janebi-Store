@@ -1,0 +1,19 @@
+name = "janebi-bale-bot"
+main = "src/worker.ts"
+compatibility_date = "2026-08-01"
+account_id = "b6041ca312634518e226391d22fa2c7e"
+
+[[kv_namespaces]]
+binding = "DRAFTS"
+id = "d906cd5bef544758b200ee1b65237338"
+
+[vars]
+# Store API the worker posts products to (admin route with service token)
+STORE_API = "https://janebiarena.ir/api"
+
+# Secrets (set with: npx wrangler secret put <NAME>)
+#   BALE_BOT_TOKEN      — bot token from Bale BotFather
+#   WEBHOOK_SECRET      — random string, also passed to setWebhook secret_token
+#   STORE_ADMIN_TOKEN   — a Janebi admin's JWT access token (rotate periodically)
+# BALE_ADMIN_CHAT_IDS — comma-separated numeric Bale chat ids (plain var)
+BALE_ADMIN_CHAT_IDS = "796026122,1303840677"
