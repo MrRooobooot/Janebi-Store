@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import { ProductCardSkeleton } from '../components/Skeletons';
@@ -7,10 +7,10 @@ import LatestReviews from '../components/LatestReviews';
 import RecentlyViewed from '../components/RecentlyViewed';
 import BrandShowcase from '../components/BrandShowcase';
 import VipClubBanner from '../components/VipClubBanner';
-import { 
-  Sparkles, ArrowLeft, Smartphone, Shield, Zap, Cable, Headphones, 
-  BatteryCharging, Truck, ShieldCheck, RefreshCw, Headset, Flame, Star, 
-  Clock, TrendingUp, Award, CheckCircle2, Navigation, Layers, ShieldAlert, PackageCheck
+import {
+  Sparkles, ArrowLeft, Smartphone, Shield, Zap, Cable, Headphones,
+  BatteryCharging, Truck, ShieldCheck, RefreshCw, Headset, Flame, Star,
+  Clock, TrendingUp, Award, CheckCircle2, Navigation, Layers, ShieldAlert, PackageCheck, ChevronLeft
 } from 'lucide-react';
 import { Product } from '../types';
 import { toPersianDigits, formatPrice, getAssetUrl, normalizePersianTypography } from '../lib/utils';
@@ -23,6 +23,8 @@ export default function Home() {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'all' | 'holders' | 'cables' | 'cases' | 'protectors'>('all');
+  const [catScrolled, setCatScrolled] = useState(false);
+  const catRowRef = useRef<HTMLDivElement>(null);
   const [activeSlide, setActiveSlide] = useState(0);
   const settings = useStoreSettings();
 
@@ -401,16 +403,39 @@ export default function Home() {
         </div>
 
         {/* Horizontal RTL carousel — exactly 8 approved categories, no wrap, swipe/scroll */}
-        <div
-          dir="rtl"
-          className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scroll-smooth"
-          style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch' }}
-        >
-          {categories.slice(0, 8).map((cat, idx) => (
-            <div key={`${cat.slug}-${idx}`} className="shrink-0 w-[30vw] sm:w-[23%] min-w-[118px]">
-              {renderCategoryCard(cat, idx)}
+        {/* Horizontal RTL carousel — affordance: edge fade + arrow hint, hides after first scroll */}
+        <div className="relative">
+          {/* left-edge fade (direction of more content in RTL) */}
+          <div
+            aria-hidden="true"
+            className={`pointer-events-none absolute inset-y-0 left-0 w-10 sm:w-14 z-10 bg-gradient-to-r from-zinc-50 to-transparent dark:from-[#05070c] transition-opacity duration-300 ${catScrolled ? 'opacity-0' : 'opacity-100'}`}
+          />
+          {!catScrolled && (
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-y-0 left-1 z-10 hidden sm:flex items-center"
+            >
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-600 text-white shadow-lg animate-pulse">
+                <ChevronLeft className="h-4 w-4" />
+              </span>
             </div>
-          ))}
+          )}
+          <div
+            dir="rtl"
+            ref={catRowRef}
+            onScroll={() => {
+              const el = catRowRef.current;
+              if (el && !catScrolled && Math.abs(el.scrollLeft) > 20) setCatScrolled(true);
+            }}
+            className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scroll-smooth"
+            style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch' }}
+          >
+            {categories.slice(0, 8).map((cat, idx) => (
+              <div key={`${cat.slug}-${idx}`} className="shrink-0 w-[30vw] sm:w-[23%] min-w-[118px]">
+                {renderCategoryCard(cat, idx)}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
