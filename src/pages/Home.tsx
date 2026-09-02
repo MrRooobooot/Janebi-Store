@@ -162,21 +162,14 @@ export default function Home() {
 
   const currentSlide = heroSlides[activeSlide];
 
-  const renderCategoryCard = (cat: any, idx: number, featured: boolean) => {
+  const renderCategoryCard = (cat: any, idx: number) => {
     const Icon = cat.icon || Smartphone;
     return (
       <Link
         key={`${cat.slug}-${idx}`}
         to={`/products?category=${encodeURIComponent(cat.title)}`}
-        className={`relative flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-[var(--color-surface-light)] dark:bg-[#0d121c] border transition-colors group text-center shadow-xs ${
-          featured
-            ? 'border-orange-400/70 dark:border-orange-500/50 hover:border-orange-500'
-            : 'border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500'
-        }`}
+        className="relative flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-[var(--color-surface-light)] dark:bg-[#0d121c] border border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 transition-colors group text-center shadow-xs"
       >
-        {featured && (
-          <Star className="absolute top-1.5 right-1.5 h-3 w-3 text-orange-500 fill-orange-500" aria-hidden="true" />
-        )}
         <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800/80 flex items-center justify-center text-zinc-700 dark:text-zinc-200 group-hover:bg-orange-600 group-hover:text-white transition-all mb-2">
           <Icon className="h-5 w-5 sm:h-6 sm:w-6 stroke-[1.8]" />
         </div>
@@ -407,10 +400,17 @@ export default function Home() {
           </Link>
         </div>
 
-        {/* Featured 4 first, remainder continues left-to-right */}
-        <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 sm:gap-4">
-          {categories.slice(0, 4).map((cat, idx) => renderCategoryCard(cat, idx, true))}
-          {categories.slice(4).map((cat, idx) => renderCategoryCard(cat, idx + 4, false))}
+        {/* Horizontal RTL carousel — exactly 8 approved categories, no wrap, swipe/scroll */}
+        <div
+          dir="rtl"
+          className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scroll-smooth"
+          style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch' }}
+        >
+          {categories.slice(0, 8).map((cat, idx) => (
+            <div key={`${cat.slug}-${idx}`} className="shrink-0 w-[30vw] sm:w-[23%] min-w-[118px] max-w-[190px]">
+              {renderCategoryCard(cat, idx)}
+            </div>
+          ))}
         </div>
       </section>
 
