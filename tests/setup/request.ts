@@ -177,7 +177,7 @@ class TestRequest implements PromiseLike<MockResponse> {
   }
 }
 
-export function request(app: any) {
+export default function request(app: any) {
   return {
     get: (url: string) => new TestRequest(app, "GET", url),
     post: (url: string) => new TestRequest(app, "POST", url),
@@ -185,5 +185,3 @@ export function request(app: any) {
     delete: (url: string) => new TestRequest(app, "DELETE", url),
   };
 }
-
-export default request;

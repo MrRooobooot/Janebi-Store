@@ -172,8 +172,6 @@ export const productsRelations = relations(products, ({ many }) => ({
   reviews: many(reviews),
 }));
 
-export const blogPostsRelations = relations(blogPosts, () => ({}));
-
 export const productFeaturesRelations = relations(productFeatures, ({ one }) => ({
   product: one(products, {
     fields: [productFeatures.productId],

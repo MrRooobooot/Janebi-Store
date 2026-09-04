@@ -3,7 +3,7 @@
 // (useProductFilters) and curated listings (NewProducts, Offers) so the
 // parameter names and sort keys can never drift apart.
 
-export interface ProductQueryOptions {
+interface ProductQueryOptions {
   category?: string;
   search?: string;
   brands?: string[];

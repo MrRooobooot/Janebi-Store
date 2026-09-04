@@ -28,7 +28,7 @@ const faqs = [
 // aria-controls wiring, 44px touch targets, visible focus rings, Persian-digit
 // numbering badges, RTL-correct accent bar, dual-theme zinc tokens and a
 // clip-free answer reveal (grid-rows trick instead of max-h-40 clipping).
-export const FAQ_R36_POLISH = 'faq-r36-polish';
+const FAQ_R36_POLISH = 'faq-r36-polish';
 
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);

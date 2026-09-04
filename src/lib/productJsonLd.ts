@@ -8,7 +8,7 @@
 // with the RAW price. Never pre-convert (×10 IRR) here; mixed units are the
 // exact bug class that caused the 10x payment-path hazard.
 
-export interface ProductJsonLdInput {
+interface ProductJsonLdInput {
   id?: number | string;
   title: string;
   description?: string | null;

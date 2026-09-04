@@ -7,7 +7,7 @@ import { authFetch } from '../lib/api';
 import { toPersianDigits } from '../lib/utils';
 import { ReviewSkeleton } from './Skeletons';
 
-export interface Review {
+interface Review {
   id: string;
   productId: number;
   userName: string;

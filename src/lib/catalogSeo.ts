@@ -7,7 +7,7 @@
  * - Zero fabricated data: caller passes only values returned by the API.
  * - restore() returns the head to the static index.html defaults.
  */
-export interface CatalogSeoInput {
+interface CatalogSeoInput {
   title: string;
   description: string;
   /** Real product count from the live API response (Persian-digits applied by caller if displayed). */

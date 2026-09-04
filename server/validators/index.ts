@@ -79,7 +79,7 @@ export const orderSubmitSchema = z.object({
 });
 
 // Normalizer function for Iranian mobile phone numbers (handles Persian/Arabic digits, +98, 0098, 98 prefixes)
-export function normalizeIranianPhone(val: unknown): string {
+function normalizeIranianPhone(val: unknown): string {
   if (typeof val !== 'string') return String(val || '');
   let cleaned = val
     .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d).toString())

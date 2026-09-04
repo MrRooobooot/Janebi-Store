@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { STORE_SETTINGS_DEFAULTS } from '../lib/constants';
 
-export interface StoreSettings {
+interface StoreSettings {
   storeName: string;
   phone: string;
   email: string;

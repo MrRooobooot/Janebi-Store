@@ -109,57 +109,6 @@ export function SearchItemSkeleton() {
 }
 
 /**
- * Skeleton Loader for Category Grid Badges/Cards
- */
-export function CategoryCardSkeleton() {
-  return (
-    <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] p-4 sm:p-5 flex flex-col items-center justify-center animate-pulse">
-      <div className="w-12 h-12 bg-gray-200 dark:bg-gray-800 rounded-2xl mb-3"></div>
-      <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-md w-16"></div>
-    </div>
-  );
-}
-
-/**
- * Skeleton Loader for Brand Cards
- */
-export function BrandCardSkeleton() {
-  return (
-    <div className="border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-6 flex flex-col items-center justify-center h-28 animate-pulse">
-      <div className="w-24 h-8 bg-gray-200 dark:bg-gray-800 rounded-lg mb-2"></div>
-      <div className="w-12 h-3 bg-gray-200 dark:bg-gray-800 rounded-md"></div>
-    </div>
-  );
-}
-
-/**
- * Skeleton Loader for Order History Items
- */
-export function OrderCardSkeleton() {
-  return (
-    <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-[var(--color-border-dark)] rounded-2xl overflow-hidden animate-pulse">
-      <div className="bg-gray-50 dark:bg-gray-800/50 p-4 sm:p-6 border-b border-gray-200 dark:border-[var(--color-border-dark)] flex items-center justify-between">
-        <div className="flex gap-6">
-          <div className="w-20 h-8 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
-          <div className="w-20 h-8 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
-          <div className="w-24 h-8 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
-        </div>
-        <div className="w-24 h-7 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
-      </div>
-      <div className="p-4 sm:p-6 space-y-4">
-        <div className="flex items-center gap-4">
-          <div className="w-16 h-16 bg-gray-200 dark:bg-gray-800 rounded-xl"></div>
-          <div className="space-y-2 flex-1">
-            <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-md w-1/2"></div>
-            <div className="h-3 bg-gray-200 dark:bg-gray-800 rounded-md w-1/4"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/**
  * Skeleton Loader for Reviews List
  */
 export function ReviewSkeleton() {

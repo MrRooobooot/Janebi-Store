@@ -85,35 +85,6 @@ export function formatPrice(price: number | string | null | undefined): string {
 }
 
 /**
- * Formats raw amount to Persian digits with thousands separator without currency suffix
- */
-export function formatTomanNumber(amount: number | string | null | undefined): string {
-  if (amount === null || amount === undefined || amount === '') return '۰';
-  const num = typeof amount === 'string' ? parseFloat(toEnglishDigits(amount)) : amount;
-  if (isNaN(num)) return '۰';
-  return toPersianDigits(num.toLocaleString('fa-IR'));
-}
-
-/**
- * Formats ISO or timestamp date string to Persian Jalali calendar format
- */
-export function formatPersianDate(dateInput: string | Date | number, includeTime: boolean = false): string {
-  if (!dateInput) return '';
-  try {
-    const d = new Date(dateInput);
-    if (isNaN(d.getTime())) return String(dateInput);
-    return new Intl.DateTimeFormat('fa-IR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      ...(includeTime ? { hour: '2-digit', minute: '2-digit' } : {})
-    }).format(d);
-  } catch {
-    return String(dateInput);
-  }
-}
-
-/**
  * Cache-busting helper for local vector and image assets.
  * Ensures the browser immediately downloads the newest centered SVGs without stale cache.
  */

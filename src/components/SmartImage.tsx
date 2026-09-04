@@ -1,7 +1,7 @@
 import React from 'react';
 import PictureImage, { PictureImageProps } from './PictureImage';
 
-export interface SmartImageProps extends PictureImageProps {}
+interface SmartImageProps extends PictureImageProps {}
 
 /**
  * SmartImage — Backwards-compatible wrapper that delegates to the optimized PictureImage pipeline.

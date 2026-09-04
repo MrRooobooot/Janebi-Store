@@ -27,32 +27,8 @@ export class UnauthorizedError extends AppError {
   }
 }
 
-export class ForbiddenError extends AppError {
-  constructor(message = 'دسترسی غیرمجاز است', details?: any) {
-    super(message, 403, 'FORBIDDEN', details);
-  }
-}
-
 export class NotFoundError extends AppError {
   constructor(message = 'منبع مورد نظر یافت نشد', details?: any) {
     super(message, 404, 'NOT_FOUND', details);
-  }
-}
-
-export class ConflictError extends AppError {
-  constructor(message = 'تداخل در درخواست رخ داده است', details?: any) {
-    super(message, 409, 'CONFLICT', details);
-  }
-}
-
-export class ValidationError extends AppError {
-  constructor(message = 'خطای اعتبارسنجی داده‌ها', details?: any) {
-    super(message, 400, 'VALIDATION_ERROR', details);
-  }
-}
-
-export class InternalServerError extends AppError {
-  constructor(message = 'خطای داخلی سرور رخ داده است', details?: any) {
-    super(message, 500, 'INTERNAL_SERVER_ERROR', details);
   }
 }

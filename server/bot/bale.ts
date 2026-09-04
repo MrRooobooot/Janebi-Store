@@ -8,7 +8,6 @@
  * + appCache.invalidate — same write path as POST /api/admin/products.
  */
 import { Bot, GrammyError, type Context } from 'grammy';
-import { eq } from 'drizzle-orm';
 import { db } from '../db/index.js';
 import { products, productFeatures, auditLogs } from '../db/schema.js';
 import { appCache } from '../utils/cache.js';
@@ -27,7 +26,7 @@ function logAudit(action: string, adminUserId: string, entityId: string, meta: R
   }).catch((err) => console.error('Audit log write failed:', err));
 }
 
-export interface BaleBotConfig {
+interface BaleBotConfig {
   token: string;
   adminChatIds: number[]; // Bale numeric chat ids allowed to upload
 }
@@ -68,19 +67,6 @@ const fmt = (n: number) => n.toLocaleString('fa-IR');
 function isAdmin(ctx: Context, cfg: BaleBotConfig): boolean {
   const id = ctx.from?.id;
   return !!id && cfg.adminChatIds.includes(id);
-}
-
-async function loadAdminChatIds(db: any): Promise<number[]> {
-  // Admin chat ids come from store settings key `bale_admin_chat_ids`
-  // (comma-separated numeric ids) managed via the admin panel settings API.
-  try {
-    const { storeSettings } = await import('../db/schema.js');
-    const row = await db.select().from(storeSettings).where(eq(storeSettings.key, 'bale_admin_chat_ids')).limit(1);
-    if (row[0]?.value) {
-      return row[0].value.split(',').map((s: string) => parseInt(s.trim(), 10)).filter(Number.isFinite);
-    }
-  } catch { /* settings table may be absent in some environments */ }
-  return [];
 }
 
 export async function startBaleBot(token: string, adminChatIds: number[]) {

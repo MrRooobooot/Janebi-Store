@@ -2,7 +2,7 @@
 // Honesty gate: only fields that actually exist on the fetched post data are
 // emitted — no fabricated defaults, no placeholder values.
 
-export interface BlogPostingInput {
+interface BlogPostingInput {
   id: string;
   title: string;
   excerpt: string;
