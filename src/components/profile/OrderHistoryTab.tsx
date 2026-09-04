@@ -14,7 +14,7 @@ interface OrderHistoryTabProps {
 export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryTabProps) {
   const { addToast } = useToast();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'all' | 'processing' | 'delivered' | 'cancelled'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'pending_payment' | 'processing' | 'delivered' | 'cancelled'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [retryingId, setRetryingId] = useState<string | null>(null);
 
@@ -45,8 +45,6 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
   };
 
   const filteredOrders = orders.filter((order) => {
-    // pending_payment = abandoned gateway redirect; hide it from the user's list
-    if (order.status === 'pending_payment') return false;
     const matchesTab = activeTab === 'all' || order.status === activeTab;
     const matchesQuery =
       !searchQuery.trim() ||
@@ -88,6 +86,7 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
       <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
         {[
           { id: 'all', label: 'همه سفارش‌ها', count: orders.length },
+          { id: 'pending_payment', label: 'در انتظار پرداخت', count: orders.filter((o) => o.status === 'pending_payment').length },
           { id: 'processing', label: 'در حال پردازش', count: orders.filter((o) => o.status === 'processing').length },
           { id: 'delivered', label: 'تحویل داده شده', count: orders.filter((o) => o.status === 'delivered').length },
           { id: 'cancelled', label: 'لغو شده', count: orders.filter((o) => o.status === 'cancelled').length },
@@ -139,6 +138,8 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
                         ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300'
                         : order.status === 'cancelled'
                         ? 'bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-300'
+                        : order.status === 'pending_payment'
+                        ? 'bg-orange-100 dark:bg-orange-950/50 text-orange-700 dark:text-orange-300'
                         : 'bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300'
                     }`}
                   >
@@ -201,11 +202,11 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
                     چاپ فاکتور
                   </button>
 
-                  {order.status === 'pending_payment' && order.paymentMethod === 'پرداخت آنلاین زرین‌پال' && (
+                  {(order.status === 'pending_payment' || (order.paymentMethod?.includes('آنلاین') && order.status === 'pending_payment')) && (
                     <button
                       onClick={() => handleRetryPayment(order.id)}
                       disabled={retryingId === order.id}
-                      className="px-3.5 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 disabled:opacity-60 text-white font-bold text-xs flex items-center gap-1.5 transition-colors"
+                      className="px-3.5 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 disabled:opacity-60 text-white font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
                     >
                       <CreditCard className="h-3.5 w-3.5" />
                       {retryingId === order.id ? 'در حال اتصال...' : 'پرداخت سفارش'}

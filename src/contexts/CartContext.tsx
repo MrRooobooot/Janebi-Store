@@ -4,6 +4,7 @@ import { Product, CartItem } from '../types';
 import { MAX_CART_QUANTITY } from '../lib/constants';
 import { authFetch } from '../lib/api';
 import { useAuth } from './AuthContext';
+import { CouponData, calculateCouponDiscount } from '../lib/coupon';
 
 interface CartContextType {
   cart: CartItem[];
@@ -14,7 +15,9 @@ interface CartContextType {
   cartTotal: number;
   cartCount: number;
   appliedCoupon: string | null;
-  setAppliedCoupon: (code: string | null) => void;
+  couponDetails: CouponData | null;
+  couponDiscount: number;
+  setAppliedCoupon: (code: string | null, details?: CouponData | null) => void;
   isCartDrawerOpen: boolean;
   setIsCartDrawerOpen: (open: boolean) => void;
   openCartDrawer: () => void;
@@ -33,7 +36,41 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return [];
     }
   });
-  const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
+  const [appliedCoupon, setAppliedCouponState] = useState<string | null>(() => {
+    try {
+      return localStorage.getItem('appliedCoupon') || null;
+    } catch {
+      return null;
+    }
+  });
+  const [couponDetails, setCouponDetails] = useState<CouponData | null>(() => {
+    try {
+      const saved = localStorage.getItem('couponDetails');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const setAppliedCoupon = (code: string | null, details: CouponData | null = null) => {
+    setAppliedCouponState(code);
+    setCouponDetails(details);
+    try {
+      if (code) {
+        localStorage.setItem('appliedCoupon', code);
+      } else {
+        localStorage.removeItem('appliedCoupon');
+      }
+      if (details) {
+        localStorage.setItem('couponDetails', JSON.stringify(details));
+      } else {
+        localStorage.removeItem('couponDetails');
+      }
+    } catch {
+      // ignore localStorage quota/access error
+    }
+  };
+
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const { addToast } = useToast();
 
@@ -159,6 +196,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const cartTotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
   const cartCount = cart.reduce((count, item) => count + item.quantity, 0);
+  const couponDiscount = calculateCouponDiscount(couponDetails, cartTotal);
 
   return (
     <CartContext.Provider value={{
@@ -170,6 +208,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
       cartTotal,
       cartCount,
       appliedCoupon,
+      couponDetails,
+      couponDiscount,
       setAppliedCoupon,
       isCartDrawerOpen,
       setIsCartDrawerOpen,

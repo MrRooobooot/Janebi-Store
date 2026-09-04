@@ -13,6 +13,9 @@ export default function Checkout() {
   const {
     cart,
     cartTotal,
+    appliedCoupon,
+    couponDetails,
+    couponDiscount,
     formData,
     updateField,
     isFreeShipping,
@@ -77,6 +80,9 @@ export default function Checkout() {
             cartTotal={cartTotal}
             shippingFee={shippingFee}
             finalPayable={finalPayable}
+            appliedDiscount={couponDiscount}
+            couponCode={appliedCoupon}
+            couponLabel={couponDetails?.label || appliedCoupon || undefined}
             submitting={submitting}
             isFreeShipping={isFreeShipping}
           />

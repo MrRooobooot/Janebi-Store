@@ -19,7 +19,7 @@ export interface CheckoutFormData {
 }
 
 export function useCheckoutForm() {
-  const { cart, cartTotal, clearCart, appliedCoupon, setAppliedCoupon } = useCart();
+  const { cart, cartTotal, clearCart, appliedCoupon, couponDetails, couponDiscount, setAppliedCoupon } = useCart();
   const { addToast } = useToast();
   const navigate = useNavigate();
 
@@ -44,7 +44,7 @@ export function useCheckoutForm() {
     : formData.shippingMethod === 'express'
     ? SHIPPING_FEES.express
     : SHIPPING_FEES.standard;
-  const finalPayable = cartTotal + shippingFee;
+  const finalPayable = Math.max(0, cartTotal + shippingFee - couponDiscount);
 
   const updateField = (field: keyof CheckoutFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -168,6 +168,9 @@ export function useCheckoutForm() {
   return {
     cart,
     cartTotal,
+    appliedCoupon,
+    couponDetails,
+    couponDiscount,
     formData,
     updateField,
     isFreeShipping,

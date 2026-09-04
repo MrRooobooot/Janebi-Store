@@ -5,13 +5,12 @@ import { authFetch } from '../lib/api';
 import { FREE_SHIPPING_THRESHOLD } from '../lib/constants';
 
 export function useCartSummary() {
-  const { cart, removeFromCart, updateQuantity, clearCart, cartTotal, appliedCoupon, setAppliedCoupon } = useCart();
+  const { cart, removeFromCart, updateQuantity, clearCart, cartTotal, appliedCoupon, couponDetails, couponDiscount, setAppliedCoupon } = useCart();
   const { addToast } = useToast();
 
   const [couponInput, setCouponInput] = useState('');
   const [couponLoading, setCouponLoading] = useState(false);
-  const [appliedDiscount, setAppliedDiscount] = useState(0);
-  const [couponLabel, setCouponLabel] = useState('');
+  const [couponLabel, setCouponLabel] = useState(() => couponDetails?.label || couponDetails?.code || appliedCoupon || '');
   const [couponError, setCouponError] = useState('');
 
   const isFreeShipping = cartTotal >= FREE_SHIPPING_THRESHOLD;
@@ -36,18 +35,19 @@ export function useCartSummary() {
       .then((data) => {
         if (data.valid && data.coupon) {
           const coupon = data.coupon;
-          let discount = 0;
-          if (coupon.percent) {
-            discount = Math.round(cartTotal * (coupon.percent / 100));
-          } else if (coupon.amount) {
-            discount = coupon.amount;
-          }
-          setAppliedDiscount(discount);
           setCouponLabel(coupon.label || coupon.code);
-          setAppliedCoupon(coupon.code);
+          setAppliedCoupon(coupon.code, {
+            code: coupon.code,
+            percent: coupon.percent,
+            amount: coupon.amount,
+            minTotal: coupon.minTotal,
+            label: coupon.label || coupon.code,
+            usageLimit: coupon.usageLimit,
+            usedCount: coupon.usedCount,
+          });
           addToast(`کد تخفیف ${coupon.code} با موفقیت اعمال شد`, 'success');
         } else {
-          const message = data.message || 'کد تخفیف نامعتبر است';
+          const message = data.message || data.error || 'کد تخفیف نامعتبر است';
           setCouponError(message);
           addToast(message, 'error');
         }
@@ -61,7 +61,7 @@ export function useCartSummary() {
       });
   };
 
-  const finalTotal = Math.max(0, cartTotal - appliedDiscount);
+  const finalTotal = Math.max(0, cartTotal - couponDiscount);
 
   return {
     cart,
@@ -73,7 +73,7 @@ export function useCartSummary() {
     couponInput,
     setCouponInput,
     couponLoading,
-    appliedDiscount,
+    appliedDiscount: couponDiscount,
     couponLabel,
     couponError,
     dismissCouponError: () => setCouponError(''),

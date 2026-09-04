@@ -86,6 +86,24 @@ export default function ProductDetail() {
       });
   }, [id]);
 
+  // Handle Escape key and body scroll lock for Lightbox
+  useEffect(() => {
+    if (!isLightboxOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsLightboxOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isLightboxOpen]);
+
   // Show sticky bar when the main action buttons scroll out of view
   useEffect(() => {
     if (!actionsRef.current) return;
@@ -603,9 +621,9 @@ export default function ProductDetail() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-            className="fixed bottom-0 left-0 right-0 z-50 lg:hidden pb-safe"
+            className="fixed bottom-0 left-0 right-0 z-50 lg:hidden pb-safe pointer-events-none"
           >
-            <div className="mx-3 mb-[76px]">
+            <div className="mx-3 mb-[76px] pointer-events-auto">
               <div className="bg-[var(--color-surface-light)]/95 dark:bg-[var(--color-surface-dark)]/95 backdrop-blur-2xl rounded-2xl border border-gray-200/80 dark:border-gray-700/80 shadow-2xl p-3 flex items-center gap-3 text-right">
                 <div className="flex items-center gap-2.5 min-w-0 flex-1">
                   <div className="w-12 h-12 rounded-xl bg-[var(--color-canvas-light)] dark:bg-white/[0.045] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex items-center justify-center shrink-0 overflow-hidden">

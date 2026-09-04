@@ -7,11 +7,17 @@ interface CheckoutStepsBarProps {
   currentStep?: 1 | 2 | 3;
 }
 
-const STEPS = [
+interface StepItem {
+  step: 1 | 2 | 3;
+  label: string;
+  href?: string;
+}
+
+const STEPS: StepItem[] = [
   { step: 1, label: 'سبد خرید', href: '/cart' },
   { step: 2, label: 'اطلاعات ارسال', href: '/checkout' },
-  { step: 3, label: 'پرداخت', href: '/payment' },
-] as const;
+  { step: 3, label: 'پرداخت' },
+];
 
 export default function CheckoutStepsBar({ currentStep = 2 }: CheckoutStepsBarProps) {
   return (
@@ -40,7 +46,7 @@ export default function CheckoutStepsBar({ currentStep = 2 }: CheckoutStepsBarPr
             aria-current={isCurrent ? 'step' : undefined}
             className="flex flex-col items-center gap-2 bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] px-2 sm:px-4"
           >
-            {isComplete ? (
+            {isComplete && href ? (
               <Link
                 to={href}
                 aria-label={`مرحله ${toPersianDigits(step)}: ${label} — تکمیل‌شده، بازگشت به این مرحله`}

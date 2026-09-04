@@ -8,6 +8,9 @@ interface CheckoutOrderSummaryProps {
   cartTotal: number;
   shippingFee: number;
   finalPayable: number;
+  appliedDiscount?: number;
+  couponCode?: string | null;
+  couponLabel?: string;
   submitting: boolean;
   isFreeShipping: boolean;
 }
@@ -17,6 +20,9 @@ export default function CheckoutOrderSummary({
   cartTotal,
   shippingFee,
   finalPayable,
+  appliedDiscount = 0,
+  couponCode,
+  couponLabel,
   submitting,
   isFreeShipping,
 }: CheckoutOrderSummaryProps) {
@@ -67,6 +73,15 @@ export default function CheckoutOrderSummary({
             {formatPrice(cartTotal)}
           </span>
         </div>
+
+        {appliedDiscount > 0 && (
+          <div className="flex justify-between items-center text-emerald-600 dark:text-emerald-400">
+            <span>
+              سود شما از تخفیف {couponLabel ? `(${couponLabel})` : couponCode ? `(${couponCode})` : ''}
+            </span>
+            <span className="font-black text-sm">-{formatPrice(appliedDiscount)}</span>
+          </div>
+        )}
 
         <div className="flex justify-between items-center">
           <span>هزینه بسته‌بندی و ارسال</span>

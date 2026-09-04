@@ -201,6 +201,14 @@ body {
   justify-content: center;
 }
 
+/* ── Mobile Safe Area Utilities ──────────────────────────────────── */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.mb-safe {
+  margin-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 /* ── Custom Smooth Scrollbar ────────────────────────────────────── */
 .custom-scrollbar::-webkit-scrollbar {
   height: 6px;
@@ -306,7 +314,7 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .logo-carousel-track { animation: none; }
   .linear-card, .linear-card:hover { transition: none; transform: none; }
-  .group:hover .group-hover\\:scale-108 { transform: none; }
+  .group:hover [class*="scale-"] { transform: none; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
