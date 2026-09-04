@@ -3,20 +3,13 @@ import fs from "node:fs";
 import path from "node:path";
 import { eq } from "drizzle-orm";
 import { db } from "../db/index.js";
-import { blogPosts } from "../db/schema.js";
+import { blogPosts, products } from "../db/schema.js";
 
 /**
- * Dynamic /sitemap.xml (SEO cluster 2026-09-02d).
+ * Dynamic /sitemap.xml (SEO cluster 2026-09-02d + dynamic catalog 2026-09-04).
  *
- * Serves the static entries from the checked-in public/sitemap.xml as the base
- * and appends one <url> per PUBLISHED blog post straight from the blog_posts
- * table — no hardcoded slugs that can drift. Zero-fabrication rules:
- *   - only posts that actually exist in the DB are appended;
- *   - the URL slug is the post's real DB id (the only unique identifier the
- *     blog_posts table has);
- *   - <lastmod> for blog URLs is today's date (the URL is live and re-listed
- *     today; post createdAt values are not used — several were seeded with
- *     future dates, which would make an invalid lastmod).
+ * Serves the static root/category entries and appends all published blog posts
+ * and active products straight from the database. Zero manual syncing.
  */
 const router = Router();
 
@@ -66,6 +59,15 @@ function staticFallbackXml(): string {
     '<?xml version="1.0" encoding="UTF-8"?>\n' +
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     '  <url><loc>' + SITE_ORIGIN + '/</loc><priority>1.0</priority></url>\n' +
+    '  <url><loc>' + SITE_ORIGIN + '/products</loc><priority>0.9</priority></url>\n' +
+    '  <url><loc>' + SITE_ORIGIN + '/offers</loc><priority>0.9</priority></url>\n' +
+    '  <url><loc>' + SITE_ORIGIN + '/new-products</loc><priority>0.8</priority></url>\n' +
+    '  <url><loc>' + SITE_ORIGIN + '/brands</loc><priority>0.8</priority></url>\n' +
+    '  <url><loc>' + SITE_ORIGIN + '/about</loc><priority>0.5</priority></url>\n' +
+    '  <url><loc>' + SITE_ORIGIN + '/contact</loc><priority>0.5</priority></url>\n' +
+    '  <url><loc>' + SITE_ORIGIN + '/faq</loc><priority>0.5</priority></url>\n' +
+    '  <url><loc>' + SITE_ORIGIN + '/terms</loc><priority>0.4</priority></url>\n' +
+    '  <url><loc>' + SITE_ORIGIN + '/privacy</loc><priority>0.4</priority></url>\n' +
     '  <url><loc>' + SITE_ORIGIN + '/blog</loc><priority>0.6</priority></url>\n' +
     "</urlset>"
   );
@@ -73,18 +75,24 @@ function staticFallbackXml(): string {
 
 router.get("/sitemap.xml", async (_req, res) => {
   const today = new Date().toISOString().slice(0, 10);
-  const base = refreshBlogListingLastmod(
-    readStaticSitemap() ?? staticFallbackXml(),
-    today,
-  );
+  const rawBase = readStaticSitemap() ?? staticFallbackXml();
+  // Strip hardcoded /product/1..14 from base so DB dynamically dictates all products
+  const baseCleaned = rawBase.replace(/\s*<url>\s*<loc>https:\/\/janebiarena\.ir\/product\/\d+<\/loc>[\s\S]*?<\/url>/g, "");
+  const base = refreshBlogListingLastmod(baseCleaned, today);
 
-  let postEntries = "";
+  let dynamicEntries = "";
   try {
-    const rows = await db
-      .select({ id: blogPosts.id, createdAt: blogPosts.createdAt })
-      .from(blogPosts)
-      .where(eq(blogPosts.published, true));
-    postEntries = rows
+    const [posts, prods] = await Promise.all([
+      db
+        .select({ id: blogPosts.id, createdAt: blogPosts.createdAt })
+        .from(blogPosts)
+        .where(eq(blogPosts.published, true)),
+      db
+        .select({ id: products.id })
+        .from(products),
+    ]);
+
+    const postXml = posts
       .map((row) => {
         if (!row.id) return "";
         const lastmod = lastmodForBlogUrl(row.createdAt, today);
@@ -99,13 +107,30 @@ router.get("/sitemap.xml", async (_req, res) => {
         );
       })
       .join("");
+
+    const prodXml = prods
+      .map((p) => {
+        if (!p.id) return "";
+        const loc = `${SITE_ORIGIN}/products/${p.id}`;
+        return (
+          "  <url>\n" +
+          `    <loc>${xmlEscape(loc)}</loc>\n` +
+          `    <lastmod>${today}</lastmod>\n` +
+          "    <changefreq>weekly</changefreq>\n" +
+          "    <priority>0.7</priority>\n" +
+          "  </url>\n"
+        );
+      })
+      .join("");
+
+    dynamicEntries = postXml + prodXml;
   } catch (error) {
     // DB unavailable → serve the static base rather than a broken sitemap.
-    console.error("Sitemap blog entries error:", error);
+    console.error("Sitemap dynamic entries error:", error);
   }
 
-  const xml = postEntries
-    ? base.replace("</urlset>", `${postEntries}</urlset>`)
+  const xml = dynamicEntries
+    ? base.replace("</urlset>", `${dynamicEntries}</urlset>`)
     : base;
 
   res
