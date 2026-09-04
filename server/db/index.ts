@@ -204,15 +204,27 @@ async function runPgMigrations(): Promise<void> {
   }
 
   // Apply phase — per-file transaction with the journal insert inside it.
+  // Each statement runs inside a SAVEPOINT: a tolerated "already exists"-class
+  // error rolls back ONLY that statement's savepoint. PostgreSQL poisons the
+  // whole transaction after any error ("current transaction is aborted"), so
+  // without a savepoint the first tolerated error would kill every subsequent
+  // statement in the same file and abort clean-DB startup (verified 2026-09-04:
+  // 0001 re-creates tables already created by 0000 on a pristine database).
   for (const mf of files) {
     if (journaled.has(mf.hash)) continue;
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
       for (let i = 0; i < mf.statements.length; i++) {
+        const spName = `mig_${i}`;
+        await client.query(`SAVEPOINT ${spName}`);
         try {
           await client.query(mf.statements[i]);
+          await client.query(`RELEASE SAVEPOINT ${spName}`);
         } catch (err: any) {
+          // Discard the poisoned statement so the file's transaction can continue.
+          await client.query(`ROLLBACK TO SAVEPOINT ${spName}`).catch(() => {});
+          await client.query(`RELEASE SAVEPOINT ${spName}`).catch(() => {});
           if (!isIdempotentMigrationError(err.message)) {
             console.error(
               `❌ PostgreSQL migration FAILED — file: ${mf.file}, statement #${i}: ${err.message}\n` +
