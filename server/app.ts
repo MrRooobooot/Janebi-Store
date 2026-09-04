@@ -116,7 +116,7 @@ app.use((req: any, res: any, next: any) => {
       }
     },
     credentials: true,
-    exposedHeaders: ["X-Request-ID"],
+    exposedHeaders: ["X-Request-ID", "X-Total-Count", "X-Total-Pages", "X-Current-Page"],
   })(req, res, next);
 });
 
