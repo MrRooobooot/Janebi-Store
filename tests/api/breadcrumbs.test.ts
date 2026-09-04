@@ -1,5 +1,5 @@
 import { describe, it, expect, afterAll } from 'vitest';
-import { breadcrumbJsonLdFor, injectBreadcrumbIntoHtml } from '../../server/lib/breadcrumbs.js';
+import { breadcrumbJsonLdFor, productJsonLdFor, injectBreadcrumbIntoHtml } from '../../server/lib/breadcrumbs.js';
 import { db } from '../../server/db/index.js';
 import { blogPosts } from '../../server/db/schema.js';
 import { eq } from 'drizzle-orm';
@@ -48,6 +48,15 @@ describe('breadcrumbJsonLdFor — server-rendered BreadcrumbList', () => {
     expect(ld).toContain('عنوان تست بردکرامب');
 
     expect(await breadcrumbJsonLdFor('/blog/post-test-never-created')).toBeNull();
+  });
+
+  it('injects product schema for both /product/:id and /products/:id', async () => {
+    const ldSingular = await productJsonLdFor('/product/1');
+    const ldPlural = await productJsonLdFor('/products/1');
+    if (ldSingular) {
+      expect(ldPlural).toBe(ldSingular);
+      expect(ldPlural).toContain('https://janebiarena.ir/products/1');
+    }
   });
 
   it('injects into HTML before </head>', () => {

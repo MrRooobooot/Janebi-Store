@@ -55,14 +55,19 @@ app.use((req: any, res: any, next: any) => {
   // assets) — mirrors the index.html meta robots tag so crawlers never fall
   // back to an implied index/noarchive on stray endpoints.
   const pathLower = (req.path || "").toLowerCase();
+  const hasSearch = typeof req.query?.search === 'string' && req.query.search.trim().length > 0;
   if (
+    hasSearch ||
     pathLower.startsWith("/themes") ||
     pathLower.startsWith("/wp-") ||
     pathLower.startsWith("/admin") ||
     pathLower.startsWith("/checkout") ||
-    pathLower.startsWith("/profile")
+    pathLower.startsWith("/profile") ||
+    pathLower.startsWith("/cart") ||
+    pathLower.startsWith("/login") ||
+    pathLower.startsWith("/register")
   ) {
-    res.setHeader("X-Robots-Tag", "noindex, nofollow");
+    res.setHeader("X-Robots-Tag", "noindex, follow");
   } else {
     res.setHeader("X-Robots-Tag", "index, follow");
   }

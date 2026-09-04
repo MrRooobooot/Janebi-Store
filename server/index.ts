@@ -5,6 +5,7 @@ import * as schema from './db/schema.js';
 import { startBaleBot } from './bot/bale.js';
 import { ALL_PRODUCTS, REVIEWS_STORE, VALID_COUPONS } from './data/seed-data.js';
 import { blogPostingJsonLdFor, productJsonLdFor, breadcrumbJsonLdFor, injectBreadcrumbIntoHtml } from "./lib/breadcrumbs.js";
+import { eq } from "drizzle-orm";
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
@@ -125,11 +126,25 @@ async function startServer() {
     });
   } else {
     const distPath = path.join(process.cwd(), "dist");
-    app.use(express.static(distPath));
+    app.use(express.static(distPath, { redirect: false }));
     app.get("/{*splat}", async (req, res) => {
       try {
         const shell = fs.readFileSync(path.join(distPath, "index.html"), "utf-8");
         const pathname = req.originalUrl.split("?")[0];
+
+        // SEO-001: Return authentic 404 for nonexistent product IDs rather than a Soft 404
+        const productMatch = pathname.match(/^\/products?\/(\d+)\/?$/);
+        if (productMatch) {
+          const pid = Number(productMatch[1]);
+          const exists = await db.query.products.findFirst({
+            where: eq(schema.products.id, pid),
+          });
+          if (!exists) {
+            res.setHeader("X-Robots-Tag", "noindex, follow");
+            return res.status(404).sendFile(path.join(distPath, "index.html"));
+          }
+        }
+
         const [crumb, postingLd, productLd] = await Promise.all([
           breadcrumbJsonLdFor(pathname),
           blogPostingJsonLdFor(pathname),

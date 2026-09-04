@@ -106,7 +106,7 @@ export async function blogPostingJsonLdFor(pathname: string): Promise<string | n
  * both layers emit identical, honesty-gated output. Unknown id → null.
  */
 export async function productJsonLdFor(pathname: string): Promise<string | null> {
-  const match = pathname.match(/^\/product\/(\d+)\/?$/);
+  const match = pathname.match(/^\/products?\/(\d+)\/?$/);
   if (!match) return null;
 
   try {
@@ -140,10 +140,11 @@ export async function productJsonLdFor(pathname: string): Promise<string | null>
         features: featureRows.map((f) => f.feature),
       },
       "https://janebiarena.ir",
-      `https://janebiarena.ir/product/${product.id}`
+      `https://janebiarena.ir/products/${product.id}`
     );
     if (!jsonLd) return null;
     return (
+      `<link rel="canonical" href="https://janebiarena.ir/products/${product.id}" />\n` +
       '<script type="application/ld+json" id="product-jsonld-prerender">' +
       JSON.stringify(jsonLd).replace(/</g, "\\u003c") +
       "</script>"
@@ -153,8 +154,13 @@ export async function productJsonLdFor(pathname: string): Promise<string | null>
   }
 }
 
-/** Inject the breadcrumb JSON-LD right before </head> in the HTML shell. */
+/** Inject the breadcrumb / product JSON-LD and canonical right before </head> in the HTML shell. */
 export function injectBreadcrumbIntoHtml(html: string, breadcrumbLd: string | null): string {
   if (!breadcrumbLd || !html.includes("</head>")) return html;
-  return html.replace("</head>", `${breadcrumbLd}\n</head>`);
+  // If breadcrumbLd contains a specific canonical link, strip the static fallback canonical to avoid duplicates
+  let processedHtml = html;
+  if (breadcrumbLd.includes('<link rel="canonical"')) {
+    processedHtml = processedHtml.replace(/<link rel="canonical"[^>]*>\s*/g, '');
+  }
+  return processedHtml.replace("</head>", `${breadcrumbLd}\n</head>`);
 }
