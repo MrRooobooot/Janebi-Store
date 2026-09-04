@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { validate } from '../middleware/validate.js';
-import { cartItemSchema, updateCartItemSchema, idParamSchema } from '../validators/index.js';
+import { cartItemSchema, updateCartItemSchema, numericIdParamSchema } from '../validators/index.js';
 import { db } from '../db/index.js';
 import { cartItems, products } from '../db/schema.js';
 import { eq, and } from 'drizzle-orm';
@@ -87,7 +87,7 @@ router.post('/', validate(cartItemSchema), async (req: AuthRequest, res) => {
 });
 
 // Update cart item quantity
-router.put('/:id', validate(idParamSchema), validate(updateCartItemSchema), async (req: AuthRequest, res) => {
+router.put('/:id', validate(numericIdParamSchema), validate(updateCartItemSchema), async (req: AuthRequest, res) => {
   const userId = req.user.id as string;
   // Here ID is product ID since frontend updates by product ID
   const productId = parseInt(req.params.id as string);
@@ -105,7 +105,7 @@ router.put('/:id', validate(idParamSchema), validate(updateCartItemSchema), asyn
 });
 
 // Remove from cart
-router.delete('/:id', validate(idParamSchema), async (req: AuthRequest, res) => {
+router.delete('/:id', validate(numericIdParamSchema), async (req: AuthRequest, res) => {
   const userId = req.user.id as string;
   const productId = parseInt(req.params.id as string);
 

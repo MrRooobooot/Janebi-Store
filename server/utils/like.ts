@@ -15,7 +15,14 @@ export function containsLikePattern(input: string): string {
   return `%${escapeLikePattern(input)}%`;
 }
 
-/** Case-sensitive LIKE with an explicit ESCAPE clause (drizzle's like() has none). */
+/** Case-insensitive `%term%` with the term escaped for literal LIKE matching.
+ *
+ * Dialect note (verified live 2026-09-04): SQLite's LIKE is case-insensitive
+ * for ASCII, while PostgreSQL's LIKE is case-sensitive — the same search
+ * query returned different result counts per dialect. Comparing lower(column)
+ * against the lowered pattern restores identical semantics on both dialects
+ * without losing the explicit ESCAPE clause (drizzle's like() has none).
+ */
 export function likeWithEscape(column: any, pattern: string): SQL {
-  return sql`${column} like ${pattern} escape '\\'`;
+  return sql`lower(${column}) like lower(${pattern}) escape '\\'`;
 }

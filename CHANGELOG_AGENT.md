@@ -1,3 +1,10 @@
+## 2026-09-04 (r37c) — Production-Integrity Audit (PostgreSQL) — COMMITTED
+- P0 oversell on PG: order stock deduction was SELECT-then-conditional-UPDATE (TOCTOU). Live evidence: 25 parallel orders on stock=1 → 9 winners, stock −8. Fix: atomic `stockQuantity >= qty` predicate + `.returning()` row-count check inside the order transaction (orders.ts). Post-fix: 25 parallel orders → exactly 1×201, stock=0 (4/4 rounds stable).
+- P1 search case parity: `likeWithEscape` now lowers both sides — SQLite LIKE is case-insensitive for ASCII but PG LIKE is case-sensitive (live: `?search=anker` 0 vs `Anker` 3 on PG). Post-fix: 3/3 on PG.
+- P2 NaN→500: non-numeric id params (DELETE /api/wishlist/wish-…) returned 500 on PG. New `numericIdParamSchema` for numeric-id routes (cart/products/wishlist); string address ids keep `idParamSchema`. Live: 400 now.
+- Server-boot false alarm resolved: stale server (old bundle) was still listening on :3999 — concurrent-order results before fix were partially measured against the pre-fix build. Verified fixed bundle live afterwards.
+- Gates: tsc clean, 344/344 (incl. 17 concurrency/rollback tests), PG-verification suite 5/5, clean-DB PG boot 10/10 migrations (journal=10, 16 tables), full critical-flow smoke PASS (register/login/cart/coupon validate+apply+usage-limit/order/stock/restock/cancel/reviews/admin CRUD/sitemap/health/401/403/400 contracts).
+
 ## 2026-09-04 (r37b) — Dead-code sweep, behavior-preserving — COMMITTED, PUSHED
 - Scan: Serena MCP در کاتالوگ نیست → knip@5 + TS5 AST ref-counter (tsc@7 lacks createSourceFile؛ typescript@5.9 در /tmp).
 - Removed: formatTomanNumber/formatPersianDate، ۳ Skeleton مرده، ۴ AppError subclass بی‌مصرف (BadRequest/Unauthorized/NotFound ماند — تست phase1)، ORDERS_STORE، blogPostsRelations خالی، loadAdminChatIds مرده (bale.ts)، ۸ export keyword زائد تایپ‌محور، deps @google/genai + thesvg + autoprefixer.

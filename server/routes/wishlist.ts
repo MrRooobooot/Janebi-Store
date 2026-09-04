@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { validate } from '../middleware/validate.js';
-import { wishlistItemSchema, idParamSchema } from '../validators/index.js';
+import { wishlistItemSchema, numericIdParamSchema } from '../validators/index.js';
 import { db } from '../db/index.js';
 import { wishlistItems, products } from '../db/schema.js';
 import { eq, and } from 'drizzle-orm';
@@ -59,7 +59,7 @@ router.post('/', validate(wishlistItemSchema), async (req: AuthRequest, res) => 
 });
 
 // Remove from wishlist
-router.delete('/:id', validate(idParamSchema), async (req: AuthRequest, res) => {
+router.delete('/:id', validate(numericIdParamSchema), async (req: AuthRequest, res) => {
   const userId = req.user.id as string;
   const productId = parseInt(req.params.id as string);
 

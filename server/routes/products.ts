@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { validate } from "../middleware/validate.js";
-import { productQuerySchema, idParamSchema, reviewSubmitSchema } from "../validators/index.js";
+import { productQuerySchema, numericIdParamSchema, reviewSubmitSchema } from "../validators/index.js";
 import { db } from "../db/index.js";
 import { products, reviews } from "../db/schema.js";
 import { eq, or, and, SQL, gte, lte, gt, inArray, desc, asc, sql } from "drizzle-orm";
@@ -139,7 +139,7 @@ router.get("/", validate(productQuerySchema), async (req, res) => {
   res.json(formatted);
 });
 
-router.get("/:id/reviews", validate(idParamSchema), async (req, res) => {
+router.get("/:id/reviews", validate(numericIdParamSchema), async (req, res) => {
   const productId = parseInt(req.params.id as string);
 
   // Pagination mode: when ?page or ?limit is provided, respond with
@@ -243,7 +243,7 @@ router.post("/:id/reviews", validate(reviewSubmitSchema), async (req, res) => {
   res.status(201).json(newReview);
 });
 
-router.get("/:id", validate(idParamSchema), async (req, res) => {
+router.get("/:id", validate(numericIdParamSchema), async (req, res) => {
   const id = parseInt(req.params.id as string);
   const cacheKey = `product:${id}`;
   const cached = appCache.get(cacheKey);

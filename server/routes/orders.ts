@@ -224,12 +224,28 @@ router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
           brand: item.brand
         });
 
-        await tx.update(products)
+        const updatedRows = await tx.update(products)
           // Use the drizzle column reference (not a raw identifier) so the
           // generated SQL quotes the column correctly on both dialects —
           // PG folds unquoted stockQuantity to stockquantity and fails.
+          // The atomic `stockQuantity >= quantity` predicate is the real
+          // oversell guard: the earlier read-only check is TOCTOU-racy and
+          // PostgreSQL's concurrent writers will happily oversell without it
+          // (verified: 25 parallel orders on stock=1 produced 9 winners and
+          // stock -8 on a live PG database). The update's rowCount must be 1;
+          // a 0-row update means another transaction won the race.
           .set({ stockQuantity: sql`${products.stockQuantity} - ${item.quantity}` })
-          .where(eq(products.id, item.id));
+          .where(and(
+            eq(products.id, item.id),
+            sql`${products.stockQuantity} >= ${item.quantity}`
+          ))
+          .returning({ id: products.id });
+        // Drizzle returns the updated row on PG (.returning()); on SQLite the
+        // wrapper emits run() metadata, so the empty result also signals a
+        // lost race. Either way: no row updated => another transaction won.
+        if (!updatedRows || updatedRows.length === 0) {
+          throw new Error(`موجودی محصول ${item.title} کافی نیست`);
+        }
       }
 
       // Add earned points immediately for cash-on-delivery, or upon online verify
