@@ -1,3 +1,10 @@
+## 2026-09-04 (r37b) — Dead-code sweep, behavior-preserving — COMMITTED, PUSHED
+- Scan: Serena MCP در کاتالوگ نیست → knip@5 + TS5 AST ref-counter (tsc@7 lacks createSourceFile؛ typescript@5.9 در /tmp).
+- Removed: formatTomanNumber/formatPersianDate، ۳ Skeleton مرده، ۴ AppError subclass بی‌مصرف (BadRequest/Unauthorized/NotFound ماند — تست phase1)، ORDERS_STORE، blogPostsRelations خالی، loadAdminChatIds مرده (bale.ts)، ۸ export keyword زائد تایپ‌محور، deps @google/genai + thesvg + autoprefixer.
+- Keep-list (false positive های knip): sw.js، seed-blog.ts، drizzle.pg.config.ts، bale-worker/worker.ts، seed.ts، closeDb، pino-pretty، ۳ AppError class → skill `dead-code-scan-janebi`.
+- Long-fn refactor (۹۸ تابع ≥۴۰ خط، بزرگ‌ترین ProductDetail 742) با تصمیم کاربر به تعویق افتاد.
+- Gate: tsc clean، 344/344، npm run verify ALL PASS، hermes verify ok (runtime boot 200). Commits 2c2b6c4 / efe2216 / 2002ea5.
+
 ## 2026-09-15 (r39 rotation) — Post 16 (Baseus Adaman 20000/65W) + BlogPosting prerender + reader UX — COMMITTED, deploy blocked (SSH down)
 - Post 16 «پاوربانک بیسوس Adaman ۲۰۰۰۰ با خروجی ۶۵ وات» (brasresi-powerbank-baseus-adaman-20000-65w) به scripts/seed-blog.ts اضافه شد — بر اساس محصول واقعی id 7 (SKU PB-BS-65W). SEED_BLOG_ONLY filter اضافه شد برای seed نقطه‌ای (ران موازی پست خودش را دارد).
 - Server prerender BlogPosting JSON-LD برای /blog/:slug (blogPostingJsonLdFor در server/lib/breadcrumbs.ts؛ builder مشترک src/lib/blogJsonLd.ts؛ honesty gate: slug نامشخص/غیرمنتشر → بدون injection).

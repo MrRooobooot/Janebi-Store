@@ -1,7 +1,7 @@
 # ARCHITECTURE & PROJECT GRAPH — JANEBI ARENA
 
 > **Autonomous Engineering Knowledge Base & Live System Map**
-> **Last Verified & Updated:** 2026-09-04 (SEO Architecture & Production Verification — commit `12ef097`)
+> **Last Verified & Updated:** 2026-09-04 (Dead-Code Cleanup r37b — commit `2002ea5`)
 > **Status:** Live & Production Ready (45 test suites, 344 passing tests)
 > **PRD Reference:** `AGENTS.md` | `PROJECT_AUDIT.md` | `TASKS.md`
 
@@ -116,6 +116,8 @@ Full evidence + remediation list: `PROJECT_AUDIT.md`. Highest-priority debts:
 13. **PWA manifest + JSON-LD hygiene — FIXED (2026-09-01):** `theme_color` #F47C20 / `background_color` #0B1536 (Kinetic Commerce palette); `DynamicBreadcrumbs` JSON-LD escapes `<` as `\u003c` (self-XSS shape closed).
 
 **Also removed (2026-09-01 repo hygiene):** `sketches/`, `firebase.json`/`.firebaserc`/`.firebase/`, `metadata.json`, `.neural_graph.json` from repo & disk; `SECRETS_MAP.md` gitignored (local-only ops map).
+
+**Dead-code sweep r37b (2026-09-04, commits 2c2b6c4→2002ea5):** knip@5 + TS5 AST ref-counter scan of all 133 TS/TSX files. Removed: `formatTomanNumber`/`formatPersianDate` (utils.ts), `CategoryCardSkeleton`/`BrandCardSkeleton`/`OrderCardSkeleton` (Skeletons.tsx), 4 unused `AppError` subclasses (Forbidden/Conflict/Validation/Internal — BadRequest/Unauthorized/NotFound kept, used by phase1 test), `ORDERS_STORE` (seed-data.ts), empty `blogPostsRelations` (schema.pg.ts), dead `loadAdminChatIds` (bale.ts), 8 type-only `export` keywords, deps `@google/genai`+`thesvg`+`autoprefixer`. Keep-list (knip false positives: sw.js, seed-blog.ts, drizzle.pg.config.ts, bale-worker/worker.ts, seed.ts, closeDb, pino-pretty) → skill `dead-code-scan-janebi`. Gate: tsc clean, 344/344, `npm run verify` + `hermes verify` ALL PASS. Long-function refactor (98 fns ≥40 lines, top 742) explicitly deferred by user decision.
 
 ## 6. Ops
 
