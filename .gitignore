@@ -69,3 +69,5 @@ sketches/
 # Playwright local artifacts
 playwright-report/
 test-results/
+code-pro-hermes-guide.*
+bale-worker/.wrangler/
