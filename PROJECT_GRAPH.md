@@ -1,8 +1,8 @@
 # ARCHITECTURE & PROJECT GRAPH — JANEBI ARENA
 
 > **Autonomous Engineering Knowledge Base & Live System Map**
-> **Last Verified & Updated:** 2026-08-31 (Deep Forensic Audit — see `PROJECT_AUDIT.md` §2026-08-31)
-> **Status:** Live & Production Ready (36 test suites, 297 passing tests)
+> **Last Verified & Updated:** 2026-09-04 (SEO Architecture & Production Verification — commit `12ef097`)
+> **Status:** Live & Production Ready (45 test suites, 344 passing tests)
 > **PRD Reference:** `AGENTS.md` | `PROJECT_AUDIT.md` | `TASKS.md`
 
 ---
@@ -61,6 +61,9 @@
   - `public/pricing.md` (Machine-readable shipping rates, returns, and pricing policies).
   - `public/robots.txt` (Explicitly permits `GPTBot`, `PerplexityBot`, `ClaudeBot`, `Google-Extended`, `Bingbot`, `Applebot`).
   - `index.html` & `src/pages/ProductDetail.tsx` (Deep JSON-LD Graph Schema: `Organization`, `WebSite`, `Product`, `Offer`, `AggregateRating`).
+  - `server/lib/breadcrumbs.ts` (Universal Prerender JSON-LD & Canonical link injection for `/products/:id`, `/product/:id`, `/blog/:slug`).
+  - `server/app.ts` (Dynamic `X-Robots-Tag: noindex, follow` on search queries, `/cart`, `/login`, `/register`).
+  - `server/index.ts` (Authentic HTTP 404 + noindex on non-existent product IDs; Soft 404 zero-tolerance).
 
 ---
 
