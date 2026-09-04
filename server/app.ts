@@ -54,7 +54,18 @@ app.use((req: any, res: any, next: any) => {
   // X-Robots-Tag: explicit crawl directive for every response (incl. non-HTML
   // assets) — mirrors the index.html meta robots tag so crawlers never fall
   // back to an implied index/noarchive on stray endpoints.
-  res.setHeader("X-Robots-Tag", "index, follow");
+  const pathLower = (req.path || "").toLowerCase();
+  if (
+    pathLower.startsWith("/themes") ||
+    pathLower.startsWith("/wp-") ||
+    pathLower.startsWith("/admin") ||
+    pathLower.startsWith("/checkout") ||
+    pathLower.startsWith("/profile")
+  ) {
+    res.setHeader("X-Robots-Tag", "noindex, nofollow");
+  } else {
+    res.setHeader("X-Robots-Tag", "index, follow");
+  }
   next();
 });
 

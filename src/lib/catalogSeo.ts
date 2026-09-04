@@ -62,9 +62,9 @@ export function applyCatalogSeo(input: CatalogSeoInput): void {
 export function restoreCatalogSeo(): void {
   if (typeof document === 'undefined') return;
   document.getElementById(JSONLD_ID)?.remove();
-  document.title = 'جانبی آرنا | فروشگاه آنلاین لوازم جانبی موبایل';
+  document.title = 'جانبی آرنا | خرید آنلاین لوازم جانبی موبایل و تبلت با ضمانت اصالت';
   setMetaContent(
     'meta[name="description"]',
-    'فروشگاه آنلاین جانبی آرنا، مرجع تخصصی خرید انواع قاب و کاور گوشی، گلس محافظ، شارژر سریع، کابل، پاوربانک و هندزفری با ضمانت اصالت و ارسال سریع به سراسر ایران.'
+    'فروشگاه تخصصی جانبی آرنا؛ خرید انواع قاب و کاور گوشی، گلس نشکن، شارژر اصل، کابل، پاوربانک و هولدر با تضمین کیفیت، بهترین قیمت و ارسال سریع به سراسر ایران.'
   );
 }

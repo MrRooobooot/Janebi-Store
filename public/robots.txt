@@ -4,6 +4,10 @@ Disallow: /admin/
 Disallow: /api/
 Disallow: /checkout/
 Disallow: /profile
+Disallow: /themes/
+Disallow: /themes
+Disallow: /wp-content/
+Disallow: /wp-admin/
 
 # AI Agents & Search Bots Allowance
 User-agent: GPTBot
