@@ -16,7 +16,7 @@ const OTP_RESET_UNAVAILABLE_NOTICE =
   "بازیابی رمز عبور با کد پیامکی در حال حاضر در دسترس نیست. لطفاً با پشتیبانی تماس بگیرید تا رمز عبور شما بازنشانی شود.";
 
 export default function Login() {
-  const { login } = useAuth();
+  const { login, mustChangePassword } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
 
@@ -160,7 +160,12 @@ export default function Login() {
     const success = await login(normalizedPhone, password);
     setIsLoading(false);
     if (success) {
-      navigate("/profile");
+      // Admin still on the initial password → forced change screen, not /profile.
+      if (mustChangePassword) {
+        navigate("/force-change-password");
+      } else {
+        navigate("/profile");
+      }
     }
   };
 

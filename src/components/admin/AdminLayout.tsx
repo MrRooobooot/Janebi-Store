@@ -79,6 +79,31 @@ export default function AdminLayout() {
     );
   }
 
+  // Defense-in-depth: an admin who still has the initial password is locked
+  // out of the whole panel (server also 403s every admin API with
+  // PASSWORD_CHANGE_REQUIRED until the password is changed).
+  if (user.mustChangePassword) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 p-4">
+        <div className="max-w-md w-full bg-zinc-50 dark:bg-zinc-900/60 rounded-3xl p-8 text-center shadow-xl border border-zinc-200/80 dark:border-zinc-800">
+          <div className="bg-amber-100 dark:bg-amber-900/30 p-6 rounded-full inline-block mb-6">
+            <ShieldAlert className="h-16 w-16 text-amber-500" />
+          </div>
+          <h1 className="text-2xl font-black text-[var(--color-text-main-light)] dark:text-white mb-4">تغییر رمز عبور الزامی است</h1>
+          <p className="text-gray-600 dark:text-gray-400 mb-8">
+            برای حفظ امنیت، ابتدا رمز عبور اولیه خود را تغییر دهید تا به پنل مدیریت دسترسی پیدا کنید.
+          </p>
+          <button
+            onClick={() => navigate('/force-change-password')}
+            className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3.5 rounded-xl transition-all"
+          >
+            تغییر رمز عبور
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   const navItems = [
     { to: "/admin", icon: LayoutDashboard, label: "داشبورد و آمار کلان", exact: true },
     { 

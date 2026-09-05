@@ -20,6 +20,7 @@ const WishlistPage = lazy(() => import('./pages/Wishlist'));
 const Profile = lazy(() => import('./pages/Profile'));
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
+const ForcedPasswordChange = lazy(() => import('./pages/ForcedPasswordChange'));
 const Compare = lazy(() => import('./pages/Compare'));
 
 // Static pages lazy
@@ -80,6 +81,7 @@ export default function App() {
                         <Route path="profile" element={<Profile />} />
                         <Route path="login" element={<Login />} />
                         <Route path="register" element={<Register />} />
+                        <Route path="force-change-password" element={<ForcedPasswordChange />} />
                         <Route path="compare" element={<Compare />} />
                         
                         <Route path="about" element={<About />} />

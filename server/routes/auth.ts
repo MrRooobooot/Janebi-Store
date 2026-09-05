@@ -83,7 +83,7 @@ router.post("/login", validate(loginSchema), async (req, res) => {
     const tokens = generateTokens(user.id);
     setAuthCookies(res, tokens.accessToken, tokens.refreshToken, env.NODE_ENV === "production");
 
-    const { password: _, ...userWithoutPassword } = user;
+    const { password: _, mustChangePassword, ...userWithoutPassword } = user;
 
     const userAddresses = await db.query.addresses.findMany({
       where: eq(addresses.userId, user.id)
@@ -92,6 +92,9 @@ router.post("/login", validate(loginSchema), async (req, res) => {
     res.json({
       message: "ورود با موفقیت انجام شد",
       user: { ...userWithoutPassword, addresses: userAddresses },
+      // Admin first-login gate: frontend redirects to the forced
+      // change-password screen when this is true.
+      mustChangePassword: Boolean(mustChangePassword),
       ...tokens
     });
   } catch (error) {
@@ -130,7 +133,7 @@ router.post("/refresh", async (req, res) => {
     const { password: _, ...userWithoutPassword } = user;
     res.json({
       message: "Token refreshed successfully",
-      user: userWithoutPassword,
+      user: { ...userWithoutPassword, mustChangePassword: Boolean(userWithoutPassword.mustChangePassword) },
       ...tokens
     });
   } catch (error) {
@@ -194,7 +197,13 @@ router.get("/me", authenticate, async (req: AuthRequest, res) => {
   const userAddresses = await db.query.addresses.findMany({
     where: eq(addresses.userId, req.user.id)
   });
-  res.json({ user: { ...req.user, addresses: userAddresses } });
+  res.json({
+    user: {
+      ...req.user,
+      mustChangePassword: Boolean(req.user.mustChangePassword),
+      addresses: userAddresses
+    }
+  });
 });
 // In-memory OTP Store with automatic cleanup
 interface OtpEntry {

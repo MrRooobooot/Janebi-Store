@@ -69,7 +69,7 @@ router.put('/me/password', validate(updatePasswordSchema), async (req: AuthReque
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    await db.update(users).set({ password: hashedPassword }).where(eq(users.id, userId));
+    await db.update(users).set({ password: hashedPassword, mustChangePassword: false }).where(eq(users.id, userId));
 
     res.json({ message: 'کلمه عبور با موفقیت به‌روزرسانی شد' });
   } catch (error) {

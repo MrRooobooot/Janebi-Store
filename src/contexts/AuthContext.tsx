@@ -24,12 +24,15 @@ export interface UserProfile {
   vipPoints?: number;
   addresses?: AddressItem[];
   role?: string;
+  mustChangePassword?: boolean;
 }
 
 interface AuthContextType {
-  user: UserProfile | null;
-  isLoggedIn: boolean;
-  login: (phone: string, password: string) => Promise<boolean>;
+ user: UserProfile | null;
+ isLoggedIn: boolean;
+ mustChangePassword: boolean;
+ clearMustChangePassword: () => void;
+ login: (phone: string, password: string) => Promise<boolean>;
   verifyOtp: (phone: string, code: string, name?: string) => Promise<boolean>;
   register: (name: string, phone: string, password: string) => Promise<boolean>;
   logout: () => void;
@@ -46,6 +49,9 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { addToast } = useToast();
   const [user, setUser] = useState<UserProfile | null>(null);
+  // Admin first-login gate: mirrors user.mustChangePassword so the Login page
+  // can redirect to the forced change-password screen before anything else.
+  const [mustChangePassword, setMustChangePassword] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const checkAuth = async () => {
@@ -110,6 +116,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const data = await res.json();
       if (res.ok) {
         setUser(data.user);
+        setMustChangePassword(Boolean(data.mustChangePassword || data.user?.mustChangePassword));
         if (data.accessToken) {
           localStorage.setItem("token", data.accessToken);
         }
@@ -191,8 +198,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
     } catch {}
     setUser(null);
+    setMustChangePassword(false);
     localStorage.removeItem("token");
     addToast("با موفقیت خارج شدید", "success");
+  };
+
+  // Called after the forced password change succeeds — lifts the admin gate.
+  const clearMustChangePassword = () => {
+    setMustChangePassword(false);
+    setUser(prev => prev ? { ...prev, mustChangePassword: false } : null);
   };
 
   const getAuthHeaders = (): Record<string, string> => {
@@ -334,6 +348,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       value={{
         user,
         isLoggedIn: !!user,
+        mustChangePassword,
+        clearMustChangePassword,
         isLoading,
         login,
         verifyOtp,

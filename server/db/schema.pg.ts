@@ -10,7 +10,8 @@ export const users = pgTable('users', {
   avatar: text('avatar'),
   joinedDate: text('joined_date'),
   vipPoints: integer('vip_points').default(0),
-  role: text('role').default('user')
+  role: text('role').default('user'),
+  mustChangePassword: boolean('must_change_password').default(false)
 });
 
 export const addresses = pgTable('addresses', {

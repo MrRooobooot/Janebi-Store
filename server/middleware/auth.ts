@@ -54,5 +54,14 @@ export const requireAdmin = (req: AuthRequest, res: Response, next: NextFunction
   if (req.user?.role !== "admin") {
     return res.status(403).json({ message: "Forbidden: Requires admin privileges" });
   }
+  // Mandatory first-login password change: an admin who still has the
+  // initial password gets a distinct code the frontend uses to route them
+  // to the change-password screen instead of the admin panel.
+  if (req.user?.mustChangePassword) {
+    return res.status(403).json({
+      message: "برای ادامه باید رمز عبور خود را تغییر دهید",
+      code: "PASSWORD_CHANGE_REQUIRED",
+    });
+  }
   next();
 };
