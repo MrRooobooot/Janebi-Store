@@ -90,19 +90,6 @@ router.get('/me/addresses', async (req: AuthRequest, res) => {
   }
 });
 
-// Alias for /addresses
-router.get('/addresses', async (req: AuthRequest, res) => {
-  const userId = req.user.id as string;
-  try {
-    const userAddresses = await db.query.addresses.findMany({
-      where: eq(addresses.userId, userId)
-    });
-    res.json(userAddresses);
-  } catch (error) {
-    res.status(500).json({ message: 'خطای سرور' });
-  }
-});
-
 router.post('/me/addresses', validate(addressSchema), async (req: AuthRequest, res) => {
   const userId = req.user.id as string;
   const { title, name, phone, province, city, address, postalCode } = req.body;

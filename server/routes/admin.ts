@@ -703,31 +703,6 @@ router.post('/orders/bulk-delete', validate(bulkIdsSchema), async (req, res) => 
   }
 });
 
-router.put('/products/:id/stock', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { stockQuantity } = req.body;
-    const prodId = parseInt(id);
-
-    if (isNaN(prodId) || stockQuantity === undefined || isNaN(parseInt(stockQuantity))) {
-      return res.status(400).json({ error: 'مقدار موجودی نامعتبر است' });
-    }
-
-    const [updated] = await db.update(products)
-      .set({ stockQuantity: Math.max(0, parseInt(stockQuantity)) })
-      .where(eq(products.id, prodId))
-      .returning();
-
-    if (!updated) {
-      return res.status(404).json({ error: 'محصول یافت نشد' });
-    }
-
-    res.json(updated);
-  } catch (error) {
-    res.status(500).json({ message: 'خطای سرور در بروزرسانی موجودی' });
-  }
-});
-
 router.put('/orders/:id/tracking', async (req, res) => {
   try {
     const { id } = req.params;
