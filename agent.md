@@ -1,7 +1,7 @@
 # agent.md — Janebi Store · Project Control Document
 
-> **این فایل تنها Source of Truth وضعیت پروژه است.** ترتیب اعتبار اطلاعات:
-> ۱) کد فعلی و Runtime واقعی ← ۲) همین فایل ← ۳) تست‌ها/Evidence ← ۴) سایر مستندات.
+> **Project Status Ledger (تاریخچه وضعیت).** مرجع دستورالعمل فعال ایجنت = `AGENTS.md` (توسط Hermes autoload می‌شود).
+> ترتیب اعتبار اطلاعات: ۱) کد فعلی و Runtime واقعی ← ۲) `AGENTS.md` ← ۳) همین فایل ← ۴) تست‌ها/Evidence.
 > هر تناقضی بین این فایل و کد → کد برنده است و این فایل باید اصلاح شود.
 > **Last Updated: 2026-09-05 (Session #7 — PG Audit r37c + UI Parity & Checkout Fixes r37d + 353 Tests)**
 

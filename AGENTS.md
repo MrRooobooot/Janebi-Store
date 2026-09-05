@@ -52,10 +52,17 @@ Janebi-Store/
 │   ├── unit/               # Unit test suites (invariants, rate-limiting, payment-failover, persian-utils, etc.)
 │   └── concurrency/        # Adversarial stock concurrency test suites
 ├── public/                 # Static assets, local product SVGs, manifest.webmanifest, sw.js
-├── scripts/                # Verification and deploy scripts (verify-all.sh, deploy.sh, vps-monitor.py)
+├── scripts/                # Verification & data scripts (verify-all.sh, seed-blog.ts, backup-db.mjs, vps-monitor.py)
+├── e2e/                    # Playwright E2E specs (npm run test:e2e)
+├── drizzle/                # Migrations — sqlite/ + pg/ (dual dialect, journal-tracked)
+├── docs/                   # Baselines (architecture/auth/db/payment/api), SEO handbook, dated review reports
+├── .hermes/                # Agent ops state — agents-status.json feed, dashboard widget, reports/ archive
+├── .agents/                # Historical multi-agent build archive (briefings/handoffs, Aug 2026)
+├── deploy.sh               # Production deploy (rsync + remote docker rebuild, deploy-lock)
 ├── PROJECT_GRAPH.md        # Permanent architectural knowledge base & live system map
 ├── TASKS.md                # Task tracker and backlog
 ├── CHANGELOG_AGENT.md      # Chronological work logs
+├── agent.md                # Project status ledger (historical decisions D1-D10, deployment status)
 └── PROJECT_AUDIT.md        # Comprehensive production readiness audit
 ```
 
