@@ -48,6 +48,7 @@ async function createProduct(env: Env, body: Record<string, unknown>): Promise<{
 }
 
 function botFor(env: Env): Bot {
+  const draftsInFlight = new Set<string>(); // chat ids whose draft was consumed by /yes
   const bot = new Bot(env.BALE_BOT_TOKEN, { client: { apiRoot: 'https://tapi.bale.ai' } });
   const adminIds = env.BALE_ADMIN_CHAT_IDS.split(',').map((s) => parseInt(s.trim(), 10)).filter(Number.isFinite);
   const isAdmin = (ctx: Context) => !!ctx.from?.id && adminIds.includes(ctx.from.id);
@@ -140,6 +141,10 @@ function botFor(env: Env): Bot {
         break;
       case 'confirm':
         if (t === '/yes') {
+          // Idempotency: consume the draft BEFORE the create so a retried
+          // /yes (Bale redelivery / double-tap) cannot create the product twice.
+          await env.DRAFTS.delete(key);
+          draftsInFlight.add(key); // suppress the trailing re-put below
           try {
             const inserted = await createProduct(env, {
               title: d.title, category: d.category, price: d.price,
@@ -147,7 +152,6 @@ function botFor(env: Env): Bot {
               warranty: d.warranty, description: d.description,
               stockQuantity: d.stock,
             });
-            await env.DRAFTS.delete(key);
             await ctx.reply(`🎉 ثبت شد — id: ${inserted.id}\nhttps://janebiarena.ir/products/${inserted.id}`);
           } catch (e: any) {
             await ctx.reply(`❌ خطای ثبت: ${e.message}`);
@@ -157,7 +161,9 @@ function botFor(env: Env): Bot {
         }
         break;
     }
-    await env.DRAFTS.put(key, JSON.stringify(d), { expirationTtl: 3600 });
+    if (d.step !== 'title' && !draftsInFlight.delete(key)) {
+      await env.DRAFTS.put(key, JSON.stringify(d), { expirationTtl: 3600 });
+    }
   });
 
   bot.on('message:photo', async (ctx) => {
