@@ -5,6 +5,7 @@ import * as schema from './db/schema.js';
 import { startBaleBot } from './bot/bale.js';
 import { ALL_PRODUCTS, REVIEWS_STORE, VALID_COUPONS } from './data/seed-data.js';
 import { blogPostingJsonLdFor, productJsonLdFor, breadcrumbJsonLdFor, injectBreadcrumbIntoHtml } from "./lib/breadcrumbs.js";
+import { routeMetaForRequest, injectSeoMetadata, productOgImageFor } from "./lib/seoMeta.js";
 import { eq } from "drizzle-orm";
 import express from 'express';
 import path from 'path';
@@ -113,7 +114,8 @@ async function startServer() {
     app.get("/{*splat}", async (req, res) => {
       try {
         const shell = fs.readFileSync(path.join(distPath, "index.html"), "utf-8");
-        const pathname = req.originalUrl.split("?")[0];
+        const [pathname, search] = req.originalUrl.split("?");
+        const query = new URLSearchParams(search || "");
 
         // SEO-001: Return authentic 404 for nonexistent product IDs rather than a Soft 404
         const productMatch = pathname.match(/^\/products?\/(\d+)\/?$/);
@@ -128,19 +130,24 @@ async function startServer() {
           }
         }
 
-        const [crumb, postingLd, productLd] = await Promise.all([
+        const [crumb, postingLd, productLd, meta, productImage] = await Promise.all([
           breadcrumbJsonLdFor(pathname),
           blogPostingJsonLdFor(pathname),
           productJsonLdFor(pathname),
+          routeMetaForRequest(pathname, query),
+          productOgImageFor(pathname),
         ]);
         // Structured JSON-LD only differs on /blog and /product routes; avoid
         // re-reading on every request by falling back to a plain sendFile.
         const structuredLd = [crumb, postingLd, productLd].filter(Boolean).join("\n");
-        if (!structuredLd) return res.sendFile(path.join(distPath, "index.html"));
+        if (!structuredLd && !meta) return res.sendFile(path.join(distPath, "index.html"));
+        let html = shell;
+        if (structuredLd) html = injectBreadcrumbIntoHtml(html, structuredLd);
+        if (meta) html = injectSeoMetadata(html, productImage ? { ...meta, ogImage: productImage } : meta);
         return res
           .status(200)
           .set("Content-Type", "text/html")
-          .send(injectBreadcrumbIntoHtml(shell, structuredLd));
+          .send(html);
       } catch {
         return res.sendFile(path.join(distPath, "index.html"));
       }
