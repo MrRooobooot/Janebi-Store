@@ -18,7 +18,7 @@
 
 ## Standing state
 - SMS.ir OTP live (template 401810, cost-guarded, max 1 real send/deploy to sanctioned phones).
-- Zarinpal prod terminal `57aed35b…` live, callback janebiarena.ir, IRT raw-Toman (no pre-conversion).
+- Zarinpal prod terminal (ID redacted — see local SECRETS_MAP.md) live, callback janebiarena.ir, IRT raw-Toman (no pre-conversion).
 - Deploy via `deploy.sh` with `/tmp/janebi-deploy.lock`; docker-compose env requires container RECREATE (not restart) for new env keys.
 - Blog seed pattern: esbuild bundle → scp → docker cp → node in-container (SEED_BLOG_ONLY=<id>), idempotent.
 
