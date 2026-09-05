@@ -74,3 +74,6 @@ bale-worker/.wrangler/
 
 # Serena MCP local index
 .serena/
+
+# Antigravity IDE local state
+.antigravity/

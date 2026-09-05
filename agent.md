@@ -59,7 +59,7 @@
 ## Current State (خلاصه)
 - **وضعیت کلی: LAUNCH-READY از نظر فنی.** سایت زنده و پایدار روی janebiarena.ir با آخرین کد.
 - گیت‌ها: **۳۵۳/۳۵۳ تست (۴۸ فایل) · tsc تمیز · build سالم**
-- ادمین: حساب خودِ کاربر (`[REDACTED-CREDENTIAL]` / ایمیل `aidinnemati09@gmail.com` / نام `آیدین نعمتی` / [REDACTED-CREDENTIAL]، نقش admin) + قابلیت ریست رمز هر کاربر از پنل
+- ادمین: حساب خودِ کاربر (نقش admin؛ credentials در `SECRETS_MAP.md` محلی) + قابلیت ریست رمز هر کاربر از پنل
 - محصولات فعلی: ۱۲ عدد (کاربر قرار است اجناس واقعی را آپلود کند)
 - پرداخت آنلاین: gated با 503 امن — منتظر Merchant ID زرین‌پال از کاربر
 
@@ -81,7 +81,7 @@
   - پروب‌های امنیتی زنده: admin 401/403 · IDOR خواندن/لغو سفارش غیر (404/403) · OTP debugCode در production نشت نمی‌کند · rate limit auth فعال (429) · validation فارسی · security headers (HSTS/XFO/nosniff/referrer) · SPA fallback 200 · cert تا Nov 2026 · منابع سرور سالم
 
 ### Session #4 — Auth تکمیلی + فیکس حیاتی مسیر محصول (2026-08-24)
-- ارتقای حساب کاربر به admin + ست [REDACTED-CREDENTIAL] + پاکسازی کاربر تست جامانده
+- ارتقای حساب کاربر به admin + ست رمز اولیه (در `SECRETS_MAP.md` محلی) + پاکسازی کاربر تست جامانده
 - **Forgot Password (`19d49da`)**:
   - `POST /api/auth/reset-password`: تایید OTP همان فلوی لاگین → ست رمز جدید (single-use، attempt-limited، پیام generic برای حساب نامعلوم)
   - UI در صفحه Login: لینک «رمز عبور خود را فراموش کرده‌اید؟» → شماره + کد + رمز جدید + تکرار
@@ -139,7 +139,7 @@
 - بکاپ‌ها: ~/backups/ (env-*.bak + janebi-consistent-*.db با integrity ok)
 - کانتینرها: janebi-store (Up، آخرین image شامل همه فیکس‌ها)، janebi-postgres (healthy، idle)
 - health: https://janebiarena.ir/api/health → {"status":"ok","database":"ok"}
-- دسترسی ادمین: `[REDACTED-CREDENTIAL]` / `aidinnemati09@gmail.com` / [REDACTED-CREDENTIAL] (نقش admin) — پنل: /admin
+- دسترسی ادمین: credentials در `SECRETS_MAP.md` محلی (نقش admin) — پنل: /admin
 
 ## Risks (باقی‌مانده — قابل قبول و مستند)
 - OTP در production قابل تحویل نیست (بدون SMS) → ریست رمز از پنل ادمین پاسخگو است؛ فلوی عمومی منتظر SMS

@@ -15,23 +15,6 @@ async function ensureDatabaseInitialized() {
     // Wait for dialect-specific migrations (PG) to finish before seeding.
     await dbReady();
 
-    // Read and run migration SQL if needed
-    const migrationFile = path.resolve(process.cwd(), 'drizzle/0000_absurd_night_nurse.sql');
-    if (fs.existsSync(migrationFile)) {
-      const sql = fs.readFileSync(migrationFile, 'utf-8');
-      const statements = sql.split('--> statement-breakpoint');
-      for (const statement of statements) {
-        const trimmed = statement.trim();
-        if (trimmed) {
-          try {
-            (db as any).session.client.exec(trimmed);
-          } catch (e) {
-            // Ignore table/index already exists errors
-          }
-        }
-      }
-    }
-
     // Check if products exist, otherwise seed
     const existingProducts = await db.select().from(schema.products).limit(1);
     if (existingProducts.length === 0) {

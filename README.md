@@ -142,11 +142,10 @@ docker logs -f janebi-store
 
 ---
 
-## 🔑 اطلاعات ورود پیش‌فرض ادمین (Admin Credentials)
+## 🔑 اطلاعات ورود ادمین
 
 - **آدرس ورود ادمین:** `https://janebiarena.ir/admin`
-- **شماره موبایل:** `[REDACTED-CREDENTIAL]`
-- **رمز عبور:** [REDACTED-CREDENTIAL]
+- Credentials عملیاتی در `SECRETS_MAP.md` (local-only، gitignored) نگهداری می‌شود — در repo منتشر نمی‌شود.
 
 ---
 
