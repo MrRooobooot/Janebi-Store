@@ -77,3 +77,7 @@ bale-worker/.wrangler/
 
 # Antigravity IDE local state
 .antigravity/
+
+# Generated verify snapshots
+.hermes/verify-result.json
+.hermes/verify-*.json

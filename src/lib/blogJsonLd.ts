@@ -2,6 +2,8 @@
 // Honesty gate: only fields that actually exist on the fetched post data are
 // emitted — no fabricated defaults, no placeholder values.
 
+import { absoluteImageUrl } from './productJsonLd';
+
 interface BlogPostingInput {
   id: string;
   title: string;
@@ -13,11 +15,6 @@ interface BlogPostingInput {
   createdAt?: string | null; // raw ISO date from DB
   updatedAt?: string | null; // raw ISO date from DB (may not exist)
   tags?: string | null; // comma-separated SEO tags from DB
-}
-
-/** Resolve a possibly-relative image path against the site origin. */
-function absoluteImageUrl(image: string, origin: string): string {
-  return image.startsWith('http') ? image : `${origin.replace(/\/$/, '')}${image}`;
 }
 
 /**

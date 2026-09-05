@@ -1,7 +1,7 @@
 # Janebi Arena E-Commerce Platform — Technical Architecture & Implementation Spec
 
 ## 1. System Overview
-Janebi Arena is a modern, high-concurrency Iranian e-commerce platform built for mobile & digital accessories. It features end-to-end atomic inventory tracking, role-based access control, Iranian normalization utilities, Drizzle ORM persistence with dual-dialect runtime (PostgreSQL in Staging/Production & SQLite in offline testing), Dockerized container deployment, and a full-featured customer & administrative UI.
+Janebi Arena is a modern, high-concurrency Iranian e-commerce platform built for mobile & digital accessories. It features end-to-end atomic inventory tracking, role-based access control, Iranian normalization utilities, Drizzle ORM persistence with dual-dialect runtime (SQLite in Production & offline testing; PostgreSQL parity path kept warm — decision D8), Dockerized container deployment, and a full-featured customer & administrative UI.
 
 - **Live URL:** https://janebiarena.ir
 - **Alternative:** https://www.janebiarena.ir
@@ -16,8 +16,8 @@ Janebi Arena is a modern, high-concurrency Iranian e-commerce platform built for
 - **Engine:** Node.js 22 (Alpine Linux base in Docker)
 - **Framework:** Express 5.x
 - **Database Engine:**
-  - **PostgreSQL (Staging & Production):** `pg` Pool (max 20 connections, idle timeout 30s) + `drizzle-orm/node-postgres` with `server/db/schema.pg.ts`.
-  - **SQLite (Offline Unit & Integration Tests):** `better-sqlite3` 13.x with WAL mode and 5000ms busy timeout + `drizzle-orm/better-sqlite3` with `server/db/schema.ts`.
+  - **SQLite (Production & Tests):** `better-sqlite3` 13.x with WAL mode and 5000ms busy timeout + `drizzle-orm/better-sqlite3` with `server/db/schema.ts`.
+  - **PostgreSQL (parity path — kept warm per D8):** `pg` Pool + `drizzle-orm/node-postgres` with `server/db/schema.pg.ts`; dual migration chain under `drizzle/pg/`.
 - **ORM & Schema:** Drizzle ORM with schema defined in `server/db/schema.ts` (SQLite) & `server/db/schema.pg.ts` (PostgreSQL).
 - **Validation Engine:** Zod runtime validation via `server/middleware/validate.ts`.
 - **Authentication:** Stateless JWT Access/Refresh tokens with bcrypt password hashing.

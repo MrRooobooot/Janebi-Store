@@ -25,7 +25,8 @@ interface ProductJsonLdInput {
   features?: string[] | null;
 }
 
-function absoluteImageUrl(image: string, origin: string): string {
+/** Resolve a possibly-relative image path against the site origin. */
+export function absoluteImageUrl(image: string, origin: string): string {
   return image.startsWith('http') ? image : `${origin.replace(/\/$/, '')}${image}`;
 }
 
