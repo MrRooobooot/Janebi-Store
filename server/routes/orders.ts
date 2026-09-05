@@ -6,6 +6,7 @@ import { FREE_SHIPPING_THRESHOLD, SHIPPING_FEES } from "../../src/lib/constants.
 import { orders, orderItems, products, cartItems, coupons, users } from "../db/schema.js";
 import { desc, eq, and, inArray, sql } from "drizzle-orm";
 import { appCache } from "../utils/cache.js";
+import { restockItemsAndRefundPoints } from "../lib/orderLifecycle.js";
 import { authenticate, AuthRequest } from "../middleware/auth.js";
 
 const router = Router();
@@ -307,22 +308,9 @@ router.post("/:id/cancel", async (req: AuthRequest, res) => {
         throw { status: 400, message: "امکان لغو این سفارش وجود ندارد" };
       }
 
-      const itemsToRestock = await tx.select().from(orderItems).where(eq(orderItems.orderId, orderId));
-      for (const item of itemsToRestock) {
-        await tx.update(products)
-          .set({ stockQuantity: sql`${products.stockQuantity} + ${item.qty}` })
-          .where(eq(products.id, item.productId));
-      }
-
-      // Data integrity: refund VIP points the user spent at checkout and claw
-      // back any points that were earned by this order, so a cancellation
-      // leaves loyalty balances exactly as if the order never existed.
-      const pointsUsedByOrder = Number(order.vipPointsUsed) || 0;
-      if (pointsUsedByOrder > 0) {
-        await tx.update(users)
-          .set({ vipPoints: sql`${users.vipPoints} + ${pointsUsedByOrder}` })
-          .where(eq(users.id, userId));
-      }
+      // Data integrity: restock + refund spent points; earned points are
+      // clawed back below only if the order had reached "processing".
+      await restockItemsAndRefundPoints(tx, orderId, userId, order.vipPointsUsed);
       // Earned points are only credited once the order actually reached
       // "processing" (COD creation, or a verified online payment). A
       // pending_payment order was never credited, so don't claw those back.

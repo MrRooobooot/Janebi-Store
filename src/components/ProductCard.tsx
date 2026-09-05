@@ -6,7 +6,7 @@ import { useCompare } from '../contexts/CompareContext';
 import { useToast } from '../contexts/ToastContext';
 import { useCart } from '../contexts/CartContext';
 import { Product } from '../types';
-import SmartImage from './SmartImage';
+import PictureImage from './PictureImage';
 import { toPersianDigits, formatPrice } from '../lib/utils';
 
 const ProductCard = memo(function ProductCard({ product }: { product: Product }) {
@@ -89,7 +89,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
             {/* Ambient Radial Accent */}
             <div className="absolute inset-0 bg-radial from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             
-            <SmartImage
+            <PictureImage
               src={product.image}
               alt={product.title}
               width="280"

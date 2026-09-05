@@ -9,7 +9,7 @@ import { useCompare } from '../contexts/CompareContext';
 import { useToast } from '../contexts/ToastContext';
 import { useCart } from '../contexts/CartContext';
 import { ProductDetailSkeleton } from '../components/Skeletons';
-import SmartImage from '../components/SmartImage';
+import PictureImage from '../components/PictureImage';
 import BrandLogo from '../components/BrandLogo';
 import ProductReviews from '../components/ProductReviews';
 import { buildProductJsonLd } from '../lib/productJsonLd';
@@ -225,7 +225,7 @@ export default function ProductDetail() {
                     transition={{ duration: 0.22, ease: 'easeOut' }}
                     className="w-full h-full flex items-center justify-center"
                   >
-                    <SmartImage
+                    <PictureImage
                       src={galleryImages[selectedImageIndex] || product.image}
                       alt={product.title}
                       priority={selectedImageIndex === 0}

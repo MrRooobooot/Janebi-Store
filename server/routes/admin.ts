@@ -8,8 +8,18 @@ import { eq, desc, sql, inArray } from 'drizzle-orm';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
 import { validate } from '../middleware/validate.js';
 import { bulkIdsSchema } from '../validators/index.js';
+import { restockItemsAndRefundPoints } from '../lib/orderLifecycle.js';
 
 const router = Router();
+
+const ORDER_STATUS_TEXTS: Record<string, string> = {
+  pending_payment: 'در انتظار پرداخت',
+  processing: 'در حال پردازش',
+  shipped: 'ارسال شده',
+  delivered: 'تحویل داده شده',
+  cancelled: 'لغو شده'
+};
+
 
 // Apply middleware to all admin routes
 router.use(authenticate, requireAdmin);
@@ -484,19 +494,7 @@ router.put('/orders/:id/status', async (req, res) => {
           throw Object.assign(new Error('فقط سفارش‌های در انتظار پرداخت یا در حال پردازش قابل لغو هستند'), { status: 400 });
         }
 
-        const items = await tx.select().from(orderItems).where(eq(orderItems.orderId, id));
-        for (const item of items) {
-          await tx.update(products)
-            .set({ stockQuantity: sql`${products.stockQuantity} + ${item.qty}` })
-            .where(eq(products.id, item.productId));
-        }
-
-        const pointsUsedByOrder = Number(order.vipPointsUsed) || 0;
-        if (pointsUsedByOrder > 0 && order.userId) {
-          await tx.update(users)
-            .set({ vipPoints: sql`${users.vipPoints} + ${pointsUsedByOrder}` })
-            .where(eq(users.id, order.userId));
-        }
+        await restockItemsAndRefundPoints(tx, id, order.userId, order.vipPointsUsed);
         const pointsEarnedByOrder = order.status === 'processing' ? Number(order.vipPointsEarned) || 0 : 0;
         if (pointsEarnedByOrder > 0 && order.userId) {
           await tx.update(users)
@@ -504,15 +502,8 @@ router.put('/orders/:id/status', async (req, res) => {
             .where(eq(users.id, order.userId));
         }
 
-        const defaultStatusTexts: Record<string, string> = {
-          pending_payment: 'در انتظار پرداخت',
-          processing: 'در حال پردازش',
-          shipped: 'ارسال شده',
-          delivered: 'تحویل داده شده',
-          cancelled: 'لغو شده'
-        };
         const [row] = await tx.update(orders)
-          .set({ status, statusText: statusText || defaultStatusTexts[status] || status })
+          .set({ status, statusText: statusText || ORDER_STATUS_TEXTS[status] || status })
           .where(eq(orders.id, id))
           .returning();
         return row;
@@ -525,14 +516,7 @@ router.put('/orders/:id/status', async (req, res) => {
       return res.json(updated);
     }
 
-    const defaultStatusTexts: Record<string, string> = {
-      pending_payment: 'در انتظار پرداخت',
-      processing: 'در حال پردازش',
-      shipped: 'ارسال شده',
-      delivered: 'تحویل داده شده',
-      cancelled: 'لغو شده'
-    };
-    const textToSet = statusText || defaultStatusTexts[status] || status;
+    const textToSet = statusText || ORDER_STATUS_TEXTS[status] || status;
 
     const [updated] = await db.update(orders)
       .set({ status, statusText: textToSet })

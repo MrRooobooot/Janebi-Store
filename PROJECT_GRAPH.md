@@ -62,6 +62,7 @@
   - `public/robots.txt` (Explicitly permits `GPTBot`, `PerplexityBot`, `ClaudeBot`, `Google-Extended`, `Bingbot`, `Applebot`).
   - `index.html` & `src/pages/ProductDetail.tsx` (Deep JSON-LD Graph Schema: `Organization`, `WebSite`, `Product`, `Offer`, `AggregateRating`).
   - `server/lib/breadcrumbs.ts` (Universal Prerender JSON-LD & Canonical link injection for `/products/:id`, `/product/:id`, `/blog/:slug`).
+  - `server/lib/orderLifecycle.ts` (shared order-cancel data integrity: restock items + refund used VIP points — single source used by user-cancel, admin-cancel, failed-payment and payment-reaper paths; each caller keeps its own status guard/statusText/earn-clawback rules).
   - `server/app.ts` (Dynamic `X-Robots-Tag: noindex, follow` on search queries, `/cart`, `/login`, `/register`).
   - `server/index.ts` (Authentic HTTP 404 + noindex on non-existent product IDs; Soft 404 zero-tolerance).
 

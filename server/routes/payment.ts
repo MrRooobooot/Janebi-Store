@@ -5,6 +5,7 @@ import { eq, sql } from 'drizzle-orm';
 import { authenticate, AuthRequest } from '../middleware/auth.js';
 import { env } from '../env.js';
 import { paymentRouter } from '../services/payment/PaymentFailoverRouter.js';
+import { restockItemsAndRefundPoints } from '../lib/orderLifecycle.js';
 
 const router = Router();
 
@@ -93,22 +94,30 @@ router.get('/verify', async (req, res) => {
     const restockOrder = async (tx: any, orderId: string) => {
       const failedOrderList = await tx.select().from(orders).where(eq(orders.id, orderId));
       const failedOrder = failedOrderList[0];
-      const pointsToRefund = Number(failedOrder?.vipPointsUsed) || 0;
-      const itemsToRestock = await tx.select().from(orderItems).where(eq(orderItems.orderId, orderId));
-      for (const item of itemsToRestock) {
-        await tx.update(products)
-          .set({ stockQuantity: sql`${products.stockQuantity} + ${item.qty}` })
-          .where(eq(products.id, item.productId));
-      }
-      if (pointsToRefund > 0 && failedOrder?.userId) {
-        await tx.update(users)
-          .set({ vipPoints: sql`${users.vipPoints} + ${pointsToRefund}` })
-          .where(eq(users.id, failedOrder.userId));
-      }
+      await restockItemsAndRefundPoints(tx, orderId, failedOrder?.userId, failedOrder?.vipPointsUsed);
       await tx.update(orders)
         .set({ status: 'cancelled', statusText: 'لغو شده (پرداخت ناموفق)', vipPointsUsed: 0 })
         .where(eq(orders.id, orderId));
     };
+
+  // Shared success path: idempotency-guarded transition to `processing` +
+  // VIP points earned by the order (single source of truth for both the
+  // sandbox dummy path and the real verified-payment path).
+  const markOrderPaid = async (tx: any, orderId: string, refId: string) => {
+    const currentOrderList = await tx.select().from(orders).where(eq(orders.id, orderId));
+    const currentOrder = currentOrderList[0];
+    if (!currentOrder || currentOrder.status !== 'pending_payment') return;
+    await tx.update(orders)
+      .set({
+        status: 'processing',
+        statusText: 'در حال پردازش (پرداخت موفق)',
+        refId: refId
+      })
+      .where(eq(orders.id, orderId));
+    if (order.vipPointsEarned && order.vipPointsEarned > 0 && order.userId) {
+      await tx.update(users).set({ vipPoints: sql`${users.vipPoints} + ${order.vipPointsEarned}` }).where(eq(users.id, order.userId));
+    }
+  };
 
     if (status !== 'OK') {
       await db.transaction(async (tx) => {
@@ -128,19 +137,7 @@ router.get('/verify', async (req, res) => {
     ) {
       const dummyRefId = `REF-${Math.floor(Math.random() * 1000000)}`;
       await db.transaction(async (tx) => {
-        const currentOrderList = await tx.select().from(orders).where(eq(orders.id, order.id));
-        const currentOrder = currentOrderList[0];
-        if (!currentOrder || currentOrder.status !== 'pending_payment') return;
-        await tx.update(orders)
-          .set({ 
-            status: 'processing', 
-            statusText: 'در حال پردازش (پرداخت موفق)',
-            refId: dummyRefId
-          })
-          .where(eq(orders.id, order.id));
-        if (order.vipPointsEarned && order.vipPointsEarned > 0 && order.userId) {
-          await tx.update(users).set({ vipPoints: sql`${users.vipPoints} + ${order.vipPointsEarned}` }).where(eq(users.id, order.userId));
-        }
+        await markOrderPaid(tx, order.id, dummyRefId);
       });
       
       return res.redirect(`/checkout/callback?status=success&orderId=${order.id}&ref_id=${dummyRefId}`);
@@ -159,20 +156,7 @@ router.get('/verify', async (req, res) => {
       const refId = verifyResult.refId || `REF-${Math.floor(Math.random() * 1000000)}`;
       
       await db.transaction(async (tx) => {
-        const currentOrderList = await tx.select().from(orders).where(eq(orders.id, order.id));
-        const currentOrder = currentOrderList[0];
-        if (!currentOrder || currentOrder.status !== 'pending_payment') return;
-        await tx.update(orders)
-          .set({ 
-            status: 'processing', 
-            statusText: 'در حال پردازش (پرداخت موفق)',
-            refId: refId
-          })
-          .where(eq(orders.id, order.id));
-        // Award earned VIP points on successful verified payment
-        if (order.vipPointsEarned && order.vipPointsEarned > 0 && order.userId) {
-          await tx.update(users).set({ vipPoints: sql`${users.vipPoints} + ${order.vipPointsEarned}` }).where(eq(users.id, order.userId));
-        }
+        await markOrderPaid(tx, order.id, refId);
       });
 
       return res.redirect(`/checkout/callback?status=success&orderId=${order.id}&ref_id=${refId}`);
@@ -217,18 +201,7 @@ setInterval(async () => {
       await db.transaction(async (tx: any) => {
         const current = await tx.select().from(orders).where(eq(orders.id, id));
         if (!current[0] || current[0].status !== 'pending_payment') return;
-        const pointsToRefund = Number(current[0].vipPointsUsed) || 0;
-        const items = await tx.select().from(orderItems).where(eq(orderItems.orderId, id));
-        for (const item of items) {
-          await tx.update(products)
-            .set({ stockQuantity: sql`${products.stockQuantity} + ${item.qty}` })
-            .where(eq(products.id, item.productId));
-        }
-        if (pointsToRefund > 0 && current[0].userId) {
-          await tx.update(users)
-            .set({ vipPoints: sql`${users.vipPoints} + ${pointsToRefund}` })
-            .where(eq(users.id, current[0].userId));
-        }
+        await restockItemsAndRefundPoints(tx, id, current[0].userId, current[0].vipPointsUsed);
         await tx.update(orders)
           .set({ status: 'cancelled', statusText: 'لغو شده (انصراف از پرداخت)' })
           .where(eq(orders.id, id));
