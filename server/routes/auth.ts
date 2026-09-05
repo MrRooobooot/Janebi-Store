@@ -225,7 +225,7 @@ const providerConfigured = () => Boolean(env.SMS_API_KEY) || Boolean(env.SMS_PRO
 // dispatch requires a configured template ID; otherwise OTP stays gracefully
 // disabled in production (dev uses the simulator).
 const smsProviderEnabled = () => providerConfigured();
-export const smsTemplateIdConfigured = () =>
+const smsTemplateIdConfigured = () =>
   Boolean(env.SMS_TEMPLATE_ID) && env.SMS_TEMPLATE_ID !== "123456";
 const otpUnavailable = () => !providerConfigured() && env.NODE_ENV === "production";
 
