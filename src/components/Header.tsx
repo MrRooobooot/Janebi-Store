@@ -82,11 +82,11 @@ export default function Header() {
           </div>
 
           {/* User Controls & Quick Badges */}
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 relative z-30">
+          <div className="flex items-center gap-0.5 sm:gap-2 shrink-0 relative z-30">
             {/* Mobile Search Button */}
             <button
               aria-label="جستجو"
-              className="md:hidden p-2 text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              className="md:hidden p-1.5 sm:p-2 text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800"
               onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
             >
               <Search className="h-5 w-5" />
@@ -97,7 +97,7 @@ export default function Header() {
               aria-label={isDarkMode ? "تغییر به حالت روز" : "تغییر به حالت شب"}
               title={isDarkMode ? "حالت روز (روشن)" : "حالت شب (تاریک)"}
               onClick={toggleTheme}
-              className="p-2 text-zinc-600 dark:text-zinc-300 hover:text-orange-600 dark:hover:text-orange-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-[var(--color-surface-light)]/[0.06] transition-colors"
+              className="p-1.5 sm:p-2 text-zinc-600 dark:text-zinc-300 hover:text-orange-600 dark:hover:text-orange-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-[var(--color-surface-light)]/[0.06] transition-colors"
             >
               {isDarkMode ? <Sun className="h-5 w-5 text-amber-400" /> : <Moon className="h-5 w-5 text-zinc-600" />}
             </button>
@@ -106,7 +106,7 @@ export default function Header() {
             <Link
               to="/compare"
               aria-label="مشاهده لیست مقایسه کالاها"
-              className="p-2 text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors relative hidden sm:flex items-center min-touch-target"
+              className="p-1.5 sm:p-2 text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors relative hidden sm:flex items-center min-touch-target"
               title="مقایسه کالاها"
             >
               <ArrowLeftRight className="h-5 w-5" />
@@ -120,7 +120,7 @@ export default function Header() {
             {/* Wishlist Badge */}
             <Link
               to="/wishlist"
-              className="p-2 text-zinc-600 dark:text-zinc-400 hover:text-rose-600 dark:hover:text-rose-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors relative hidden sm:flex items-center"
+              className="p-1.5 sm:p-2 text-zinc-600 dark:text-zinc-400 hover:text-rose-600 dark:hover:text-rose-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors relative hidden sm:flex items-center"
               title="علاقه‌مندی‌ها"
             >
               <Heart className="h-5 w-5" />
@@ -135,7 +135,7 @@ export default function Header() {
             <button
               onClick={openCartDrawer}
               aria-label="مشاهده سبد خرید"
-              className="flex items-center gap-1.5 bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 hover:bg-orange-600 hover:text-white dark:hover:bg-orange-600 dark:hover:text-white border border-orange-200 dark:border-orange-900/50 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl transition-all duration-200 shadow-xs cursor-pointer"
+              className="flex items-center gap-1 bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 hover:bg-orange-600 hover:text-white dark:hover:bg-orange-600 dark:hover:text-white border border-orange-200 dark:border-orange-900/50 px-1.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl transition-all duration-200 shadow-xs cursor-pointer"
             >
               <div className="relative">
                 <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -153,11 +153,11 @@ export default function Header() {
               <div className="relative">
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  className="flex items-center gap-1.5 p-1.5 sm:p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-xs font-bold transition-colors"
+                  className="flex items-center gap-1 p-1 sm:p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-xs font-bold transition-colors"
                 >
                   <User className="h-4 w-4 text-orange-600" />
-                  <span className="max-w-[80px] sm:max-w-[100px] truncate">{user?.name || 'حساب کاربری'}</span>
-                  <ChevronDown className="h-3.5 w-3.5 text-zinc-500 dark:text-zinc-400" />
+                  <span className="hidden sm:inline max-w-[100px] truncate">{user?.name || 'حساب کاربری'}</span>
+                  <ChevronDown className="hidden sm:inline h-3.5 w-3.5 text-zinc-500 dark:text-zinc-400" />
                 </button>
 
                 {userDropdownOpen && (
@@ -208,10 +208,10 @@ export default function Header() {
               <button
                 onClick={() => setAuthModalOpen(true)}
                 aria-label="ورود یا ثبت نام در سایت"
-                className="flex items-center gap-1.5 bg-orange-600 hover:bg-orange-500 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-black transition-all shadow-sm shadow-orange-600/25 cursor-pointer active:scale-95"
+                className="flex items-center gap-1 bg-orange-600 hover:bg-orange-500 text-white px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-black transition-all shadow-sm shadow-orange-600/25 cursor-pointer active:scale-95 shrink-0"
               >
                 <LogIn className="h-4 w-4" />
-                <span className="hidden xs:inline">ورود / عضویت</span>
+                <span className="hidden sm:inline">ورود / عضویت</span>
               </button>
             )}
           </div>

@@ -60,13 +60,13 @@ interface LogoProps {
 export default function Logo({ className = "", variant = 'full', size = 'md' }: LogoProps) {
   const symbolSizes = {
     sm: "w-8 h-8",
-    md: "w-9 h-9 sm:w-11 sm:h-11",
+    md: "w-8 h-8 sm:w-11 sm:h-11",
     lg: "w-12 h-12 sm:w-14 sm:h-14"
   };
 
   const textSizes = {
     sm: "text-sm sm:text-base",
-    md: "text-base sm:text-xl",
+    md: "text-sm sm:text-xl",
     lg: "text-xl sm:text-2xl"
   };
 
@@ -97,7 +97,7 @@ export default function Logo({ className = "", variant = 'full', size = 'md' }: 
       <div className="relative p-1 sm:p-1.5 rounded-2xl bg-zinc-100/90 dark:bg-zinc-800/80 border border-zinc-200/80 dark:border-white/10 flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-all duration-300">
         <LogoSymbol className={symbolSizes[size]} />
       </div>
-      <div className="flex flex-col text-right">
+      <div className={`${size === 'md' ? 'max-[379px]:hidden ' : ''}flex flex-col text-right`}>
         <div className="flex items-center gap-1">
           <span className={`${textSizes[size]} font-black tracking-tight text-[#0B1536] dark:text-white group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors`}>
             جانبی
@@ -106,7 +106,7 @@ export default function Logo({ className = "", variant = 'full', size = 'md' }: 
             آرنا
           </span>
         </div>
-        <span className="text-[8px] sm:text-[9px] text-zinc-400 dark:text-zinc-500 -mt-0.5 font-black tracking-[0.18em] uppercase font-mono">
+        <span className={`${size === 'md' ? 'hidden sm:block ' : ''}text-[8px] sm:text-[9px] text-zinc-400 dark:text-zinc-500 -mt-0.5 font-black tracking-[0.18em] uppercase font-mono`}>
           JANEBI ARENA
         </span>
       </div>

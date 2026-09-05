@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, User, Phone, Lock, Eye, EyeOff, LogIn, UserPlus, Sparkles, ArrowLeft, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
 import { isValidIranianMobile, normalizeIranianMobile } from '../../lib/utils';
@@ -196,6 +197,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="09123456789"
                   className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3 px-4 pl-10 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
+                  autoComplete="username"
                   required
                 />
                 <Phone className="h-4 w-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -214,6 +216,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3 px-4 pl-10 pr-10 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
+                  autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
                   required
                 />
                 <Lock className="h-4 w-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -244,9 +247,20 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
           </form>
 
           {/* Footer note */}
-          <div className="mt-4 pt-3 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-center text-[11px] text-gray-400 dark:text-gray-500">
+          <div className="mt-4 pt-3 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-center text-[11px] text-gray-400 dark:text-gray-500 space-y-2">
             {mode === 'login' ? (
-              <span>ورود شما به منزله پذیرش قوانین جانبی آرنا است.</span>
+              <>
+                <div>
+                  <Link
+                    to="/login"
+                    onClick={onClose}
+                    className="font-bold text-gray-500 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
+                  >
+                    رمز عبور خود را فراموش کرده‌اید؟
+                  </Link>
+                </div>
+                <span>ورود شما به منزله پذیرش قوانین جانبی آرنا است.</span>
+              </>
             ) : (
               <span>با ثبت‌نام، از تخفیف‌های ویژه مشتریان بهره‌مند می‌شوید.</span>
             )}
