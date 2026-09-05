@@ -1,6 +1,6 @@
 # AGENTS.md — Janebi Store · Project Reference Document (PRD)
 
-> **Last Updated**: 2026-08-29T18:15:00+03:30  
+> **Last Updated**: 2026-09-05T09:30:00+03:30  
 > **Status**: Production Ready & Deployed  
 > **Domain**: https://janebiarena.ir  
 > **Root**: `/Users/aidin/Desktop/Janebi-Store`
@@ -138,9 +138,9 @@ Janebi-Store/
 ## 5. Verification Commands
 
 ```bash
-npm run verify      # Consolidated adversarial quality gate (Typecheck + 297 Vitest tests + Full Build)
+npm run verify      # Consolidated adversarial quality gate (Typecheck + 353 Vitest tests + Full Build)
 npm run lint        # tsc --noEmit (strict TypeScript check)
-npm test            # vitest run (36 test suites)
+npm test            # vitest run (48 test suites)
 npm run build       # Vite client build + Esbuild server bundle
 npm start           # node dist/server.cjs (production start)
 ```

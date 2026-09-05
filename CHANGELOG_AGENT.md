@@ -1,3 +1,11 @@
+## 2026-09-05 (r37d) — UI/UX Hardening, Coupon Parity & Prod Deploy — COMMITTED, DEPLOYED
+- **P0 Coupon Discount Parity (`src/lib/coupon.ts`):** client-side checkout calculation now mirrors server formula exactly for percentage/fixed caps.
+- **P1 Payment Route 404:** `/payment` fallback alias added to frontend router avoiding 404 on callback redirects.
+- **P1 Order History Filter:** `pending_payment` orders visible and retryable in user order history tab.
+- **P1 Lightbox Escape & Scroll-Lock:** modal image viewer keyboard accessibility and body scroll lock fixed.
+- **P2 Polish:** CSS `scale-108` utility fix, mobile action bar iOS safe-area insets, admin modals Escape dismissal.
+- **Gates:** 48 test suites, 353 passing tests, clean build, verified live on janebiarena.ir.
+
 ## 2026-09-04 (r37c) — Production-Integrity Audit (PostgreSQL) — COMMITTED
 - P0 oversell on PG: order stock deduction was SELECT-then-conditional-UPDATE (TOCTOU). Live evidence: 25 parallel orders on stock=1 → 9 winners, stock −8. Fix: atomic `stockQuantity >= qty` predicate + `.returning()` row-count check inside the order transaction (orders.ts). Post-fix: 25 parallel orders → exactly 1×201, stock=0 (4/4 rounds stable).
 - P1 search case parity: `likeWithEscape` now lowers both sides — SQLite LIKE is case-insensitive for ASCII but PG LIKE is case-sensitive (live: `?search=anker` 0 vs `Anker` 3 on PG). Post-fix: 3/3 on PG.

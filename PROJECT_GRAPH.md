@@ -1,8 +1,8 @@
 # ARCHITECTURE & PROJECT GRAPH — JANEBI ARENA
 
 > **Autonomous Engineering Knowledge Base & Live System Map**
-> **Last Verified & Updated:** 2026-09-04 (Dead-Code Cleanup r37b — commit `2002ea5`)
-> **Status:** Live & Production Ready (45 test suites, 344 passing tests)
+> **Last Verified & Updated:** 2026-09-05 (PostgreSQL audit r37c & UI fixes — commit `355239b`)
+> **Status:** Live & Production Ready (48 test suites, 353 passing tests)
 > **PRD Reference:** `AGENTS.md` | `PROJECT_AUDIT.md` | `TASKS.md`
 
 ---
@@ -78,7 +78,7 @@
    ```bash
    npm run verify
    ```
-   (Runs strict `tsc --noEmit`, all 297 Vitest unit/stress/concurrency tests, and full production build).
+   (Runs strict `tsc --noEmit`, all 353 Vitest unit/stress/concurrency tests across 48 suites, and full production build).
 
 ---
 

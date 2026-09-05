@@ -3,7 +3,7 @@
 > **این فایل تنها Source of Truth وضعیت پروژه است.** ترتیب اعتبار اطلاعات:
 > ۱) کد فعلی و Runtime واقعی ← ۲) همین فایل ← ۳) تست‌ها/Evidence ← ۴) سایر مستندات.
 > هر تناقضی بین این فایل و کد → کد برنده است و این فایل باید اصلاح شود.
-> **Last Updated: 2026-08-28 (Session #6 — UI/UX Wave + PWA + Payment Failover + Live Deploy)**
+> **Last Updated: 2026-09-05 (Session #7 — PG Audit r37c + UI Parity & Checkout Fixes r37d + 353 Tests)**
 
 ---
 
@@ -49,7 +49,7 @@
 - [x] **Admin Panel**: عملیات واقعاً متصل به API و کارا (محصولات/سفارشات+لغو امن/کوپن‌ها/نظرات/پیام‌ها/خبرنامه/کاربران+ریست رمز/تنظیمات پایدار)
 - [x] **Auth/AuthZ**: register/login/logout سالم، هش bcrypt، role-based access، بدون IDOR (اثبات زنده)، forgot-password دو مسیره
 - [x] **Payment**: زنجیره خودکار چنددرگاهی با Circuit Breaker (زرین‌پال + سامان/شاپرک)؛ COD کاملاً فعال و اثبات‌شده
-- [x] **Testing**: سه گیت سبز (288/288 تست در 32 فایل) + پوشش risk-based برای جریان‌های critical
+- [x] **Testing**: سه گیت سبز (۳۵۳/۳۵۳ تست در ۴۸ فایل) + پوشش risk-based برای جریان‌های critical
 - [x] **Security**: authz bypass/IDOR/injection/XSS/rate-limit/headers/secrets بررسی و رفع
 - [x] **Deploy**: بیلد سالم، دیپلوی rsync+tunnel-tested، health/readiness زنده (200 OK)
 - [x] **PWA & UX**: استانداردهای کامل دسترسی‌پذیری WCAG AA، کش آفلاین Service Worker، المان‌های شناور و هدر چسبنده کاتالوگ
@@ -58,7 +58,7 @@
 
 ## Current State (خلاصه)
 - **وضعیت کلی: LAUNCH-READY از نظر فنی.** سایت زنده و پایدار روی janebiarena.ir با آخرین کد.
-- گیت‌ها: **284/284 تست (31 فایل) · tsc تمیز · build سالم**
+- گیت‌ها: **۳۵۳/۳۵۳ تست (۴۸ فایل) · tsc تمیز · build سالم**
 - ادمین: حساب خودِ کاربر (`[REDACTED-CREDENTIAL]` / ایمیل `aidinnemati09@gmail.com` / نام `آیدین نعمتی` / [REDACTED-CREDENTIAL]، نقش admin) + قابلیت ریست رمز هر کاربر از پنل
 - محصولات فعلی: ۱۲ عدد (کاربر قرار است اجناس واقعی را آپلود کند)
 - پرداخت آنلاین: gated با 503 امن — منتظر Merchant ID زرین‌پال از کاربر
