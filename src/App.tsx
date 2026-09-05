@@ -46,6 +46,7 @@ const AdminMessages = lazy(() => import('./pages/admin/Messages'));
 const AdminReviews = lazy(() => import('./pages/admin/Reviews'));
 const AdminNewsletter = lazy(() => import('./pages/admin/Newsletter'));
 const AdminSettings = lazy(() => import('./pages/admin/Settings'));
+const AdminAuditLogs = lazy(() => import('./pages/admin/AuditLogs'));
 
 import { ToastProvider } from './contexts/ToastContext';
 import { WishlistProvider } from './contexts/WishlistContext';
@@ -105,6 +106,7 @@ export default function App() {
                         <Route path="coupons" element={<AdminCoupons />} />
                         <Route path="messages" element={<AdminMessages />} />
                         <Route path="newsletter" element={<AdminNewsletter />} />
+                        <Route path="audit-logs" element={<AdminAuditLogs />} />
                         <Route path="settings" element={<AdminSettings />} />
                       </Route>
                     </Routes>

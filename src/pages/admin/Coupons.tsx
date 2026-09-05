@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom';
 import { useToast } from '../../contexts/ToastContext';
 import { 
   Plus, Trash2, Tag, Percent, DollarSign, Copy, CheckCircle2, 
-  X, Calendar, Sparkles, AlertCircle, ToggleLeft, ToggleRight
+  X, Calendar, Sparkles, AlertCircle, ToggleLeft, ToggleRight, Pencil
 } from 'lucide-react';
 import { toEnglishDigits, toPersianDigits, formatPrice } from '../../lib/utils';
 
@@ -21,8 +21,11 @@ export default function AdminCoupons() {
     value: '',
     minTotal: '',
     label: '',
-    active: true
+    active: true,
+    expiresAt: '',   // ISO date string or '' (never expires)
+    usageLimit: ''   // '' = unlimited
   });
+  const [editingCode, setEditingCode] = useState<string | null>(null); // null = create mode
 
   useEffect(() => {
     fetchCoupons();
@@ -59,6 +62,27 @@ export default function AdminCoupons() {
     }
   };
 
+  const openCreateModal = () => {
+    setEditingCode(null);
+    setFormData({ code: '', type: 'percent', value: '', minTotal: '', label: '', active: true, expiresAt: '', usageLimit: '' });
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (coupon: any) => {
+    setEditingCode(coupon.code);
+    setFormData({
+      code: coupon.code,
+      type: coupon.percent ? 'percent' : 'amount',
+      value: String(coupon.percent ?? coupon.amount ?? ''),
+      minTotal: coupon.minTotal ? String(coupon.minTotal) : '',
+      label: coupon.label || '',
+      active: coupon.active !== false,
+      expiresAt: coupon.expiresAt ? coupon.expiresAt.slice(0, 10) : '',
+      usageLimit: coupon.usageLimit ? String(coupon.usageLimit) : ''
+    });
+    setIsModalOpen(true);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const cleanValue = toEnglishDigits(formData.value);
@@ -75,33 +99,66 @@ export default function AdminCoupons() {
       return;
     }
 
-    const payload = {
-      code: formData.code.trim().toUpperCase(),
-      percent: formData.type === 'percent' ? parsedVal : undefined,
-      amount: formData.type === 'amount' ? parsedVal : undefined,
+    const base = {
+      percent: formData.type === 'percent' ? parsedVal : null,
+      amount: formData.type === 'amount' ? parsedVal : null,
       minTotal: parseInt(cleanMinTotal, 10) || 0,
       label: formData.label.trim(),
-      active: formData.active
+      active: formData.active,
+      expiresAt: formData.expiresAt || null,
+      usageLimit: toEnglishDigits(formData.usageLimit) ? parseInt(toEnglishDigits(formData.usageLimit), 10) : null
     };
 
     try {
-      const res = await authFetch('/api/admin/coupons', {
-        method: 'POST',
+      // Edit mode reuses the coupon PK (code) via PUT; create POSTs a new one.
+      const res = editingCode
+        ? await authFetch(`/api/admin/coupons/${editingCode}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(base)
+          })
+        : await authFetch('/api/admin/coupons', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ ...base, code: formData.code.trim().toUpperCase() })
+          });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || 'خطا در ثبت کد تخفیف');
+      }
+
+      addToast(editingCode ? 'کد تخفیف با موفقیت بروزرسانی شد' : 'کد تخفیف جدید با موفقیت اضافه شد', 'success');
+      setIsModalOpen(false);
+      setEditingCode(null);
+      setFormData({ code: '', type: 'percent', value: '', minTotal: '', label: '', active: true, expiresAt: '', usageLimit: '' });
+      fetchCoupons();
+    } catch (err: any) {
+      addToast(err.message || 'خطا در ثبت کد تخفیف', 'error');
+    }
+  };
+
+  const handleToggleActive = async (coupon: any) => {
+    try {
+      const res = await authFetch(`/api/admin/coupons/${coupon.code}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({ active: coupon.active === false })
       });
-
       if (!res.ok) throw new Error();
-
-      addToast('کد تخفیف جدید با موفقیت اضافه شد', 'success');
-      setIsModalOpen(false);
-      setFormData({ code: '', type: 'percent', value: '', minTotal: '', label: '', active: true });
-      fetchCoupons();
-    } catch (err) {
-      addToast('خطا در ثبت کد تخفیف', 'error');
+      setCoupons(coupons.map((c: any) => c.code === coupon.code ? { ...c, active: coupon.active === false } : c));
+      addToast(coupon.active === false ? `کد ${coupon.code} فعال شد` : `کد ${coupon.code} غیرفعال شد`, 'success');
+    } catch {
+      addToast('خطا در تغییر وضعیت کد تخفیف', 'error');
     }
   };
 
@@ -135,7 +192,7 @@ export default function AdminCoupons() {
         </div>
 
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => openCreateModal()}
           className="flex items-center gap-2 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-extrabold px-5 py-3 rounded-2xl text-xs shadow-lg shadow-orange-500/25 transition-all cursor-pointer self-start sm:self-auto hover:scale-105 active:scale-95"
         >
           <Plus className="h-4 w-4" />
@@ -159,13 +216,18 @@ export default function AdminCoupons() {
             >
               {/* Ticket Top Notch */}
               <div className="flex items-center justify-between gap-3 mb-4">
-                <span className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold ${
-                  coupon.active !== false
-                    ? 'bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 border border-emerald-200 dark:border-emerald-900/40'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300'
-                }`}>
+                <button
+                  type="button"
+                  onClick={() => handleToggleActive(coupon)}
+                  className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold cursor-pointer transition-all hover:scale-105 ${
+                    coupon.active !== false
+                      ? 'bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 border border-emerald-200 dark:border-emerald-900/40'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300 border border-gray-200 dark:border-gray-600'
+                  }`}
+                  title={coupon.active !== false ? 'غیرفعال‌سازی' : 'فعال‌سازی'}
+                >
                   {coupon.active !== false ? 'فعال و معتبر' : 'غیرفعال'}
-                </span>
+                </button>
 
                 <span className="text-[10px] text-gray-500 dark:text-gray-400 font-bold">
                   {coupon.percent ? 'تخفیف درصدی' : 'تخفیف نقدی'}
@@ -211,14 +273,33 @@ export default function AdminCoupons() {
               </div>
 
               {/* Action Buttons */}
-              <div className="pt-3 border-t border-[var(--color-border-light)] dark:border-gray-700 flex items-center justify-end">
-                <button
-                  onClick={() => handleDelete(coupon.code)}
-                  className="p-2 rounded-xl text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                  <span>حذف کد</span>
-                </button>
+              <div className="pt-3 border-t border-[var(--color-border-light)] dark:border-gray-700 flex items-center justify-between">
+                <div className="flex flex-col items-start text-[10px] text-gray-400 dark:text-gray-500 font-bold gap-0.5">
+                  {coupon.expiresAt ? (
+                    <span>انقضا: {toPersianDigits(new Date(coupon.expiresAt).toLocaleDateString('fa-IR'))}</span>
+                  ) : (
+                    <span>بدون تاریخ انقضا</span>
+                  )}
+                  {coupon.usageLimit ? (
+                    <span>سقف استفاده: {toPersianDigits((coupon.usageLimit as number).toLocaleString('fa-IR'))} بار</span>
+                  ) : null}
+                </div>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => openEditModal(coupon)}
+                    className="p-2 rounded-xl text-sky-600 hover:bg-sky-50 dark:hover:bg-sky-950/30 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                    <span>ویرایش</span>
+                  </button>
+                  <button
+                    onClick={() => handleDelete(coupon.code)}
+                    className="p-2 rounded-xl text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                    <span>حذف کد</span>
+                  </button>
+                </div>
               </div>
             </div>
           ))
@@ -232,7 +313,7 @@ export default function AdminCoupons() {
             <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-gray-700 mb-5">
               <h3 className="font-black text-[var(--color-text-main-light)] dark:text-white text-base flex items-center gap-2">
                 <Tag className="h-5 w-5 text-orange-500" />
-                <span>تعریف کد تخفیف جدید</span>
+                <span>{editingCode ? `ویرایش کد ${editingCode}` : 'تعریف کد تخفیف جدید'}</span>
               </h3>
               <button onClick={() => setIsModalOpen(false)} aria-label="بستن پنجره کد تخفیف" className="p-3 -m-1 flex items-center justify-center rounded-xl text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
                 <X className="h-5 w-5" />
@@ -242,11 +323,12 @@ export default function AdminCoupons() {
             <form onSubmit={handleSubmit} className="space-y-4 text-xs font-bold">
               <div>
                 <label className="block text-gray-700 dark:text-gray-300 mb-1.5 font-black">
-                  کد تخفیف (لاتین و انگلیسی) *
+                  کد تخفیف (لاتین و انگلیسی) {editingCode ? '' : '*'}
                 </label>
                 <input
                   type="text"
-                  required
+                  required={!editingCode}
+                  disabled={!!editingCode}
                   value={formData.code}
                   onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
                   placeholder="مثال: OFF20 یا JANEBI100"
@@ -310,6 +392,30 @@ export default function AdminCoupons() {
                 />
               </div>
 
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-gray-700 dark:text-gray-300 mb-1.5">تاریخ انقضا</label>
+                  <input
+                    type="date"
+                    value={formData.expiresAt}
+                    onChange={(e) => setFormData({ ...formData, expiresAt: e.target.value })}
+                    className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500"
+                  />
+                  <span className="text-[10px] text-gray-500 dark:text-gray-400 mt-1 block">خالی = بدون انقضا</span>
+                </div>
+                <div>
+                  <label className="block text-gray-700 dark:text-gray-300 mb-1.5">سقف تعداد استفاده</label>
+                  <input
+                    type="text"
+                    value={formData.usageLimit}
+                    onChange={(e) => setFormData({ ...formData, usageLimit: toEnglishDigits(e.target.value).replace(/[^0-9]/g, '') })}
+                    placeholder="مثال: 100"
+                    className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs font-mono text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500 text-left dir-ltr"
+                  />
+                  <span className="text-[10px] text-gray-500 dark:text-gray-400 mt-1 block">خالی = نامحدود</span>
+                </div>
+              </div>
+
               <div className="flex justify-end gap-3 pt-4 border-t border-[var(--color-border-light)] dark:border-gray-700">
                 <button
                   type="button"
@@ -322,7 +428,7 @@ export default function AdminCoupons() {
                   type="submit"
                   className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 text-white font-extrabold shadow-md shadow-orange-500/20"
                 >
-                  ایجاد کد تخفیف
+                  {editingCode ? 'ذخیره تغییرات' : 'ایجاد کد تخفیف'}
                 </button>
               </div>
             </form>

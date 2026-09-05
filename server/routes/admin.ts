@@ -296,6 +296,7 @@ router.put('/users/:id/password', async (req, res) => {
       return res.status(404).json({ error: 'کاربر یافت نشد', message: 'کاربر یافت نشد' });
     }
 
+    logAudit(req, 'user.password.reset', 'user', id, { targetName: updated.name });
     res.json({ message: `رمز عبور کاربر ${updated.name} با موفقیت تغییر کرد` });
   } catch (error) {
     console.error('Admin password reset error:', error);
@@ -310,6 +311,12 @@ router.put('/users/:id/role', async (req, res) => {
 
     if (!role || !['admin', 'user'].includes(role)) {
       return res.status(400).json({ error: 'نقش کاربر نامعتبر است', message: 'Invalid role' });
+    }
+
+    // Self-lockout guard: an admin cannot demote their own account — the
+    // only admins left with panel access would be zero and the panel dies.
+    if (id === (req as any).user?.id && role !== 'admin') {
+      return res.status(400).json({ error: 'نمی‌توانید نقش حساب خودتان را تغییر دهید', message: 'Cannot change own role' });
     }
 
     const [updated] = await db.update(users).set({ role }).where(eq(users.id, id)).returning();
@@ -483,12 +490,12 @@ router.put('/orders/:id/status', async (req, res) => {
     // VIP points (refund used, claw back earned — earned only when the
     // order actually reached "processing").
     if (status === 'cancelled') {
-      const updated = await db.transaction(async (tx) => {
+      const cancelResult = await db.transaction(async (tx) => {
         const orderList = await tx.select().from(orders).where(eq(orders.id, id));
         const order = orderList[0];
         if (!order) return null;
         if (order.status === 'cancelled') {
-          return order; // already cancelled — idempotent
+          return { row: order, previousStatus: order.status as string }; // already cancelled — idempotent
         }
         if (order.status !== 'pending_payment' && order.status !== 'processing') {
           throw Object.assign(new Error('فقط سفارش‌های در انتظار پرداخت یا در حال پردازش قابل لغو هستند'), { status: 400 });
@@ -506,14 +513,15 @@ router.put('/orders/:id/status', async (req, res) => {
           .set({ status, statusText: statusText || ORDER_STATUS_TEXTS[status] || status })
           .where(eq(orders.id, id))
           .returning();
-        return row;
+        return { row, previousStatus: order.status as string };
       });
 
-      if (updated === null) {
+      if (cancelResult === null) {
         return res.status(404).json({ error: 'سفارش یافت نشد', message: 'سفارش یافت نشد' });
       }
       appCache.invalidate('products');
-      return res.json(updated);
+      logAudit(req, 'order.status.update', 'order', id, { status, previousStatus: cancelResult.previousStatus });
+      return res.json(cancelResult.row);
     }
 
     const textToSet = statusText || ORDER_STATUS_TEXTS[status] || status;
@@ -527,6 +535,7 @@ router.put('/orders/:id/status', async (req, res) => {
       return res.status(404).json({ error: 'سفارش یافت نشد', message: 'سفارش یافت نشد' });
     }
     
+    logAudit(req, 'order.status.update', 'order', id, { status });
     res.json(updated);
   } catch (error: any) {
     if (error?.status === 400) {
@@ -550,24 +559,78 @@ router.get('/coupons', async (req, res) => {
 
 router.post('/coupons', async (req, res) => {
   try {
-    const { code, percent, amount, minTotal, label, active, usageLimit } = req.body;
+    const { code, percent, amount, minTotal, label, active, usageLimit, expiresAt } = req.body;
     if (!code || !label) {
       return res.status(400).json({ message: 'Code and label are required' });
     }
 
+    if (percent && amount) {
+      return res.status(400).json({ message: 'فقط یکی از درصد یا مبلغ تخفیف مجاز است' });
+    }
+
+    const upperCode = String(code).toUpperCase();
+    const existing = await db.query.coupons.findFirst({ where: eq(coupons.code, upperCode) });
+    if (existing) {
+      return res.status(409).json({ message: 'این کد تخفیف قبلاً ثبت شده است' });
+    }
+
+    if (expiresAt !== undefined && expiresAt !== null && expiresAt !== '' && Number.isNaN(Date.parse(expiresAt))) {
+      return res.status(400).json({ message: 'تاریخ انقضا نامعتبر است' });
+    }
+
     const inserted = await db.insert(coupons).values({
-      code: code.toUpperCase(),
+      code: upperCode,
       percent: percent ? parseInt(percent) : null,
       amount: amount ? parseInt(amount) : null,
       minTotal: minTotal ? parseInt(minTotal) : 0,
       label,
       active: active ?? true,
-      usageLimit: usageLimit ? parseInt(usageLimit) : null
+      usageLimit: usageLimit ? parseInt(usageLimit) : null,
+      expiresAt: expiresAt ? new Date(expiresAt).toISOString() : null
     }).returning();
 
+    logAudit(req, 'coupon.create', 'coupon', upperCode, { label });
     res.status(201).json(inserted[0]);
   } catch (error) {
     console.error('Create coupon error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// PUT /api/admin/coupons/:code — edit an existing coupon. All fields optional;
+// omitted fields keep their current value. Audit-logged (§3.7).
+router.put('/coupons/:code', async (req, res) => {
+  try {
+    const upperCode = req.params.code.toUpperCase();
+    const { percent, amount, minTotal, label, active, usageLimit, expiresAt } = req.body;
+
+    const existing = await db.query.coupons.findFirst({ where: eq(coupons.code, upperCode) });
+    if (!existing) {
+      return res.status(404).json({ error: 'کد تخفیف یافت نشد', message: 'Coupon not found' });
+    }
+
+    if (percent !== undefined && amount !== undefined && percent !== null && amount !== null) {
+      return res.status(400).json({ message: 'فقط یکی از درصد یا مبلغ تخفیف مجاز است' });
+    }
+
+    if (expiresAt !== undefined && expiresAt !== null && expiresAt !== '' && Number.isNaN(Date.parse(expiresAt))) {
+      return res.status(400).json({ message: 'تاریخ انقضا نامعتبر است' });
+    }
+
+    const [updated] = await db.update(coupons).set({
+      ...(percent !== undefined && { percent: percent === null ? null : parseInt(percent) }),
+      ...(amount !== undefined && { amount: amount === null ? null : parseInt(amount) }),
+      ...(minTotal !== undefined && { minTotal: minTotal ? parseInt(minTotal) : 0 }),
+      ...(label !== undefined && { label }),
+      ...(active !== undefined && { active: Boolean(active) }),
+      ...(usageLimit !== undefined && { usageLimit: usageLimit === null || usageLimit === '' ? null : parseInt(usageLimit) }),
+      ...(expiresAt !== undefined && { expiresAt: expiresAt === null || expiresAt === '' ? null : new Date(expiresAt).toISOString() })
+    }).where(eq(coupons.code, upperCode)).returning();
+
+    logAudit(req, 'coupon.update', 'coupon', upperCode, { label: updated.label });
+    res.json(updated);
+  } catch (error) {
+    console.error('Update coupon error:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
@@ -584,6 +647,7 @@ router.delete('/coupons/:code', async (req, res) => {
     }
 
     await db.delete(coupons).where(eq(coupons.code, upperCode));
+    logAudit(req, 'coupon.delete', 'coupon', upperCode, { label: existing.label });
     res.json({ message: 'کد تخفیف با موفقیت حذف شد' });
   } catch (error) {
     res.status(500).json({ message: 'Internal server error' });

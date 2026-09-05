@@ -165,6 +165,34 @@ export default function AdminProducts() {
     addToast(`تصویر مرتبط با دسته "${newCat}" خودکار انتخاب شد`, 'info');
   };
 
+  // Real-photo upload via admin endpoint — returns served URL, wired into form.
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadError('');
+    setUploading(true);
+    try {
+      const form = new FormData();
+      form.append('image', file);
+      const res = await authFetch('/api/admin/upload/product-image', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: form
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.message || 'آپلود عکس ناموفق بود');
+      setFormData(prev => ({ ...prev, image: data.url }));
+      addToast('عکس با موفقیت آپلود شد', 'success');
+    } catch (err: any) {
+      setUploadError(err.message || 'خطا در آپلود عکس');
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
+  };
+
   const openModal = (product?: Product) => {
     if (product) {
       setEditingProduct(product);
@@ -670,6 +698,22 @@ export default function AdminProducts() {
                       ✓ بهینه‌سازی‌شده برای بارگذاری محلی و بدون باگ در شبکه ایران
                     </span>
                   </div>
+                </div>
+
+                {/* Real photo upload — POST /api/admin/upload/product-image (JPEG/PNG/WebP ≤5MB) */}
+                <div className="flex items-center gap-2 mb-3">
+                  <label className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800 text-sky-700 dark:text-sky-300 text-[11px] font-bold cursor-pointer hover:bg-sky-100 dark:hover:bg-sky-900/40 transition-colors">
+                    <Upload className="h-3.5 w-3.5" />
+                    {uploading ? 'در حال آپلود...' : 'آپلود عکس واقعی (JPG/PNG/WebP)'}
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      className="hidden"
+                      disabled={uploading}
+                      onChange={handleImageUpload}
+                    />
+                  </label>
+                  {uploadError && <span className="text-[10px] text-rose-600 dark:text-rose-400 font-bold">{uploadError}</span>}
                 </div>
 
                 {/* Visual Grid Selector */}
