@@ -97,7 +97,7 @@ export default function BrandShowcase() {
                     >
                       {/* Logo Frame */}
                       <div className="w-full h-14 rounded-xl bg-gray-50/80 dark:bg-gray-700/40 group-hover:bg-orange-50/50 dark:group-hover:bg-orange-950/20 border border-[var(--color-border-light)]/80 dark:border-gray-700/40 flex items-center justify-center p-2 transition-colors duration-300">
-                        <BrandLogo name={brand.name} size="md" />
+                        <BrandLogo name={brand.name} size="md" priority />
                       </div>
       
                       {/* Info */}
