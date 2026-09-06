@@ -238,7 +238,9 @@ export default function Login() {
                   </label>
                   {otpSent && (
                     <span className="text-[11px] text-orange-600 dark:text-orange-400 font-mono">
-                      {otpCountdown > 0 ? `${toPersianDigits(otpCountdown)} ثانیه تا ارسال مجدد` : "کد منقضی شد"}
+                      {otpCountdown > 0
+                        ? `${toPersianDigits(otpCountdown)} ثانیه تا ارسال مجدد`
+                        : "پیامک نرسیده؟ ارسال مجدد"}
                     </span>
                   )}
                 </div>
