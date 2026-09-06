@@ -5,7 +5,6 @@ import { ProductCardSkeleton } from '../components/Skeletons';
 import FAQ from '../components/FAQ';
 import LatestReviews from '../components/LatestReviews';
 import RecentlyViewed from '../components/RecentlyViewed';
-import BrandShowcase from '../components/BrandShowcase';
 import VipClubBanner from '../components/VipClubBanner';
 import {
   Sparkles, ArrowLeft, Smartphone, Shield, Zap, Cable, Headphones,
@@ -491,10 +490,7 @@ export default function Home() {
       {/* 8. VIP Loyalty Club Banner */}
       <VipClubBanner />
 
-      {/* 9. Brands Showcase */}
-      <BrandShowcase />
-
-      {/* 10. FAQ Section */}
+      {/* 9. FAQ Section */}
       <FAQ />
 
       {/* 11. Recently Viewed */}
