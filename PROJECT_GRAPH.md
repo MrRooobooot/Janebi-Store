@@ -142,6 +142,14 @@ Full evidence + remediation list: `PROJECT_AUDIT.md`. Highest-priority debts:
 
 ## Audit remediation (2026-09-06, commit `02ef15b` — deployed & live-verified)
 - **SEO-004 soft-404 fixed:** `server/index.ts` now mirrors the SPA route table (`SPA_ROUTES` set) in the prod catch-all — unknown paths return HTTP 404 + `X-Robots-Tag: noindex, follow` (was 200 + index). Static-route additions to `src/App.tsx` MUST be mirrored in that Set. Live-verified: `/nonexistent-xyz`→404+noindex, `/products/999999999`→404, all real routes→200.
+
+## Bale bot (بله) complete overhaul — 100% Inline Keyboards (2026-09-07)
+- **Engine:** Grammy 1.46 pointing at `https://tapi.bale.ai`. Long-polling with session Map + auto-prune.
+- **100% Inline controls (دکمه‌های شیشه‌ای):** Main dashboard, paginated category selector (2-col grid + page navigation), quick stock/brand/warranty buttons, skip buttons, product confirmation modal, product management card, recent orders with status change buttons, store live stats, and inventory alerts.
+- **Native photo download:** Downloads user photos from Bale CDN (`/file/bot<token>/<path>`), verifies magic bytes (JPEG/PNG/WebP), saves to `public/images/products/`, stores relative URL.
+- **Bale Bot API compliance:** All `callback_data` under 64 bytes (unit tested in `tests/unit/bale-bot.test.ts`), strict instant `answerCallbackQuery` dispatch to eliminate client spinner hangs, Markdown-compliant spacing, in-place message updates (`editMessageText`).
+- **Data & Financial integrity:** Order cancellations inside bot restock items and refund VIP points via `restockItemsAndRefundPoints` in transaction; product deletions clean up related cart/wishlist/review/feature records; audit logging on all actions.
+
 - **Guest cart/wishlist merge-on-login:** `CartContext`/`WishlistContext` push localStorage items to the server (POST = upsert/idempotent) keyed by a `mergedForToken` ref (cart) before fetching the authoritative list. Was: silent REPLACE on login. FE CartItem.id is the product id (typeof number).
 - **Live-price compare:** `CompareContext` uses the canonical `../types` Product (local duplicate deleted — it lacked `stockQuantity` and broke tsc) + new silent `replaceCompare()`; Compare page refetches each item on mount and drops deleted products.
 - **ChatWidget honesty:** copy now says «راهنمای خودکار» — no fake «کارشناسان بررسی می‌کنند» claim; fallback reply points to phone/Contact page.
