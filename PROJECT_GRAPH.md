@@ -155,3 +155,11 @@ Full evidence + remediation list: `PROJECT_AUDIT.md`. Highest-priority debts:
 - **ChatWidget honesty:** copy now says «راهنمای خودکار» — no fake «کارشناسان بررسی می‌کنند» claim; fallback reply points to phone/Contact page.
 - **`GET /api/admin/orders` optional server pagination:** `?page=&limit=(1..200,def 50)&status=` → `{items,total,page,limit}`; no params → full array (back-compat; admin UI still client-side filters).
 - **Deploy-path lesson:** VPS tree had drifted (`src/lib/coupon.ts`, `server/lib/breadcrumbs.ts` missing → build failures mid-deploy). Fix: ship whole `server/lib` + `src/lib` dirs, not just changed files. Old-container mystery (`/cart` served `index,follow` while new routes answered): stale container process — full `up -d --force-recreate` + image→host dist sync + restart cleared it. Verify served headers on a cache-busted URL, not memory of a previous fetch.
+
+## Admin panel management upgrade (2026-09-07, commit `2a99775` — deployed & live-verified)
+- **P0 catalogue fix:** `AdminProducts` fetched `/api/products` with no `limit` → API default page size 20, so the admin saw only 20 of 139+ products. Now `?limit=1000`.
+- **Badge counters:** `/api/admin/stats` now returns `metrics.unreadMessages` + `metrics.pendingReviews` (two count(*) aggregates); AdminLayout sidebar shows badges on «نظرات کاربران» and «پیام‌های تماس» + Dashboard gets 2 new stat cards.
+- **Quick stock edit:** click the stock cell in AdminProducts → inline numeric input, Enter/blur saves via `PUT /api/admin/products/:id {stockQuantity}` (partial update already supported), Esc cancels. Stock state updated optimistically in the list.
+- **CSV/SMS copy fix (was silently broken):** Orders export used `o.recipient?.name` etc — field doesn't exist on the order row (real fields: `recipientName/recipientPhone/recipientAddress/recipientPostalCode`); columns always exported '-'. Also `paymentMethod` now renders the Persian label (کارت به کارت / پرداخت اینترنتی).
+- **Coupon usage display:** coupon cards show `usedCount`/`usageLimit` («مصرف‌شده: ۳ از ۵۰ بار»), red + «(تکمیل)» when exhausted.
+- **Verify:** npm run verify ALL PASS (389/389), prod health ok, served chunks contain new code (`limit=1000` in Products-BRuWamZn.js, `unreadMessages` in AdminLayout/Dashboard, `usedCount` in Coupons). Prod DB counters verified 0/0/139 via in-container sqlite query.
