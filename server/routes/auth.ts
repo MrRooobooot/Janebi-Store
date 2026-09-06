@@ -259,7 +259,8 @@ router.post("/otp/send", validate(otpSendSchema), async (req, res) => {
 
   // Cryptographically secure 5-digit OTP
   const code = crypto.randomInt(10000, 100000).toString();
-  const expiresAt = Date.now() + 2 * 60 * 1000; // 2 minutes
+  const expiresAt = Date.now() + 5 * 60 * 1000; // 5 minutes — operator SMS delivery
+  // can lag 2-6min; a 2min TTL expired before the SMS arrived (2026-09-06 incident).
 
   otpStore.set(phone, { code, expiresAt, attempts: 0 });
 
@@ -283,8 +284,8 @@ router.post("/otp/send", validate(otpSendSchema), async (req, res) => {
             { name: "Code", value: code },
             // Template «کد تایید شما: #CODE# / اعتبار این کد تا #TIME# است.»
             // (id from panel) includes an expiry line — send the local expiry
-            // so the SMS matches the server-side TTL (2 minutes).
-            { name: "Time", value: "۲ دقیقه" },
+            // so the SMS matches the server-side TTL (5 minutes).
+            { name: "Time", value: "۵ دقیقه" },
           ],
         }),
         signal: AbortSignal.timeout(8000),
@@ -311,7 +312,7 @@ router.post("/otp/send", validate(otpSendSchema), async (req, res) => {
 
   res.json({
     message: "کد تایید با موفقیت ارسال شد",
-    expiresIn: 120,
+    expiresIn: 300,
     ...(env.NODE_ENV !== "production" ? { debugCode: code } : {})
   });
 });

@@ -19,7 +19,7 @@ describe('OTP Auth, VIP Points & Analytics Integration Tests', () => {
       .send({ phone: testPhone });
 
     expect(sendRes.status).toBe(200);
-    expect(sendRes.body.expiresIn).toBe(120);
+    expect(sendRes.body.expiresIn).toBe(300);
 
     const otpCode = sendRes.body.debugCode;
     expect(otpCode).toBeDefined();
