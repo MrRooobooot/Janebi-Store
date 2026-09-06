@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ShoppingCart, Heart, User, Menu, Moon, Sun, X, ArrowLeftRight, Sparkles, Search, LogOut, Package, LogIn, ChevronDown } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Logo from './Logo';
@@ -25,16 +25,55 @@ export default function Header() {
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  // DB-driven category nav — replaces hard-coded ?category= links (stale vs live catalogue)
+  const [navCategories, setNavCategories] = useState<{ title: string }[]>([]);
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/categories')
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((cats) => {
+        if (cancelled || !Array.isArray(cats)) return;
+        setNavCategories(
+          [...cats]
+            .sort((a: any, b: any) => (b.count || 0) - (a.count || 0))
+            .slice(0, 6)
+            .map((c: any) => ({ title: c.title }))
+        );
+      })
+      .catch(() => {
+        // nav still renders صفحه اصلی / تمام محصولات / عمده — graceful degradation
+      });
+    return () => { cancelled = true; };
+  }, []);
+
+  // Close user dropdown on outside click / Escape — mouse-only close is not accessible
+  useEffect(() => {
+    if (!userDropdownOpen) return;
+    const onPointerDown = (e: MouseEvent | TouchEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserDropdownOpen(false);
+      }
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setUserDropdownOpen(false);
+    };
+    document.addEventListener('mousedown', onPointerDown);
+    document.addEventListener('touchstart', onPointerDown);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', onPointerDown);
+      document.removeEventListener('touchstart', onPointerDown);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [userDropdownOpen]);
 
   const navLinks = [
     { label: 'صفحه اصلی', to: '/' },
     { label: 'تمام محصولات', to: '/products' },
-    { label: 'هولدر و پایه', to: '/products?category=هولدر و پایه' },
-    { label: 'قاب و کاور', to: '/products?category=قاب و کاور' },
-    { label: 'گلس و محافظ', to: '/products?category=گلس' },
-    { label: 'کابل و تبدیل', to: '/products?category=کابل' },
-    { label: 'محافظ کابل', to: '/products?category=محافظ کابل' },
-    { label: 'شارژرها', to: '/products?category=شارژر' },
+    // DB-driven: top-6 categories with real product counts (admin-manageable via /api/categories)
+    ...navCategories.map((c) => ({ label: c.title, to: `/products?category=${encodeURIComponent(c.title)}` })),
     { label: 'خرید عمده و همکاران', to: '/contact?type=wholesale', highlight: true },
   ];
 
@@ -150,9 +189,11 @@ export default function Header() {
 
             {/* User Account Menu / Login */}
             {isLoggedIn ? (
-              <div className="relative">
+              <div className="relative" ref={userMenuRef}>
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                  aria-expanded={userDropdownOpen}
+                  aria-haspopup="menu"
                   className="flex items-center gap-1 p-1 sm:p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-xs font-bold transition-colors"
                 >
                   <User className="h-4 w-4 text-orange-600" />

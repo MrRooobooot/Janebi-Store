@@ -106,17 +106,37 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
             )}
           </div>
 
-          {/* 3. Category & Rating Strip */}
+          {/* 3. Category & Rating Strip — value-colored stars per Digikala DDS convention
+                 (low rating ۰–۲ amber #f9bc00 → high ۴–۵ green #00a049) */}
           <div className="flex items-center justify-between text-[11px] text-zinc-400 mb-1.5 px-0.5">
             <span className="font-semibold text-orange-600/90 dark:text-orange-400/90">{product.category}</span>
-            <div className="flex items-center gap-1 font-bold text-amber-500">
-              <Star className="h-3 w-3 fill-amber-400 stroke-amber-400" />
-              {product.rating ? (
-                <span>{toPersianDigits(product.rating)}</span>
-              ) : (
-                <span>جدید</span>
-              )}
-            </div>
+            {product.rating ? (
+              <div
+                className={`flex items-center gap-1 font-bold ${
+                  product.rating >= 4
+                    ? 'text-emerald-600 dark:text-emerald-400'
+                    : product.rating < 2
+                    ? 'text-amber-600 dark:text-amber-400'
+                    : 'text-zinc-600 dark:text-zinc-300'
+                }`}
+              >
+                <Star
+                  className={`h-3 w-3 fill-current ${
+                    product.rating >= 4
+                      ? 'text-emerald-500'
+                      : product.rating < 2
+                      ? 'text-amber-400'
+                      : 'text-zinc-400'
+                  }`}
+                />
+                <span>
+                  {toPersianDigits(product.rating)}
+                  {product.reviewsCount ? ` (${toPersianDigits(product.reviewsCount)})` : ''}
+                </span>
+              </div>
+            ) : (
+              <span>جدید</span>
+            )}
           </div>
 
           {/* 4. Product Title */}

@@ -25,20 +25,27 @@ export default function Home() {
   const [catScrolled, setCatScrolled] = useState(false);
   const catRowRef = useRef<HTMLDivElement>(null);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [loadError, setLoadError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
   const settings = useStoreSettings();
 
-  // Live timer for daily deals
-  const [timeLeft, setTimeLeft] = useState({ hours: 16, minutes: 42, seconds: 15 });
+  // Live countdown to midnight (daily deals cycle) — computed from real clock
+  const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };
-        if (prev.minutes > 0) return { ...prev, minutes: 59, seconds: 59 };
-        if (prev.hours > 0) return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
-        return { hours: 23, minutes: 59, seconds: 59 };
+    const tick = () => {
+      const now = new Date();
+      const midnight = new Date(now);
+      midnight.setHours(24, 0, 0, 0);
+      const diff = Math.max(0, Math.floor((midnight.getTime() - now.getTime()) / 1000));
+      setTimeLeft({
+        hours: Math.floor(diff / 3600),
+        minutes: Math.floor((diff % 3600) / 60),
+        seconds: diff % 60,
       });
-    }, 1000);
+    };
+    tick();
+    const timer = setInterval(tick, 1000);
     return () => clearInterval(timer);
   }, []);
 
@@ -53,7 +60,6 @@ export default function Home() {
       badge: settings.heroSlide1Badge || STORE_SETTINGS_DEFAULTS.heroSlide1Badge,
       image: settings.heroSlide1Image || '/products/hld-13.svg',
       borderColor: 'border-orange-500/40 dark:border-orange-500/30',
-      badgeBg: 'bg-orange-500/20 text-orange-300 border-orange-500/40',
     },
     {
       id: 2,
@@ -65,7 +71,6 @@ export default function Home() {
       badge: settings.heroSlide2Badge || STORE_SETTINGS_DEFAULTS.heroSlide2Badge,
       image: settings.heroSlide2Image || '/products/cas-4.svg',
       borderColor: 'border-blue-500/40 dark:border-blue-500/30',
-      badgeBg: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
     },
     {
       id: 3,
@@ -77,7 +82,6 @@ export default function Home() {
       badge: settings.heroSlide3Badge || STORE_SETTINGS_DEFAULTS.heroSlide3Badge,
       image: settings.heroSlide3Image || '/products/cbl-1.svg',
       borderColor: 'border-purple-500/40 dark:border-purple-500/30',
-      badgeBg: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
     },
   ], [settings]);
 
@@ -104,11 +108,14 @@ export default function Home() {
   };
 
   useEffect(() => {
+    let cancelled = false;
     setLoading(true);
+    setLoadError(false);
     Promise.all([
-      fetch('/api/products').then((r) => r.json()).catch(() => []),
-      fetch('/api/categories').then((r) => r.json()).catch(() => [])
+      fetch('/api/products').then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status))))),
+      fetch('/api/categories').then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status))))),
     ]).then(([prods, cats]) => {
+      if (cancelled) return;
       setProducts(Array.isArray(prods) ? prods : []);
       if (Array.isArray(cats)) {
         setCategories(cats.map((c: any) => ({
@@ -116,8 +123,13 @@ export default function Home() {
           icon: categoryIconMap[c.title] || Smartphone,
         })));
       }
-    }).finally(() => setLoading(false));
-  }, []);
+    }).catch(() => {
+      if (!cancelled) setLoadError(true);
+    }).finally(() => {
+      if (!cancelled) setLoading(false);
+    });
+    return () => { cancelled = true; };
+  }, [reloadKey]);
 
   const dealProducts = useMemo(() => {
     return products
@@ -221,7 +233,7 @@ export default function Home() {
                   <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
                 </Link>
 
-                <div className={`text-xs font-black px-4 py-2.5 rounded-2xl border bg-orange-100 text-orange-800 border-orange-200 dark:${currentSlide.badgeBg} flex items-center gap-2`}>
+                <div className={`text-xs font-black px-4 py-2.5 rounded-2xl border bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-500/20 dark:text-orange-300 dark:border-orange-500/40 flex items-center gap-2`}>
                   <Award className="h-4 w-4 shrink-0 text-orange-600 dark:text-inherit" />
                   <span>{normalizePersianTypography(currentSlide.badge)}</span>
                 </div>
@@ -474,11 +486,21 @@ export default function Home() {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
           {loading ? (
             Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)
+          ) : loadError ? (
+            <div className="col-span-full py-12 text-center">
+              <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4">خطا در بارگذاری محصولات. اتصال اینترنت خود را بررسی کنید.</p>
+              <button
+                onClick={() => setReloadKey((k) => k + 1)}
+                className="bg-orange-600 hover:bg-orange-700 text-white text-xs font-black px-6 py-2.5 rounded-xl transition-colors"
+              >
+                تلاش مجدد
+              </button>
+            </div>
           ) : filteredProducts.length > 0 ? (
             filteredProducts.map((p) => <ProductCard key={p.id} product={p} />)
           ) : (
             <div className="col-span-full py-12 text-center text-sm text-zinc-400">
-              کالایی در این دسته‌بندی یافت نشد.
+              محصولی در این دسته‌بندی موجود نیست.
             </div>
           )}
         </div>

@@ -312,7 +312,7 @@ export default function ProductDetail() {
 
                 {/* Rating & SKU Bar */}
                 <div className="flex flex-wrap items-center gap-4 mb-6 pb-6 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-xs sm:text-sm">
-                  <div className={`flex items-center gap-1 ${hasRating ? 'text-amber-400' : 'text-gray-400'}`}>
+                  <div className={`flex items-center gap-1 ${!hasRating ? 'text-gray-400' : (product.rating ?? 0) >= 4 ? 'text-emerald-500' : (product.rating ?? 0) < 2 ? 'text-amber-400' : 'text-zinc-500 dark:text-zinc-400'}`}>
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}

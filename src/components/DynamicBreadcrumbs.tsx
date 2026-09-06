@@ -41,9 +41,11 @@ export default function DynamicBreadcrumbs() {
 
   const [productInfo, setProductInfo] = useState<{ title: string; category: string } | null>(null);
 
-  // Fetch product info if we are on a product detail page /product/:id
+  // Fetch product info if we are on a product detail page — singular /product/:id
+  // or plural alias /products/:id (both render ProductDetail, see App.tsx routes)
   const isProductPage = pathnames[0] === 'product' && pathnames[1];
-  const productId = isProductPage ? pathnames[1] : null;
+  const isProductAlias = pathnames[0] === 'products' && /^\d+$/.test(pathnames[1] || '');
+  const productId = isProductPage ? pathnames[1] : isProductAlias ? pathnames[1] : null;
 
   useEffect(() => {
     if (productId) {
