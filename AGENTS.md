@@ -77,7 +77,7 @@ Janebi-Store/
 5. **`orderItems`**: `id`, `orderId`, `productId`, `name`, `price`, `quantity`, `color`, `image`
 6. **`cartItems`**: `id`, `userId`, `productId`, `quantity`, `color`, `createdAt`
 7. **`wishlist`**: `id`, `userId`, `productId`, `createdAt`
-8. **`reviews`**: `id`, `productId`, `userId`, `userName`, `userAvatar`, `rating`, `title`, `comment`, `likes`, `isBuyer`, `isVerified`, `createdAt`
+8. **`reviews`**: `id`, `productId`, `userId`, `userName`, `userAvatar`, `rating`, `title`, `comment`, `likes`, `isBuyer`, `isVerified`, `approved`, `createdAt`
 9. **`coupons`**: `id`, `code` (unique), `discountType` (`percent` | `fixed`), `discountValue`, `minAmount`, `maxDiscount`, `expiresAt`, `isActive`, `createdAt`
 10. **`settings`**: `id`, `key` (unique), `value`, `updatedAt`
 11. **`contactMessages`**: `id`, `name`, `phone`, `email`, `subject`, `message`, `status` (`unread` | `read` | `archived`), `createdAt`
