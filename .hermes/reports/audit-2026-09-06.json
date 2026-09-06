@@ -14,7 +14,10 @@
    "ChatWidget.tsx:55-100 بات فیک setTimeout — پیام کاربر هیچ‌جا ذخیره نمی‌شود، ادعای «کارشناسان بررسی می‌کنند» نادرست",
    "CompareContext.tsx:15-30 اسنپ‌شات localStorage — قیمت/امتیاز کهنه بعد از تغییر (بدون refetch)",
    "CartContext.tsx:82-96 + WishlistContext.tsx:22-40: لاگین سبد/علاقه‌مندی مهمان با داده سرور REPLACE می‌شود — سبد مهمان قبل از لاگین گم می‌شود (no merge)",
-   "GET /api/admin/orders (server/routes/admin.ts:466-476) همه سفارش‌ها + items بدون pagination سرور — با رشد دیتا کند می‌شود"
+   "GET /api/admin/orders (server/routes/admin.ts:466-476) همه سفارش‌ها + items بدون pagination سرور — با رشد دیتا کند می‌شود",
+   "ادمین نظرات: فقط حذف — endpoint تأیید/رد moderation وجود ندارد (server/routes/admin.ts:793, FE Reviews.tsx:35)",
+   "بکاپ ادمین: فقط دانلود GET /api/admin/backup (Settings.tsx:313) — بازیابی/زمان‌بندی ندارد (npm run db:backup جایگزین CLI)",
+   "Reviews moderation ناقص: reviews pending/approved ندارد، همه نظرات فوراً منتشر می‌شوند"
   ],
   "dead": [
    "src/components/BrandShowcase.tsx — یتیم از 247d4c3 (حذف عمدی از هوم)؛ فایل مرده روی دیسک",
@@ -22,7 +25,10 @@
    "GET /api/orders/my-orders alias (server/routes/orders.ts:16) — فقط تست، FE /api/orders صدا می‌زند",
    "POST /api/coupons alias (server/routes/coupons.ts:76) — فقط تست",
    "scripts/migrate-sqlite-to-pg.ts, scripts/repair-blog-texts.ts, scripts/fk-audit.cjs — یک‌بار مصرف",
-   "8 فایل qa-*.cjs در .hermes/reports/"
+   "8 فایل qa-*.cjs در .hermes/reports/",
+   "server/lib/seoMeta.ts: routeMetaFor/routeMetaForCategory/RouteMeta exportهای مرده (فقط routeMetaForRequest مصرف intra-file)",
+   "src/components/PictureImage.tsx: PictureImageProps type export مرده",
+   "server/data/seed.ts — knip: unused (bootstrap fallback، نگه داشته شود)"
   ],
   "knip_false_positives_kept": [
    "pino-pretty (app.ts:145 transport)",
