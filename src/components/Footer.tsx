@@ -8,6 +8,7 @@ import { toPersianDigits } from '../lib/utils';
 
 export default function Footer() {
   const [email, setEmail] = useState('');
+  const [sealSrc, setSealSrc] = useState('https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU');
   const [imgLoaded, setImgLoaded] = useState(false);
   const [imgError, setImgError] = useState(false);
   const { addToast } = useToast();
@@ -142,37 +143,43 @@ export default function Footer() {
             <a
               referrerPolicy="origin"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener"
               href="https://trustseal.enamad.ir/?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU"
               title="نماد اعتماد الکترونیکی جانبی آرنا"
-              className="w-28 h-28 aspect-square bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 flex items-center justify-center p-2 shadow-inner hover:scale-105 transition-all duration-300 relative group overflow-hidden shrink-0"
+              className="w-28 h-28 aspect-square bg-white rounded-2xl border border-zinc-200/80 dark:border-zinc-700/80 flex items-center justify-center p-2 shadow-xs hover:scale-105 transition-all duration-300 relative group overflow-hidden shrink-0"
             >
               {!imgLoaded && !imgError && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-100 dark:bg-zinc-800 animate-pulse text-[10px] text-zinc-400 font-bold p-1">
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-100 animate-pulse text-[10px] text-zinc-400 font-bold p-1">
                   <span>در حال بارگذاری نماد...</span>
                 </div>
               )}
               <img
                 referrerPolicy="origin"
-                src="https://trustseal.enamad.ir/logo.aspx?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU"
-                alt="اینماد جانبی آرنا"
+                src={sealSrc}
+                alt="نماد اعتماد الکترونیکی جانبی آرنا"
                 width="112"
                 height="112"
-                loading="lazy"
                 decoding="async"
-                onLoad={() => setImgLoaded(true)}
-                onError={() => {
-                  setImgError(true);
+                onLoad={() => {
                   setImgLoaded(true);
+                  setImgError(false);
+                }}
+                onError={() => {
+                  if (sealSrc !== '/enamad-logo.png') {
+                    setSealSrc('/enamad-logo.png');
+                  } else {
+                    setImgError(true);
+                    setImgLoaded(true);
+                  }
                 }}
                 className={`w-full h-full object-contain cursor-pointer transition-opacity duration-300 ${
                   imgLoaded ? 'opacity-100' : 'opacity-0'
                 }`}
               />
               {imgError && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-2 bg-zinc-100 dark:bg-zinc-800 text-center">
+                <div className="absolute inset-0 flex flex-col items-center justify-center p-2 bg-zinc-100 text-center">
                   <Award className="h-6 w-6 text-orange-500 mb-1" />
-                  <span className="text-[10px] font-black text-zinc-700 dark:text-zinc-300">دارای اینماد رسمی</span>
+                  <span className="text-[10px] font-black text-zinc-700">دارای اینماد رسمی</span>
                   <span className="text-[8px] text-zinc-400">کلیک برای استعلام</span>
                 </div>
               )}
