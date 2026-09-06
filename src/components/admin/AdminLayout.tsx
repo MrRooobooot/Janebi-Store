@@ -6,7 +6,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { 
   LayoutDashboard, Package, ShoppingCart, Users, Settings, Tag, 
   ChevronRight, LogOut, MessageSquare, Mail, MailCheck, Menu, X, 
-  Sun, Moon, ExternalLink, AlertTriangle, ShieldAlert, ArrowRight, ScrollText
+  Sun, Moon, ExternalLink, AlertTriangle, ShieldAlert, ArrowRight, ScrollText, Newspaper
 } from 'lucide-react';
 import Logo, { LogoSymbol } from '../Logo';
 import { motion, AnimatePresence } from 'motion/react';
@@ -126,6 +126,7 @@ export default function AdminLayout() {
     { to: "/admin/messages", icon: Mail, label: "پیام‌های تماس و پشتیبانی" },
     { to: "/admin/newsletter", icon: MailCheck, label: "لیست اعضای خبرنامه" },
     { to: "/admin/audit-logs", icon: ScrollText, label: "لاگ فعالیت مدیران" },
+    { to: "/admin/blog", icon: Newspaper, label: "مدیریت مجله (بلاگ)" },
     { to: "/admin/settings", icon: Settings, label: "تنظیمات فروشگاه" },
   ];
 

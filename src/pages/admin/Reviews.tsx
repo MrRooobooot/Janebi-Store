@@ -14,6 +14,7 @@ interface ReviewItem {
   isVerifiedBuyer?: boolean;
   recommend?: boolean;
   helpfulCount?: number;
+  approved?: boolean;
   product?: {
     id: number;
     title: string;
@@ -50,6 +51,25 @@ export default function AdminReviews() {
   useEffect(() => {
     fetchReviews();
   }, []);
+
+  const handleToggleApproved = async (rev: ReviewItem) => {
+    const target = !(rev.approved ?? true);
+    try {
+      const res = await authFetch(`/api/admin/reviews/${rev.id}/approved`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
+        body: JSON.stringify({ approved: target }),
+      });
+      if (res.ok) {
+        addToast(target ? 'نظر تأیید شد' : 'نظر رد شد', 'success');
+        setReviews(prev => prev.map(r => (r.id === rev.id ? { ...r, approved: target } : r)));
+      } else {
+        addToast('خطا در تغییر وضعیت نظر', 'error');
+      }
+    } catch {
+      addToast('خطا در ارتباط با سرور', 'error');
+    }
+  };
 
   const handleDeleteReview = async (id: string) => {
     if (!confirm('آیا از حذف این نظر اطمینان دارید؟')) return;
@@ -145,6 +165,7 @@ export default function AdminReviews() {
                   <th className="p-3.5 font-bold">امتیاز</th>
                   <th className="p-3.5 font-bold">عنوان و خلاصه نظر</th>
                   <th className="p-3.5 font-bold">تاریخ</th>
+                  <th className="p-3.5 font-bold">وضعیت</th>
                   <th className="p-3.5 font-bold">عملیات</th>
                 </tr>
               </thead>
@@ -178,7 +199,23 @@ export default function AdminReviews() {
                       {rev.date}
                     </td>
                     <td className="p-3.5">
+                      <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${(rev.approved ?? true)
+                        ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
+                        : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'}`}>
+                        {(rev.approved ?? true) ? 'منتشرشده' : 'رد‌شده'}
+                      </span>
+                    </td>
+                    <td className="p-3.5">
                       <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleToggleApproved(rev)}
+                          className={`px-2.5 py-1 rounded-lg font-medium transition-colors ${(rev.approved ?? true)
+                            ? 'bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 hover:bg-amber-100'
+                            : 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 hover:bg-emerald-100'}`}
+                          title={(rev.approved ?? true) ? 'رد کردن (خروج از نمایش عمومی)' : 'تأیید و انتشار'}
+                        >
+                          {(rev.approved ?? true) ? 'رد' : 'تأیید'}
+                        </button>
                         <button
                           onClick={() => setSelectedReview(rev)}
                           className="px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:text-orange-600 font-medium"

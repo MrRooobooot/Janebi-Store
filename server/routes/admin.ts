@@ -4,7 +4,7 @@ import { users, products, orders, orderItems, reviews, coupons, productFeatures,
 import { appCache } from '../utils/cache.js';
 import { STORE_SETTINGS_DEFAULTS } from '../../src/lib/constants.js';
 import { HERO_IMAGE_DEFAULTS } from './settings.js';
-import { eq, desc, sql, inArray } from 'drizzle-orm';
+import { eq, desc, sql, inArray, and } from 'drizzle-orm';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
 import { validate } from '../middleware/validate.js';
 import { bulkIdsSchema } from '../validators/index.js';
@@ -822,6 +822,41 @@ router.get('/reviews', async (req, res) => {
     res.json(allReviews);
   } catch (error) {
     console.error('Fetch admin reviews error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// PUT /reviews/:id/approved — moderation toggle. Recomputes the product's
+// aggregate rating from approved reviews and busts review caches.
+router.put('/reviews/:id/approved', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const approved = Boolean(req.body?.approved);
+    const review = await db.query.reviews.findFirst({ where: eq(reviews.id, id) });
+    if (!review) return res.status(404).json({ message: 'نظر یافت نشد' });
+
+    await db.update(reviews).set({ approved }).where(eq(reviews.id, id));
+
+    if (review.productId) {
+      const agg = await db
+        .select({
+          avg: sql<number>`COALESCE(AVG(${reviews.rating}), 0)`,
+          count: sql<number>`COUNT(*)`,
+        })
+        .from(reviews)
+        .where(and(eq(reviews.productId, review.productId), eq(reviews.approved, true)));
+      const newRating = Math.round(Number(agg[0]?.avg) * 10) / 10;
+      await db.update(products)
+        .set({ rating: newRating, reviewsCount: Number(agg[0]?.count) || 0 })
+        .where(eq(products.id, review.productId));
+      appCache.invalidate(`reviews:${review.productId}`);
+      appCache.invalidate(`product:${review.productId}`);
+      appCache.invalidate('products');
+    }
+    appCache.invalidate('reviews:latest');
+    res.json({ success: true, approved, message: approved ? 'نظر تأیید شد' : 'نظر رد شد (از نمایش عمومی خارج شد)' });
+  } catch (error) {
+    console.error('Review approve error:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });

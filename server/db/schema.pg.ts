@@ -97,7 +97,8 @@ export const reviews = pgTable('reviews', {
   isVerifiedBuyer: boolean('isVerifiedBuyer').default(false),
   recommend: boolean('recommend').default(false),
   helpfulCount: integer('helpfulCount').default(0),
-  unhelpfulCount: integer('unhelpfulCount').default(0)
+  unhelpfulCount: integer('unhelpfulCount').default(0),
+  approved: boolean('approved').default(true).notNull()
 });
 
 export const coupons = pgTable('coupons', {

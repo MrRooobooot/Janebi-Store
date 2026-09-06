@@ -156,13 +156,13 @@ router.get("/:id/reviews", validate(numericIdParamSchema), async (req, res) => {
     const countRows = await db
       .select({ count: sql<number>`COUNT(*)` })
       .from(reviews)
-      .where(eq(reviews.productId, productId));
+      .where(and(eq(reviews.productId, productId), eq(reviews.approved, true)));
     const total = Number(countRows[0]?.count) || 0;
     const pages = Math.max(1, Math.ceil(total / limit));
     const safePage = Math.min(page, pages);
 
     const rows = await db.query.reviews.findMany({
-      where: eq(reviews.productId, productId),
+      where: and(eq(reviews.productId, productId), eq(reviews.approved, true)),
       orderBy: [desc(reviews.date), desc(reviews.id)],
       limit,
       offset: (safePage - 1) * limit,
@@ -180,7 +180,7 @@ router.get("/:id/reviews", validate(numericIdParamSchema), async (req, res) => {
   }
   
   const productReviews = await db.query.reviews.findMany({
-    where: eq(reviews.productId, productId),
+    where: and(eq(reviews.productId, productId), eq(reviews.approved, true)),
     orderBy: [desc(reviews.date), desc(reviews.id)]
   });
 
@@ -227,7 +227,7 @@ router.post("/:id/reviews", validate(reviewSubmitSchema), async (req, res) => {
         count: sql<number>`COUNT(*)`,
       })
       .from(reviews)
-      .where(eq(reviews.productId, productId));
+      .where(and(eq(reviews.productId, productId), eq(reviews.approved, true)));
 
     const newRating = Math.round(Number(agg[0]?.avg) * 10) / 10;
     await tx.update(products)

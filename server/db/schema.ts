@@ -98,7 +98,8 @@ export const reviews = sqliteTable('reviews', {
   isVerifiedBuyer: integer('isVerifiedBuyer', { mode: 'boolean' }).default(false),
   recommend: integer('recommend', { mode: 'boolean' }).default(false),
   helpfulCount: integer('helpfulCount').default(0),
-  unhelpfulCount: integer('unhelpfulCount').default(0)
+  unhelpfulCount: integer('unhelpfulCount').default(0),
+  approved: integer('approved', { mode: 'boolean' }).default(true).notNull()
 });
 
 export const coupons = sqliteTable('coupons', {
