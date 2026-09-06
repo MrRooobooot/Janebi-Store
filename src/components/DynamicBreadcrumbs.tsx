@@ -77,7 +77,7 @@ export default function DynamicBreadcrumbs() {
     { label: 'خانه', href: '/' }
   ];
 
-  if (isProductPage) {
+  if (isProductPage || isProductAlias) {
     items.push({ label: 'محصولات', href: '/products' });
 
     if (productInfo?.category) {
