@@ -1,24 +1,41 @@
 /**
- * Bale (بله) Bot — Full-featured Store & Inventory Management Assistant
+ * Bale (بله) Bot — Full-featured Store & Website Management Cockpit
  * Bale Bot API is Telegram-compatible at https://tapi.bale.ai (Grammy framework).
  *
  * Capabilities:
- * - 📱 100% Inline Keyboards (دکمه‌های شیشه‌ای) for all navigation and flows
- * - ➕ Interactive product creation wizard with category buttons, skip actions, and direct photo uploads
- * - 🖼 Native photo support: downloads images from Bale server, verifies magic bytes, and saves locally
- * - 📦 Inventory & stock management: quick +/- stock increments, price edits, site links, deletion
- * - 🔍 Instant product search by name or keyword
- * - 🛍 Recent orders inspection and one-tap status updates (processing, shipped, delivered, cancelled)
- * - ⚠️ Real-time low-stock inventory alerts
- * - 📊 Live store performance & revenue analytics
- * - 🛡 Financial integrity: transactional restock & point refund on order cancellation
+ * 📱 100% Inline Keyboards (دکمه‌های شیشه‌ای) across all sections
+ * 📦 Products & Inventory:
+ *    - Interactive multi-step creation wizard (category picker, direct photo download from Bale, skip buttons)
+ *    - Fast stock +/- adjustments (+1, +5, -1)
+ *    - Price & discount percentage editing
+ *    - Category browsing & real-time search by title/SKU
+ *    - Low stock inventory refill alerts
+ * 🛍 Orders Management:
+ *    - Paginated order history with buyer details, address, payment method, items list
+ *    - One-tap status updates (processing, shipped, delivered, cancelled)
+ *    - Financial integrity: transactional restock & VIP points refund on cancellation
+ * 🏷 Coupons & Marketing:
+ *    - List active/inactive discount codes
+ *    - One-tap active/deactivate toggle and coupon deletion
+ *    - Quick coupon creation wizard (code, percent/amount, min order)
+ * 💬 Reviews & Contact Messages:
+ *    - Moderation of product reviews: approve (recomputes product rating + cache invalidation), reject, delete
+ *    - Contact form submissions: view details, mark as read, archive
+ * 👥 Customers & VIP:
+ *    - Customer lookup by phone number
+ *    - View order history & give loyalty VIP bonus points
+ * ⚙️ Website Settings:
+ *    - Announcement bar toggle (ON/OFF) & text edit
+ *    - Free shipping threshold adjustment
+ * 📊 Live Store Analytics:
+ *    - Revenue, total inventory, out-of-stock count, pending orders
  */
 
 import { Bot, GrammyError, InlineKeyboard, type Context } from 'grammy';
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
-import { eq, desc, sql } from 'drizzle-orm';
+import { eq, desc, sql, and, like } from 'drizzle-orm';
 import { db } from '../db/index.js';
 import {
   products,
@@ -28,6 +45,10 @@ import {
   cartItems,
   wishlistItems,
   reviews,
+  coupons,
+  contactMessages,
+  storeSettings,
+  users,
   auditLogs,
 } from '../db/schema.js';
 import { appCache } from '../utils/cache.js';
@@ -63,9 +84,26 @@ export interface WizardDraft {
   catPage: number;
 }
 
+export interface CouponDraft {
+  step: 'code' | 'percent' | 'minTotal' | 'confirm';
+  code?: string;
+  percent?: number;
+  minTotal?: number;
+}
+
 export interface UserSession {
-  mode: 'idle' | 'wizard' | 'edit_price' | 'search';
+  mode:
+    | 'idle'
+    | 'wizard'
+    | 'edit_price'
+    | 'edit_discount'
+    | 'search'
+    | 'search_user'
+    | 'coupon_wizard'
+    | 'edit_announcement'
+    | 'edit_free_shipping';
   wizard?: WizardDraft;
+  couponWizard?: CouponDraft;
   editingProductId?: number;
   lastActive: number;
 }
@@ -122,7 +160,7 @@ function logAudit(action: string, adminUserId: string, entityId: string, meta: R
     id: `al-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     adminUserId,
     action,
-    entity: 'product',
+    entity: 'store',
     entityId,
     meta,
     createdAt: new Date().toISOString(),
@@ -164,7 +202,7 @@ export async function downloadAndSaveBalePhoto(token: string, filePath: string):
 }
 
 // -------------------------------------------------------------
-// Category Provider
+// Categories
 // -------------------------------------------------------------
 export const DEFAULT_CATEGORIES = [
   'قاب و کاور موبایل',
@@ -203,27 +241,116 @@ export const ORDER_STATUS_MAP: Record<string, { label: string; text: string; ico
 };
 
 // -------------------------------------------------------------
-// Inline Keyboard Builders
+// Review Rating Recomputation
+// -------------------------------------------------------------
+async function setReviewApproval(reviewId: string, approved: boolean): Promise<boolean> {
+  const review = await db.query.reviews.findFirst({ where: eq(reviews.id, reviewId) });
+  if (!review) return false;
+
+  await db.update(reviews).set({ approved }).where(eq(reviews.id, reviewId));
+
+  if (review.productId) {
+    const agg = await db
+      .select({
+        avg: sql<number>`COALESCE(AVG(${reviews.rating}), 0)`,
+        count: sql<number>`COUNT(*)`,
+      })
+      .from(reviews)
+      .where(and(eq(reviews.productId, review.productId), eq(reviews.approved, true)));
+    const newRating = Math.round(Number(agg[0]?.avg) * 10) / 10;
+    await db.update(products)
+      .set({ rating: newRating, reviewsCount: Number(agg[0]?.count) || 0 })
+      .where(eq(products.id, review.productId));
+    appCache.invalidate(`reviews:${review.productId}`);
+    appCache.invalidate(`product:${review.productId}`);
+    appCache.invalidate('products');
+  }
+  appCache.invalidate('reviews:latest');
+  return true;
+}
+
+// -------------------------------------------------------------
+// Inline Keyboards
 // -------------------------------------------------------------
 export function makeMainMenuKeyboard(): InlineKeyboard {
   return new InlineKeyboard()
-    .text('➕ ثبت محصول جدید', 'm:new')
+    .text('📦 مدیریت کالاها', 'm:sec_prod')
+    .text('🛍 سفارشات فروشگاه', 'm:sec_ord')
     .row()
-    .text('📦 لیست کالاها', 'm:p:0')
+    .text('🏷 کدهای تخفیف', 'm:sec_coup')
+    .text('💬 نظرات و پیام‌ها', 'm:sec_msg')
+    .row()
+    .text('👥 مشتریان و VIP', 'm:sec_user')
+    .text('⚙️ تنظیمات سایت', 'm:sec_set')
+    .row()
+    .text('📊 آمار و هشدارهای انبار', 'm:stat')
+    .text('❓ راهنما', 'm:help');
+}
+
+export function makeProductsSectionKeyboard(): InlineKeyboard {
+  return new InlineKeyboard()
+    .text('➕ ثبت کالای جدید', 'm:new')
+    .row()
+    .text('📋 لیست تمام کالاها', 'm:p:0')
     .text('🔍 جستجوی کالا', 'm:srch')
     .row()
-    .text('🛍 آخرین سفارش‌ها', 'm:o:0')
-    .text('⚠️ هشدارهای انبار', 'm:alert')
+    .text('📁 انتخاب بر اساس دسته', 'm:cat_pick:0')
+    .text('⚠️ کالاهای رو به اتمام', 'm:alert')
     .row()
-    .text('📊 آمار فروشگاه', 'm:stat')
-    .text('❓ راهنما', 'm:help');
+    .text('🏠 بازگشت به منوی اصلی', 'm:menu');
+}
+
+export function makeOrdersSectionKeyboard(): InlineKeyboard {
+  return new InlineKeyboard()
+    .text('🛍 همه سفارش‌ها', 'm:o:0')
+    .text('⏳ در انتظار پرداخت', 'm:of:pending_payment:0')
+    .row()
+    .text('🔄 در حال پردازش', 'm:of:processing:0')
+    .text('🚚 ارسال شده‌ها', 'm:of:shipped:0')
+    .row()
+    .text('🏠 بازگشت به منوی اصلی', 'm:menu');
+}
+
+export function makeCouponsSectionKeyboard(): InlineKeyboard {
+  return new InlineKeyboard()
+    .text('📋 فهرست کوپن‌ها', 'm:cp_list:0')
+    .text('➕ ساخت کد تخفیف', 'm:cp_new')
+    .row()
+    .text('🏠 بازگشت به منوی اصلی', 'm:menu');
+}
+
+export function makeMessagesSectionKeyboard(): InlineKeyboard {
+  return new InlineKeyboard()
+    .text('⭐ مدیریت نظرات کاربران', 'm:rv_list:0')
+    .row()
+    .text('📩 پیام‌های فرم تماس با ما', 'm:cm_list:0')
+    .row()
+    .text('🏠 بازگشت به منوی اصلی', 'm:menu');
+}
+
+export function makeUsersSectionKeyboard(): InlineKeyboard {
+  return new InlineKeyboard()
+    .text('🔍 استعلام مشتری با شماره تلفن', 'm:usr_srch')
+    .row()
+    .text('🏠 بازگشت به منوی اصلی', 'm:menu');
+}
+
+export function makeSettingsSectionKeyboard(barEnabled: boolean): InlineKeyboard {
+  return new InlineKeyboard()
+    .text(barEnabled ? '📢 نوار اعلان: [روشن ✅]' : '📢 نوار اعلان: [خاموش ❌]', 'st:bar_tog')
+    .row()
+    .text('✏️ تغییر متن نوار اعلان', 'st:bar_txt')
+    .row()
+    .text('🚚 تنظیم سقف ارسال رایگان', 'st:ship_th')
+    .row()
+    .text('🏠 بازگشت به منوی اصلی', 'm:menu');
 }
 
 export function makeCancelKeyboard(): InlineKeyboard {
   return new InlineKeyboard().text('❌ انصراف و بازگشت', 'm:cancel');
 }
 
-export function makeCategoriesKeyboard(cats: string[], page: number): InlineKeyboard {
+export function makeCategoriesKeyboard(cats: string[], page: number, prefix: string = 'c:cat:'): InlineKeyboard {
   const pageSize = 6;
   const totalPages = Math.ceil(cats.length / pageSize) || 1;
   const curPage = Math.max(0, Math.min(page, totalPages - 1));
@@ -232,20 +359,21 @@ export function makeCategoriesKeyboard(cats: string[], page: number): InlineKeyb
   const kb = new InlineKeyboard();
   for (let i = 0; i < slice.length; i += 2) {
     const idx1 = curPage * pageSize + i;
-    kb.text(slice[i], `c:cat:${idx1}`);
+    kb.text(slice[i], `${prefix}${idx1}`);
     if (i + 1 < slice.length) {
       const idx2 = curPage * pageSize + i + 1;
-      kb.text(slice[i + 1], `c:cat:${idx2}`);
+      kb.text(slice[i + 1], `${prefix}${idx2}`);
     }
     kb.row();
   }
 
+  const navPrefix = prefix === 'c:cat:' ? 'c:pg:' : 'cpk:pg:';
   const navRow: { text: string; data: string }[] = [];
   if (curPage > 0) {
-    navRow.push({ text: '⬅️ صفحه قبل', data: `c:pg:${curPage - 1}` });
+    navRow.push({ text: '⬅️ صفحه قبل', data: `${navPrefix}${curPage - 1}` });
   }
   if (curPage < totalPages - 1) {
-    navRow.push({ text: 'صفحه بعد ➡️', data: `c:pg:${curPage + 1}` });
+    navRow.push({ text: 'صفحه بعد ➡️', data: `${navPrefix}${curPage + 1}` });
   }
 
   if (navRow.length > 0) {
@@ -321,9 +449,11 @@ export function makeProductDetailKeyboard(productId: number, stock: number): Inl
     .text('➖ ۱ موجودی', `p:s:${productId}:-1`)
     .row()
     .text('💰 تغییر قیمت', `p:prc:${productId}`)
-    .url('🔗 مشاهده در سایت', `https://janebiarena.ir/products/${productId}`)
+    .text('🏷 درصد تخفیف', `p:dsc:${productId}`)
     .row()
+    .url('🔗 مشاهده در سایت', `https://janebiarena.ir/products/${productId}`)
     .text('🗑 حذف کالا', `p:del:${productId}`)
+    .row()
     .text('⬅️ لیست کالاها', 'm:p:0');
 }
 
@@ -348,9 +478,10 @@ export function makeOrderDetailKeyboard(orderId: string): InlineKeyboard {
 // Message Edit or Reply Fallback
 // -------------------------------------------------------------
 async function editOrReply(ctx: Context, text: string, replyMarkup?: InlineKeyboard): Promise<void> {
+  const safeText = text.length > 4000 ? text.slice(0, 3990) + '...' : text;
   try {
     if (ctx.callbackQuery && ctx.callbackQuery.message) {
-      await ctx.editMessageText(text, { reply_markup: replyMarkup });
+      await ctx.editMessageText(safeText, { reply_markup: replyMarkup });
       return;
     }
   } catch (err: any) {
@@ -358,7 +489,7 @@ async function editOrReply(ctx: Context, text: string, replyMarkup?: InlineKeybo
       return;
     }
   }
-  await ctx.reply(text, { reply_markup: replyMarkup });
+  await ctx.reply(safeText, { reply_markup: replyMarkup });
 }
 
 // -------------------------------------------------------------
@@ -372,13 +503,13 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
     console.error('[bale-bot] error:', err instanceof GrammyError ? `${err.message} (${err.method})` : err);
   });
 
-  // --- Commands ---
+  // --- Main Menu Commands ---
   bot.command(['start', 'menu'], async (ctx) => {
     if (!isAdmin(ctx, cfg)) return ctx.reply('⛔ دسترسی فقط برای مدیران فروشگاه.');
     clearSession(ctx.from!.id);
     await ctx.reply(
-      '🛍 *سامانه مدیریت و بارگذاری محصولات Janebi Arena*\n\n' +
-      'از دکمه‌های شیشه‌ای زیر برای مدیریت فروشگاه، کالاها، سفارش‌ها و انبار استفاده کنید:',
+      '🛍 *سامانه مدیریت هوشمند Janebi Arena*\n\n' +
+      'از دکمه‌های شیشه‌ای زیر جهت دسترسی سریع به بخش‌های فروشگاه استفاده کنید:',
       { reply_markup: makeMainMenuKeyboard() }
     );
   });
@@ -432,18 +563,48 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
     const userId = ctx.from.id;
     const session = getSession(userId);
 
-    // Bale docs: answerCallbackQuery is mandatory to dismiss button loading state
+    // Bale docs: answerCallbackQuery is mandatory to dismiss loading spinner
     await ctx.answerCallbackQuery().catch(() => {});
 
-    // 1. Menu Navigation
+    // 1. Navigation Sections
     if (data === 'm:menu') {
       clearSession(userId);
       await editOrReply(
         ctx,
-        '🛍 *سامانه مدیریت و بارگذاری محصولات Janebi Arena*\n\n' +
-        'از دکمه‌های شیشه‌ای زیر برای مدیریت فروشگاه استفاده کنید:',
+        '🛍 *سامانه مدیریت هوشمند Janebi Arena*\n\n' +
+        'از دکمه‌های شیشه‌ای زیر جهت دسترسی به بخش‌های فروشگاه استفاده کنید:',
         makeMainMenuKeyboard()
       );
+      return;
+    }
+
+    if (data === 'm:sec_prod') {
+      await editOrReply(ctx, '📦 *مدیریت کالاها و انبار:*\nیکی از گزینه‌های زیر را انتخاب کنید:', makeProductsSectionKeyboard());
+      return;
+    }
+
+    if (data === 'm:sec_ord') {
+      await editOrReply(ctx, '🛍 *مدیریت سفارشات فروشگاه:*\nفیلتر مورد نظر را انتخاب کنید:', makeOrdersSectionKeyboard());
+      return;
+    }
+
+    if (data === 'm:sec_coup') {
+      await editOrReply(ctx, '🏷 *کدهای تخفیف و کوپن‌ها:*\nجهت مشاهده یا ساخت کد تخفیف انتخاب کنید:', makeCouponsSectionKeyboard());
+      return;
+    }
+
+    if (data === 'm:sec_msg') {
+      await editOrReply(ctx, '💬 *نظرات کاربران و فرم‌های تماس:*\nبخش مورد نظر را انتخاب نمایید:', makeMessagesSectionKeyboard());
+      return;
+    }
+
+    if (data === 'm:sec_user') {
+      await editOrReply(ctx, '👥 *مدیریت مشتریان و امتیازات VIP:*\nجهت استعلام مشتری دکمه زیر را لمس کنید:', makeUsersSectionKeyboard());
+      return;
+    }
+
+    if (data === 'm:sec_set') {
+      await showSettingsMenu(ctx);
       return;
     }
 
@@ -453,28 +614,8 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       return;
     }
 
-    if (data === 'm:new') {
-      session.mode = 'wizard';
-      session.wizard = { step: 'title', catPage: 0 };
-      await editOrReply(ctx, '🏷 لطفاً *نام محصول جدید* را بفرستید:', makeCancelKeyboard());
-      return;
-    }
-
-    if (data.startsWith('m:p:')) {
-      const page = parseInt(data.replace('m:p:', ''), 10) || 0;
-      await showProductsList(ctx, page);
-      return;
-    }
-
-    if (data.startsWith('m:o:')) {
-      const page = parseInt(data.replace('m:o:', ''), 10) || 0;
-      await showOrdersList(ctx, page);
-      return;
-    }
-
-    if (data === 'm:srch') {
-      session.mode = 'search';
-      await editOrReply(ctx, '🔍 لطفاً *نام یا کد کالای (SKU)* مورد نظر را ارسال کنید:', makeCancelKeyboard());
+    if (data === 'm:help') {
+      await showHelp(ctx);
       return;
     }
 
@@ -488,17 +629,61 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       return;
     }
 
-    if (data === 'm:help') {
-      await showHelp(ctx);
+    // 2. Product Management
+    if (data === 'm:new') {
+      session.mode = 'wizard';
+      session.wizard = { step: 'title', catPage: 0 };
+      await editOrReply(ctx, '🏷 لطفاً *نام محصول جدید* را بفرستید:', makeCancelKeyboard());
       return;
     }
 
-    // 2. Wizard Flow: Category Selection & Pagination
+    if (data.startsWith('m:p:')) {
+      const page = parseInt(data.replace('m:p:', ''), 10) || 0;
+      await showProductsList(ctx, page);
+      return;
+    }
+
+    if (data.startsWith('m:cat_pick:')) {
+      const page = parseInt(data.replace('m:cat_pick:', ''), 10) || 0;
+      const cats = await getStoreCategories();
+      await editOrReply(ctx, '📁 *دسته‌بندی مورد نظر را برای مشاهده کالاها انتخاب کنید:*', makeCategoriesKeyboard(cats, page, 'cpk:cat:'));
+      return;
+    }
+
+    if (data.startsWith('cpk:pg:')) {
+      const page = parseInt(data.replace('cpk:pg:', ''), 10) || 0;
+      const cats = await getStoreCategories();
+      await editOrReply(ctx, '📁 *دسته‌بندی مورد نظر را انتخاب کنید:*', makeCategoriesKeyboard(cats, page, 'cpk:cat:'));
+      return;
+    }
+
+    if (data.startsWith('cpk:cat:')) {
+      const idx = parseInt(data.replace('cpk:cat:', ''), 10);
+      const cats = await getStoreCategories();
+      const chosen = cats[idx];
+      if (!chosen) return;
+      await showProductsByCategory(ctx, chosen, 0);
+      return;
+    }
+
+    if (data.startsWith('cpk:list:')) {
+      const [, , catIdxStr, pageStr] = data.split(':');
+      const cats = await getStoreCategories();
+      const chosen = cats[parseInt(catIdxStr, 10)];
+      if (!chosen) return;
+      await showProductsByCategory(ctx, chosen, parseInt(pageStr, 10) || 0);
+      return;
+    }
+
+    if (data === 'm:srch') {
+      session.mode = 'search';
+      await editOrReply(ctx, '🔍 لطفاً *نام یا کد کالای (SKU)* مورد نظر را ارسال کنید:', makeCancelKeyboard());
+      return;
+    }
+
+    // Wizard Flow
     if (data.startsWith('c:cat:')) {
-      if (!session.wizard || session.wizard.step !== 'category') {
-        await ctx.reply('مرحله منقضی شده است. لطفا دوباره شروع کنید.', { reply_markup: makeMainMenuKeyboard() });
-        return;
-      }
+      if (!session.wizard || session.wizard.step !== 'category') return;
       const idx = parseInt(data.replace('c:cat:', ''), 10);
       const cats = await getStoreCategories();
       const chosenCat = cats[idx] || cats[0];
@@ -517,15 +702,10 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       const page = parseInt(data.replace('c:pg:', ''), 10) || 0;
       session.wizard.catPage = page;
       const cats = await getStoreCategories();
-      await editOrReply(
-        ctx,
-        '📁 *دسته‌بندی محصول* را از دکمه‌های زیر انتخاب کنید:',
-        makeCategoriesKeyboard(cats, page)
-      );
+      await editOrReply(ctx, '📁 *دسته‌بندی محصول* را انتخاب کنید:', makeCategoriesKeyboard(cats, page));
       return;
     }
 
-    // Wizard Quick Choices
     if (data.startsWith('w:stk:')) {
       if (!session.wizard || session.wizard.step !== 'stock') return;
       session.wizard.stock = parseInt(data.replace('w:stk:', ''), 10);
@@ -562,38 +742,25 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       return;
     }
 
-    // Wizard Skip Buttons
     if (data.startsWith('w:skip:')) {
       if (!session.wizard) return;
       const step = data.replace('w:skip:', '');
       if (step === 'brand') {
         session.wizard.brand = 'متفرقه';
         session.wizard.step = 'warranty';
-        await editOrReply(
-          ctx,
-          '🏭 برند: *متفرقه*\n\n🛡 *نوع گارانتی* را انتخاب کنید یا بنویسید:',
-          makeWarrantyQuickKeyboard()
-        );
+        await editOrReply(ctx, '🏭 برند: *متفرقه*\n\n🛡 *نوع گارانتی* را انتخاب کنید یا بنویسید:', makeWarrantyQuickKeyboard());
         return;
       }
       if (step === 'warranty') {
         session.wizard.warranty = 'اصالت و سلامت فیزیکی';
         session.wizard.step = 'description';
-        await editOrReply(
-          ctx,
-          '🛡 گارانتی: *اصالت و سلامت فیزیکی*\n\n📝 *توضیحات کالا* را بفرستید (یا رد شدن):',
-          makeDescriptionQuickKeyboard()
-        );
+        await editOrReply(ctx, '🛡 گارانتی: *اصالت و سلامت فیزیکی*\n\n📝 *توضیحات کالا* را بفرستید (یا رد شدن):', makeDescriptionQuickKeyboard());
         return;
       }
       if (step === 'desc') {
         session.wizard.description = undefined;
         session.wizard.step = 'photo';
-        await editOrReply(
-          ctx,
-          '📝 توضیحات رد شد.\n\n🖼 حالا *عکس کالا* را مستقیماً در همین چت بفرستید (یا لینک عکس را ارسال کنید):',
-          makePhotoQuickKeyboard()
-        );
+        await editOrReply(ctx, '📝 توضیحات رد شد.\n\n🖼 حالا *عکس کالا* را مستقیماً در همین چت بفرستید (یا لینک عکس را بفرستید):', makePhotoQuickKeyboard());
         return;
       }
       if (step === 'photo') {
@@ -604,7 +771,6 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       }
     }
 
-    // Wizard Final Confirmation
     if (data === 'w:ok') {
       if (!session.wizard || session.wizard.step !== 'confirm') {
         await ctx.reply('پیش‌نویسی برای ثبت یافت نشد.', { reply_markup: makeMainMenuKeyboard() });
@@ -659,7 +825,7 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       return;
     }
 
-    // 3. Product Details & Stock Actions
+    // Product actions
     if (data.startsWith('p:v:')) {
       const prodId = parseInt(data.replace('p:v:', ''), 10);
       await showProductDetail(ctx, prodId);
@@ -680,11 +846,7 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       const newStock = Math.max(0, existing.stockQuantity + delta);
       await db.update(products).set({ stockQuantity: newStock }).where(eq(products.id, prodId));
       appCache.invalidate('products');
-      logAudit('product.stock.quick_update', `bale-${userId}`, String(prodId), {
-        from: existing.stockQuantity,
-        to: newStock,
-        delta,
-      });
+      logAudit('product.stock.update', `bale-${userId}`, String(prodId), { from: existing.stockQuantity, to: newStock, delta });
 
       await ctx.answerCallbackQuery({ text: `✅ موجودی جدید: ${newStock} عدد` }).catch(() => {});
       await showProductDetail(ctx, prodId);
@@ -698,10 +860,20 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       const p = await db.query.products.findFirst({ where: eq(products.id, prodId) });
       await editOrReply(
         ctx,
-        `💰 *ویرایش قیمت کالا*\n\n` +
-        `کالا: *${p?.title || prodId}*\n` +
-        `قیمت فعلی: *${fmt(p?.price || 0)} تومان*\n\n` +
-        `لطفاً *قیمت جدید (تومان)* را بفرستید:`,
+        `💰 *ویرایش قیمت کالا*\n\nکالا: *${p?.title || prodId}*\nقیمت فعلی: *${fmt(p?.price || 0)} تومان*\n\nلطفاً *قیمت جدید (تومان)* را بفرستید:`,
+        makeCancelKeyboard()
+      );
+      return;
+    }
+
+    if (data.startsWith('p:dsc:')) {
+      const prodId = parseInt(data.replace('p:dsc:', ''), 10);
+      session.mode = 'edit_discount';
+      session.editingProductId = prodId;
+      const p = await db.query.products.findFirst({ where: eq(products.id, prodId) });
+      await editOrReply(
+        ctx,
+        `🏷 *تنظیم تخفیف کالا*\n\nکالا: *${p?.title || prodId}*\nتخفیف فعلی: *${fmt(p?.discount || 0)}%*\n\nلطفاً *درصد تخفیف جدید (عدد ۰ تا ۹۰)* را ارسال کنید:`,
         makeCancelKeyboard()
       );
       return;
@@ -712,10 +884,7 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       const p = await db.query.products.findFirst({ where: eq(products.id, prodId) });
       await editOrReply(
         ctx,
-        `⚠️ *آیا از حذف محصول زیر اطمینان دارید؟*\n\n` +
-        `▫️ *نام:* ${p?.title}\n` +
-        `▫️ *شناسه:* ${prodId}\n\n` +
-        `توجه: این عملیات قابل بازگشت نیست.`,
+        `⚠️ *آیا از حذف محصول زیر اطمینان دارید؟*\n\n▫️ *نام:* ${p?.title}\n▫️ *شناسه:* ${prodId}\n\nعملیات غیرقابل بازگشت است.`,
         makeProductDeleteConfirmKeyboard(prodId)
       );
       return;
@@ -743,7 +912,20 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       return;
     }
 
-    // 4. Order Details & Status Actions
+    // 3. Orders Management
+    if (data.startsWith('m:o:')) {
+      const page = parseInt(data.replace('m:o:', ''), 10) || 0;
+      await showOrdersList(ctx, page);
+      return;
+    }
+
+    if (data.startsWith('m:of:')) {
+      const [, , status, pageStr] = data.split(':');
+      const page = parseInt(pageStr, 10) || 0;
+      await showOrdersList(ctx, page, status);
+      return;
+    }
+
     if (data.startsWith('o:v:')) {
       const orderId = data.replace('o:v:', '');
       await showOrderDetail(ctx, orderId);
@@ -755,6 +937,150 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       await updateOrderStatus(ctx, orderId, nextStatus);
       return;
     }
+
+    // 4. Coupons Management
+    if (data.startsWith('m:cp_list:')) {
+      const page = parseInt(data.replace('m:cp_list:', ''), 10) || 0;
+      await showCouponsList(ctx, page);
+      return;
+    }
+
+    if (data === 'm:cp_new') {
+      session.mode = 'coupon_wizard';
+      session.couponWizard = { step: 'code' };
+      await editOrReply(ctx, '🏷 لطفاً *کد تخفیف انگلیسی* (مانند NOROOZ یا VIP20) را ارسال کنید:', makeCancelKeyboard());
+      return;
+    }
+
+    if (data.startsWith('cp:tog:')) {
+      const code = data.replace('cp:tog:', '');
+      const existing = await db.query.coupons.findFirst({ where: eq(coupons.code, code) });
+      if (existing) {
+        const nextActive = !existing.active;
+        await db.update(coupons).set({ active: nextActive }).where(eq(coupons.code, code));
+        appCache.invalidate('coupons');
+        logAudit('coupon.toggle', `bale-${userId}`, code, { active: nextActive });
+        await ctx.answerCallbackQuery({ text: `وضعیت کوپن: ${nextActive ? 'فعال شد' : 'غیرفعال شد'}` }).catch(() => {});
+        await showCouponsList(ctx, 0);
+      }
+      return;
+    }
+
+    if (data.startsWith('cp:del:')) {
+      const code = data.replace('cp:del:', '');
+      await db.delete(coupons).where(eq(coupons.code, code));
+      appCache.invalidate('coupons');
+      logAudit('coupon.delete', `bale-${userId}`, code);
+      await ctx.answerCallbackQuery({ text: `کوپن ${code} حذف شد` }).catch(() => {});
+      await showCouponsList(ctx, 0);
+      return;
+    }
+
+    // 5. Reviews Moderation
+    if (data.startsWith('m:rv_list:')) {
+      const page = parseInt(data.replace('m:rv_list:', ''), 10) || 0;
+      await showReviewsList(ctx, page);
+      return;
+    }
+
+    if (data.startsWith('rv:app:')) {
+      const revId = data.replace('rv:app:', '');
+      await setReviewApproval(revId, true);
+      logAudit('review.approve', `bale-${userId}`, revId);
+      await ctx.answerCallbackQuery({ text: '✅ نظر تأیید و امتیاز محصول بازمحاسبه شد' }).catch(() => {});
+      await showReviewsList(ctx, 0);
+      return;
+    }
+
+    if (data.startsWith('rv:rej:')) {
+      const revId = data.replace('rv:rej:', '');
+      await setReviewApproval(revId, false);
+      logAudit('review.reject', `bale-${userId}`, revId);
+      await ctx.answerCallbackQuery({ text: '❌ نظر رد شد و از نمایش خارج گردید' }).catch(() => {});
+      await showReviewsList(ctx, 0);
+      return;
+    }
+
+    if (data.startsWith('rv:del:')) {
+      const revId = data.replace('rv:del:', '');
+      await setReviewApproval(revId, false);
+      await db.delete(reviews).where(eq(reviews.id, revId));
+      logAudit('review.delete', `bale-${userId}`, revId);
+      await ctx.answerCallbackQuery({ text: '🗑 نظر با موفقیت حذف شد' }).catch(() => {});
+      await showReviewsList(ctx, 0);
+      return;
+    }
+
+    // 6. Contact Form Messages
+    if (data.startsWith('m:cm_list:')) {
+      const page = parseInt(data.replace('m:cm_list:', ''), 10) || 0;
+      await showContactMessagesList(ctx, page);
+      return;
+    }
+
+    if (data.startsWith('cm:read:')) {
+      const msgId = data.replace('cm:read:', '');
+      await db.update(contactMessages).set({ status: 'read' }).where(eq(contactMessages.id, msgId));
+      await ctx.answerCallbackQuery({ text: 'پیام به عنوان خوانده‌شده علامت خورد' }).catch(() => {});
+      await showContactMessagesList(ctx, 0);
+      return;
+    }
+
+    if (data.startsWith('cm:arc:')) {
+      const msgId = data.replace('cm:arc:', '');
+      await db.update(contactMessages).set({ status: 'archived' }).where(eq(contactMessages.id, msgId));
+      await ctx.answerCallbackQuery({ text: 'پیام به آرشیو منتقل شد' }).catch(() => {});
+      await showContactMessagesList(ctx, 0);
+      return;
+    }
+
+    // 7. Users & Loyalty
+    if (data === 'm:usr_srch') {
+      session.mode = 'search_user';
+      await editOrReply(ctx, '🔍 شماره موبایل مشتری (مثلاً 09121234567) را ارسال فرمایید:', makeCancelKeyboard());
+      return;
+    }
+
+    if (data.startsWith('u:vip:')) {
+      const [, , uId, ptsStr] = data.split(':');
+      const pts = parseInt(ptsStr, 10);
+      const usr = await db.query.users.findFirst({ where: eq(users.id, uId) });
+      if (usr) {
+        const newPts = (usr.vipPoints || 0) + pts;
+        await db.update(users).set({ vipPoints: newPts }).where(eq(users.id, uId));
+        logAudit('user.vip.gift', `bale-${userId}`, uId, { added: pts, total: newPts });
+        await ctx.answerCallbackQuery({ text: `🎉 ${pts} امتیاز VIP اضافه شد. کل: ${newPts}` }).catch(() => {});
+        await showUserDetail(ctx, uId);
+      }
+      return;
+    }
+
+    // 8. Website Settings
+    if (data === 'st:bar_tog') {
+      const cur = (await db.query.storeSettings.findFirst({ where: eq(storeSettings.key, 'announcementBarEnabled') }))?.value === 'true';
+      const nxt = !cur;
+      await db.insert(storeSettings).values({ key: 'announcementBarEnabled', value: String(nxt) })
+        .onConflictDoUpdate({ target: storeSettings.key, set: { value: String(nxt) } });
+      appCache.invalidate('settings');
+      logAudit('settings.announcement.toggle', `bale-${userId}`, 'announcementBarEnabled', { enabled: nxt });
+      await ctx.answerCallbackQuery({ text: nxt ? '📢 نوار اعلان فعال شد' : 'نوار اعلان خاموش شد' }).catch(() => {});
+      await showSettingsMenu(ctx);
+      return;
+    }
+
+    if (data === 'st:bar_txt') {
+      session.mode = 'edit_announcement';
+      const curTxt = (await db.query.storeSettings.findFirst({ where: eq(storeSettings.key, 'announcementBarText') }))?.value || '';
+      await editOrReply(ctx, `📢 متن فعلی نوار اعلان:\n«${curTxt}»\n\nمتن جدید را بفرستید:`, makeCancelKeyboard());
+      return;
+    }
+
+    if (data === 'st:ship_th') {
+      session.mode = 'edit_free_shipping';
+      const curTh = (await db.query.storeSettings.findFirst({ where: eq(storeSettings.key, 'freeShippingThreshold') }))?.value || '500000';
+      await editOrReply(ctx, `🚚 سقف فعلی ارسال رایگان: *${fmt(parseInt(curTh, 10) || 0)} تومان*\n\nمبلغ جدید (تومان) را ارسال نمایید:`, makeCancelKeyboard());
+      return;
+    }
   });
 
   // --- Text Messages Handler ---
@@ -764,7 +1090,7 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
     const session = getSession(userId);
     const text = ctx.message.text.trim();
 
-    // 1. Search Mode
+    // 1. Search Product
     if (session.mode === 'search') {
       session.mode = 'idle';
       const term = text.toLowerCase();
@@ -782,20 +1108,36 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
 
       const kb = new InlineKeyboard();
       for (const p of results) {
-        kb.text(`📦 ${p.title.slice(0, 26)} (${fmt(p.stockQuantity)} عدد)`, `p:v:${p.id}`).row();
+        kb.text(`📦 ${p.title.slice(0, 24)} (${fmt(p.stockQuantity)} عدد)`, `p:v:${p.id}`).row();
       }
       kb.text('🔍 جستجوی دیگر', 'm:srch').text('🏠 منوی اصلی', 'm:menu');
-
       await ctx.reply(`🔍 نتایج جستجو برای «${text}» (${results.length} مورد):`, { reply_markup: kb });
       return;
     }
 
-    // 2. Editing Price Mode
+    // 2. Search Customer
+    if (session.mode === 'search_user') {
+      session.mode = 'idle';
+      const phoneClean = fa2en(text).replace(/[^\d]/g, '');
+      const u = await db.query.users.findFirst({
+        where: sql`phone LIKE ${'%' + phoneClean + '%'}`,
+      });
+
+      if (!u) {
+        const kb = new InlineKeyboard().text('🔍 جستجوی مجدد', 'm:usr_srch').text('🏠 منوی اصلی', 'm:menu');
+        await ctx.reply(`❌ کاربری با شماره «${text}» یافت نشد.`, { reply_markup: kb });
+        return;
+      }
+      await showUserDetail(ctx, u.id);
+      return;
+    }
+
+    // 3. Edit Price
     if (session.mode === 'edit_price' && session.editingProductId) {
       const newPrice = parsePrice(text);
       const prodId = session.editingProductId;
       if (!Number.isFinite(newPrice) || newPrice <= 0) {
-        await ctx.reply('❌ مبلغ نامعتبر است. لطفاً عدد به تومان وارد کنید:', { reply_markup: makeCancelKeyboard() });
+        await ctx.reply('❌ مبلغ نامعتبر است. عدد به تومان وارد کنید:', { reply_markup: makeCancelKeyboard() });
         return;
       }
 
@@ -809,20 +1151,112 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       return;
     }
 
-    // 3. Product Wizard
+    // 4. Edit Discount Percent
+    if (session.mode === 'edit_discount' && session.editingProductId) {
+      const rawDisc = parsePrice(text);
+      const prodId = session.editingProductId;
+      if (!Number.isFinite(rawDisc) || rawDisc < 0 || rawDisc > 99) {
+        await ctx.reply('❌ درصد نامعتبر است. عددی بین ۰ تا ۹۹ بفرستید:', { reply_markup: makeCancelKeyboard() });
+        return;
+      }
+
+      await db.update(products).set({ discount: rawDisc }).where(eq(products.id, prodId));
+      appCache.invalidate('products');
+      logAudit('product.discount.update', `bale-${userId}`, String(prodId), { discount: rawDisc });
+
+      clearSession(userId);
+      await ctx.reply(`✅ تخفیف کالا به *${fmt(rawDisc)}%* تنظیم شد.`);
+      await showProductDetail(ctx, prodId);
+      return;
+    }
+
+    // 5. Coupon Creation Wizard
+    if (session.mode === 'coupon_wizard' && session.couponWizard) {
+      const cw = session.couponWizard;
+      if (cw.step === 'code') {
+        cw.code = text.toUpperCase().replace(/[^A-Z0-9_-]/g, '');
+        if (!cw.code) {
+          await ctx.reply('کد نامعتبر است. فقط حروف انگلیسی و اعداد وارد کنید:');
+          return;
+        }
+        cw.step = 'percent';
+        await ctx.reply(`کد تخفیف: *${cw.code}*\n\nدرصد تخفیف (عدد ۱ تا ۹۰) را بفرستید:`, { reply_markup: makeCancelKeyboard() });
+        return;
+      }
+      if (cw.step === 'percent') {
+        const p = parsePrice(text);
+        if (!Number.isFinite(p) || p <= 0 || p > 90) {
+          await ctx.reply('درصد نامعتبر است. عددی بین ۱ تا ۹۰ بفرستید:');
+          return;
+        }
+        cw.percent = p;
+        cw.step = 'minTotal';
+        await ctx.reply(`درصد: *${cw.percent}%*\n\nحداقل مبلغ خرید (تومان) برای این کوپن را وارد کنید (مثلاً ۱۰۰۰۰۰):`, { reply_markup: makeCancelKeyboard() });
+        return;
+      }
+      if (cw.step === 'minTotal') {
+        const mt = parsePrice(text);
+        cw.minTotal = Number.isFinite(mt) && mt >= 0 ? mt : 0;
+        try {
+          await db.insert(coupons).values({
+            code: cw.code!,
+            percent: cw.percent!,
+            minTotal: cw.minTotal,
+            label: `${cw.percent}% تخفیف ویژه`,
+            active: true,
+            usedCount: 0,
+          });
+          appCache.invalidate('coupons');
+          logAudit('coupon.create', `bale-${userId}`, cw.code!, { percent: cw.percent, minTotal: cw.minTotal });
+          clearSession(userId);
+          await ctx.reply(`🎉 کد تخفیف *${cw.code}* با موفقیت ایجاد و فعال گردید!`);
+          await showCouponsList(ctx, 0);
+        } catch (err: any) {
+          await ctx.reply(`❌ خطا در ساخت کوپن: ${err.message}`, { reply_markup: makeMainMenuKeyboard() });
+        }
+        return;
+      }
+    }
+
+    // 6. Announcement Bar Text
+    if (session.mode === 'edit_announcement') {
+      await db.insert(storeSettings).values({ key: 'announcementBarText', value: text })
+        .onConflictDoUpdate({ target: storeSettings.key, set: { value: text } });
+      appCache.invalidate('settings');
+      clearSession(userId);
+      await ctx.reply('✅ متن نوار اعلان با موفقیت به‌روزرسانی شد.');
+      await showSettingsMenu(ctx);
+      return;
+    }
+
+    // 7. Free Shipping Threshold
+    if (session.mode === 'edit_free_shipping') {
+      const th = parsePrice(text);
+      if (!Number.isFinite(th) || th <= 0) {
+        await ctx.reply('مبلغ نامعتبر است. عدد به تومان بفرستید:');
+        return;
+      }
+      await db.insert(storeSettings).values({ key: 'freeShippingThreshold', value: String(th) })
+        .onConflictDoUpdate({ target: storeSettings.key, set: { value: String(th) } });
+      appCache.invalidate('settings');
+      clearSession(userId);
+      await ctx.reply(`✅ سقف ارسال رایگان به *${fmt(th)} تومان* تغییر یافت.`);
+      await showSettingsMenu(ctx);
+      return;
+    }
+
+    // 8. Product Wizard
     if (session.mode === 'wizard' && session.wizard) {
       const d = session.wizard;
-
       switch (d.step) {
         case 'title': {
           d.title = text;
           d.step = 'category';
           d.catPage = 0;
           const cats = await getStoreCategories();
-          await ctx.reply(
-            `🏷 نام: *${d.title}*\n\n📁 لطفاً *دسته‌بندی محصول* را انتخاب کنید:`,
-            { reply_markup: makeCategoriesKeyboard(cats, 0) }
-          );
+          await ctx.reply(`🏷 نام: *${d.title}*\n\n📁 لطفاً *دسته‌بندی محصول* را انتخاب کنید:`, {
+            reply_markup: makeCategoriesKeyboard(cats, 0),
+          });
           break;
         }
 
@@ -836,10 +1270,9 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
           }
           d.price = p;
           d.step = 'stock';
-          await ctx.reply(
-            `💰 قیمت: *${fmt(p)} تومان*\n\n📦 *تعداد موجودی اولیه* را ارسال کنید یا از دکمه‌های زیر انتخاب کنید:`,
-            { reply_markup: makeStockQuickKeyboard() }
-          );
+          await ctx.reply(`💰 قیمت: *${fmt(p)} تومان*\n\n📦 *تعداد موجودی اولیه* را ارسال کنید یا انتخاب نمایید:`, {
+            reply_markup: makeStockQuickKeyboard(),
+          });
           break;
         }
 
@@ -851,30 +1284,27 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
           }
           d.stock = s;
           d.step = 'brand';
-          await ctx.reply(
-            `📦 موجودی: *${fmt(s)} عدد*\n\n🏭 *برند کالا* را وارد کنید یا از گزینه‌های زیر انتخاب کنید:`,
-            { reply_markup: makeBrandQuickKeyboard() }
-          );
+          await ctx.reply(`📦 موجودی: *${fmt(s)} عدد*\n\n🏭 *برند کالا* را وارد کنید یا انتخاب نمایید:`, {
+            reply_markup: makeBrandQuickKeyboard(),
+          });
           break;
         }
 
         case 'brand': {
           d.brand = text || 'متفرقه';
           d.step = 'warranty';
-          await ctx.reply(
-            `🏭 برند: *${d.brand}*\n\n🛡 *نوع گارانتی* را ارسال کنید یا انتخاب نمایید:`,
-            { reply_markup: makeWarrantyQuickKeyboard() }
-          );
+          await ctx.reply(`🏭 برند: *${d.brand}*\n\n🛡 *نوع گارانتی* را ارسال کنید یا انتخاب نمایید:`, {
+            reply_markup: makeWarrantyQuickKeyboard(),
+          });
           break;
         }
 
         case 'warranty': {
           d.warranty = text || 'اصالت و سلامت فیزیکی';
           d.step = 'description';
-          await ctx.reply(
-            `🛡 گارانتی: *${d.warranty}*\n\n📝 *توضیحات کالا* را ارسال کنید (یا دکمه رد شدن):`,
-            { reply_markup: makeDescriptionQuickKeyboard() }
-          );
+          await ctx.reply(`🛡 گارانتی: *${d.warranty}*\n\n📝 *توضیحات کالا* را ارسال کنید (یا دکمه رد شدن):`, {
+            reply_markup: makeDescriptionQuickKeyboard(),
+          });
           break;
         }
 
@@ -884,7 +1314,7 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
           await ctx.reply(
             '📝 توضیحات ذخیره شد.\n\n' +
             '🖼 *تصویر محصول* را بفرستید:\n' +
-            'می‌توانید عکس را مستقیماً در همین چت ارسال کنید، یا آدرس اینترنتی (URL) آن را بفرستید، یا دکمه تصویر پیش‌فرض را بزنید:',
+            'عکس را مستقیماً در همین چت ارسال کنید، یا آدرس اینترنتی (URL) آن را بفرستید، یا دکمه تصویر پیش‌فرض را بزنید:',
             { reply_markup: makePhotoQuickKeyboard() }
           );
           break;
@@ -892,7 +1322,7 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
 
         case 'photo': {
           if (!/^https?:\/\//i.test(text)) {
-            await ctx.reply('❌ لینک نامعتبر است. آدرس اینترنتی عکس معتبر بفرستید یا عکس را مستقیماً آپلود کنید:', {
+            await ctx.reply('❌ لینک نامعتبر است. آدرس اینترنتی معتبر بفرستید یا عکس را مستقیماً ارسال کنید:', {
               reply_markup: makePhotoQuickKeyboard(),
             });
             return;
@@ -904,35 +1334,30 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
         }
 
         default:
-          await ctx.reply('برای شروع از /new یا منوی اصلی استفاده کنید.', { reply_markup: makeMainMenuKeyboard() });
+          await ctx.reply('برای شروع از /menu استفاده نمایید.', { reply_markup: makeMainMenuKeyboard() });
           break;
       }
       return;
     }
 
-    // Default message when idle
-    await ctx.reply('دستور نامشخص. برای شروع از دکمه‌های زیر استفاده کنید:', { reply_markup: makeMainMenuKeyboard() });
+    await ctx.reply('دستور نامشخص. از دکمه‌های زیر استفاده نمایید:', { reply_markup: makeMainMenuKeyboard() });
   });
 
-  // --- Direct Photo Upload Handler ---
+  // --- Photo Upload Handler ---
   bot.on('message:photo', async (ctx) => {
     if (!isAdmin(ctx, cfg)) return;
     const session = getSession(ctx.from.id);
     if (session.mode !== 'wizard' || !session.wizard || session.wizard.step !== 'photo') {
-      await ctx.reply('در این مرحله نیازی به ارسال عکس نیست. مراحل را با منو دنبال کنید.', {
-        reply_markup: makeMainMenuKeyboard(),
-      });
+      await ctx.reply('در این مرحله نیازی به ارسال عکس نیست.', { reply_markup: makeMainMenuKeyboard() });
       return;
     }
 
-    const waitMsg = await ctx.reply('⏳ در حال دریافت و ذخیره تصویر از بله...');
+    const waitMsg = await ctx.reply('⏳ در حال دریافت و فشرده‌سازی تصویر...');
     try {
       const photos = ctx.message.photo;
       const best = photos[photos.length - 1];
       const fileInfo = await bot.api.getFile(best.file_id);
-      if (!fileInfo.file_path) {
-        throw new Error('مسیر فایل از سرور بله دریافت نشد');
-      }
+      if (!fileInfo.file_path) throw new Error('مسیر فایل از سرور بله دریافت نشد');
 
       const localUrl = await downloadAndSaveBalePhoto(token, fileInfo.file_path);
       session.wizard.photoUrl = localUrl;
@@ -952,15 +1377,15 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
 
   bot.on('message:document', async (ctx) => {
     if (!isAdmin(ctx, cfg)) return;
-    await ctx.reply('لطفاً تصویر را به‌صورت عکس (Photo) ارسال کنید، نه فایل سندی.', {
+    await ctx.reply('لطفاً عکس را به صورت تصویر (Photo) ارسال کنید، نه فایل Document.', {
       reply_markup: makePhotoQuickKeyboard(),
     });
   });
 
-  // --- Sub-views Implementation ---
+  // --- Sub-view Renderers ---
   async function showProductConfirmation(ctx: Context, d: WizardDraft): Promise<void> {
     const summary =
-      '📋 *پیش‌نمایش مشخصات محصول جدید*\n\n' +
+      '📋 *پیش‌نمایش ثبت محصول جدید*\n\n' +
       `▫️ *عنوان:* ${d.title}\n` +
       `▫️ *دسته‌بندی:* ${d.category}\n` +
       `▫️ *قیمت:* ${fmt(d.price!)} تومان\n` +
@@ -969,7 +1394,7 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       `▫️ *گارانتی:* ${d.warranty || '—'}\n` +
       `▫️ *توضیحات:* ${d.description || '—'}\n` +
       `▫️ *تصویر:* ${d.photoUrl}\n\n` +
-      'جهت ثبت نهایی و انتشار در وب‌سایت دکمه تأیید را بزنید:';
+      'جهت انتشار فوری در وب‌سایت تأیید کنید:';
 
     await ctx.reply(summary, { reply_markup: makeConfirmWizardKeyboard() });
   }
@@ -981,12 +1406,7 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
     const totalPages = Math.ceil(total / pageSize) || 1;
     const curPage = Math.max(0, Math.min(page, totalPages - 1));
 
-    const rows = await db
-      .select()
-      .from(products)
-      .orderBy(desc(products.id))
-      .limit(pageSize)
-      .offset(curPage * pageSize);
+    const rows = await db.select().from(products).orderBy(desc(products.id)).limit(pageSize).offset(curPage * pageSize);
 
     if (rows.length === 0) {
       const kb = new InlineKeyboard().text('➕ ثبت محصول جدید', 'm:new').text('🏠 منوی اصلی', 'm:menu');
@@ -996,21 +1416,50 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
 
     const kb = new InlineKeyboard();
     for (const p of rows) {
-      kb.text(`📦 ${p.title.slice(0, 24)}... | ${fmt(p.price)} تومان`, `p:v:${p.id}`).row();
+      kb.text(`📦 ${p.title.slice(0, 24)}... | ${fmt(p.price)} ت`, `p:v:${p.id}`).row();
     }
 
     const navRow: { text: string; data: string }[] = [];
-    if (curPage > 0) navRow.push({ text: '⬅️ صفحه قبل', data: `m:p:${curPage - 1}` });
-    if (curPage < totalPages - 1) navRow.push({ text: 'صفحه بعد ➡️', data: `m:p:${curPage + 1}` });
+    if (curPage > 0) navRow.push({ text: '⬅️ قبل', data: `m:p:${curPage - 1}` });
+    if (curPage < totalPages - 1) navRow.push({ text: 'بعد ➡️', data: `m:p:${curPage + 1}` });
 
     if (navRow.length > 0) {
       for (const b of navRow) kb.text(b.text, b.data);
       kb.row();
     }
-    kb.text('➕ ثبت محصول جدید', 'm:new').text('🏠 منوی اصلی', 'm:menu');
+    kb.text('➕ ثبت محصول', 'm:new').text('📁 دسته‌ها', 'm:cat_pick:0').row().text('🏠 منوی اصلی', 'm:menu');
 
-    const message = `📦 *فهرست کالاهای فروشگاه* (صفحه ${curPage + 1} از ${totalPages} — مجموع: ${total} کالا):`;
-    await editOrReply(ctx, message, kb);
+    await editOrReply(ctx, `📦 *فهرست کالاهای فروشگاه* (صفحه ${curPage + 1} از ${totalPages} — مجموع: ${total}):`, kb);
+  }
+
+  async function showProductsByCategory(ctx: Context, categoryName: string, page: number): Promise<void> {
+    const pageSize = 5;
+    const [countRow] = await db.select({ count: sql<number>`count(*)` }).from(products).where(eq(products.category, categoryName));
+    const total = Number(countRow?.count ?? 0);
+    const totalPages = Math.ceil(total / pageSize) || 1;
+    const curPage = Math.max(0, Math.min(page, totalPages - 1));
+
+    const rows = await db.select().from(products).where(eq(products.category, categoryName)).orderBy(desc(products.id)).limit(pageSize).offset(curPage * pageSize);
+
+    const kb = new InlineKeyboard();
+    for (const p of rows) {
+      kb.text(`📦 ${p.title.slice(0, 22)}... | ${fmt(p.price)} ت`, `p:v:${p.id}`).row();
+    }
+
+    const cats = await getStoreCategories();
+    const catIdx = cats.indexOf(categoryName);
+
+    const navRow: { text: string; data: string }[] = [];
+    if (curPage > 0) navRow.push({ text: '⬅️ قبل', data: `cpk:list:${catIdx}:${curPage - 1}` });
+    if (curPage < totalPages - 1) navRow.push({ text: 'بعد ➡️', data: `cpk:list:${catIdx}:${curPage + 1}` });
+
+    if (navRow.length > 0) {
+      for (const b of navRow) kb.text(b.text, b.data);
+      kb.row();
+    }
+    kb.text('📁 انتخاب دسته دیگر', 'm:cat_pick:0').text('🏠 منوی اصلی', 'm:menu');
+
+    await editOrReply(ctx, `📁 *کالاهای دسته «${categoryName}»* (${total} محصول):`, kb);
   }
 
   async function showProductDetail(ctx: Context, prodId: number): Promise<void> {
@@ -1025,33 +1474,30 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       `▫️ *نام کالا:* ${p.title}\n` +
       `▫️ *شناسه:* ${p.id}\n` +
       `▫️ *دسته‌بندی:* ${p.category}\n` +
-      `▫️ *قیمت:* *${fmt(p.price)} تومان*\n` +
+      `▫️ *قیمت اصلی:* *${fmt(p.price)} تومان*\n` +
+      `▫️ *تخفیف:* ${p.discount ? `🔥 *${fmt(p.discount)}%*` : 'ندارد'}\n` +
       `▫️ *موجودی انبار:* *${p.stockQuantity > 0 ? `${fmt(p.stockQuantity)} عدد` : '🔴 ناموجود'}*\n` +
       `▫️ *برند:* ${p.brand || 'متفرقه'}\n` +
       `▫️ *گارانتی:* ${p.warranty || '—'}\n` +
       `▫️ *کد کالا (SKU):* \`${p.sku || '—'}\`\n\n` +
-      `از دکمه‌های شیشه‌ای زیر برای تغییر فوری موجودی یا قیمت استفاده کنید:`;
+      `جهت ویرایش موجودی، قیمت یا تخفیف از دکمه‌های زیر استفاده فرمایید:`;
 
     await editOrReply(ctx, text, makeProductDetailKeyboard(p.id, p.stockQuantity));
   }
 
-  async function showOrdersList(ctx: Context, page: number): Promise<void> {
+  async function showOrdersList(ctx: Context, page: number, statusFilter?: string): Promise<void> {
     const pageSize = 5;
-    const [countRow] = await db.select({ count: sql<number>`count(*)` }).from(orders);
+    const condition = statusFilter ? eq(orders.status, statusFilter) : undefined;
+    const [countRow] = await db.select({ count: sql<number>`count(*)` }).from(orders).where(condition);
     const total = Number(countRow?.count ?? 0);
     const totalPages = Math.ceil(total / pageSize) || 1;
     const curPage = Math.max(0, Math.min(page, totalPages - 1));
 
-    const rows = await db
-      .select()
-      .from(orders)
-      .orderBy(desc(orders.date))
-      .limit(pageSize)
-      .offset(curPage * pageSize);
+    const rows = await db.select().from(orders).where(condition).orderBy(desc(orders.date)).limit(pageSize).offset(curPage * pageSize);
 
     if (rows.length === 0) {
-      const kb = new InlineKeyboard().text('🏠 منوی اصلی', 'm:menu');
-      await editOrReply(ctx, '🛍 هنوز سفارشی در سیستم ثبت نشده است.', kb);
+      const kb = new InlineKeyboard().text('🛍 بازگشت به سفارش‌ها', 'm:sec_ord').text('🏠 منوی اصلی', 'm:menu');
+      await editOrReply(ctx, '🛍 هیچ سفارشی در این وضعیت یافت نشد.', kb);
       return;
     }
 
@@ -1063,17 +1509,18 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
     }
 
     const navRow: { text: string; data: string }[] = [];
-    if (curPage > 0) navRow.push({ text: '⬅️ صفحه قبل', data: `m:o:${curPage - 1}` });
-    if (curPage < totalPages - 1) navRow.push({ text: 'صفحه بعد ➡️', data: `m:o:${curPage + 1}` });
+    const navBase = statusFilter ? `m:of:${statusFilter}:` : 'm:o:';
+    if (curPage > 0) navRow.push({ text: '⬅️ قبل', data: `${navBase}${curPage - 1}` });
+    if (curPage < totalPages - 1) navRow.push({ text: 'بعد ➡️', data: `${navBase}${curPage + 1}` });
 
     if (navRow.length > 0) {
       for (const b of navRow) kb.text(b.text, b.data);
       kb.row();
     }
-    kb.text('🏠 منوی اصلی', 'm:menu');
+    kb.text('🛍 منوی سفارشات', 'm:sec_ord').text('🏠 منوی اصلی', 'm:menu');
 
-    const msg = `🛍 *آخرین سفارش‌های ثبت‌شده* (صفحه ${curPage + 1} از ${totalPages} — مجموع: ${total}):\nبرای مشاهده جزییات و تغییر وضعیت هر سفارش، روی آن کلیک کنید:`;
-    await editOrReply(ctx, msg, kb);
+    const filterText = statusFilter ? ` (فیلتر: ${ORDER_STATUS_MAP[statusFilter]?.label || statusFilter})` : '';
+    await editOrReply(ctx, `🛍 *سفارش‌های فروشگاه*${filterText} (صفحه ${curPage + 1} از ${totalPages} — مجموع: ${total}):`, kb);
   }
 
   async function showOrderDetail(ctx: Context, orderId: string): Promise<void> {
@@ -1095,13 +1542,13 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       `🛍 *جزئیات سفارش:* \`${o.id}\`\n\n` +
       `👤 *مشتری:* ${o.recipientName}\n` +
       `📞 *شماره تماس:* \`${o.recipientPhone}\`\n` +
-      `📍 *آدرس تحویل:* ${o.recipientAddress}\n` +
+      `📍 *آدرس:* ${o.recipientAddress}\n` +
       `💳 *روش پرداخت:* ${o.paymentMethod === 'online' ? 'درگاه آنلاین' : o.paymentMethod}\n` +
       `📊 *وضعیت فعلی:* ${st.icon} *${st.label}*\n` +
       `💰 *مبلغ نهایی:* *${fmt(o.total)} تومان*\n` +
-      `🗓 *تاریخ:* ${o.date}\n\n` +
+      `🗓 *تاریخ ثبت:* ${o.date}\n\n` +
       `📦 *اقلام سفارش:*\n${itemsList}\n\n` +
-      `تغییر وضعیت سفارش:`;
+      `جهت تغییر وضعیت روی یکی از گزینه‌ها بزنید:`;
 
     await editOrReply(ctx, text, makeOrderDetailKeyboard(o.id));
   }
@@ -1114,19 +1561,14 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       await db.transaction(async (tx) => {
         const orderList = await tx.select().from(orders).where(eq(orders.id, orderId));
         const order = orderList[0];
-        if (!order) return;
-        if (order.status === 'cancelled') return;
+        if (!order || order.status === 'cancelled') return;
 
         await restockItemsAndRefundPoints(tx, orderId, order.userId, order.vipPointsUsed);
-        await tx.update(orders)
-          .set({ status: 'cancelled', statusText: stConfig.text })
-          .where(eq(orders.id, orderId));
+        await tx.update(orders).set({ status: 'cancelled', statusText: stConfig.text }).where(eq(orders.id, orderId));
       });
       appCache.invalidate('products');
     } else {
-      await db.update(orders)
-        .set({ status: nextStatus, statusText: stConfig.text })
-        .where(eq(orders.id, orderId));
+      await db.update(orders).set({ status: nextStatus, statusText: stConfig.text }).where(eq(orders.id, orderId));
     }
 
     logAudit('order.status.update', `bale-${ctx.from?.id}`, orderId, { status: nextStatus });
@@ -1134,22 +1576,187 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
     await showOrderDetail(ctx, orderId);
   }
 
-  async function showLowStockAlerts(ctx: Context): Promise<void> {
-    const rows = await db
-      .select()
-      .from(products)
-      .where(sql`${products.stockQuantity} <= 5`)
-      .orderBy(products.stockQuantity)
-      .limit(8);
+  async function showCouponsList(ctx: Context, page: number): Promise<void> {
+    const pageSize = 5;
+    const [countRow] = await db.select({ count: sql<number>`count(*)` }).from(coupons);
+    const total = Number(countRow?.count ?? 0);
+    const totalPages = Math.ceil(total / pageSize) || 1;
+    const curPage = Math.max(0, Math.min(page, totalPages - 1));
+
+    const rows = await db.select().from(coupons).limit(pageSize).offset(curPage * pageSize);
 
     if (rows.length === 0) {
-      const kb = new InlineKeyboard().text('🏠 منوی اصلی', 'm:menu');
-      await editOrReply(ctx, '✅ موجودی تمام کالاها کافی است (هیچ کالایی با موجودی ۵ یا کمتر وجود ندارد).', kb);
+      const kb = new InlineKeyboard().text('➕ ساخت اولین کوپن', 'm:cp_new').text('🏠 منوی اصلی', 'm:menu');
+      await editOrReply(ctx, '🏷 هیچ کد تخفیفی ثبت نشده است.', kb);
       return;
     }
 
     const kb = new InlineKeyboard();
-    let text = '⚠️ *هشدارهای موجودی انبار (کالاهای ۵ عدد یا کمتر):*\n\n';
+    let text = `🏷 *فهرست کدهای تخفیف* (صفحه ${curPage + 1} از ${totalPages}):\n\n`;
+    for (const c of rows) {
+      const statusIcon = c.active ? '🟢' : '🔴';
+      text += `▫️ *${c.code}* (${c.percent ? `${fmt(c.percent)}%` : `${fmt(c.amount || 0)} ت`}) — ${statusIcon}\n`;
+      text += `   حداقل سفارش: ${fmt(c.minTotal)} ت | مصرف: ${fmt(c.usedCount)}\n`;
+      kb.text(`${statusIcon} فعال/غیرفعال ${c.code}`, `cp:tog:${c.code}`)
+        .text(`🗑 حذف`, `cp:del:${c.code}`)
+        .row();
+    }
+
+    const navRow: { text: string; data: string }[] = [];
+    if (curPage > 0) navRow.push({ text: '⬅️ قبل', data: `m:cp_list:${curPage - 1}` });
+    if (curPage < totalPages - 1) navRow.push({ text: 'بعد ➡️', data: `m:cp_list:${curPage + 1}` });
+
+    if (navRow.length > 0) {
+      for (const b of navRow) kb.text(b.text, b.data);
+      kb.row();
+    }
+    kb.text('➕ کد جدید', 'm:cp_new').text('🏠 منوی اصلی', 'm:menu');
+
+    await editOrReply(ctx, text, kb);
+  }
+
+  async function showReviewsList(ctx: Context, page: number): Promise<void> {
+    const pageSize = 4;
+    const [countRow] = await db.select({ count: sql<number>`count(*)` }).from(reviews);
+    const total = Number(countRow?.count ?? 0);
+    const totalPages = Math.ceil(total / pageSize) || 1;
+    const curPage = Math.max(0, Math.min(page, totalPages - 1));
+
+    const rows = await db.select().from(reviews).orderBy(desc(reviews.date)).limit(pageSize).offset(curPage * pageSize);
+
+    if (rows.length === 0) {
+      const kb = new InlineKeyboard().text('🏠 منوی اصلی', 'm:menu');
+      await editOrReply(ctx, '⭐ هیچ نظری ثبت نشده است.', kb);
+      return;
+    }
+
+    const kb = new InlineKeyboard();
+    let text = `⭐ *نظرات ثبت‌شده کاربران* (صفحه ${curPage + 1} از ${totalPages}):\n\n`;
+
+    for (const r of rows) {
+      const st = r.approved ? '✅ تأیید شده' : '⏳ در انتظار / رد';
+      text += `▫️ *${r.userName}* (${'⭐'.repeat(r.rating)}) [${st}]\n`;
+      text += `«${r.comment.slice(0, 70)}${r.comment.length > 70 ? '...' : ''}»\n`;
+
+      if (!r.approved) {
+        kb.text(`✅ تأیید نظر`, `rv:app:${r.id}`);
+      } else {
+        kb.text(`❌ رد نظر`, `rv:rej:${r.id}`);
+      }
+      kb.text(`🗑 حذف`, `rv:del:${r.id}`).row();
+    }
+
+    const navRow: { text: string; data: string }[] = [];
+    if (curPage > 0) navRow.push({ text: '⬅️ قبل', data: `m:rv_list:${curPage - 1}` });
+    if (curPage < totalPages - 1) navRow.push({ text: 'بعد ➡️', data: `m:rv_list:${curPage + 1}` });
+
+    if (navRow.length > 0) {
+      for (const b of navRow) kb.text(b.text, b.data);
+      kb.row();
+    }
+    kb.text('💬 نظرات و پیام‌ها', 'm:sec_msg').text('🏠 منوی اصلی', 'm:menu');
+
+    await editOrReply(ctx, text, kb);
+  }
+
+  async function showContactMessagesList(ctx: Context, page: number): Promise<void> {
+    const pageSize = 4;
+    const [countRow] = await db.select({ count: sql<number>`count(*)` }).from(contactMessages);
+    const total = Number(countRow?.count ?? 0);
+    const totalPages = Math.ceil(total / pageSize) || 1;
+    const curPage = Math.max(0, Math.min(page, totalPages - 1));
+
+    const rows = await db.select().from(contactMessages).orderBy(desc(contactMessages.createdAt)).limit(pageSize).offset(curPage * pageSize);
+
+    if (rows.length === 0) {
+      const kb = new InlineKeyboard().text('🏠 منوی اصلی', 'm:menu');
+      await editOrReply(ctx, '📩 پیامی در فرم تماس با ما ثبت نشده است.', kb);
+      return;
+    }
+
+    const kb = new InlineKeyboard();
+    let text = `📩 *پیام‌های دریافتی فرم تماس* (صفحه ${curPage + 1} از ${totalPages}):\n\n`;
+
+    for (const m of rows) {
+      const isUnread = m.status === 'unread';
+      text += `${isUnread ? '🔴' : '⚪'} *${m.name}* (${m.phone || m.email})\n`;
+      text += `موضوع: *${m.subject || 'بدون موضوع'}*\n`;
+      text += `«${m.message.slice(0, 80)}...»\n`;
+
+      if (isUnread) {
+        kb.text(`✔️ خوانده شد`, `cm:read:${m.id}`);
+      }
+      kb.text(`🗄️ آرشیو`, `cm:arc:${m.id}`).row();
+    }
+
+    const navRow: { text: string; data: string }[] = [];
+    if (curPage > 0) navRow.push({ text: '⬅️ قبل', data: `m:cm_list:${curPage - 1}` });
+    if (curPage < totalPages - 1) navRow.push({ text: 'بعد ➡️', data: `m:cm_list:${curPage + 1}` });
+
+    if (navRow.length > 0) {
+      for (const b of navRow) kb.text(b.text, b.data);
+      kb.row();
+    }
+    kb.text('💬 نظرات و پیام‌ها', 'm:sec_msg').text('🏠 منوی اصلی', 'm:menu');
+
+    await editOrReply(ctx, text, kb);
+  }
+
+  async function showUserDetail(ctx: Context, uId: string): Promise<void> {
+    const u = await db.query.users.findFirst({ where: eq(users.id, uId) });
+    if (!u) {
+      await ctx.reply('مشتری یافت نشد.', { reply_markup: makeMainMenuKeyboard() });
+      return;
+    }
+
+    const [orderCountRow] = await db.select({ count: sql<number>`count(*)` }).from(orders).where(eq(orders.userId, u.id));
+    const totalUserOrders = Number(orderCountRow?.count ?? 0);
+
+    const text =
+      `👤 *مشخصات مشتری*\n\n` +
+      `▫️ *نام:* ${u.name}\n` +
+      `▫️ *شماره موبایل:* \`${u.phone}\`\n` +
+      `▫️ *نقش کاربری:* ${u.role === 'admin' ? '🛡 مدیر' : 'کاربر عادی'}\n` +
+      `▫️ *امتیاز باشگاه مشتریان (VIP):* 🔥 *${fmt(u.vipPoints || 0)} امتیاز*\n` +
+      `▫️ *تعداد سفارشات:* ${fmt(totalUserOrders)} سفارش\n\n` +
+      `جهت تشویق و وفادارسازی مشتری، می‌توانید امتیاز هدیه اعطا کنید:`;
+
+    const kb = new InlineKeyboard()
+      .text('🎁 +۵۰ امتیاز', `u:vip:${u.id}:50`)
+      .text('🎁 +۱۰۰ امتیاز', `u:vip:${u.id}:100`)
+      .row()
+      .text('🔍 جستجوی مشتری دیگر', 'm:usr_srch')
+      .text('🏠 منوی اصلی', 'm:menu');
+
+    await editOrReply(ctx, text, kb);
+  }
+
+  async function showSettingsMenu(ctx: Context): Promise<void> {
+    const isBarOn = (await db.query.storeSettings.findFirst({ where: eq(storeSettings.key, 'announcementBarEnabled') }))?.value === 'true';
+    const barTxt = (await db.query.storeSettings.findFirst({ where: eq(storeSettings.key, 'announcementBarText') }))?.value || '—';
+    const freeTh = (await db.query.storeSettings.findFirst({ where: eq(storeSettings.key, 'freeShippingThreshold') }))?.value || '500000';
+
+    const text =
+      `⚙️ *تنظیمات فروشگاه و وب‌سایت*\n\n` +
+      `📢 *وضعیت نوار اعلان:* ${isBarOn ? '🟢 فعال' : '🔴 غیرفعال'}\n` +
+      `📝 *متن اعلان:* «${barTxt}»\n` +
+      `🚚 *حداقل مبلغ ارسال رایگان:* *${fmt(parseInt(freeTh, 10) || 0)} تومان*\n\n` +
+      `برای تغییر هر یک از تنظیمات دکمه‌های زیر را لمس نمایید:`;
+
+    await editOrReply(ctx, text, makeSettingsSectionKeyboard(isBarOn));
+  }
+
+  async function showLowStockAlerts(ctx: Context): Promise<void> {
+    const rows = await db.select().from(products).where(sql`${products.stockQuantity} <= 5`).orderBy(products.stockQuantity).limit(8);
+
+    if (rows.length === 0) {
+      const kb = new InlineKeyboard().text('🏠 منوی اصلی', 'm:menu');
+      await editOrReply(ctx, '✅ موجودی تمام کالاها کافی است (هیچ کالایی با ۵ عدد یا کمتر وجود ندارد).', kb);
+      return;
+    }
+
+    const kb = new InlineKeyboard();
+    let text = '⚠️ *هشدارهای انبار (کالاهای ۵ عدد یا کمتر):*\n\n';
 
     for (const p of rows) {
       const isZero = p.stockQuantity === 0;
@@ -1165,27 +1772,25 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
     const [pCount] = await db.select({ count: sql<number>`count(*)` }).from(products);
     const [oCount] = await db.select({ count: sql<number>`count(*)` }).from(orders);
 
-    const revRow = await db.select({ total: sql<number>`sum(total)` }).from(orders).where(
-      sql`status IN ('processing', 'shipped', 'delivered')`
-    );
+    const revRow = await db.select({ total: sql<number>`sum(total)` }).from(orders).where(sql`status IN ('processing', 'shipped', 'delivered')`);
     const totalRevenue = revRow[0]?.total || 0;
 
     const [stockSum] = await db.select({ sum: sql<number>`sum(stockQuantity)` }).from(products);
     const [zeroStock] = await db.select({ count: sql<number>`count(*)` }).from(products).where(sql`${products.stockQuantity} = 0`);
     const [lowStock] = await db.select({ count: sql<number>`count(*)` }).from(products).where(sql`${products.stockQuantity} <= 5`);
-    const [pendingOrders] = await db.select({ count: sql<number>`count(*)` }).from(orders).where(
-      sql`status IN ('pending_payment', 'processing')`
-    );
+    const [pendingOrders] = await db.select({ count: sql<number>`count(*)` }).from(orders).where(sql`status IN ('pending_payment', 'processing')`);
+    const [unreadMsgs] = await db.select({ count: sql<number>`count(*)` }).from(contactMessages).where(eq(contactMessages.status, 'unread'));
 
     const text =
-      '📊 *داشبورد آماری فروشگاه Janebi Arena*\n\n' +
-      `📦 *تنوع کل کالاها:* ${fmt(Number(pCount?.count ?? 0))} محصول\n` +
+      '📊 *داشبورد عملکرد و وضعیت زنده فروشگاه*\n\n' +
+      `📦 *تنوع محصولات:* ${fmt(Number(pCount?.count ?? 0))} کالا\n` +
       `🔢 *مجموع موجودی انبار:* ${fmt(Number(stockSum?.sum ?? 0))} قلم کالا\n` +
-      `🔴 *کالاهای ناموجود:* ${fmt(Number(zeroStock?.count ?? 0))} کالا\n` +
-      `⚠️ *کالاهای کم‌موجودی:* ${fmt(Number(lowStock?.count ?? 0))} کالا\n\n` +
+      `🔴 *کالاهای ناموجود:* ${fmt(Number(zeroStock?.count ?? 0))} مورد\n` +
+      `⚠️ *کالاهای کم‌موجودی:* ${fmt(Number(lowStock?.count ?? 0))} مورد\n\n` +
       `🛒 *مجموع کل سفارش‌ها:* ${fmt(Number(oCount?.count ?? 0))} سفارش\n` +
       `⏳ *سفارش‌های در جریان:* ${fmt(Number(pendingOrders?.count ?? 0))} سفارش\n` +
-      `💳 *کل فروش موفق:* *${fmt(totalRevenue)} تومان*`;
+      `💳 *کل فروش موفق:* *${fmt(totalRevenue)} تومان*\n` +
+      `📩 *پیام‌های خوانده‌نشده:* ${fmt(Number(unreadMsgs?.count ?? 0))} پیام`;
 
     const kb = new InlineKeyboard().text('🔄 به‌روزرسانی آمار', 'm:stat').text('🏠 منوی اصلی', 'm:menu');
     await editOrReply(ctx, text, kb);
@@ -1193,21 +1798,14 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
 
   async function showHelp(ctx: Context): Promise<void> {
     const text =
-      '❓ *راهنمای استفاده از ربات بله Janebi Arena*\n\n' +
-      'این ربات تماماً بر پایه دکمه‌های شیشه‌ای (Inline) طراحی شده است:\n\n' +
-      '🔹 *ثبت محصول جدید:* نام، دسته، قیمت، موجودی، برند، گارانتی، توضیحات و آپلود مستقیم عکس با چند کلیک ساده.\n' +
-      '🔹 *مدیریت کالاها:* مشاهده مشخصات، تغییر فوری موجودی با دکمه‌های +/-، ویرایش قیمت و حذف کالا.\n' +
-      '🔹 *جستجو:* یافتن سریع هر محصول با ارسال نام یا کد SKU.\n' +
-      '🔹 *سفارشات:* مشاهده لیست آخرین سفارشات، اقلام، مشتری و تغییر وضعیت به پردازش/ارسال/تحویل/لغو.\n' +
-      '🔹 *هشدارهای انبار:* کالاهای رو به اتمام با امکان شارژ سریع موجودی.\n\n' +
-      'فرمان‌های متنی پشتیبانی‌شده:\n' +
-      '/start یا /menu — باز کردن منوی اصلی\n' +
-      '/new — ثبت سریع کالا\n' +
-      '/list — فهرست کالاها\n' +
-      '/orders — آخرین سفارش‌ها\n' +
-      '/alerts — هشدارهای انبار\n' +
-      '/stats — آمار فروشگاه\n' +
-      '/cancel — انصراف از عملیات جاری';
+      '❓ *راهنمای داشبورد مدیریت فروشگاه Janebi Arena*\n\n' +
+      'این ربات یک پنل کامل مدیریت فروشگاهی بر بستر دکمه‌های شیشه‌ای است:\n\n' +
+      '📦 *کالاها:* ثبت جدید، مرور بر اساس دسته‌بندی، تغییر فوری موجودی با +/-، تغییر قیمت و درصد تخفیف.\n' +
+      '🛍 *سفارش‌ها:* مشاهده فیلترشده سفارشات، جزئیات آدرس و تغییر وضعیت به پردازش/ارسال/تحویل یا لغو با بازگشت موجودی.\n' +
+      '🏷 *کوپن‌ها:* ساخت سریع کد تخفیف درصدی، فعال و غیرفعال‌سازی با یک کلیک.\n' +
+      '💬 *نظرات و پیام‌ها:* تأیید و رد نظرات کاربران (با به‌روزرسانی زنده ستاره‌های کالا) و مشاهده فرم‌های تماس.\n' +
+      '👥 *مشتریان:* استعلام مشتری با شماره موبایل و اعطای امتیازات باشگاه وفاداری (VIP).\n' +
+      '⚙️ *تنظیمات:* مدیریت پیام نوار بالای سایت و سقف ارسال رایگان.';
 
     const kb = new InlineKeyboard().text('🏠 بازگشت به منوی اصلی', 'm:menu');
     await editOrReply(ctx, text, kb);

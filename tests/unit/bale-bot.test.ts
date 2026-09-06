@@ -4,11 +4,18 @@ import {
   parsePrice,
   fmt,
   makeMainMenuKeyboard,
+  makeProductsSectionKeyboard,
+  makeOrdersSectionKeyboard,
+  makeCouponsSectionKeyboard,
+  makeMessagesSectionKeyboard,
+  makeUsersSectionKeyboard,
+  makeSettingsSectionKeyboard,
   makeCategoriesKeyboard,
   makeStockQuickKeyboard,
   makeBrandQuickKeyboard,
   makeWarrantyQuickKeyboard,
   makeProductDetailKeyboard,
+  makeProductDeleteConfirmKeyboard,
   makeOrderDetailKeyboard,
   getSession,
   clearSession,
@@ -67,16 +74,28 @@ describe('Bale Bot Helpers & Keyboard Byte Budget Tests', () => {
     }
 
     it('mainMenuKeyboard satisfies <= 64 bytes limit', () => {
-      const kb = makeMainMenuKeyboard();
-      assertAllButtonsUnder64Bytes(kb);
+      assertAllButtonsUnder64Bytes(makeMainMenuKeyboard());
     });
 
-    it('categoriesKeyboard satisfies <= 64 bytes limit across pages', () => {
+    it('section keyboards satisfy <= 64 bytes limit', () => {
+      assertAllButtonsUnder64Bytes(makeProductsSectionKeyboard());
+      assertAllButtonsUnder64Bytes(makeOrdersSectionKeyboard());
+      assertAllButtonsUnder64Bytes(makeCouponsSectionKeyboard());
+      assertAllButtonsUnder64Bytes(makeMessagesSectionKeyboard());
+      assertAllButtonsUnder64Bytes(makeUsersSectionKeyboard());
+      assertAllButtonsUnder64Bytes(makeSettingsSectionKeyboard(true));
+      assertAllButtonsUnder64Bytes(makeSettingsSectionKeyboard(false));
+    });
+
+    it('categoriesKeyboard satisfies <= 64 bytes limit across pages and prefixes', () => {
       const kb0 = makeCategoriesKeyboard(DEFAULT_CATEGORIES, 0);
       assertAllButtonsUnder64Bytes(kb0);
 
       const kb1 = makeCategoriesKeyboard(DEFAULT_CATEGORIES, 1);
       assertAllButtonsUnder64Bytes(kb1);
+
+      const kbp = makeCategoriesKeyboard(DEFAULT_CATEGORIES, 0, 'cpk:cat:');
+      assertAllButtonsUnder64Bytes(kbp);
     });
 
     it('quick keyboards satisfy <= 64 bytes limit', () => {
@@ -85,20 +104,19 @@ describe('Bale Bot Helpers & Keyboard Byte Budget Tests', () => {
       assertAllButtonsUnder64Bytes(makeWarrantyQuickKeyboard());
     });
 
-    it('productDetailKeyboard satisfies <= 64 bytes limit', () => {
-      const kb = makeProductDetailKeyboard(12345, 10);
-      assertAllButtonsUnder64Bytes(kb);
+    it('productDetailKeyboard and delete confirm satisfy <= 64 bytes limit', () => {
+      assertAllButtonsUnder64Bytes(makeProductDetailKeyboard(12345, 10));
+      assertAllButtonsUnder64Bytes(makeProductDeleteConfirmKeyboard(12345));
     });
 
     it('orderDetailKeyboard satisfies <= 64 bytes limit', () => {
-      const kb = makeOrderDetailKeyboard('ORD-XYZ12345-AB');
-      assertAllButtonsUnder64Bytes(kb);
+      assertAllButtonsUnder64Bytes(makeOrderDetailKeyboard('ORD-XYZ12345-AB'));
     });
   });
 
   describe('Session Lifecycle', () => {
     it('initializes and clears user sessions', () => {
-      const userId = 999999;
+      const userId = 888888;
       clearSession(userId);
       expect(sessions.has(userId)).toBe(false);
 
