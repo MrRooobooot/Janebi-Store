@@ -50,6 +50,43 @@ export default function AdminProducts() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
+  // Inline quick stock edit: click the stock cell, type a number, Enter/blur saves.
+  const [stockEditId, setStockEditId] = useState<number | null>(null);
+  const [stockEditValue, setStockEditValue] = useState('');
+  const [stockSaving, setStockSaving] = useState(false);
+
+  const saveQuickStock = async (id: number) => {
+    const stockNum = parseInt(toEnglishDigits(stockEditValue).replace(/[^0-9]/g, ''), 10);
+    if (isNaN(stockNum) || stockNum < 0) {
+      addToast('موجودی باید عددی مثبت باشد', 'error');
+      setStockEditId(null);
+      return;
+    }
+    setStockSaving(true);
+    try {
+      const res = await fetch(`/api/admin/products/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ stockQuantity: stockNum })
+      });
+      if (res.ok) {
+        setProducts(prev => prev.map(p => p.id === id ? { ...p, stockQuantity: stockNum } : p));
+        addToast('موجودی بروزرسانی شد', 'success');
+      } else {
+        const data = await res.json().catch(() => ({}));
+        addToast(data.error || 'خطا در تغییر موجودی', 'error');
+      }
+    } catch {
+      addToast('خطا در ارتباط با سرور', 'error');
+    } finally {
+      setStockSaving(false);
+      setStockEditId(null);
+    }
+  };
+
   // Form State
   const [formData, setFormData] = useState({
     title: '',
@@ -88,7 +125,9 @@ export default function AdminProducts() {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/products');
+      // limit=1000: the default /api/products page size is 20 — the admin
+      // catalogue must see every product, not just the first page.
+      const res = await fetch('/api/products?limit=1000');
       if (res.ok) {
         const data = await res.json();
         setProducts(data);
@@ -470,21 +509,40 @@ export default function AdminProducts() {
                         {formatPrice(p.price)}
                       </td>
                       <td className="p-4">
-                        {stock > 5 ? (
-                          <span className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                            {toPersianDigits(stock)} عدد موجود
-                          </span>
-                        ) : stock > 0 ? (
-                          <span className="inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-bold">
-                            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-                            تنها {toPersianDigits(stock)} عدد باقی‌مانده
-                          </span>
+                        {stockEditId === p.id ? (
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            autoFocus
+                            disabled={stockSaving}
+                            defaultValue={stockEditValue}
+                            onChange={(e) => setStockEditValue(e.target.value)}
+                            onBlur={() => saveQuickStock(p.id)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') { e.preventDefault(); (e.target as HTMLInputElement).blur(); }
+                              if (e.key === 'Escape') setStockEditId(null);
+                            }}
+                            aria-label={`موجودی جدید برای ${p.title}`}
+                            className="w-20 bg-white dark:bg-gray-700 border-2 border-orange-500 rounded-xl px-2 py-1 text-xs font-mono font-black text-gray-800 dark:text-gray-100 focus:outline-none text-center"
+                          />
                         ) : (
-                          <span className="inline-flex items-center gap-1.5 text-rose-600 dark:text-rose-400 font-bold">
-                            <span className="w-2 h-2 rounded-full bg-rose-500" />
-                            ناموجود
-                          </span>
+                          <button
+                            type="button"
+                            onClick={() => { setStockEditId(p.id); setStockEditValue(String(stock)); }}
+                            title="کلیک برای تغییر سریع موجودی"
+                            className={`inline-flex items-center gap-1.5 font-bold rounded-lg px-1.5 py-0.5 -mx-1.5 hover:bg-gray-100 dark:hover:bg-gray-700/60 transition-colors cursor-pointer ${
+                              stock > 5 ? 'text-emerald-600 dark:text-emerald-400' :
+                              stock > 0 ? 'text-amber-600 dark:text-amber-400' :
+                              'text-rose-600 dark:text-rose-400'
+                            }`}
+                          >
+                            <span className={`w-2 h-2 rounded-full shrink-0 ${
+                              stock > 5 ? 'bg-emerald-500' :
+                              stock > 0 ? 'bg-amber-500 animate-pulse' :
+                              'bg-rose-500'
+                            }`} />
+                            {stock > 0 ? `${toPersianDigits(stock)} عدد` : 'ناموجود'}
+                          </button>
                         )}
                       </td>
                       <td className="p-4 pl-6 text-center">

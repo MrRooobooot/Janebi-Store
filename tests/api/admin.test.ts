@@ -200,6 +200,9 @@ describe('Admin API', () => {
     expect(res.status).toBe(200);
     expect(res.body.metrics).toBeDefined();
     expect(typeof res.body.metrics.totalProducts).toBe('number');
+    // Sidebar badge counters (unread contact messages / pending review moderation)
+    expect(typeof res.body.metrics.unreadMessages).toBe('number');
+    expect(typeof res.body.metrics.pendingReviews).toBe('number');
   });
 
   it('POST /api/admin/products should create product with stockQuantity', async () => {

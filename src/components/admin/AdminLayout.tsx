@@ -32,6 +32,8 @@ export default function AdminLayout() {
     lowStock: 0,
     totalProducts: 0,
     totalUsers: 0,
+    unreadMessages: 0,
+    pendingReviews: 0,
   });
 
   useEffect(() => {
@@ -51,6 +53,8 @@ export default function AdminLayout() {
             lowStock: data.metrics?.lowStockCount || 0,
             totalProducts: data.metrics?.totalProducts || 0,
             totalUsers: data.metrics?.totalUsers || 0,
+            unreadMessages: data.metrics?.unreadMessages || 0,
+            pendingReviews: data.metrics?.pendingReviews || 0,
           });
         }
       })
@@ -120,10 +124,10 @@ export default function AdminLayout() {
       badge: counts.pendingOrders > 0 ? `${counts.pendingOrders} در انتظار` : null,
       badgeColor: 'bg-rose-500'
     },
-    { to: "/admin/reviews", icon: MessageSquare, label: "نظرات کاربران" },
+    { to: "/admin/reviews", icon: MessageSquare, label: "نظرات کاربران", badge: counts.pendingReviews > 0 ? `${counts.pendingReviews} در انتظار تأیید` : null, badgeColor: 'bg-sky-500' },
     { to: "/admin/users", icon: Users, label: "کاربران و مشتریان VIP" },
     { to: "/admin/coupons", icon: Tag, label: "کدهای تخفیف و پروموشن" },
-    { to: "/admin/messages", icon: Mail, label: "پیام‌های تماس و پشتیبانی" },
+    { to: "/admin/messages", icon: Mail, label: "پیام‌های تماس و پشتیبانی", badge: counts.unreadMessages > 0 ? `${counts.unreadMessages} خوانده‌نشده` : null, badgeColor: 'bg-rose-500' },
     { to: "/admin/newsletter", icon: MailCheck, label: "لیست اعضای خبرنامه" },
     { to: "/admin/audit-logs", icon: ScrollText, label: "لاگ فعالیت مدیران" },
     { to: "/admin/blog", icon: Newspaper, label: "مدیریت مجله (بلاگ)" },

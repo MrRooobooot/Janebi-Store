@@ -270,6 +270,15 @@ export default function AdminCoupons() {
                     {coupon.minTotal > 0 ? `${toPersianDigits(coupon.minTotal.toLocaleString('fa-IR'))} تومان` : 'بدون حداقل خرید'}
                   </span>
                 </div>
+                {coupon.usageLimit ? (
+                  <div className="flex justify-between py-1">
+                    <span className="text-gray-500 dark:text-gray-400">مصرف‌شده:</span>
+                    <span className={`font-bold ${coupon.usedCount >= coupon.usageLimit ? 'text-rose-600 dark:text-rose-400' : 'text-gray-700 dark:text-gray-300'}`}>
+                      {toPersianDigits((coupon.usedCount || 0).toLocaleString('fa-IR'))} از {toPersianDigits(coupon.usageLimit.toLocaleString('fa-IR'))} بار
+                      {coupon.usedCount >= coupon.usageLimit && ' (تکمیل)'}
+                    </span>
+                  </div>
+                ) : null}
               </div>
 
               {/* Action Buttons */}

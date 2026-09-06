@@ -104,13 +104,23 @@ router.get('/stats', async (req, res) => {
       with: { items: true }
     });
 
+    // Attention counters for sidebar badges: unread contact messages +
+    // reviews awaiting moderation (approved = false).
+    const { contactMessages } = await import('../db/schema.js');
+    const [unreadMsgRows, pendingReviewRows] = await Promise.all([
+      db.select({ count: sql<number>`count(*)` }).from(contactMessages).where(eq(contactMessages.status, 'unread')),
+      db.select({ count: sql<number>`count(*)` }).from(reviews).where(eq(reviews.approved, false)),
+    ]);
+
     res.json({
       metrics: {
         totalUsers,
         totalProducts,
         totalRevenue,
         totalOrders,
-        lowStockCount
+        lowStockCount,
+        unreadMessages: Number(unreadMsgRows[0]?.count ?? 0),
+        pendingReviews: Number(pendingReviewRows[0]?.count ?? 0)
       },
       statusCounts,
       lowStockProducts,

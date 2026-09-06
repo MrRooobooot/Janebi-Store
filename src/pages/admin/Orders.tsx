@@ -126,12 +126,12 @@ export default function AdminOrders() {
     const headers = ['شناسه سفارش', 'مشتری', 'موبایل', 'آدرس', 'کد پستی', 'مبلغ (تومان)', 'روش پرداخت', 'وضعیت', 'کد رهگیری پستی', 'تاریخ'];
     const rows = orders.map(o => [
       o.id,
-      `"${o.recipient?.name || o.userName || '-'}"`,
-      `"${o.recipient?.phone || '-'}"`,
-      `"${o.recipient?.address || '-'}"`,
-      `"${o.recipient?.postalCode || '-'}"`,
+      `"${o.recipientName || o.userName || '-'}"`,
+      `"${o.recipientPhone || '-'}"`,
+      `"${o.recipientAddress || '-'}"`,
+      `"${o.recipientPostalCode || '-'}"`,
       o.total,
-      `"${o.paymentMethod || 'آنلاین'}"`,
+      `"${o.paymentMethod === 'cod' ? 'کارت به کارت' : 'پرداخت اینترنتی'}"`,
       `"${o.statusText || o.status}"`,
       `"${o.refId || '-'}"`,
       `"${o.date || '-'}"`
@@ -149,7 +149,7 @@ export default function AdminOrders() {
   };
 
   const handleCopySMS = (order: any) => {
-    const text = `مشتری گرامی ${order.recipient?.name || 'عزیز'}،\nسفارش شما در جانبی آرنا با شماره پیگیری ${order.id} تحویل شرکت پست گردید.\nکد رهگیری مرسوله پستی: ${order.refId || '-'}\nرهگیری در: tracking.post.ir\nبا تشکر، جانبی آرنا`;
+    const text = `مشتری گرامی ${order.recipientName || 'عزیز'}،\nسفارش شما در جانبی آرنا با شماره پیگیری ${order.id} تحویل شرکت پست گردید.\nکد رهگیری مرسوله پستی: ${order.refId || '-'}\nرهگیری در: tracking.post.ir\nبا تشکر، جانبی آرنا`;
     navigator.clipboard.writeText(text);
     addToast('متن پیامک آماده با موفقیت در کلیپ‌بورد کپی شد', 'success');
   };

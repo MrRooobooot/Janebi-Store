@@ -1,17 +1,19 @@
 import { authFetch } from '../../lib/api';
 import React, { useEffect, useState } from "react";
-import { Users, Package, ShoppingCart, DollarSign, Award, TrendingUp, Sparkles, Tag, Rocket, BarChart3 } from "lucide-react";
+import { Users, Package, ShoppingCart, DollarSign, Award, TrendingUp, Sparkles, Tag, Rocket, BarChart3, Mail, MessageSquare } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toPersianDigits, formatPrice } from "../../lib/utils";
 
 interface DashboardStats {
-  metrics: {
-    totalUsers: number;
-    totalProducts: number;
-    totalRevenue: number;
-    totalOrders: number;
-  };
-  recentOrders: any[];
+ metrics: {
+ totalUsers: number;
+ totalProducts: number;
+ totalRevenue: number;
+ totalOrders: number;
+ unreadMessages?: number;
+ pendingReviews?: number;
+ };
+ recentOrders: any[];
 }
 
 interface AnalyticsData {
@@ -94,6 +96,8 @@ export default function Dashboard() {
     { title: "سفارشات", value: metrics.totalOrders, icon: ShoppingCart, color: "text-blue-500", bg: "bg-blue-100 dark:bg-blue-500/20" },
     { title: "محصولات", value: metrics.totalProducts, icon: Package, color: "text-purple-500", bg: "bg-purple-100 dark:bg-purple-500/20" },
     { title: "کاربران", value: metrics.totalUsers, icon: Users, color: "text-orange-500", bg: "bg-orange-100 dark:bg-orange-500/20" },
+    { title: "پیام‌های خوانده‌نشده", value: toPersianDigits(metrics.unreadMessages || 0), icon: Mail, color: "text-rose-500", bg: "bg-rose-100 dark:bg-rose-500/20" },
+    { title: "نظرات در انتظار بررسی", value: toPersianDigits(metrics.pendingReviews || 0), icon: MessageSquare, color: "text-sky-500", bg: "bg-sky-100 dark:bg-sky-500/20" },
   ];
 
   return (
