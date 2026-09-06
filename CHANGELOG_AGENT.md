@@ -145,3 +145,13 @@
 - Blog article modal: real DB tag chips (Lucide Tag icon, orange pill, RTL, 44px-safe) + BlogPosting JSON-LD `keywords` from tags (blogJsonLd.ts).
 - OG image meta (og:image/twitter:image 1200x630) shipped by concurrent actor (fe06350).
 - Gate: npm run verify ALL PASSED. Commit 2c484e9, deploy OK, live-verified (API post present + Blog-UTDO_GPA.js chunk contains tag UI).
+
+## 2026-09-06 (audit remediation) — soft-404, guest-cart merge, honest chat widget (02ef15b, SHIPPED live)
+- Full site+admin audit (CBM route cross-map + knip + live sweep) → findings in `.hermes/reports/audit-2026-09-06.json` (commits f4609d1/c96e8b5).
+- SEO-004: unknown SPA paths now 404+noindex (`server/index.ts` SPA_ROUTES allowlist) — was soft-404 (200+index). Live: /nonexistent-xyz→404.
+- Guest cart/wishlist MERGE on login (CartContext `mergedForToken` ref + server upserts) — was silent replace.
+- Compare: canonical Product type + silent `replaceCompare` + mount-time live-price refetch; deleted products dropped.
+- ChatWidget: honest «راهنمای خودکار» copy; fake «کارشناسان در حال بررسی» claim removed.
+- `GET /api/admin/orders` optional `?page&limit&status` server pagination (back-compat full list).
+- Dead code: BrandShowcase.tsx (orphan since 247d4c3), 8 qa-*.cjs reports, intra-file-only exports un-exported.
+- Deploy: ship whole `server/lib`+`src/lib` dirs (VPS tree had drifted → mid-deploy build failures). Full `force-recreate` + image→host dist sync + restart cleared stale-container header mismatch. Gate: tsc clean, 375/53 tests, verify ALL PASS.

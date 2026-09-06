@@ -1,7 +1,7 @@
 # ARCHITECTURE & PROJECT GRAPH — JANEBI ARENA
 
 > **Autonomous Engineering Knowledge Base & Live System Map**
-> **Last Verified & Updated:** 2026-09-05 (PostgreSQL audit r37c & UI fixes — commit `355239b`)
+> **Last Verified & Updated:** 2026-09-06 (Audit remediation deploy — commit `02ef15b`: soft-404 SEO-004, guest cart/wishlist merge, live-price compare, honest ChatWidget, admin orders pagination)
 > **Status:** Live & Production Ready (48 test suites, 353 passing tests)
 > **PRD Reference:** `AGENTS.md` | `PROJECT_AUDIT.md` | `TASKS.md`
 
@@ -134,3 +134,11 @@ Full evidence + remediation list: `PROJECT_AUDIT.md`. Highest-priority debts:
 - **Auth form UX (Login.tsx + AuthModal.tsx):** OTP input `autoComplete="one-time-code"` + `inputMode="numeric"` + `enterKeyHint="done"` (iOS/Android paste-suggestion); phone `username`, login pw `current-password`, reset pw `new-password`; forgot-password link added to header AuthModal footer (→ /login; was unreachable from header login). Verified live via `i.getAttribute('autocomplete')` — React renders it as lowercase attr; `input.autoComplete` camelCase prop probe returns '' on live (use getAttribute).
 - **Mobile header overflow FIXED (was: headerScrollW 409>390 both engines — login button clipped off-viewport):** icon buttons p-2→p-1.5 + container gap 0.5 below sm; Logo md symbol w-9→w-8, EN wordmark `hidden sm:block`, md text-block `max-[379px]:hidden` (Tailwind v4 arbitrary max-* variant); login button px-3→2.5, label `hidden sm:inline` (old `hidden xs:inline` was DEAD — `xs` breakpoint undefined in this Tailwind v4 theme). Verified: headerScrollW==clientW at 320/360/390 on Chromium+WebKit, live + local.
 - deploy.sh tar-docker "unexpected EOF" mid-output + trailing `✅ Deploy OK` was a FALSE ALARM: served-asset sha256 matched local exactly. Verify hashes, not tail lines.
+
+## Audit remediation (2026-09-06, commit `02ef15b` — deployed & live-verified)
+- **SEO-004 soft-404 fixed:** `server/index.ts` now mirrors the SPA route table (`SPA_ROUTES` set) in the prod catch-all — unknown paths return HTTP 404 + `X-Robots-Tag: noindex, follow` (was 200 + index). Static-route additions to `src/App.tsx` MUST be mirrored in that Set. Live-verified: `/nonexistent-xyz`→404+noindex, `/products/999999999`→404, all real routes→200.
+- **Guest cart/wishlist merge-on-login:** `CartContext`/`WishlistContext` push localStorage items to the server (POST = upsert/idempotent) keyed by a `mergedForToken` ref (cart) before fetching the authoritative list. Was: silent REPLACE on login. FE CartItem.id is the product id (typeof number).
+- **Live-price compare:** `CompareContext` uses the canonical `../types` Product (local duplicate deleted — it lacked `stockQuantity` and broke tsc) + new silent `replaceCompare()`; Compare page refetches each item on mount and drops deleted products.
+- **ChatWidget honesty:** copy now says «راهنمای خودکار» — no fake «کارشناسان بررسی می‌کنند» claim; fallback reply points to phone/Contact page.
+- **`GET /api/admin/orders` optional server pagination:** `?page=&limit=(1..200,def 50)&status=` → `{items,total,page,limit}`; no params → full array (back-compat; admin UI still client-side filters).
+- **Deploy-path lesson:** VPS tree had drifted (`src/lib/coupon.ts`, `server/lib/breadcrumbs.ts` missing → build failures mid-deploy). Fix: ship whole `server/lib` + `src/lib` dirs, not just changed files. Old-container mystery (`/cart` served `index,follow` while new routes answered): stale container process — full `up -d --force-recreate` + image→host dist sync + restart cleared it. Verify served headers on a cache-busted URL, not memory of a previous fetch.
