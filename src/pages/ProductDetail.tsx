@@ -211,7 +211,7 @@ export default function ProductDetail() {
                 <button
                   onClick={() => setIsLightboxOpen(true)}
                   aria-label="مشاهده تصویر در اندازه بزرگ"
-                  className="absolute top-5 left-5 w-10 h-10 rounded-xl bg-[var(--color-surface-light)]/80 dark:bg-white/[0.08] backdrop-blur-md border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-gray-700 dark:text-gray-200 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-105 z-10 shadow-sm"
+                  className="absolute top-5 left-5 w-10 h-10 rounded-xl bg-[var(--color-surface-light)]/80 dark:bg-white/[0.08] backdrop-blur-md border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-gray-700 dark:text-gray-200 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all hover:scale-105 z-10 shadow-sm"
                 >
                   <Maximize2 className="h-4 w-4" />
                 </button>

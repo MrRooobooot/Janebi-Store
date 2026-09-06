@@ -4,7 +4,7 @@ import { db, dbReady } from './db/index.js';
 import * as schema from './db/schema.js';
 import { startBaleBot } from './bot/bale.js';
 import { ALL_PRODUCTS, REVIEWS_STORE, VALID_COUPONS } from './data/seed-data.js';
-import { blogPostingJsonLdFor, productJsonLdFor, breadcrumbJsonLdFor, injectBreadcrumbIntoHtml } from "./lib/breadcrumbs.js";
+import { blogPostingJsonLdFor, productJsonLdFor, breadcrumbJsonLdFor, productBreadcrumbJsonLdFor, injectBreadcrumbIntoHtml } from "./lib/breadcrumbs.js";
 import { routeMetaForRequest, injectSeoMetadata, productOgImageFor } from "./lib/seoMeta.js";
 import { eq } from "drizzle-orm";
 import express from 'express';
@@ -130,16 +130,17 @@ async function startServer() {
           }
         }
 
-        const [crumb, postingLd, productLd, meta, productImage] = await Promise.all([
+        const [crumb, postingLd, productLd, meta, productImage, productCrumb] = await Promise.all([
           breadcrumbJsonLdFor(pathname),
           blogPostingJsonLdFor(pathname),
           productJsonLdFor(pathname),
           routeMetaForRequest(pathname, query),
           productOgImageFor(pathname),
+          productBreadcrumbJsonLdFor(pathname),
         ]);
         // Structured JSON-LD only differs on /blog and /product routes; avoid
         // re-reading on every request by falling back to a plain sendFile.
-        const structuredLd = [crumb, postingLd, productLd].filter(Boolean).join("\n");
+        const structuredLd = [crumb, postingLd, productLd, productCrumb].filter(Boolean).join("\n");
         if (!structuredLd && !meta) return res.sendFile(path.join(distPath, "index.html"));
         let html = shell;
         if (structuredLd) html = injectBreadcrumbIntoHtml(html, structuredLd);

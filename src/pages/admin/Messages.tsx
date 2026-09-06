@@ -282,7 +282,10 @@ export default function AdminMessages() {
           pagedMessages.map((msg) => (
             <div
               key={msg.id}
+              role="button"
+              tabIndex={0}
               onClick={() => setSelectedMessage(msg)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedMessage(msg); } }}
               className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl p-5 border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group"
             >
               <div>

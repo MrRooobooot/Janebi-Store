@@ -72,10 +72,12 @@ export default function CheckoutRecipientForm({
             {savedAddresses.map((addr) => {
               const isSelected = selectedAddrId === addr.id;
               return (
-                <div
+                <button
                   key={addr.id}
+                  type="button"
+                  aria-pressed={isSelected}
                   onClick={() => handleSelectSavedAddress(addr)}
-                  className={`p-4 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
+                  className={`p-4 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between text-right ${
                     isSelected
                       ? 'border-orange-500 bg-orange-50/60 dark:bg-orange-950/30 shadow-xs'
                       : 'border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] hover:border-gray-200 dark:hover:border-gray-700 bg-gray-50/60 dark:bg-gray-800/30'
@@ -99,7 +101,7 @@ export default function CheckoutRecipientForm({
                     <span>{addr.name}</span>
                     <span dir="ltr" className="font-mono">{addr.phone}</span>
                   </div>
-                </div>
+                </button>
               );
             })}
           </div>

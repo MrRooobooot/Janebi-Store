@@ -175,9 +175,11 @@ export default function Profile() {
       {/* Logout Confirmation Modal */}
       {showLogoutModal && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
+          <button
+            type="button"
+            aria-label="بستن پنجره"
             onClick={() => setShowLogoutModal(false)}
-            className="fixed inset-0 bg-black/60 backdrop-blur-xs"
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs cursor-default"
           />
 
           <div className="relative w-full max-w-sm bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 shadow-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] z-10 text-center space-y-4">

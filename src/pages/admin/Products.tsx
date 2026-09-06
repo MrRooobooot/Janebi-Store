@@ -722,10 +722,12 @@ export default function AdminProducts() {
                     const isSelected = formData.image === item.url;
                     const isCategoryMatch = item.category === formData.category;
                     return (
-                      <div
+                      <button
                         key={item.id}
+                        type="button"
+                        aria-pressed={isSelected}
                         onClick={() => setFormData({ ...formData, image: item.url })}
-                        className={`flex items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all border ${
+                        className={`flex w-full items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all border text-right ${
                           isSelected 
                             ? 'bg-orange-500 text-white border-orange-600 shadow-md scale-102' 
                             : isCategoryMatch
@@ -738,7 +740,7 @@ export default function AdminProducts() {
                           <span className="text-[11px] font-black truncate block leading-tight">{item.label}</span>
                           <span className={`text-[9px] block ${isSelected ? 'text-orange-100' : 'text-gray-400'}`}>{item.category}</span>
                         </div>
-                      </div>
+                      </button>
                     );
                   })}
                 </div>

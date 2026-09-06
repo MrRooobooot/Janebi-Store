@@ -278,10 +278,12 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
           </h4>
 
           {starCounts.map(({ star, count, percentage }) => (
-            <div
+            <button
               key={star}
+              type="button"
+              aria-pressed={ratingFilter === star}
               onClick={() => setRatingFilter(ratingFilter === star ? 'all' : star)}
-              className={`flex items-center gap-3 text-xs cursor-pointer group p-1 rounded-lg transition-colors ${
+              className={`flex w-full items-center gap-3 text-xs cursor-pointer group p-1 rounded-lg transition-colors ${
                 ratingFilter === star ? 'bg-orange-50 dark:bg-orange-950/40 font-bold' : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/40'
               }`}
             >
@@ -301,7 +303,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
               <span className="w-12 text-left text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
                 {toPersianDigits(count)} نظر ({toPersianDigits(percentage)}٪)
               </span>
-            </div>
+            </button>
           ))}
         </div>
       </div>

@@ -245,9 +245,11 @@ export default function AddressBookTab() {
       {/* Add / Edit Address Modal */}
       {showModal && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
+          <button
+            type="button"
+            aria-label="بستن پنجره"
             onClick={() => setShowModal(false)}
-            className="fixed inset-0 bg-black/60 backdrop-blur-xs"
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs cursor-default"
           />
 
           <div className="relative w-full max-w-lg bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 sm:p-8 shadow-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] z-10 text-right space-y-4 max-h-[90vh] overflow-y-auto">

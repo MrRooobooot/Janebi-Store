@@ -24,14 +24,20 @@ interface HeaderSearchProps {
   autoFocus?: boolean;
 }
 
-const POPULAR_CATEGORIES = [
-  { name: 'قاب و کاور', icon: Smartphone },
-  { name: 'گلس', icon: Shield },
-  { name: 'شارژر', icon: Zap },
-  { name: 'کابل', icon: Cable },
-  { name: 'هندزفری', icon: Headphones },
-  { name: 'پاوربانک', icon: BatteryCharging },
-];
+// Icon mapping for DB-driven popular categories (fallback: Smartphone)
+const CATEGORY_ICON_MAP: Record<string, any> = {
+  'قاب و کاور موبایل': Smartphone,
+  'قاب و کاور': Smartphone,
+  'گلس و محافظ صفحه': Shield,
+  'گلس': Shield,
+  'شارژر و آداپتور': Zap,
+  'شارژر': Zap,
+  'کابل و سیم': Cable,
+  'کابل': Cable,
+  'هندزفری و ایرباد': Headphones,
+  'هندزفری': Headphones,
+  'پاوربانک': BatteryCharging,
+};
 
 export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus = false }: HeaderSearchProps) {
   const [query, setQuery] = useState('');
@@ -40,6 +46,27 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
   const [loading, setLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  // DB-driven popular categories (top-6 by product count) — replaces hard-coded list
+  const [popularCats, setPopularCats] = useState<{ name: string; icon: any }[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/categories')
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((cats) => {
+        if (cancelled || !Array.isArray(cats)) return;
+        setPopularCats(
+          [...cats]
+            .sort((a: any, b: any) => (b.count || 0) - (a.count || 0))
+            .slice(0, 6)
+            .map((c: any) => ({ name: c.title, icon: CATEGORY_ICON_MAP[c.title] || Smartphone }))
+        );
+      })
+      .catch(() => {
+        // dropdown still functional via search input — graceful degradation
+      });
+    return () => { cancelled = true; };
+  }, []);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -270,11 +297,14 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
                   {results.map((product, index) => {
                     const isSelected = selectedIndex === index;
                     return (
-                      <div
+                      <button
                         key={product.id}
+                        type="button"
                         onClick={() => handleSelectProduct(product)}
                         onMouseEnter={() => setSelectedIndex(index)}
-                        className={`group flex items-center justify-between p-2.5 rounded-2xl cursor-pointer transition-all duration-150 ${
+                        role="option"
+                        aria-selected={isSelected}
+                        className={`group flex w-full items-center justify-between p-2.5 rounded-2xl cursor-pointer transition-all duration-150 ${
                           isSelected
                             ? 'bg-orange-50 dark:bg-orange-950/40 border border-orange-200/60 dark:border-orange-800/40 shadow-xs'
                             : 'hover:bg-gray-50 dark:hover:bg-gray-800/60 border border-transparent'
@@ -320,7 +350,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
                             </div>
                           )}
                         </div>
-                      </div>
+                      </button>
                     );
                   })}
                 </div>
@@ -431,13 +461,14 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
                     </span>
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    {POPULAR_CATEGORIES.map((cat, idx) => {
+                    {popularCats.map((cat, idx) => {
                       const CategoryIcon = cat.icon;
                       return (
-                        <div
+                        <button
                           key={idx}
+                          type="button"
                           onClick={() => handleSelectCategory(cat.name)}
-                          className="flex items-center gap-2.5 p-2.5 rounded-xl bg-gray-50 dark:bg-gray-800/60 hover:bg-orange-50 dark:hover:bg-orange-950/40 border border-[var(--color-border-light)] dark:border-gray-700/40 cursor-pointer transition-all group"
+                          className="flex items-center gap-2.5 p-2.5 rounded-xl text-right bg-gray-50 dark:bg-gray-800/60 hover:bg-orange-50 dark:hover:bg-orange-950/40 border border-[var(--color-border-light)] dark:border-gray-700/40 cursor-pointer transition-all group"
                         >
                           <div className="p-1.5 rounded-lg bg-orange-100/70 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 group-hover:scale-110 transition-transform">
                             <CategoryIcon className="h-4 w-4" />
@@ -445,7 +476,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
                           <span className="text-xs font-semibold text-gray-800 dark:text-gray-200 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
                             {cat.name}
                           </span>
-                        </div>
+                        </button>
                       );
                     })}
                   </div>

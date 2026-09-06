@@ -45,9 +45,10 @@ export default function DashboardOverviewTab({
 
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div
+        <button
+          type="button"
           onClick={() => setActiveTab('orders')}
-          className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-5 shadow-xs cursor-pointer hover:border-orange-500/30 transition-all group"
+          className="w-full text-right bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-5 shadow-xs cursor-pointer hover:border-orange-500/30 transition-all group"
         >
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-bold text-gray-500 dark:text-gray-400">سفارش‌های در حال پردازش</span>
@@ -58,11 +59,12 @@ export default function DashboardOverviewTab({
           <div className="font-black text-2xl text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
             {toPersianDigits(processingCount)}
           </div>
-        </div>
+        </button>
 
-        <div
+        <button
+          type="button"
           onClick={() => setActiveTab('orders')}
-          className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-5 shadow-xs cursor-pointer hover:border-orange-500/30 transition-all group"
+          className="w-full text-right bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-5 shadow-xs cursor-pointer hover:border-orange-500/30 transition-all group"
         >
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-bold text-gray-500 dark:text-gray-400">تحویل داده شده</span>
@@ -73,7 +75,7 @@ export default function DashboardOverviewTab({
           <div className="font-black text-2xl text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
             {toPersianDigits(deliveredCount)}
           </div>
-        </div>
+        </button>
 
         <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-5 shadow-xs">
           <div className="flex items-center justify-between mb-3">

@@ -63,6 +63,68 @@ export async function breadcrumbJsonLdFor(pathname: string): Promise<string | nu
   return jsonLdScript({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: crumbs });
 }
 
+
+/**
+ * Server-rendered BreadcrumbList for product detail pages /product/:id and
+ * /products/:id (plural alias). Mirrors the client DynamicBreadcrumbs shape:
+ * خانه / محصولات [ / دسته ] / <product title>. Zero-fabrication: unknown id → null.
+ */
+const CATEGORY_PARENTS: Record<string, string> = {
+  "کابل": "لوازم جانبی و اتصالات",
+  "شارژر": "لوازم جانبی و اتصالات",
+  "پاوربانک": "تجهیزات شارژ همراه",
+  "قاب و کاور": "محافظت و کاور",
+  "گلس": "محافظت و کاور",
+  "هندزفری": "تجهیزات صوتی",
+};
+
+export async function productBreadcrumbJsonLdFor(pathname: string): Promise<string | null> {
+  const match = pathname.match(/^\/products?\/(\d+)\/?$/);
+  if (!match) return null;
+
+  try {
+    const product = await db.query.products.findFirst({
+      where: eq(products.id, Number(match[1])),
+    });
+    if (!product) return null;
+
+    const crumbs: { "@type": string; position: number; name: string; item: string }[] = [
+      { "@type": "ListItem", position: 1, name: "خانه", item: SITE_ORIGIN + "/" },
+      { "@type": "ListItem", position: 2, name: "محصولات", item: SITE_ORIGIN + "/products" },
+    ];
+
+    const category = (product as { category?: string }).category;
+    if (category) {
+      const parent = CATEGORY_PARENTS[category];
+      if (parent) {
+        crumbs.push({
+          "@type": "ListItem",
+          position: crumbs.length + 1,
+          name: parent,
+          item: SITE_ORIGIN + "/products",
+        });
+      }
+      crumbs.push({
+        "@type": "ListItem",
+        position: crumbs.length + 1,
+        name: category,
+        item: SITE_ORIGIN + "/products?category=" + encodeURIComponent(category),
+      });
+    }
+
+    crumbs.push({
+      "@type": "ListItem",
+      position: crumbs.length + 1,
+      name: product.title,
+      item: `${SITE_ORIGIN}/products/${product.id}`,
+    });
+
+    return jsonLdScript({ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: crumbs });
+  } catch {
+    return null; // DB unavailable → skip injection rather than serve partial markup
+  }
+}
+
 /**
  * Server-rendered BlogPosting JSON-LD for /blog/:slug (SEO cluster r39).
  *

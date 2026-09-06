@@ -1,7 +1,7 @@
 import { Router } from "express";
 import fs from "node:fs";
 import path from "node:path";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { db } from "../db/index.js";
 import { blogPosts, products } from "../db/schema.js";
 
@@ -82,7 +82,7 @@ router.get("/sitemap.xml", async (_req, res) => {
 
   let dynamicEntries = "";
   try {
-    const [posts, prods] = await Promise.all([
+    const [posts, prods, catRows] = await Promise.all([
       db
         .select({ id: blogPosts.id, createdAt: blogPosts.createdAt })
         .from(blogPosts)
@@ -90,6 +90,10 @@ router.get("/sitemap.xml", async (_req, res) => {
       db
         .select({ id: products.id })
         .from(products),
+      db
+        .select({ category: products.category, count: sql<number>`count(*)` })
+        .from(products)
+        .groupBy(products.category),
     ]);
 
     const postXml = posts
@@ -123,7 +127,22 @@ router.get("/sitemap.xml", async (_req, res) => {
       })
       .join("");
 
-    dynamicEntries = postXml + prodXml;
+    const catXml = catRows
+      .filter((c) => c.category && String(c.category).trim() !== "")
+      .map((c) => {
+        const loc = `${SITE_ORIGIN}/products?category=${encodeURIComponent(c.category)}`;
+        return (
+          "  <url>\n" +
+          `    <loc>${xmlEscape(loc)}</loc>\n` +
+          `    <lastmod>${today}</lastmod>\n` +
+          "    <changefreq>daily</changefreq>\n" +
+          "    <priority>0.9</priority>\n" +
+          "  </url>\n"
+        );
+      })
+      .join("");
+
+    dynamicEntries = catXml + postXml + prodXml;
   } catch (error) {
     // DB unavailable → serve the static base rather than a broken sitemap.
     console.error("Sitemap dynamic entries error:", error);
