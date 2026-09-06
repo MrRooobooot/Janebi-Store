@@ -465,7 +465,30 @@ router.delete('/products/:id', async (req, res) => {
 // ---------------------------------------------------------
 router.get('/orders', async (req, res) => {
   try {
+    // Optional server-side pagination: ?page=1&limit=50&status=shipped.
+    // Omitted params → full list (back-compat with the admin UI's client-side
+    // search/filter, which still fetches everything).
+    const { page, limit, status } = req.query;
+    const where = typeof status === 'string' && status !== 'all' && status
+      ? eq(orders.status, status)
+      : undefined;
+    if (page !== undefined || limit !== undefined) {
+      const lim = Math.min(Math.max(parseInt(String(limit ?? 50)) || 50, 1), 200);
+      const pg = Math.max(parseInt(String(page ?? 1)) || 1, 1);
+      const [paged, countRows] = await Promise.all([
+        db.query.orders.findMany({
+          where,
+          orderBy: [desc(orders.date)],
+          with: { items: true },
+          limit: lim,
+          offset: (pg - 1) * lim,
+        }),
+        db.select({ count: sql<number>`count(*)` }).from(orders).where(where),
+      ]);
+      return res.json({ items: paged, total: Number(countRows[0]?.count ?? 0), page: pg, limit: lim });
+    }
     const allOrders = await db.query.orders.findMany({
+      where,
       orderBy: [desc(orders.date)],
       with: { items: true }
     });

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getAssetUrl } from '../lib/utils';
 
-export interface PictureImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageElement>, 'src'> {
+interface PictureImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageElement>, 'src'> {
   src: string;
   alt: string;
   /** Width for CLS prevention */

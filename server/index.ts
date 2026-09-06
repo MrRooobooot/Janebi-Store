@@ -130,6 +130,27 @@ async function startServer() {
           }
         }
 
+        // SEO-004: Authentic 404 for any non-route path. The SPA route table is
+        // mirrored here so that unknown paths (/nonexistent-xyz, scanners, old
+        // links) return HTTP 404 + noindex instead of an indexable Soft 404.
+        const SPA_ROUTES = new Set([
+          "/", "/products", "/cart", "/checkout", "/checkout/callback",
+          "/wishlist", "/compare", "/profile", "/login", "/register",
+          "/force-change-password", "/about", "/contact", "/terms",
+          "/privacy", "/faq", "/blog", "/offers", "/new-products", "/brands",
+          "/admin", "/admin/products", "/admin/orders", "/admin/reviews",
+          "/admin/users", "/admin/coupons", "/admin/messages",
+          "/admin/newsletter", "/admin/audit-logs", "/admin/settings",
+        ]);
+        const productRoute =
+          /^\/products?\/\d+\/?$/.test(pathname) ||
+          /^\/blog\/[^/]+\/?$/.test(pathname) ||
+          /^\/admin\/[a-z-]+\/?$/.test(pathname);
+        if (!productRoute && !SPA_ROUTES.has(pathname)) {
+          res.setHeader("X-Robots-Tag", "noindex, follow");
+          return res.status(404).sendFile(path.join(distPath, "index.html"));
+        }
+
         const [crumb, postingLd, productLd, meta, productImage, productCrumb] = await Promise.all([
           breadcrumbJsonLdFor(pathname),
           blogPostingJsonLdFor(pathname),

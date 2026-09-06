@@ -24,11 +24,22 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
   });
   
   React.useEffect(() => {
-    if (isLoggedIn) {
-      const token = localStorage.getItem('token');
+    if (!isLoggedIn) return;
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    // Merge guest wishlist: server POST is idempotent (dedupe by productId),
+    // then the authoritative server list replaces local state. Guest items
+    // are no longer silently dropped on login.
+    const guestIds = wishlist.filter(p => typeof p.id === 'number').map(p => p.id);
+    const pushGuest = guestIds.map(id =>
       authFetch('/api/wishlist', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ productId: id })
+      }).catch(err => console.error('Failed to merge guest wishlist item', err))
+    );
+    Promise.all(pushGuest)
+      .then(() => authFetch('/api/wishlist', { headers: { 'Authorization': `Bearer ${token}` } }))
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -37,7 +48,6 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
         }
       })
       .catch(err => console.error('Failed to fetch wishlist', err));
-    }
   }, [isLoggedIn]);
   const { addToast } = useToast();
 

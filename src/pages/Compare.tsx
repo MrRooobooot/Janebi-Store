@@ -8,9 +8,37 @@ import EmptyState from '../components/EmptyState';
 import { formatPrice, toPersianDigits } from '../lib/utils';
 
 export default function Compare() {
-  const { compareItems, toggleCompare, clearCompare } = useCompare();
+  const { compareItems, toggleCompare, clearCompare, replaceCompare } = useCompare();
   const { addToCart } = useCart();
   const navigate = useNavigate();
+
+  // Live-price refresh: localStorage snapshots go stale when prices change.
+  // Refetch each compared product on mount and silently replace the list;
+  // products deleted since the snapshot are dropped (no toasts — replaceCompare).
+  React.useEffect(() => {
+    if (compareItems.length === 0) return;
+    let cancelled = false;
+    Promise.all(
+      compareItems.map(item =>
+        fetch(`/api/products/${item.id}`)
+          .then(res => (res.ok ? res.json() : null))
+          .catch(() => null)
+      )
+    ).then(fresh => {
+      if (cancelled) return;
+      const live = fresh.filter(Boolean) as typeof compareItems;
+      if (live.length === 0) return; // network down → keep snapshot
+      const changed = live.length !== compareItems.length ||
+        live.some(p => {
+          const old = compareItems.find(i => i.id === p.id);
+          return !old || old.price !== p.price || old.discount !== p.discount ||
+            old.stockQuantity !== p.stockQuantity || old.title !== p.title || old.image !== p.image;
+        });
+      if (changed) replaceCompare(live);
+    });
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (compareItems.length === 0) {
     return (

@@ -28,7 +28,7 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([
     { 
       id: 'msg-1', 
-      text: 'سلام! من دستیار هوشمند پشتیبانی جانبی آرنا هستم. چطور می‌توانم کمکتان کنم؟', 
+      text: 'سلام! من راهنمای خودکار فروشگاه جانبی آرنا هستم. سوال‌های متداول درباره ارسال، ضمانت و سفارش را پاسخ می‌دهم.', 
       isUser: false, 
       time: new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' }) 
     }
@@ -69,7 +69,7 @@ export default function ChatWidget() {
       return `پشتیبانی ما ${settings.supportHours} پاسخگوی شماست (تلفن: ${settings.phone}).`;
     }
     
-    return 'پیام شما دریافت شد. کارشناسان پشتیبانی ما هم‌اکنون پیام شما را بررسی می‌کنند. آیا سوال دیگری درباره مشخصات محصولات یا ثبت سفارش دارید؟';
+    return 'این راهنما پاسخ خودکار است. برای پاسخ دقیق‌تر، تلفن پشتیبانی را تماس بگیرید یا از صفحه «تماس با ما» پیام بگذارید — تیم ما پاسخ می‌دهد.';
   };
 
   const handleSend = (textToSend?: string) => {
@@ -119,10 +119,10 @@ export default function ChatWidget() {
                 </div>
                 <div>
                   <h3 className="font-extrabold text-sm flex items-center gap-1.5">
-                    پشتیبانی هوشمند
+                    راهنمای خرید جانبی آرنا
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                   </h3>
-                  <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">پاسخگویی آنلاین و فوری</p>
+                  <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">پاسخ خودکار به سوال‌های متداول</p>
                 </div>
               </div>
               <button 
@@ -201,7 +201,7 @@ export default function ChatWidget() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(true)}
-          aria-label="باز کردن پنجره پشتیبانی هوشمند آنلاین"
+          aria-label="باز کردن راهنمای خرید"
           className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-[var(--color-border-dark)] text-orange-600 dark:text-orange-500 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all relative group cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-900/20"
         >
           <MessageCircle className="h-6 w-6" />

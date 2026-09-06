@@ -11,7 +11,7 @@ import { blogPosts, products } from "../db/schema.js";
  * fall back to the generic homepage metadata already present in the shell.
  */
 
-export interface RouteMeta {
+interface RouteMeta {
   title: string;
   description: string;
   ogType: "website" | "product" | "article";
@@ -47,7 +47,7 @@ function homeFallback(): RouteMeta {
 }
 
 /** Fetch route-specific metadata. Returns null → caller keeps the generic shell tags. */
-export async function routeMetaFor(pathname: string): Promise<RouteMeta | null> {
+async function routeMetaFor(pathname: string): Promise<RouteMeta | null> {
   try {
     // Product detail: /product/:id and /products/:id (canonical = plural form)
     const productMatch = pathname.match(/^\/products?\/(\d+)\/?$/);
@@ -105,7 +105,7 @@ export async function routeMetaFor(pathname: string): Promise<RouteMeta | null> 
 }
 
 /** Category variant: caller passes the decoded `category` query value (may be absent). */
-export async function routeMetaForCategory(category: string | null): Promise<RouteMeta | null> {
+async function routeMetaForCategory(category: string | null): Promise<RouteMeta | null> {
   if (!category) return null;
   try {
     const row = await db

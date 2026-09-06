@@ -77,13 +77,27 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const openCartDrawer = () => setIsCartDrawerOpen(true);
   const closeCartDrawer = () => setIsCartDrawerOpen(false);
 
-  // Sync cart from server when logged in
+  // Sync cart from server when logged in — MERGE guest cart instead of replacing it.
+  // Guest-only items are pushed to the server (POST is an upsert), then the
+  // authoritative server list replaces local state. Runs once per login transition.
+  const mergedForToken = React.useRef<string | null>(null);
   React.useEffect(() => {
-    if (isLoggedIn) {
-      const token = localStorage.getItem('token');
+    if (!isLoggedIn) return;
+    const token = localStorage.getItem('token');
+    if (!token || mergedForToken.current === token) return;
+    mergedForToken.current = token;
+
+    const guestItems = cart.filter(item => typeof item.id === 'number');
+    const pushGuest = guestItems.map(item =>
       authFetch('/api/cart', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ productId: item.id, quantity: item.quantity })
+      }).catch(err => console.error('Failed to merge guest cart item', err))
+    );
+
+    Promise.all(pushGuest)
+      .then(() => authFetch('/api/cart', { headers: { 'Authorization': `Bearer ${token}` } }))
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -92,7 +106,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
         }
       })
       .catch(err => console.error('Failed to fetch cart', err));
-    }
   }, [isLoggedIn]);
 
   const saveCart = (newCart: CartItem[]) => {

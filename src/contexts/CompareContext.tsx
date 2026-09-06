@@ -1,24 +1,14 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { useToast } from './ToastContext';
-
-interface Product {
-  id: number;
-  title: string;
-  category: string;
-  price: number;
-  originalPrice?: number;
-  discount?: number;
-  image: string;
-  brand: string;
-  warranty?: string;
-  features?: string[];
-}
+import { Product } from '../types';
 
 interface CompareContextType {
   compareItems: Product[];
   toggleCompare: (product: Product) => void;
   isInCompare: (id: number) => boolean;
   clearCompare: () => void;
+  /** Silent bulk replace (no toasts) — used by live-price sync on the Compare page. */
+  replaceCompare: (products: Product[]) => void;
 }
 
 const CompareContext = createContext<CompareContextType | undefined>(undefined);
@@ -61,13 +51,15 @@ export function CompareProvider({ children }: { children: ReactNode }) {
 
   const isInCompare = (id: number) => compareItems.some((p) => p.id === id);
 
+  const replaceCompare = (products: Product[]) => saveCompare(products);
+
   const clearCompare = () => {
     saveCompare([]);
     addToast('لیست مقایسه خالی شد', 'info');
   };
 
   return (
-    <CompareContext.Provider value={{ compareItems, toggleCompare, isInCompare, clearCompare }}>
+    <CompareContext.Provider value={{ compareItems, toggleCompare, isInCompare, clearCompare, replaceCompare }}>
       {children}
     </CompareContext.Provider>
   );
