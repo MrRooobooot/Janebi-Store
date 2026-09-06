@@ -1,0 +1,35 @@
+{
+ "generated": "2026-09-06T23:58+03:30",
+ "live": {
+  "pages": "21/21 key pages+APIs 200; /admin SPA shell ok; all admin APIs 401 (JWT gate) none 404; assets 10/10 200; no bundle artifacts (jsxDEV/sourcemap/localhost/TODO)",
+  "issues": [
+   "soft-404: /nonexistent-xyz → HTTP 200 + x-robots-tag: index,follow (SEO: کراولر صفحات ناموجود را index می‌کند). products/:id 404 درست است (SEO-001) ولی سایر مسیرهای ناموجود 200 می‌دهند",
+   "sitemap.xml صحیح: 194 url = 140 product + 23 blog + 20 category + 11 static (ادعای زیرعامل دوم درباره نبود بلاگ نادرست بود — بازبینی مستقیم شد)"
+  ]
+ },
+ "code": {
+  "broken": [],
+  "incomplete": [
+   "blog admin CRUD کامل (server/routes/blog.ts:28-99) بدون هیچ UI ادمین — مدیر نمی‌تواند پست بلاگ بسازد/ویرایش کند (فقط seed-blog.ts)",
+   "ChatWidget.tsx:55-100 بات فیک setTimeout — پیام کاربر هیچ‌جا ذخیره نمی‌شود، ادعای «کارشناسان بررسی می‌کنند» نادرست",
+   "CompareContext.tsx:15-30 اسنپ‌شات localStorage — قیمت/امتیاز کهنه بعد از تغییر (بدون refetch)",
+   "CartContext.tsx:82-96 + WishlistContext.tsx:22-40: لاگین سبد/علاقه‌مندی مهمان با داده سرور REPLACE می‌شود — سبد مهمان قبل از لاگین گم می‌شود (no merge)",
+   "GET /api/admin/orders (server/routes/admin.ts:466-476) همه سفارش‌ها + items بدون pagination سرور — با رشد دیتا کند می‌شود"
+  ],
+  "dead": [
+   "src/components/BrandShowcase.tsx — یتیم از 247d4c3 (حذف عمدی از هوم)؛ فایل مرده روی دیسک",
+   "GET /api/orders/:id (server/routes/orders.ts:348) — فقط تست، FE ندارد",
+   "GET /api/orders/my-orders alias (server/routes/orders.ts:16) — فقط تست، FE /api/orders صدا می‌زند",
+   "POST /api/coupons alias (server/routes/coupons.ts:76) — فقط تست",
+   "scripts/migrate-sqlite-to-pg.ts, scripts/repair-blog-texts.ts, scripts/fk-audit.cjs — یک‌بار مصرف",
+   "8 فایل qa-*.cjs در .hermes/reports/"
+  ],
+  "knip_false_positives_kept": [
+   "pino-pretty (app.ts:145 transport)",
+   "sw.js",
+   "seed-blog.ts",
+   "drizzle.pg.config.ts",
+   "closeDb (migration test)"
+  ]
+ }
+}
