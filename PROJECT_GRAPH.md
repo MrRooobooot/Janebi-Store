@@ -163,3 +163,9 @@ Full evidence + remediation list: `PROJECT_AUDIT.md`. Highest-priority debts:
 - **CSV/SMS copy fix (was silently broken):** Orders export used `o.recipient?.name` etc — field doesn't exist on the order row (real fields: `recipientName/recipientPhone/recipientAddress/recipientPostalCode`); columns always exported '-'. Also `paymentMethod` now renders the Persian label (کارت به کارت / پرداخت اینترنتی).
 - **Coupon usage display:** coupon cards show `usedCount`/`usageLimit` («مصرف‌شده: ۳ از ۵۰ بار»), red + «(تکمیل)» when exhausted.
 - **Verify:** npm run verify ALL PASS (389/389), prod health ok, served chunks contain new code (`limit=1000` in Products-BRuWamZn.js, `unreadMessages` in AdminLayout/Dashboard, `usedCount` in Coupons). Prod DB counters verified 0/0/139 via in-container sqlite query.
+
+## Prod payment outage fix — APP_URL callback mismatch (2026-09-07, commit `803657f` — deployed & live-verified)
+- Root cause: VPS `.env` `APP_URL="http://localhost:3000"` → Zarinpal request.json rejected with code **-14** ("callback URL domain does not match registered terminal domain") → all online payments 503. Soft failures (HTTP 200 + errors payload) were invisible in logs — router only logged thrown errors.
+- Fix: `APP_URL="https://janebiarena.ir"` in VPS .env + `docker compose up -d --force-recreate app`; router now logs `[Payment Gateway Rejected]` for soft failures.
+- Verified live: zarinpal probe w/ correct callback → code 100 Success, authority issued. Marker `Payment Gateway Rejected` present in served /app/dist/server.cjs.
+- Remaining config notes: SAMAN_TERMINAL_ID NOT set on VPS (failover gateway dead — only matters if zarinpal circuit opens; terminal id lives in SECRETS_MAP, add to .env + recreate to enable). Disk 78% (5G free). No docker log rotation configured (json-file unlimited). Raw-IP host requests serve SPA 200 (Censys/scanners).
