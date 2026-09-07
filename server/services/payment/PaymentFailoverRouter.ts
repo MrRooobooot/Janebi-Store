@@ -92,6 +92,9 @@ export class PaymentFailoverRouter {
 
         this.recordFailure(gateway.provider);
         lastError = result.error;
+        // soft failures (HTTP 200 + error payload) were invisible in logs — only
+        // thrown errors got printed. Log the gateway's rejection reason.
+        console.error(`[Payment Gateway Rejected] ${gateway.provider} for order ${options.orderId}: ${result.error}`);
       } catch (err: any) {
         console.error(`[Payment Failover Triggered] Error with gateway ${gateway.provider}: ${err.message}`);
         this.recordFailure(gateway.provider);
