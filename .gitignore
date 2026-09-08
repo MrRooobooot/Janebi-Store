@@ -9,6 +9,7 @@ server.js
 # Test coverage & artifacts
 coverage/
 playwright-report/
+playwright-report-real/
 test-results/
 
 # OS junk
