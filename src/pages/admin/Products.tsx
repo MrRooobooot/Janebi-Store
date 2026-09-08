@@ -127,7 +127,9 @@ export default function AdminProducts() {
       setLoading(true);
       // limit=1000: the default /api/products page size is 20 — the admin
       // catalogue must see every product, not just the first page.
-      const res = await fetch('/api/products?limit=1000');
+      // no-store: the public list is served with Cache-Control max-age=30;
+      // after create/delete the browser must NOT replay the stale cached list.
+      const res = await fetch('/api/products?limit=1000', { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
         setProducts(data);

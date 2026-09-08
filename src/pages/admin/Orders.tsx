@@ -463,7 +463,7 @@ export default function AdminOrders() {
                           <ChevronDown className="w-3 h-3" />
                         </button>
                         
-                        <div className="absolute left-0 top-full mt-1 w-36 bg-[var(--color-surface-light)] dark:bg-gray-800 border border-[var(--color-border-light)] dark:border-gray-700 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-20 overflow-hidden text-right">
+                        <div className="absolute left-0 top-full mt-1 w-36 bg-[var(--color-surface-light)] dark:bg-gray-800 border border-[var(--color-border-light)] dark:border-gray-700 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all z-20 overflow-hidden text-right">
                           <button onClick={() => updateStatus(order.id, 'processing', 'در حال پردازش')} className="w-full text-right px-3 py-2 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-1.5 text-blue-600 font-bold"><Package className="w-3.5 h-3.5"/> در پردازش</button>
                           <button onClick={() => updateStatus(order.id, 'shipped', 'ارسال شده')} className="w-full text-right px-3 py-2 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-1.5 text-purple-600 font-bold"><Truck className="w-3.5 h-3.5"/> ارسال شده</button>
                           <button onClick={() => updateStatus(order.id, 'delivered', 'تحویل داده شده')} className="w-full text-right px-3 py-2 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-1.5 text-emerald-600 font-bold"><CheckCircle className="w-3.5 h-3.5"/> تحویل شده</button>
