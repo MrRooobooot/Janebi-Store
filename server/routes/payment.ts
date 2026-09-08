@@ -6,6 +6,7 @@ import { authenticate, AuthRequest } from '../middleware/auth.js';
 import { env } from '../env.js';
 import { paymentRouter } from '../services/payment/PaymentFailoverRouter.js';
 import { restockItemsAndRefundPoints } from '../lib/orderLifecycle.js';
+import { storeEvents } from '../services/events.js';
 
 const router = Router();
 
@@ -119,6 +120,26 @@ router.get('/verify', async (req, res) => {
     }
   };
 
+  const emitOrderPaid = async (orderId: string) => {
+    try {
+      const oList = await db.select().from(orders).where(eq(orders.id, orderId)).limit(1);
+      const o = oList[0];
+      if (!o) return;
+      const oItems = await db.select().from(orderItems).where(eq(orderItems.orderId, orderId));
+      storeEvents.emit('order:paid', {
+        orderId: o.id,
+        total: o.total,
+        recipientName: o.recipientName,
+        recipientPhone: o.recipientPhone,
+        recipientAddress: o.recipientAddress,
+        paymentMethod: o.paymentMethod,
+        items: oItems.map((i) => ({ title: i.title, qty: i.qty, price: i.price })),
+      });
+    } catch (err) {
+      console.error('[payment] Error emitting order:paid:', err);
+    }
+  };
+
     if (status !== 'OK') {
       await db.transaction(async (tx) => {
         const currentOrderList = await tx.select().from(orders).where(eq(orders.id, order.id));
@@ -139,6 +160,7 @@ router.get('/verify', async (req, res) => {
       await db.transaction(async (tx) => {
         await markOrderPaid(tx, order.id, dummyRefId);
       });
+      emitOrderPaid(order.id);
       
       return res.redirect(`/checkout/callback?status=success&orderId=${order.id}&ref_id=${dummyRefId}`);
     }
@@ -158,6 +180,7 @@ router.get('/verify', async (req, res) => {
       await db.transaction(async (tx) => {
         await markOrderPaid(tx, order.id, refId);
       });
+      emitOrderPaid(order.id);
 
       return res.redirect(`/checkout/callback?status=success&orderId=${order.id}&ref_id=${refId}`);
     } else {

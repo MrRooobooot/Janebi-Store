@@ -8,6 +8,7 @@ import { desc, eq, and, inArray, sql } from "drizzle-orm";
 import { appCache } from "../utils/cache.js";
 import { restockItemsAndRefundPoints } from "../lib/orderLifecycle.js";
 import { authenticate, AuthRequest } from "../middleware/auth.js";
+import { storeEvents } from "../services/events.js";
 
 const router = Router();
 
@@ -92,6 +93,7 @@ router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
 
       let realSubtotal = 0;
       const finalItems: any[] = [];
+      const lowStockAlerts: Array<{ productId: number; title: string; remainingStock: number; sku?: string }> = [];
 
       for (const item of aggregatedItems) {
         const dbProduct = dbProducts.find(p => p.id === item.id);
@@ -104,6 +106,16 @@ router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
         
         if (dbProduct.stockQuantity < quantity) {
           throw new Error(`موجودی محصول ${dbProduct.title} کافی نیست`);
+        }
+
+        const remaining = dbProduct.stockQuantity - quantity;
+        if (remaining <= 3) {
+          lowStockAlerts.push({
+            productId: dbProduct.id,
+            title: dbProduct.title,
+            remainingStock: remaining,
+            sku: dbProduct.sku || undefined,
+          });
         }
 
         realSubtotal += itemPrice * quantity;
@@ -268,11 +280,29 @@ router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
 
       return {
         ...orderData,
-        items: finalItems
+        items: finalItems,
+        lowStockAlerts
       };
     });
 
     appCache.invalidate("products");
+
+    // Proactive event dispatch (non-blocking)
+    for (const alert of newOrder.lowStockAlerts) {
+      storeEvents.emit('stock:low', alert);
+    }
+    if (newOrder.status === 'processing') {
+      storeEvents.emit('order:paid', {
+        orderId: newOrder.id,
+        total: newOrder.total,
+        recipientName: newOrder.recipientName,
+        recipientPhone: newOrder.recipientPhone,
+        recipientAddress: newOrder.recipientAddress,
+        paymentMethod: newOrder.paymentMethod,
+        items: newOrder.items.map((i: any) => ({ title: i.title, qty: i.quantity, price: i.price })),
+      });
+    }
+
     res.status(201).json({
       success: true,
       message: "سفارش شما با موفقیت ثبت شد",

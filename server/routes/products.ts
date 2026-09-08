@@ -7,6 +7,7 @@ import { eq, or, and, SQL, gte, lte, gt, inArray, desc, asc, sql } from "drizzle
 import { likeWithEscape, containsLikePattern } from "../utils/like";
 
 import { appCache } from "../utils/cache.js";
+import { storeEvents } from "../services/events.js";
 
 const router = Router();
 
@@ -240,6 +241,15 @@ router.post("/:id/reviews", validate(reviewSubmitSchema), async (req, res) => {
   appCache.invalidate('products');
   appCache.invalidate('reviews:latest');
   
+  storeEvents.emit('review:created', {
+    reviewId: newReview.id,
+    productId,
+    productTitle: product.title,
+    userName: newReview.userName,
+    rating: newReview.rating,
+    comment: newReview.comment,
+  });
+
   res.status(201).json(newReview);
 });
 

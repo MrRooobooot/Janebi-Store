@@ -53,6 +53,7 @@ import {
 } from '../db/schema.js';
 import { appCache } from '../utils/cache.js';
 import { restockItemsAndRefundPoints } from '../lib/orderLifecycle.js';
+import { initBaleNotifier } from './notifier.js';
 
 export const BALE_API_ROOT = 'https://tapi.bale.ai';
 const UPLOAD_DIR = path.resolve(process.cwd(), 'public', 'images', 'products');
@@ -509,6 +510,9 @@ async function editOrReply(ctx: Context, text: string, replyMarkup?: InlineKeybo
 export async function startBaleBot(token: string, adminChatIds: number[]) {
   const bot = new Bot(token, { client: { apiRoot: BALE_API_ROOT } });
   const cfg: BaleBotConfig = { token, adminChatIds };
+
+  // Initialize proactive event listener for live notifications
+  initBaleNotifier(bot, adminChatIds);
 
   bot.catch((err) => {
     console.error('[bale-bot] error:', err instanceof GrammyError ? `${err.message} (${err.method})` : err);

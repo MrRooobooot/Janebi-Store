@@ -4,6 +4,7 @@ import { contactMessages, newsletterSubscribers } from "../db/schema.js";
 import { eq, sql } from "drizzle-orm";
 import { toEnglishDigits } from "../../src/lib/utils.js";
 import { ARCHIVE_AFTER_DAYS } from "../../src/lib/constants.js";
+import { storeEvents } from "../services/events.js";
 
 const router = Router();
 
@@ -39,9 +40,10 @@ router.post("/", async (req, res) => {
     return res.status(400).json({ error: "نام، ایمیل و پیام الزامی است" });
   }
 
+  const msgId = `msg-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   try {
     await db.insert(contactMessages).values({
-      id: `msg-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      id: msgId,
       name: String(name).slice(0, 200),
       email: String(email).slice(0, 320),
       phone: phone ? String(phone).slice(0, 20) : null,
@@ -49,6 +51,15 @@ router.post("/", async (req, res) => {
       message: String(message).slice(0, 5000),
       status: "unread",
       createdAt: new Date().toISOString(),
+    });
+
+    storeEvents.emit('contact:created', {
+      messageId: msgId,
+      name: String(name).slice(0, 200),
+      phone: phone ? String(phone).slice(0, 20) : null,
+      email: String(email).slice(0, 320),
+      subject: subject ? String(subject).slice(0, 300) : null,
+      message: String(message).slice(0, 5000),
     });
   } catch (error) {
     // Persisting must not silently swallow the customer's message.

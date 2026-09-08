@@ -151,7 +151,11 @@ Full evidence + remediation list: `PROJECT_AUDIT.md`. Highest-priority debts:
   - Actionable options on upload: create new product prefilled with photo (`w:new:img`), or link to existing product by ID/search (`p:asg:img` / `p:set_img:`).
   - Product detail view card includes «📸 تغییر / آپلود عکس» (`p:pho:<id>`) for instant photo updates via upload or image URL.
   - Server static route `/images` registered in both Express (`server/app.ts`) and production server (`server/index.ts`) guaranteeing instant live serving of runtime uploaded images.
-- **Bale Bot API compliance:** All `callback_data` under 64 bytes (unit tested in `tests/unit/bale-bot.test.ts`), strict instant `answerCallbackQuery` dispatch to eliminate client spinner hangs, Markdown-compliant spacing, in-place message updates (`editMessageText`).
+- **Proactive Event-Driven Notifications (Model 2):**
+  - Typed domain event bus `server/services/events.ts` (`order:paid`, `stock:low`, `review:created`, `contact:created`).
+  - Bot notifier subscriber `server/bot/notifier.ts`: non-blocking `setImmediate` dispatch, multi-admin broadcast with `Promise.allSettled`, HTML-escaped content (`escapeHtml`) preventing Bale entity parse crashes, and 30-min inventory alert cooldown.
+  - Interactive notification buttons: instant order processing (`o:s:<id>:processing`), quick +5 stock refill (`p:s:<id>:5`), review approve/reject (`rv:app:<id>`, `rv:rej:<id>`), contact message read/archive (`cm:read:<id>`, `cm:arc:<id>`).
+- **Bale Bot API compliance:** All `callback_data` under 64 bytes (unit tested in `tests/unit/bale-bot.test.ts` and `tests/unit/event-notifier.test.ts`), strict instant `answerCallbackQuery` dispatch to eliminate client spinner hangs, Markdown-compliant spacing, in-place message updates (`editMessageText`).
 - **Data & Financial integrity:** Order cancellations inside bot restock items and refund VIP points via `restockItemsAndRefundPoints` in transaction; product deletions clean up related cart/wishlist/review/feature records; audit logging on all actions.
 
 - **Guest cart/wishlist merge-on-login:** `CartContext`/`WishlistContext` push localStorage items to the server (POST = upsert/idempotent) keyed by a `mergedForToken` ref (cart) before fetching the authoritative list. Was: silent REPLACE on login. FE CartItem.id is the product id (typeof number).
