@@ -113,6 +113,10 @@ describe('Bale Bot Helpers & Keyboard Byte Budget Tests', () => {
       expect(photoBtn).toBeDefined();
       expect(photoBtn.text).toContain('عکس');
 
+      const stockBtn = allButtons.find((b) => b.callback_data === `p:stk:${pId}`);
+      expect(stockBtn).toBeDefined();
+      expect(stockBtn.text).toContain('تنظیم دقیق');
+
       assertAllButtonsUnder64Bytes(makeProductDeleteConfirmKeyboard(12345));
     });
 
@@ -150,6 +154,11 @@ describe('Bale Bot Helpers & Keyboard Byte Budget Tests', () => {
 
       s.mode = 'await_upload';
       expect(s.mode).toBe('await_upload');
+
+      s.mode = 'edit_stock';
+      s.editingProductId = 42;
+      expect(s.mode).toBe('edit_stock');
+      expect(s.editingProductId).toBe(42);
 
       s.mode = 'edit_photo';
       s.editingProductId = 42;

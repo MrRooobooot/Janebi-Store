@@ -97,6 +97,7 @@ export interface UserSession {
     | 'wizard'
     | 'edit_price'
     | 'edit_discount'
+    | 'edit_stock'
     | 'edit_photo'
     | 'search'
     | 'search_user'
@@ -449,19 +450,21 @@ export function makeConfirmWizardKeyboard(): InlineKeyboard {
 
 export function makeProductDetailKeyboard(productId: number, stock: number): InlineKeyboard {
   return new InlineKeyboard()
-    .text('➕ ۱ موجودی', `p:s:${productId}:1`)
-    .text('➕ ۵ موجودی', `p:s:${productId}:5`)
-    .text('➖ ۱ موجودی', `p:s:${productId}:-1`)
+    .text('➕ ۱', `p:s:${productId}:1`)
+    .text('➕ ۵', `p:s:${productId}:5`)
+    .text('➖ ۱', `p:s:${productId}:-1`)
+    .text('📦 تنظیم دقیق', `p:stk:${productId}`)
     .row()
     .text('💰 تغییر قیمت', `p:prc:${productId}`)
-    .text('🏷 درصد تخفیف', `p:dsc:${productId}`)
+    .text('🏷 تنظیم تخفیف', `p:dsc:${productId}`)
     .row()
     .text('📸 تغییر / آپلود عکس', `p:pho:${productId}`)
+    .url('🔗 نمایش در سایت', `https://janebiarena.ir/products/${productId}`)
     .row()
-    .url('🔗 مشاهده در سایت', `https://janebiarena.ir/products/${productId}`)
     .text('🗑 حذف کالا', `p:del:${productId}`)
+    .text('⬅️ لیست کالاها', 'm:p:0')
     .row()
-    .text('⬅️ لیست کالاها', 'm:p:0');
+    .text('🏠 منوی اصلی', 'm:menu');
 }
 
 export function makeProductDeleteConfirmKeyboard(productId: number): InlineKeyboard {
@@ -478,7 +481,8 @@ export function makeOrderDetailKeyboard(orderId: string): InlineKeyboard {
     .row()
     .text('🔴 لغو سفارش', `o:s:${orderId}:cancelled`)
     .row()
-    .text('⬅️ بازگشت به سفارش‌ها', 'm:o:0');
+    .text('⬅️ بازگشت به سفارش‌ها', 'm:o:0')
+    .text('🏠 منوی اصلی', 'm:menu');
 }
 
 // -------------------------------------------------------------
@@ -888,6 +892,22 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       return;
     }
 
+    if (data.startsWith('p:stk:')) {
+      const prodId = parseInt(data.replace('p:stk:', ''), 10);
+      session.mode = 'edit_stock';
+      session.editingProductId = prodId;
+      const p = await db.query.products.findFirst({ where: eq(products.id, prodId) });
+      await editOrReply(
+        ctx,
+        `📦 *تنظیم موجودی دقیق کالا*\n\n` +
+        `کالا: *${p?.title || prodId}*\n` +
+        `موجودی فعلی: *${fmt(p?.stockQuantity || 0)} عدد*\n\n` +
+        `لطفاً *تعداد موجودی جدید* را به عنوان عدد بفرستید (مثلاً: ۲۵ یا ۰):`,
+        makeCancelKeyboard()
+      );
+      return;
+    }
+
     if (data.startsWith('p:prc:')) {
       const prodId = parseInt(data.replace('p:prc:', ''), 10);
       session.mode = 'edit_price';
@@ -1190,24 +1210,37 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
     if (session.mode === 'search') {
       session.mode = 'idle';
       const term = text.toLowerCase();
+      const num = parsePrice(text);
+
+      let idMatch = null;
+      if (Number.isFinite(num) && num > 0) {
+        idMatch = await db.query.products.findFirst({ where: eq(products.id, num) });
+      }
+
       const results = await db
         .select()
         .from(products)
         .where(sql`lower(${products.title}) LIKE lower(${'%' + term + '%'}) OR lower(${products.sku}) LIKE lower(${'%' + term + '%'})`)
         .limit(6);
 
-      if (results.length === 0) {
+      const combined = idMatch
+        ? [idMatch, ...results.filter((r) => r.id !== idMatch.id)].slice(0, 6)
+        : results;
+
+      if (combined.length === 0) {
         const kb = new InlineKeyboard().text('🔍 جستجوی مجدد', 'm:srch').text('🏠 منوی اصلی', 'm:menu');
-        await ctx.reply(`❌ کالایی با عبارت «${text}» یافت نشد.`, { reply_markup: kb });
+        await ctx.reply(`❌ کالایی با عبارت یا شناسه «${text}» یافت نشد.`, { reply_markup: kb });
         return;
       }
 
       const kb = new InlineKeyboard();
-      for (const p of results) {
-        kb.text(`📦 ${p.title.slice(0, 24)} (${fmt(p.stockQuantity)} عدد)`, `p:v:${p.id}`).row();
+      for (const p of combined) {
+        const icon = p.stockQuantity === 0 ? '🔴' : p.stockQuantity <= 3 ? '🟡' : '📦';
+        const shortTitle = p.title.length > 22 ? p.title.slice(0, 20) + '..' : p.title;
+        kb.text(`${icon} ${shortTitle} | ${fmt(p.price)} ت (${fmt(p.stockQuantity)})`, `p:v:${p.id}`).row();
       }
       kb.text('🔍 جستجوی دیگر', 'm:srch').text('🏠 منوی اصلی', 'm:menu');
-      await ctx.reply(`🔍 نتایج جستجو برای «${text}» (${results.length} مورد):`, { reply_markup: kb });
+      await ctx.reply(`🔍 نتایج جستجو برای «${text}» (${combined.length} مورد):`, { reply_markup: kb });
       return;
     }
 
@@ -1216,12 +1249,14 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       session.mode = 'idle';
       const phoneClean = fa2en(text).replace(/[^\d]/g, '');
       const u = await db.query.users.findFirst({
-        where: sql`phone LIKE ${'%' + phoneClean + '%'}`,
+        where: phoneClean.length >= 4
+          ? sql`phone LIKE ${'%' + phoneClean + '%'}`
+          : sql`lower(name) LIKE lower(${'%' + text + '%'}) OR lower(email) LIKE lower(${'%' + text + '%'})`,
       });
 
       if (!u) {
         const kb = new InlineKeyboard().text('🔍 جستجوی مجدد', 'm:usr_srch').text('🏠 منوی اصلی', 'm:menu');
-        await ctx.reply(`❌ کاربری با شماره «${text}» یافت نشد.`, { reply_markup: kb });
+        await ctx.reply(`❌ کاربری با مشخصات «${text}» یافت نشد.`, { reply_markup: kb });
         return;
       }
       await showUserDetail(ctx, u.id);
@@ -1262,6 +1297,29 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
 
       clearSession(userId);
       await ctx.reply(`✅ تخفیف کالا به *${fmt(rawDisc)}%* تنظیم شد.`);
+      await showProductDetail(ctx, prodId);
+      return;
+    }
+
+    // 4.5. Edit Exact Stock Quantity
+    if (session.mode === 'edit_stock' && session.editingProductId) {
+      const newStock = parsePrice(text);
+      const prodId = session.editingProductId;
+      if (!Number.isFinite(newStock) || newStock < 0) {
+        await ctx.reply('❌ تعداد نامعتبر است. لطفاً عدد مثبت یا صفر بفرستید:', {
+          reply_markup: makeCancelKeyboard(),
+        });
+        return;
+      }
+
+      await db.update(products).set({ stockQuantity: newStock }).where(eq(products.id, prodId));
+      appCache.invalidate('products');
+      appCache.invalidate('categories');
+      appCache.invalidate(`product:${prodId}`);
+      logAudit('product.stock.exact', `bale-${userId}`, String(prodId), { stock: newStock });
+
+      clearSession(userId);
+      await ctx.reply(`✅ موجودی کالا با موفقیت به *${fmt(newStock)} عدد* تنظیم شد.`);
       await showProductDetail(ctx, prodId);
       return;
     }
@@ -1653,7 +1711,9 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
 
     const kb = new InlineKeyboard();
     for (const p of rows) {
-      kb.text(`📦 ${p.title.slice(0, 24)}... | ${fmt(p.price)} ت`, `p:v:${p.id}`).row();
+      const icon = p.stockQuantity === 0 ? '🔴' : p.stockQuantity <= 3 ? '🟡' : '📦';
+      const shortTitle = p.title.length > 20 ? p.title.slice(0, 18) + '..' : p.title;
+      kb.text(`${icon} ${shortTitle} | ${fmt(p.price)} ت (${fmt(p.stockQuantity)})`, `p:v:${p.id}`).row();
     }
 
     const navRow: { text: string; data: string }[] = [];
@@ -1680,7 +1740,9 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
 
     const kb = new InlineKeyboard();
     for (const p of rows) {
-      kb.text(`📦 ${p.title.slice(0, 22)}... | ${fmt(p.price)} ت`, `p:v:${p.id}`).row();
+      const icon = p.stockQuantity === 0 ? '🔴' : p.stockQuantity <= 3 ? '🟡' : '📦';
+      const shortTitle = p.title.length > 20 ? p.title.slice(0, 18) + '..' : p.title;
+      kb.text(`${icon} ${shortTitle} | ${fmt(p.price)} ت (${fmt(p.stockQuantity)})`, `p:v:${p.id}`).row();
     }
 
     const cats = await getStoreCategories();
@@ -1706,19 +1768,48 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       return;
     }
 
+    let stockBadge = '🟢 موجود در انبار';
+    if (p.stockQuantity === 0) {
+      stockBadge = '🔴 ناموجود';
+    } else if (p.stockQuantity <= 3) {
+      stockBadge = '🟡 رو به اتمام (فوری)';
+    }
+
+    const hasDiscount = p.discount != null && p.discount > 0;
+    const finalPrice = hasDiscount
+      ? Math.round(p.price * (1 - p.discount! / 100))
+      : p.price;
+
+    const rawImage = p.image || '/placeholder-product.svg';
+    const webImageUrl = rawImage.startsWith('http')
+      ? rawImage
+      : `https://janebiarena.ir${rawImage.startsWith('/') ? '' : '/'}${rawImage}`;
+
+    let descSnippet = '—';
+    if (p.description) {
+      const cleanDesc = p.description.replace(/\s+/g, ' ').trim();
+      descSnippet = cleanDesc.length > 80 ? cleanDesc.slice(0, 80) + '...' : cleanDesc;
+    }
+
     const text =
-      `📦 *مشخصات و مدیریت کالا*\n\n` +
-      `▫️ *نام کالا:* ${p.title}\n` +
-      `▫️ *شناسه:* ${p.id}\n` +
-      `▫️ *دسته‌بندی:* ${p.category}\n` +
-      `▫️ *قیمت اصلی:* *${fmt(p.price)} تومان*\n` +
-      `▫️ *تخفیف:* ${p.discount ? `🔥 *${fmt(p.discount)}%*` : 'ندارد'}\n` +
-      `▫️ *موجودی انبار:* *${p.stockQuantity > 0 ? `${fmt(p.stockQuantity)} عدد` : '🔴 ناموجود'}*\n` +
-      `▫️ *برند:* ${p.brand || 'متفرقه'}\n` +
-      `▫️ *گارانتی:* ${p.warranty || '—'}\n` +
-      `▫️ *تصویر کالا:* \`${p.image || '—'}\`\n` +
-      `▫️ *کد کالا (SKU):* \`${p.sku || '—'}\`\n\n` +
-      `جهت ویرایش موجودی، قیمت، تخفیف یا عکس کالا از دکمه‌های زیر استفاده فرمایید:`;
+      `📱 *کارت مشخصات و مدیریت کالا* | کد ${p.id}\n` +
+      `━━━━━━━━━━━━━━━━━━━\n` +
+      `📦 *${p.title}*\n\n` +
+      `📊 *وضعیت انبار:* ${stockBadge} (${fmt(p.stockQuantity)} عدد)\n` +
+      `💰 *قیمت پایه:* *${fmt(p.price)} تومان*\n` +
+      (hasDiscount
+        ? `🔥 *تخفیف ویژه:* ${fmt(p.discount!)}% ➔ *${fmt(finalPrice)} تومان*\n`
+        : `🏷 *تخفیف:* ندارد\n`) +
+      `⭐ *امتیاز و نظرات:* ${p.rating ? `${fmt(p.rating)} از ۵` : '—'} (${fmt(p.reviewsCount || 0)} نظر ثبت‌شده)\n` +
+      `━━━━━━━━━━━━━━━━━━━\n` +
+      `📁 *دسته‌بندی:* ${p.category}\n` +
+      `🏭 *برند سازنده:* ${p.brand || 'متفرقه'}\n` +
+      `🛡 *گارانتی:* ${p.warranty || 'اصالت و سلامت فیزیکی'}\n` +
+      `🔖 *کد کالا (SKU):* \`${p.sku || '—'}\`\n` +
+      `📝 *خلاصه توضیحات:* ${descSnippet}\n` +
+      `🖼 *تصویر کالا:* [مشاهده در سایت یا مرورگر](${webImageUrl})\n` +
+      `━━━━━━━━━━━━━━━━━━━\n` +
+      `جهت ویرایش موجودی، قیمت، تخفیف یا عکس از دکمه‌های زیر استفاده فرمایید:`;
 
     await editOrReply(ctx, text, makeProductDetailKeyboard(p.id, p.stockQuantity));
   }
@@ -1999,7 +2090,8 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
     for (const p of rows) {
       const isZero = p.stockQuantity === 0;
       text += `▫️ ${p.title} — موجودی: *${isZero ? '🔴 ناموجود' : `${fmt(p.stockQuantity)} عدد`}*\n`;
-      kb.text(`➕۵ به «${p.title.slice(0, 16)}...»`, `p:s:${p.id}:5`).row();
+      const shortTitle = p.title.length > 16 ? p.title.slice(0, 14) + '..' : p.title;
+      kb.text(`🔍 مدیریت «${shortTitle}»`, `p:v:${p.id}`).text('➕۵ موجودی', `p:s:${p.id}:5`).row();
     }
 
     kb.text('🔄 به‌روزرسانی', 'm:alert').text('🏠 منوی اصلی', 'm:menu');
