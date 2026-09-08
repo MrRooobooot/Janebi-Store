@@ -30,7 +30,6 @@ export function initBaleNotifier(bot: Bot, adminChatIds: number[]) {
     const promises = adminChatIds.map(async (chatId) => {
       try {
         await bot.api.sendMessage(chatId, text, {
-          parse_mode: 'HTML',
           reply_markup: replyMarkup,
         });
       } catch (err: any) {
@@ -46,18 +45,18 @@ export function initBaleNotifier(bot: Bot, adminChatIds: number[]) {
     setImmediate(async () => {
       try {
         const itemsText = event.items
-          .map((it, idx) => `  ▫️ ${fmt(idx + 1)}. ${escapeHtml(it.title)} (${fmt(it.qty)} عدد)`)
+          .map((it, idx) => `  ▫️ ${fmt(idx + 1)}. ${it.title} (${fmt(it.qty)} عدد)`)
           .join('\n');
 
         const message =
-          `🛍 <b>سفارش جدید پرداخت‌شده!</b>\n` +
+          `🛍 *سفارش جدید پرداخت‌شده!*\n` +
           `━━━━━━━━━━━━━━━━━━━\n` +
-          `▫️ شماره سفارش: <code>${event.orderId}</code>\n` +
-          `▫️ خریدار: <b>${escapeHtml(event.recipientName)}</b>\n` +
-          `▫️ تلفن همراه: <code>${event.recipientPhone}</code>\n` +
-          `▫️ روش پرداخت: ${escapeHtml(event.paymentMethod)}\n` +
-          `▫️ مبلغ کل: <b>${fmt(event.total)} تومان</b>\n\n` +
-          `📦 <b>اقلام خریداری‌شده:</b>\n${itemsText || '  (بدون اقلام)'}`;
+          `▫️ شماره سفارش: ${event.orderId}\n` +
+          `▫️ خریدار: ${event.recipientName}\n` +
+          `▫️ تلفن همراه: ${event.recipientPhone}\n` +
+          `▫️ روش پرداخت: ${event.paymentMethod}\n` +
+          `▫️ مبلغ کل: ${fmt(event.total)} تومان\n\n` +
+          `📦 *اقلام خریداری‌شده:*\n${itemsText || '  (بدون اقلام)'}`;
 
         const kb = new InlineKeyboard()
           .text('🔄 شروع پردازش', `o:s:${event.orderId}:processing`)
@@ -83,12 +82,12 @@ export function initBaleNotifier(bot: Bot, adminChatIds: number[]) {
 
         const isZero = event.remainingStock === 0;
         const message =
-          `⚠️ <b>هشدار موجودی انبار!</b>\n` +
+          `⚠️ *هشدار موجودی انبار!*\n` +
           `━━━━━━━━━━━━━━━━━━━\n` +
-          `▫️ کالا: <b>${escapeHtml(event.title)}</b>\n` +
-          `▫️ وضعیت: ${isZero ? '🔴 <b>کاملاً ناموجود شد</b>' : `🟡 <b>رو به اتمام (${fmt(event.remainingStock)} عدد)</b>`}\n` +
-          `▫️ شناسه کالا: <code>${event.productId}</code>\n` +
-          `▫️ کد (SKU): <code>${event.sku || '—'}</code>`;
+          `▫️ کالا: ${event.title}\n` +
+          `▫️ وضعیت: ${isZero ? '🔴 کاملاً ناموجود شد' : `🟡 رو به اتمام (${fmt(event.remainingStock)} عدد)`}\n` +
+          `▫️ شناسه کالا: ${event.productId}\n` +
+          `▫️ کد (SKU): ${event.sku || '—'}`;
 
         const kb = new InlineKeyboard()
           .text('➕۵ شارژ فوری', `p:s:${event.productId}:5`)
@@ -111,11 +110,11 @@ export function initBaleNotifier(bot: Bot, adminChatIds: number[]) {
         const commentSnippet = event.comment.length > 200 ? event.comment.slice(0, 195) + '...' : event.comment;
 
         const message =
-          `⭐ <b>دیدگاه جدید ثبت شد!</b>\n` +
+          `⭐ *دیدگاه جدید ثبت شد!*\n` +
           `━━━━━━━━━━━━━━━━━━━\n` +
-          `▫️ کالا: <b>${escapeHtml(event.productTitle || `کد ${event.productId}`)}</b>\n` +
-          `▫️ کاربر: ${escapeHtml(event.userName)} | امتیاز: ${stars}\n\n` +
-          `📝 <b>متن دیدگاه:</b>\n«${escapeHtml(commentSnippet)}»`;
+          `▫️ کالا: ${event.productTitle || `کد ${event.productId}`}\n` +
+          `▫️ کاربر: ${event.userName} | امتیاز: ${stars}\n\n` +
+          `📝 *متن دیدگاه:*\n«${commentSnippet}»`;
 
         const kb = new InlineKeyboard()
           .text('✅ تأیید انتشار', `rv:app:${event.reviewId}`)
@@ -135,12 +134,12 @@ export function initBaleNotifier(bot: Bot, adminChatIds: number[]) {
         const msgSnippet = event.message.length > 200 ? event.message.slice(0, 195) + '...' : event.message;
 
         const message =
-          `📩 <b>پیام جدید در فرم تماس با ما!</b>\n` +
+          `📩 *پیام جدید در فرم تماس با ما!*\n` +
           `━━━━━━━━━━━━━━━━━━━\n` +
-          `▫️ فرستنده: <b>${escapeHtml(event.name)}</b>\n` +
-          `▫️ شماره/ایمیل: <code>${escapeHtml(event.phone || event.email || '—')}</code>\n` +
-          `▫️ موضوع: <b>${escapeHtml(event.subject || 'بدون موضوع')}</b>\n\n` +
-          `«${escapeHtml(msgSnippet)}»`;
+          `▫️ فرستنده: ${event.name}\n` +
+          `▫️ شماره/ایمیل: ${event.phone || event.email || '—'}\n` +
+          `▫️ موضوع: ${event.subject || 'بدون موضوع'}\n\n` +
+          `«${msgSnippet}»`;
 
         const kb = new InlineKeyboard()
           .text('✔️ خوانده شد', `cm:read:${event.messageId}`)

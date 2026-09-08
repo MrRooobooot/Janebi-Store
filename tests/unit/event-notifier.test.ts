@@ -132,7 +132,7 @@ describe('Event Notifier & Proactive Alerts Suite', () => {
       expect(mockSendMessage).toHaveBeenCalledWith(
         123456,
         expect.stringContaining('سفارش جدید پرداخت‌شده'),
-        expect.objectContaining({ parse_mode: 'HTML' })
+        expect.objectContaining({ reply_markup: expect.anything() })
       );
     });
   });

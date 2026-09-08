@@ -460,7 +460,7 @@ export function makeProductDetailKeyboard(productId: number, stock: number): Inl
     .text('🏷 تنظیم تخفیف', `p:dsc:${productId}`)
     .row()
     .text('📸 تغییر / آپلود عکس', `p:pho:${productId}`)
-    .url('🔗 نمایش در سایت', `https://janebiarena.ir/products/${productId}`)
+    .text('🔗 لینک محصول در وب', `p:web:${productId}`)
     .row()
     .text('🗑 حذف کالا', `p:del:${productId}`)
     .text('⬅️ لیست کالاها', 'm:p:0')
@@ -491,17 +491,23 @@ export function makeOrderDetailKeyboard(orderId: string): InlineKeyboard {
 // -------------------------------------------------------------
 async function editOrReply(ctx: Context, text: string, replyMarkup?: InlineKeyboard): Promise<void> {
   const safeText = text.length > 4000 ? text.slice(0, 3990) + '...' : text;
-  try {
-    if (ctx.callbackQuery && ctx.callbackQuery.message) {
+  if (ctx.callbackQuery?.message) {
+    try {
       await ctx.editMessageText(safeText, { reply_markup: replyMarkup });
       return;
-    }
-  } catch (err: any) {
-    if (err.message?.includes('message is not modified')) {
-      return;
+    } catch (err: any) {
+      if (err.message?.includes('message is not modified')) {
+        return;
+      }
     }
   }
-  await ctx.reply(safeText, { reply_markup: replyMarkup });
+  try {
+    await ctx.reply(safeText, { reply_markup: replyMarkup });
+  } catch (err: any) {
+    if (replyMarkup) {
+      await ctx.reply(safeText).catch(() => {});
+    }
+  }
 }
 
 // -------------------------------------------------------------
@@ -510,6 +516,41 @@ async function editOrReply(ctx: Context, text: string, replyMarkup?: InlineKeybo
 export async function startBaleBot(token: string, adminChatIds: number[]) {
   const bot = new Bot(token, { client: { apiRoot: BALE_API_ROOT } });
   const cfg: BaleBotConfig = { token, adminChatIds };
+
+  // Resilient API client for Bale quirks: auto-retry on transient 500 / network errors
+  bot.api.config.use(async (prev, method, payload, signal) => {
+    const maxRetries = 3;
+    let delay = 400;
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        return await prev(method, payload, signal);
+      } catch (err: any) {
+        const isBale500 = err?.error_code === 500 || err?.description?.includes('Internal Server Error');
+        const isNetworkErr = err?.name === 'FetchError' || err?.code === 'ECONNRESET' || err?.code === 'ETIMEDOUT';
+        const isRateLimit = err?.error_code === 429;
+
+        if ((isBale500 || isNetworkErr || isRateLimit) && attempt < maxRetries) {
+          console.warn(`[bale-bot] tapi.bale.ai transient error on ${method}, retrying attempt ${attempt}/${maxRetries} in ${delay}ms...`);
+          await new Promise((r) => setTimeout(r, delay));
+          delay *= 2;
+          continue;
+        }
+
+        // If sendMessage with reply_markup fails on final attempt, fallback to plain text without reply_markup
+        if (method === 'sendMessage' && payload && (payload as any).reply_markup && attempt === maxRetries && isBale500) {
+          try {
+            console.warn(`[bale-bot] Retrying ${method} without reply_markup as final fallback...`);
+            const fallbackPayload = { ...(payload as any) };
+            delete fallbackPayload.reply_markup;
+            return await prev(method, fallbackPayload, signal);
+          } catch {}
+        }
+
+        throw err;
+      }
+    }
+    return await prev(method, payload, signal);
+  });
 
   // Initialize proactive event listener for live notifications
   initBaleNotifier(bot, adminChatIds);
@@ -589,11 +630,25 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
     const userId = ctx.from.id;
     const session = getSession(userId);
 
-    // Bale docs: answerCallbackQuery is mandatory to dismiss loading spinner
-    await ctx.answerCallbackQuery().catch(() => {});
+    let cbAnswered = false;
+    const answerCb = async (toastText?: string, showAlert = false) => {
+      if (cbAnswered) return;
+      cbAnswered = true;
+      try {
+        await ctx.answerCallbackQuery(toastText ? { text: toastText, show_alert: showAlert } : undefined);
+      } catch {}
+    };
 
-    // 1. Navigation Sections
-    if (data === 'm:menu') {
+    try {
+      if (data.startsWith('p:web:')) {
+        const prodId = parseInt(data.replace('p:web:', ''), 10);
+        await answerCb('🔗 لینک کالا ارسال شد');
+        await ctx.reply(`🔗 *لینک مستقیم مشاهده محصول در سایت:*\nhttps://janebiarena.ir/products/${prodId}`);
+        return;
+      }
+
+      // 1. Navigation Sections
+      if (data === 'm:menu') {
       clearSession(userId);
       await editOrReply(
         ctx,
@@ -847,7 +902,7 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
         clearSession(userId);
 
         const doneKb = new InlineKeyboard()
-          .url('🔗 مشاهده در سایت', `https://janebiarena.ir/products/${inserted.id}`)
+          .text('🔗 لینک محصول در سایت', `p:web:${inserted.id}`)
           .row()
           .text('➕ ثبت کالای دیگر', 'm:new')
           .text('🏠 منوی اصلی', 'm:menu');
@@ -891,7 +946,7 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       appCache.invalidate('products');
       logAudit('product.stock.update', `bale-${userId}`, String(prodId), { from: existing.stockQuantity, to: newStock, delta });
 
-      await ctx.answerCallbackQuery({ text: `✅ موجودی جدید: ${newStock} عدد` }).catch(() => {});
+      await answerCb(`✅ موجودی جدید: ${newStock} عدد`);
       await showProductDetail(ctx, prodId);
       return;
     }
@@ -1054,7 +1109,7 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
 
     if (data.startsWith('o:s:')) {
       const [, , orderId, nextStatus] = data.split(':');
-      await updateOrderStatus(ctx, orderId, nextStatus);
+      await updateOrderStatus(ctx, orderId, nextStatus, answerCb);
       return;
     }
 
@@ -1080,7 +1135,7 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
         await db.update(coupons).set({ active: nextActive }).where(eq(coupons.code, code));
         appCache.invalidate('coupons');
         logAudit('coupon.toggle', `bale-${userId}`, code, { active: nextActive });
-        await ctx.answerCallbackQuery({ text: `وضعیت کوپن: ${nextActive ? 'فعال شد' : 'غیرفعال شد'}` }).catch(() => {});
+        await answerCb(`وضعیت کوپن: ${nextActive ? 'فعال شد' : 'غیرفعال شد'}`);
         await showCouponsList(ctx, 0);
       }
       return;
@@ -1091,7 +1146,7 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       await db.delete(coupons).where(eq(coupons.code, code));
       appCache.invalidate('coupons');
       logAudit('coupon.delete', `bale-${userId}`, code);
-      await ctx.answerCallbackQuery({ text: `کوپن ${code} حذف شد` }).catch(() => {});
+      await answerCb(`کوپن ${code} حذف شد`);
       await showCouponsList(ctx, 0);
       return;
     }
@@ -1107,7 +1162,7 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       const revId = data.replace('rv:app:', '');
       await setReviewApproval(revId, true);
       logAudit('review.approve', `bale-${userId}`, revId);
-      await ctx.answerCallbackQuery({ text: '✅ نظر تأیید و امتیاز محصول بازمحاسبه شد' }).catch(() => {});
+      await answerCb('✅ نظر تأیید و امتیاز محصول بازمحاسبه شد');
       await showReviewsList(ctx, 0);
       return;
     }
@@ -1116,7 +1171,7 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       const revId = data.replace('rv:rej:', '');
       await setReviewApproval(revId, false);
       logAudit('review.reject', `bale-${userId}`, revId);
-      await ctx.answerCallbackQuery({ text: '❌ نظر رد شد و از نمایش خارج گردید' }).catch(() => {});
+      await answerCb('❌ نظر رد شد و از نمایش خارج گردید');
       await showReviewsList(ctx, 0);
       return;
     }
@@ -1126,7 +1181,7 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       await setReviewApproval(revId, false);
       await db.delete(reviews).where(eq(reviews.id, revId));
       logAudit('review.delete', `bale-${userId}`, revId);
-      await ctx.answerCallbackQuery({ text: '🗑 نظر با موفقیت حذف شد' }).catch(() => {});
+      await answerCb('🗑 نظر با موفقیت حذف شد');
       await showReviewsList(ctx, 0);
       return;
     }
@@ -1141,7 +1196,7 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
     if (data.startsWith('cm:read:')) {
       const msgId = data.replace('cm:read:', '');
       await db.update(contactMessages).set({ status: 'read' }).where(eq(contactMessages.id, msgId));
-      await ctx.answerCallbackQuery({ text: 'پیام به عنوان خوانده‌شده علامت خورد' }).catch(() => {});
+      await answerCb('پیام به عنوان خوانده‌شده علامت خورد');
       await showContactMessagesList(ctx, 0);
       return;
     }
@@ -1149,7 +1204,7 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
     if (data.startsWith('cm:arc:')) {
       const msgId = data.replace('cm:arc:', '');
       await db.update(contactMessages).set({ status: 'archived' }).where(eq(contactMessages.id, msgId));
-      await ctx.answerCallbackQuery({ text: 'پیام به آرشیو منتقل شد' }).catch(() => {});
+      await answerCb('پیام به آرشیو منتقل شد');
       await showContactMessagesList(ctx, 0);
       return;
     }
@@ -1169,7 +1224,7 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
         const newPts = (usr.vipPoints || 0) + pts;
         await db.update(users).set({ vipPoints: newPts }).where(eq(users.id, uId));
         logAudit('user.vip.gift', `bale-${userId}`, uId, { added: pts, total: newPts });
-        await ctx.answerCallbackQuery({ text: `🎉 ${pts} امتیاز VIP اضافه شد. کل: ${newPts}` }).catch(() => {});
+        await answerCb(`🎉 ${pts} امتیاز VIP اضافه شد. کل: ${newPts}`);
         await showUserDetail(ctx, uId);
       }
       return;
@@ -1183,7 +1238,7 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
         .onConflictDoUpdate({ target: storeSettings.key, set: { value: String(nxt) } });
       appCache.invalidate('settings');
       logAudit('settings.announcement.toggle', `bale-${userId}`, 'announcementBarEnabled', { enabled: nxt });
-      await ctx.answerCallbackQuery({ text: nxt ? '📢 نوار اعلان فعال شد' : 'نوار اعلان خاموش شد' }).catch(() => {});
+      await answerCb(nxt ? '📢 نوار اعلان فعال شد' : 'نوار اعلان خاموش شد');
       await showSettingsMenu(ctx);
       return;
     }
@@ -1200,6 +1255,10 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       const curTh = (await db.query.storeSettings.findFirst({ where: eq(storeSettings.key, 'freeShippingThreshold') }))?.value || '500000';
       await editOrReply(ctx, `🚚 سقف فعلی ارسال رایگان: *${fmt(parseInt(curTh, 10) || 0)} تومان*\n\nمبلغ جدید (تومان) را ارسال نمایید:`, makeCancelKeyboard());
       return;
+    }
+    } finally {
+      // Bale docs: answerCallbackQuery is mandatory to dismiss loading spinner
+      await answerCb();
     }
   });
 
@@ -1886,7 +1945,7 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
     await editOrReply(ctx, text, makeOrderDetailKeyboard(o.id));
   }
 
-  async function updateOrderStatus(ctx: Context, orderId: string, nextStatus: string): Promise<void> {
+  async function updateOrderStatus(ctx: Context, orderId: string, nextStatus: string, onToast?: (t: string) => Promise<void>): Promise<void> {
     const stConfig = ORDER_STATUS_MAP[nextStatus];
     if (!stConfig) return;
 
@@ -1905,7 +1964,11 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
     }
 
     logAudit('order.status.update', `bale-${ctx.from?.id}`, orderId, { status: nextStatus });
-    await ctx.answerCallbackQuery({ text: `✅ وضعیت سفارش به «${stConfig.label}» تغییر یافت` }).catch(() => {});
+    if (onToast) {
+      await onToast(`✅ وضعیت سفارش به «${stConfig.label}» تغییر یافت`);
+    } else {
+      await ctx.answerCallbackQuery({ text: `✅ وضعیت سفارش به «${stConfig.label}» تغییر یافت` }).catch(() => {});
+    }
     await showOrderDetail(ctx, orderId);
   }
 
