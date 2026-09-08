@@ -1,3 +1,9 @@
+## 2026-09-08 (r38) — Real-User E2E Suite (86 green) — COMMITTED, PUSHED
+- **New: `e2e/real-user.spec.ts` (43 tests × chromium+webkit = 86):** real browser clicks/typing, visible-UI outcome assertions, zero uncaught-JS/console-error tolerance. Coverage: Home (hero dots, theme toggle, search), catalog filters/pagination, product detail + reviews, cart drawer/qty/coupon, auth register/login/logout, wishlist/compare, checkout COD + online gateway path, static pages, 404, mobile UX, admin dashboard/products/orders/coupons/users/reviews/settings/audit/newsletter/blog.
+- **New: `playwright.e2e.config.ts` + `e2e/global-setup.ts`:** isolated DB via `VACUUM INTO` (prod DB never touched), bcrypt-seeded admin, `NODE_ENV=test` (rate limiters skip), per-worker Vite route warmup, globalSetup runs once (config is per-worker).
+- **App defects found & fixed by the suite:** admin Products list fetched with browser cache (`Cache-Control: max-age=30`) → stale table after create/delete → `cache:'no-store'`; admin Orders status dropdown hover-only → keyboard/AT unusable → `group-focus-within`.
+- **Gate:** npm run verify (54 files, 389 tests) + full E2E 86/86 green (~2.6min). Run: `npm run test:e2e`.
+
 ## 2026-09-05 (r37d) — UI/UX Hardening, Coupon Parity & Prod Deploy — COMMITTED, DEPLOYED
 - **P0 Coupon Discount Parity (`src/lib/coupon.ts`):** client-side checkout calculation now mirrors server formula exactly for percentage/fixed caps.
 - **P1 Payment Route 404:** `/payment` fallback alias added to frontend router avoiding 404 on callback redirects.
