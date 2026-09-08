@@ -146,7 +146,11 @@ Full evidence + remediation list: `PROJECT_AUDIT.md`. Highest-priority debts:
 ## Bale bot (بله) complete overhaul — 100% Inline Keyboards (2026-09-07)
 - **Engine:** Grammy 1.46 pointing at `https://tapi.bale.ai`. Long-polling with session Map + auto-prune.
 - **100% Inline controls (دکمه‌های شیشه‌ای):** Main dashboard, paginated category selector (2-col grid + page navigation), quick stock/brand/warranty buttons, skip buttons, product confirmation modal, product management card, recent orders with status change buttons, store live stats, and inventory alerts.
-- **Native photo download:** Downloads user photos from Bale CDN (`/file/bot<token>/<path>`), verifies magic bytes (JPEG/PNG/WebP), saves to `public/images/products/`, stores relative URL.
+- **Native photo download & user upload capability:**
+  - Direct photo/document upload (uncompressed JPG/PNG/WebP or Photo) anywhere in bot: downloads via Bale CDN (`tapi.bale.ai`), verifies magic bytes, saves to `public/images/products/`.
+  - Actionable options on upload: create new product prefilled with photo (`w:new:img`), or link to existing product by ID/search (`p:asg:img` / `p:set_img:`).
+  - Product detail view card includes «📸 تغییر / آپلود عکس» (`p:pho:<id>`) for instant photo updates via upload or image URL.
+  - Server static route `/images` registered in both Express (`server/app.ts`) and production server (`server/index.ts`) guaranteeing instant live serving of runtime uploaded images.
 - **Bale Bot API compliance:** All `callback_data` under 64 bytes (unit tested in `tests/unit/bale-bot.test.ts`), strict instant `answerCallbackQuery` dispatch to eliminate client spinner hangs, Markdown-compliant spacing, in-place message updates (`editMessageText`).
 - **Data & Financial integrity:** Order cancellations inside bot restock items and refund VIP points via `restockItemsAndRefundPoints` in transaction; product deletions clean up related cart/wishlist/review/feature records; audit logging on all actions.
 

@@ -3,6 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import pino from "pino-http";
 import rateLimit from "express-rate-limit";
+import path from "path";
 
 import { errorHandler } from "./middleware/errorHandler.js";
 import { requestIdMiddleware } from "./middleware/requestId.js";
@@ -258,6 +259,9 @@ app.use("/api/blog", blogRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/admin/upload", uploadRoutes);
 app.use(sitemapRoutes); // GET /sitemap.xml — dynamic, includes blog_posts slugs
+
+// Static serving for uploaded assets (products, bale bot uploads)
+app.use("/images", express.static(path.resolve(process.cwd(), "public", "images")));
 
 // Health / readiness probe — verifies the process is up AND the database
 // answers a real query. Uses the raw connection per dialect (pool for PG,

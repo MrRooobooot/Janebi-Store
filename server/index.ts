@@ -110,6 +110,8 @@ async function startServer() {
     });
   } else {
     const distPath = path.join(process.cwd(), "dist");
+    const publicImages = path.join(process.cwd(), "public", "images");
+    app.use("/images", express.static(publicImages));
     app.use(express.static(distPath, { redirect: false }));
     app.get("/{*splat}", async (req, res) => {
       try {

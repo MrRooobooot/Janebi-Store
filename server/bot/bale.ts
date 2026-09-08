@@ -97,14 +97,18 @@ export interface UserSession {
     | 'wizard'
     | 'edit_price'
     | 'edit_discount'
+    | 'edit_photo'
     | 'search'
     | 'search_user'
     | 'coupon_wizard'
     | 'edit_announcement'
-    | 'edit_free_shipping';
+    | 'edit_free_shipping'
+    | 'assign_photo'
+    | 'await_upload';
   wizard?: WizardDraft;
   couponWizard?: CouponDraft;
   editingProductId?: number;
+  uploadedPhotoUrl?: string;
   lastActive: number;
 }
 
@@ -294,9 +298,10 @@ export function makeProductsSectionKeyboard(): InlineKeyboard {
     .text('📋 لیست تمام کالاها', 'm:p:0')
     .text('🔍 جستجوی کالا', 'm:srch')
     .row()
+    .text('📸 آپلود مستقیم عکس', 'm:upl_img')
     .text('📁 انتخاب بر اساس دسته', 'm:cat_pick:0')
-    .text('⚠️ کالاهای رو به اتمام', 'm:alert')
     .row()
+    .text('⚠️ کالاهای رو به اتمام', 'm:alert')
     .text('🏠 بازگشت به منوی اصلی', 'm:menu');
 }
 
@@ -451,6 +456,8 @@ export function makeProductDetailKeyboard(productId: number, stock: number): Inl
     .text('💰 تغییر قیمت', `p:prc:${productId}`)
     .text('🏷 درصد تخفیف', `p:dsc:${productId}`)
     .row()
+    .text('📸 تغییر / آپلود عکس', `p:pho:${productId}`)
+    .row()
     .url('🔗 مشاهده در سایت', `https://janebiarena.ir/products/${productId}`)
     .text('🗑 حذف کالا', `p:del:${productId}`)
     .row()
@@ -522,6 +529,17 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
     await ctx.reply('🏷 لطفاً *نام محصول جدید* را ارسال کنید:', { reply_markup: makeCancelKeyboard() });
   });
 
+  bot.command(['upload', 'photo'], async (ctx) => {
+    if (!isAdmin(ctx, cfg)) return ctx.reply('⛔ دسترسی فقط برای مدیران فروشگاه.');
+    const s = getSession(ctx.from!.id);
+    s.mode = 'await_upload';
+    await ctx.reply(
+      '📸 *آپلود مستقیم عکس به سرور فروشگاه*\n\n' +
+      'لطفاً عکس مورد نظر را در همین چت ارسال فرمایید (به صورت Photo یا فایل سند تصویری JPG/PNG/WebP):',
+      { reply_markup: makeCancelKeyboard() }
+    );
+  });
+
   bot.command('cancel', async (ctx) => {
     clearSession(ctx.from!.id);
     await ctx.reply('عملیات لغو شد.', { reply_markup: makeMainMenuKeyboard() });
@@ -580,6 +598,18 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
 
     if (data === 'm:sec_prod') {
       await editOrReply(ctx, '📦 *مدیریت کالاها و انبار:*\nیکی از گزینه‌های زیر را انتخاب کنید:', makeProductsSectionKeyboard());
+      return;
+    }
+
+    if (data === 'm:upl_img') {
+      session.mode = 'await_upload';
+      await editOrReply(
+        ctx,
+        '📸 *آپلود مستقیم عکس به فروشگاه*\n\n' +
+        'تصویر مورد نظر را در همین چت ارسال نمایید (به صورت عکس یا فایل سند تصویری JPG/PNG/WebP).\n\n' +
+        'تصویر بلافاصله در سرور ذخیره شده و می‌توانید آن را به یک کالای موجود اختصاص دهید یا با آن کالای جدید ثبت نمایید.',
+        makeCancelKeyboard()
+      );
       return;
     }
 
@@ -759,6 +789,11 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       }
       if (step === 'desc') {
         session.wizard.description = undefined;
+        if (session.wizard.photoUrl) {
+          session.wizard.step = 'confirm';
+          await showProductConfirmation(ctx, session.wizard);
+          return;
+        }
         session.wizard.step = 'photo';
         await editOrReply(ctx, '📝 توضیحات رد شد.\n\n🖼 حالا *عکس کالا* را مستقیماً در همین چت بفرستید (یا لینک عکس را بفرستید):', makePhotoQuickKeyboard());
         return;
@@ -876,6 +911,67 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
         `🏷 *تنظیم تخفیف کالا*\n\nکالا: *${p?.title || prodId}*\nتخفیف فعلی: *${fmt(p?.discount || 0)}%*\n\nلطفاً *درصد تخفیف جدید (عدد ۰ تا ۹۰)* را ارسال کنید:`,
         makeCancelKeyboard()
       );
+      return;
+    }
+
+    if (data.startsWith('p:pho:')) {
+      const prodId = parseInt(data.replace('p:pho:', ''), 10);
+      session.mode = 'edit_photo';
+      session.editingProductId = prodId;
+      const p = await db.query.products.findFirst({ where: eq(products.id, prodId) });
+      await editOrReply(
+        ctx,
+        `📸 *تغییر تصویر کالا*\n\n` +
+        `کالا: *${p?.title || prodId}*\n` +
+        `تصویر فعلی: \`${p?.image || '—'}\`\n\n` +
+        `لطفاً عکس جدید را به صورت Photo یا فایل سند (JPG/PNG/WebP) ارسال فرمایید یا لینک اینترنتی آن را بفرستید:`,
+        makeCancelKeyboard()
+      );
+      return;
+    }
+
+    if (data === 'w:new:img') {
+      const photoUrl = session.uploadedPhotoUrl;
+      session.mode = 'wizard';
+      session.wizard = { step: 'title', photoUrl, catPage: 0 };
+      await editOrReply(
+        ctx,
+        `✨ *ثبت کالای جدید با تصویر آپلود شده*\n\n` +
+        `▫️ تصویر: \`${photoUrl}\`\n\n` +
+        `مرحله ۱ از ۷: لطفاً *عنوان محصول* را ارسال فرمایید:`,
+        makeCancelKeyboard()
+      );
+      return;
+    }
+
+    if (data === 'p:asg:img') {
+      session.mode = 'assign_photo';
+      await editOrReply(
+        ctx,
+        `🔄 *اتصال تصویر به کالای موجود*\n\n` +
+        `تصویر: \`${session.uploadedPhotoUrl}\`\n\n` +
+        `لطفاً *شناسه (ID) عددی کالا* یا *بخشی از نام کالا* را ارسال فرمایید:`,
+        makeCancelKeyboard()
+      );
+      return;
+    }
+
+    if (data.startsWith('p:set_img:')) {
+      const prodId = parseInt(data.replace('p:set_img:', ''), 10);
+      const photoUrl = session.uploadedPhotoUrl;
+      if (!photoUrl) {
+        await ctx.reply('❌ اطلاعات تصویر یافت نشد. لطفاً عکس را مجدداً ارسال فرمایید.');
+        clearSession(userId);
+        return;
+      }
+      const [updated] = await db.update(products).set({ image: photoUrl }).where(eq(products.id, prodId)).returning();
+      appCache.invalidate('products');
+      appCache.invalidate('categories');
+      appCache.invalidate(`product:${prodId}`);
+      logAudit('product.assign_photo', `bale-${userId}`, String(prodId), { newImage: photoUrl });
+      clearSession(userId);
+      await ctx.reply(`✅ تصویر کالای *${updated?.title || prodId}* با موفقیت ثبت شد.`);
+      await showProductDetail(ctx, prodId);
       return;
     }
 
@@ -1245,6 +1341,84 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       return;
     }
 
+    // 8. Edit Product Photo via URL
+    if (session.mode === 'edit_photo' && session.editingProductId) {
+      const prodId = session.editingProductId;
+      if (!/^(https?:\/\/|\/images\/)/i.test(text)) {
+        await ctx.reply('❌ لطفاً عکس را مستقیماً ارسال فرمایید یا آدرس معتبر اینترنتی (URL) بفرستید:', {
+          reply_markup: makeCancelKeyboard(),
+        });
+        return;
+      }
+      const [updated] = await db.update(products).set({ image: text }).where(eq(products.id, prodId)).returning();
+      appCache.invalidate('products');
+      appCache.invalidate('categories');
+      appCache.invalidate(`product:${prodId}`);
+      logAudit('product.edit_photo_url', `bale-${userId}`, String(prodId), { newImage: text });
+      clearSession(userId);
+      await ctx.reply(`✅ تصویر کالای *${updated?.title || prodId}* با موفقیت به‌روزرسانی شد.`);
+      await showProductDetail(ctx, prodId);
+      return;
+    }
+
+    // 9. Assign Uploaded Photo to Product
+    if (session.mode === 'assign_photo' && session.uploadedPhotoUrl) {
+      const photoUrl = session.uploadedPhotoUrl;
+      const num = parsePrice(text);
+      let targetProduct = null;
+
+      if (Number.isFinite(num) && num > 0) {
+        targetProduct = await db.query.products.findFirst({ where: eq(products.id, num) });
+      }
+
+      if (targetProduct) {
+        await db.update(products).set({ image: photoUrl }).where(eq(products.id, targetProduct.id));
+        appCache.invalidate('products');
+        appCache.invalidate('categories');
+        appCache.invalidate(`product:${targetProduct.id}`);
+        logAudit('product.assign_photo', `bale-${userId}`, String(targetProduct.id), { newImage: photoUrl });
+        clearSession(userId);
+        await ctx.reply(`✅ تصویر کالای *${targetProduct.title}* (شناسه ${targetProduct.id}) با موفقیت ثبت شد.`);
+        await showProductDetail(ctx, targetProduct.id);
+        return;
+      }
+
+      const matches = await db
+        .select()
+        .from(products)
+        .where(like(products.title, `%${text}%`))
+        .limit(5);
+
+      if (matches.length === 0) {
+        await ctx.reply(
+          `🔍 کالایی با عبارت "${text}" یافت نشد.\nلطفاً شناسه عددی یا نام دیگری ارسال نمایید (یا دکمه انصراف را بزنید):`,
+          { reply_markup: makeCancelKeyboard() }
+        );
+        return;
+      }
+
+      if (matches.length === 1) {
+        const prod = matches[0];
+        await db.update(products).set({ image: photoUrl }).where(eq(products.id, prod.id));
+        appCache.invalidate('products');
+        appCache.invalidate('categories');
+        appCache.invalidate(`product:${prod.id}`);
+        logAudit('product.assign_photo', `bale-${userId}`, String(prod.id), { newImage: photoUrl });
+        clearSession(userId);
+        await ctx.reply(`✅ تصویر کالای *${prod.title}* (شناسه ${prod.id}) با موفقیت ثبت شد.`);
+        await showProductDetail(ctx, prod.id);
+        return;
+      }
+
+      const kb = new InlineKeyboard();
+      for (const m of matches) {
+        kb.text(`📦 ${m.title.slice(0, 25)} (کد ${m.id})`, `p:set_img:${m.id}`).row();
+      }
+      kb.text('❌ انصراف', 'm:cancel');
+      await ctx.reply('چند کالا با این عنوان پیدا شد. لطفاً کالای مورد نظر را انتخاب نمایید:', { reply_markup: kb });
+      return;
+    }
+
     // 8. Product Wizard
     if (session.mode === 'wizard' && session.wizard) {
       const d = session.wizard;
@@ -1310,6 +1484,11 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
 
         case 'description': {
           d.description = text;
+          if (d.photoUrl) {
+            d.step = 'confirm';
+            await showProductConfirmation(ctx, d);
+            break;
+          }
           d.step = 'photo';
           await ctx.reply(
             '📝 توضیحات ذخیره شد.\n\n' +
@@ -1321,8 +1500,8 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
         }
 
         case 'photo': {
-          if (!/^https?:\/\//i.test(text)) {
-            await ctx.reply('❌ لینک نامعتبر است. آدرس اینترنتی معتبر بفرستید یا عکس را مستقیماً ارسال کنید:', {
+          if (!/^(https?:\/\/|\/images\/)/i.test(text)) {
+            await ctx.reply('❌ لینک نامعتبر است. آدرس اینترنتی معتبر بفرستید یا عکس را مستقیماً ارسال فرمایید:', {
               reply_markup: makePhotoQuickKeyboard(),
             });
             return;
@@ -1343,43 +1522,101 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
     await ctx.reply('دستور نامشخص. از دکمه‌های زیر استفاده نمایید:', { reply_markup: makeMainMenuKeyboard() });
   });
 
-  // --- Photo Upload Handler ---
-  bot.on('message:photo', async (ctx) => {
+  // --- Photo & Document Image Upload Handler ---
+  async function handleIncomingImage(ctx: Context, fileId: string): Promise<void> {
     if (!isAdmin(ctx, cfg)) return;
-    const session = getSession(ctx.from.id);
-    if (session.mode !== 'wizard' || !session.wizard || session.wizard.step !== 'photo') {
-      await ctx.reply('در این مرحله نیازی به ارسال عکس نیست.', { reply_markup: makeMainMenuKeyboard() });
-      return;
-    }
+    const userId = ctx.from!.id;
+    const session = getSession(userId);
 
-    const waitMsg = await ctx.reply('⏳ در حال دریافت و فشرده‌سازی تصویر...');
+    const waitMsg = await ctx.reply('⏳ در حال دریافت و پردازش تصویر...');
     try {
-      const photos = ctx.message.photo;
-      const best = photos[photos.length - 1];
-      const fileInfo = await bot.api.getFile(best.file_id);
+      const fileInfo = await bot.api.getFile(fileId);
       if (!fileInfo.file_path) throw new Error('مسیر فایل از سرور بله دریافت نشد');
 
       const localUrl = await downloadAndSaveBalePhoto(token, fileInfo.file_path);
-      session.wizard.photoUrl = localUrl;
-      session.wizard.step = 'confirm';
 
       try {
-        await ctx.api.deleteMessage(ctx.chat.id, waitMsg.message_id);
+        if (ctx.chat) await ctx.api.deleteMessage(ctx.chat.id, waitMsg.message_id);
       } catch {}
 
-      await showProductConfirmation(ctx, session.wizard);
+      // Case 1: In creation wizard
+      if (session.mode === 'wizard' && session.wizard && session.wizard.step === 'photo') {
+        session.wizard.photoUrl = localUrl;
+        session.wizard.step = 'confirm';
+        await showProductConfirmation(ctx, session.wizard);
+        return;
+      }
+
+      // Case 2: Editing existing product photo
+      if (session.mode === 'edit_photo' && session.editingProductId) {
+        const prodId = session.editingProductId;
+        const [updated] = await db.update(products).set({ image: localUrl }).where(eq(products.id, prodId)).returning();
+        appCache.invalidate('products');
+        appCache.invalidate('categories');
+        appCache.invalidate(`product:${prodId}`);
+        logAudit('product.edit_photo', `bale-${userId}`, String(prodId), { newImage: localUrl });
+        clearSession(userId);
+
+        await ctx.reply(
+          `✅ *تصویر کالا با موفقیت به‌روزرسانی شد!*\n\n` +
+          `▫️ کالا: *${updated?.title || prodId}*\n` +
+          `▫️ آدرس تصویر: \`${localUrl}\``
+        );
+        await showProductDetail(ctx, prodId);
+        return;
+      }
+
+      // Case 3: Standalone / Direct upload (idle, await_upload, or any other state)
+      session.uploadedPhotoUrl = localUrl;
+      const kb = new InlineKeyboard()
+        .text('➕ ساخت کالای جدید با این عکس', 'w:new:img')
+        .row()
+        .text('🔄 اتصال به کالای موجود', 'p:asg:img')
+        .row()
+        .text('🏠 منوی اصلی', 'm:menu');
+
+      await ctx.reply(
+        `📸 *تصویر با موفقیت در سرور فروشگاه ذخیره شد!*\n\n` +
+        `▫️ *آدرس ذخیره‌شده:* \`${localUrl}\`\n` +
+        `▫️ *لینک مستقیم وب‌سایت:* \`https://janebiarena.ir${localUrl}\`\n\n` +
+        `جهت استفاده از این تصویر، یکی از گزینه‌های زیر را انتخاب فرمایید:`,
+        { reply_markup: kb }
+      );
     } catch (err: any) {
-      await ctx.reply(`❌ خطا در ذخیره عکس: ${err.message}\nمی‌توانید دوباره تلاش کنید یا دکمه تصویر پیش‌فرض را بزنید:`, {
-        reply_markup: makePhotoQuickKeyboard(),
-      });
+      try {
+        if (ctx.chat) await ctx.api.deleteMessage(ctx.chat.id, waitMsg.message_id);
+      } catch {}
+      await ctx.reply(`❌ خطا در پردازش و ذخیره تصویر: ${err.message}\nلطفاً فرمت فایل (JPG, PNG, WebP) را بررسی نموده و دوباره امتحان فرمایید.`);
     }
+  }
+
+  bot.on('message:photo', async (ctx) => {
+    if (!isAdmin(ctx, cfg)) return;
+    const photos = ctx.message.photo;
+    const best = photos[photos.length - 1];
+    await handleIncomingImage(ctx, best.file_id);
   });
 
   bot.on('message:document', async (ctx) => {
     if (!isAdmin(ctx, cfg)) return;
-    await ctx.reply('لطفاً عکس را به صورت تصویر (Photo) ارسال کنید، نه فایل Document.', {
-      reply_markup: makePhotoQuickKeyboard(),
-    });
+    const doc = ctx.message.document;
+    const mime = doc.mime_type || '';
+    const name = doc.file_name?.toLowerCase() || '';
+    const isImg =
+      mime.startsWith('image/') ||
+      name.endsWith('.jpg') ||
+      name.endsWith('.jpeg') ||
+      name.endsWith('.png') ||
+      name.endsWith('.webp');
+
+    if (!isImg) {
+      await ctx.reply('❌ فایل ارسالی تصویر معتبر نیست. لطفاً عکس با فرمت JPG، PNG یا WebP ارسال فرمایید.', {
+        reply_markup: makeCancelKeyboard(),
+      });
+      return;
+    }
+
+    await handleIncomingImage(ctx, doc.file_id);
   });
 
   // --- Sub-view Renderers ---
@@ -1479,8 +1716,9 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       `▫️ *موجودی انبار:* *${p.stockQuantity > 0 ? `${fmt(p.stockQuantity)} عدد` : '🔴 ناموجود'}*\n` +
       `▫️ *برند:* ${p.brand || 'متفرقه'}\n` +
       `▫️ *گارانتی:* ${p.warranty || '—'}\n` +
+      `▫️ *تصویر کالا:* \`${p.image || '—'}\`\n` +
       `▫️ *کد کالا (SKU):* \`${p.sku || '—'}\`\n\n` +
-      `جهت ویرایش موجودی، قیمت یا تخفیف از دکمه‌های زیر استفاده فرمایید:`;
+      `جهت ویرایش موجودی، قیمت، تخفیف یا عکس کالا از دکمه‌های زیر استفاده فرمایید:`;
 
     await editOrReply(ctx, text, makeProductDetailKeyboard(p.id, p.stockQuantity));
   }
@@ -1801,6 +2039,7 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       '❓ *راهنمای داشبورد مدیریت فروشگاه Janebi Arena*\n\n' +
       'این ربات یک پنل کامل مدیریت فروشگاهی بر بستر دکمه‌های شیشه‌ای است:\n\n' +
       '📦 *کالاها:* ثبت جدید، مرور بر اساس دسته‌بندی، تغییر فوری موجودی با +/-، تغییر قیمت و درصد تخفیف.\n' +
+      '📸 *آپلود عکس:* ارسال مستقیم تصویر یا فایل برای ثبت کالا یا تغییر عکس کالاهای موجود.\n' +
       '🛍 *سفارش‌ها:* مشاهده فیلترشده سفارشات، جزئیات آدرس و تغییر وضعیت به پردازش/ارسال/تحویل یا لغو با بازگشت موجودی.\n' +
       '🏷 *کوپن‌ها:* ساخت سریع کد تخفیف درصدی، فعال و غیرفعال‌سازی با یک کلیک.\n' +
       '💬 *نظرات و پیام‌ها:* تأیید و رد نظرات کاربران (با به‌روزرسانی زنده ستاره‌های کالا) و مشاهده فرم‌های تماس.\n' +

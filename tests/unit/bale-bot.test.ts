@@ -105,8 +105,24 @@ describe('Bale Bot Helpers & Keyboard Byte Budget Tests', () => {
     });
 
     it('productDetailKeyboard and delete confirm satisfy <= 64 bytes limit', () => {
-      assertAllButtonsUnder64Bytes(makeProductDetailKeyboard(12345, 10));
+      const pId = 12345;
+      const kb = makeProductDetailKeyboard(pId, 10);
+      assertAllButtonsUnder64Bytes(kb);
+      const allButtons = (kb.inline_keyboard as any[]).flat();
+      const photoBtn = allButtons.find((b) => b.callback_data === `p:pho:${pId}`);
+      expect(photoBtn).toBeDefined();
+      expect(photoBtn.text).toContain('عکس');
+
       assertAllButtonsUnder64Bytes(makeProductDeleteConfirmKeyboard(12345));
+    });
+
+    it('productsSectionKeyboard includes direct photo upload button', () => {
+      const kb = makeProductsSectionKeyboard();
+      assertAllButtonsUnder64Bytes(kb);
+      const allButtons = (kb.inline_keyboard as any[]).flat();
+      const uplBtn = allButtons.find((b) => b.callback_data === 'm:upl_img');
+      expect(uplBtn).toBeDefined();
+      expect(uplBtn.text).toContain('عکس');
     });
 
     it('orderDetailKeyboard satisfies <= 64 bytes limit', () => {
@@ -126,6 +142,41 @@ describe('Bale Bot Helpers & Keyboard Byte Budget Tests', () => {
 
       clearSession(userId);
       expect(sessions.has(userId)).toBe(false);
+    });
+
+    it('supports photo upload modes and state transitions', () => {
+      const userId = 999999;
+      const s = getSession(userId);
+
+      s.mode = 'await_upload';
+      expect(s.mode).toBe('await_upload');
+
+      s.mode = 'edit_photo';
+      s.editingProductId = 42;
+      expect(s.mode).toBe('edit_photo');
+      expect(s.editingProductId).toBe(42);
+
+      s.mode = 'assign_photo';
+      s.uploadedPhotoUrl = '/images/products/bale-test-123.jpg';
+      expect(s.mode).toBe('assign_photo');
+      expect(s.uploadedPhotoUrl).toBe('/images/products/bale-test-123.jpg');
+
+      clearSession(userId);
+    });
+  });
+
+  describe('Photo Callback Bytes & Constraints', () => {
+    it('photo action callback strings fit in 64 bytes', () => {
+      const actions = [
+        'w:new:img',
+        'p:asg:img',
+        'p:set_img:123456',
+        'p:pho:99999',
+        'm:upl_img',
+      ];
+      for (const act of actions) {
+        expect(Buffer.byteLength(act, 'utf8')).toBeLessThanOrEqual(64);
+      }
     });
   });
 });

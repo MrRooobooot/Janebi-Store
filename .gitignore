@@ -50,6 +50,10 @@ backups/
 .claude/
 .cursor/
 
+# Uploaded product media (runtime user uploads)
+public/images/products/*
+!public/images/products/.gitkeep
+
 # Temp
 /tmp/
 *.tmp
