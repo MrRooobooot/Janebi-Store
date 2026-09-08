@@ -42,6 +42,9 @@ export default function ForcedPasswordChange() {
 
     setIsLoading(true);
     try {
+      // currentPassword is intentionally omitted: this flow only exists for a
+      // freshly-logged-in admin flagged must_change_password (server skips the
+      // current-password check for that flag; the login itself proved identity).
       const res = await fetch("/api/users/me/password", {
         method: "PUT",
         headers: {
@@ -49,7 +52,7 @@ export default function ForcedPasswordChange() {
           Authorization: `Bearer ${token}`,
         },
         credentials: "include",
-        body: JSON.stringify({ currentPassword: "1234", newPassword }),
+        body: JSON.stringify({ newPassword }),
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok) {

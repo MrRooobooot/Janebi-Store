@@ -61,8 +61,8 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
           setLoading(false);
           return;
         }
-        const success = await login(normalizedPhone, password);
-        if (success) {
+        const result = await login(normalizedPhone, password);
+        if (result.ok) {
           addToast('با موفقیت وارد شدید', 'success');
           onClose();
         }

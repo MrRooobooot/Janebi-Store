@@ -41,7 +41,9 @@ export const couponValidationSchema = z.object({
 
 export const updatePasswordSchema = z.object({
   body: z.object({
-    currentPassword: z.string().min(1, "کلمه عبور فعلی الزامی است"),
+    // Required for the normal change flow; the forced first-login flow omits it
+    // (server skips the check when must_change_password is still set).
+    currentPassword: z.string().min(1, "کلمه عبور فعلی الزامی است").optional(),
     newPassword: z.string().min(6, "کلمه عبور جدید باید حداقل ۶ کاراکتر باشد")
   })
 });
@@ -128,8 +130,10 @@ export const loginSchema = z.object({
 export const updateProfileSchema = z.object({
   body: z.object({
     name: z.string().min(2, "نام باید حداقل ۲ حرف باشد").optional(),
+    phone: z.string().regex(/^09\d{9}$/, "شماره موبایل معتبر نیست").optional(),
     email: z.string().email("ایمیل معتبر نیست").optional().or(z.literal('')),
-    avatar: z.string().url().optional()
+    // Relative app paths (/avatar.svg) are valid for the SPA — not only absolute URLs.
+    avatar: z.string().min(1).max(500).optional()
   })
 });
 

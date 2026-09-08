@@ -31,14 +31,15 @@ router.get('/me', async (req: AuthRequest, res) => {
 
 router.put('/me', validate(updateProfileSchema), async (req: AuthRequest, res) => {
   const userId = req.user.id as string;
-  const { name, email, avatar } = req.body;
+  const { name, email, avatar, phone } = req.body;
 
   try {
     const [updatedUser] = await db.update(users)
       .set({ 
         ...(name !== undefined && { name }),
         ...(email !== undefined && { email }),
-        ...(avatar !== undefined && { avatar })
+        ...(avatar !== undefined && { avatar }),
+        ...(phone !== undefined && { phone })
       })
       .where(eq(users.id, userId))
       .returning();
@@ -63,9 +64,16 @@ router.put('/me/password', validate(updatePasswordSchema), async (req: AuthReque
       return res.status(404).json({ error: 'کاربر یافت نشد', message: 'کاربر یافت نشد' });
     }
 
-    const isMatch = await bcrypt.compare(currentPassword, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ error: 'کلمه عبور فعلی نادرست است', message: 'کلمه عبور فعلی نادرست است' });
+    // Forced first-login flow: the flag itself gates this request (fresh login
+    // proved identity; admin APIs stay 403-locked until the flag clears).
+    // currentPassword is only verified for the voluntary change flow.
+    if (currentPassword !== undefined) {
+      const isMatch = await bcrypt.compare(currentPassword, user.password);
+      if (!isMatch) {
+        return res.status(400).json({ error: 'کلمه عبور فعلی نادرست است', message: 'کلمه عبور فعلی نادرست است' });
+      }
+    } else if (!user.mustChangePassword) {
+      return res.status(400).json({ error: 'کلمه عبور فعلی الزامی است', message: 'کلمه عبور فعلی الزامی است' });
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);

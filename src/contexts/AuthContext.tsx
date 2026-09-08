@@ -32,7 +32,7 @@ interface AuthContextType {
  isLoggedIn: boolean;
  mustChangePassword: boolean;
  clearMustChangePassword: () => void;
- login: (phone: string, password: string) => Promise<boolean>;
+ login: (phone: string, password: string) => Promise<{ ok: boolean; mustChangePassword: boolean }>;
   verifyOtp: (phone: string, code: string, name?: string) => Promise<boolean>;
   register: (name: string, phone: string, password: string) => Promise<boolean>;
   logout: () => void;
@@ -105,7 +105,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     checkAuth();
   }, []);
 
-  const login = async (phone: string, password: string): Promise<boolean> => {
+  const login = async (phone: string, password: string): Promise<{ ok: boolean; mustChangePassword: boolean }> => {
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
@@ -121,14 +121,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           localStorage.setItem("token", data.accessToken);
         }
         addToast(data.message, "success");
-        return true;
+        // Return the FRESH flag — reading state here from the caller would be a
+        // stale closure (state update hasn't re-rendered yet).
+        return { ok: true, mustChangePassword: Boolean(data.mustChangePassword || data.user?.mustChangePassword) };
       } else {
         addToast(data.message, "error");
-        return false;
+        return { ok: false, mustChangePassword: false };
       }
     } catch (e) {
       addToast("خطا در ارتباط با سرور", "error");
-      return false;
+      return { ok: false, mustChangePassword: false };
     }
   };
 
