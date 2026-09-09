@@ -50,7 +50,9 @@ import {
   storeSettings,
   users,
   auditLogs,
+  newsletterSubscribers,
 } from '../db/schema.js';
+import { STORE_SETTINGS_DEFAULTS } from '../../src/lib/constants.js';
 import { appCache } from '../utils/cache.js';
 import { restockItemsAndRefundPoints } from '../lib/orderLifecycle.js';
 import { initBaleNotifier } from './notifier.js';
@@ -105,11 +107,13 @@ export interface UserSession {
     | 'coupon_wizard'
     | 'edit_announcement'
     | 'edit_free_shipping'
+    | 'edit_vip_field'
     | 'assign_photo'
     | 'await_upload';
   wizard?: WizardDraft;
   couponWizard?: CouponDraft;
   editingProductId?: number;
+  editingVipKey?: 'vipBadge' | 'vipTitle' | 'vipSubtitle' | 'vipCouponCode';
   uploadedPhotoUrl?: string;
   lastActive: number;
 }
@@ -350,7 +354,22 @@ export function makeSettingsSectionKeyboard(barEnabled: boolean): InlineKeyboard
     .row()
     .text('🚚 تنظیم سقف ارسال رایگان', 'st:ship_th')
     .row()
+    .text('🏷 بنر باشگاه مشتریان', 'st:vip')
+    .row()
     .text('🏠 بازگشت به منوی اصلی', 'm:menu');
+}
+
+export function makeVipBannerKeyboard(): InlineKeyboard {
+  return new InlineKeyboard()
+    .text('✏️ برچسب', 'st:vipf:badge')
+    .text('✏️ عنوان', 'st:vipf:title')
+    .row()
+    .text('✏️ زیرعنوان', 'st:vipf:subtitle')
+    .row()
+    .text('✏️ کد تخفیف', 'st:vipf:coupon')
+    .row()
+    .text('⬅️ بازگشت به تنظیمات', 'm:sec_set')
+    .text('🏠 منوی اصلی', 'm:menu');
 }
 
 export function makeCancelKeyboard(): InlineKeyboard {
@@ -1268,6 +1287,42 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       await editOrReply(ctx, `🚚 سقف فعلی ارسال رایگان: *${fmt(parseInt(curTh, 10) || 0)} تومان*\n\nمبلغ جدید (تومان) را ارسال نمایید:`, makeCancelKeyboard());
       return;
     }
+
+    if (data === 'st:vip') {
+      const vipKeys = ['vipBadge', 'vipTitle', 'vipSubtitle', 'vipCouponCode'] as const;
+      const cur: Record<string, string> = {};
+      for (const k of vipKeys) {
+        cur[k] = (await db.query.storeSettings.findFirst({ where: eq(storeSettings.key, k) }))?.value || STORE_SETTINGS_DEFAULTS[k] || '—';
+      }
+      await editOrReply(
+        ctx,
+        `🏷 *بنر باشگاه مشتریان (VIP)*\n\n` +
+        `▫️ *برچسب:* «${cur.vipBadge}»\n` +
+        `▫️ *عنوان:* «${cur.vipTitle}»\n` +
+        `▫️ *زیرعنوان:* «${cur.vipSubtitle}»\n` +
+        `▫️ *کد تخفیف:* \`${cur.vipCouponCode}\`\n\n` +
+        `برای ویرایش هر یک، دکمه مربوطه را لمس کنید:`,
+        makeVipBannerKeyboard()
+      );
+      return;
+    }
+
+    if (data.startsWith('st:vipf:')) {
+      const fld = data.replace('st:vipf:', '');
+      const map: Record<string, { key: 'vipBadge' | 'vipTitle' | 'vipSubtitle' | 'vipCouponCode'; label: string }> = {
+        badge: { key: 'vipBadge', label: 'برچسب' },
+        title: { key: 'vipTitle', label: 'عنوان' },
+        subtitle: { key: 'vipSubtitle', label: 'زیرعنوان' },
+        coupon: { key: 'vipCouponCode', label: 'کد تخفیف' },
+      };
+      const target = map[fld];
+      if (!target) return;
+      const curVal = (await db.query.storeSettings.findFirst({ where: eq(storeSettings.key, target.key) }))?.value || STORE_SETTINGS_DEFAULTS[target.key] || '';
+      session.mode = 'edit_vip_field';
+      session.editingVipKey = target.key;
+      await editOrReply(ctx, `✏️ *ویرایش ${target.label} بنر باشگاه مشتریان*\n\nمقدار فعلی:\n«${curVal}»\n\nمقدار جدید را بفرستید:`, makeCancelKeyboard());
+      return;
+    }
     } finally {
       // Bale docs: answerCallbackQuery is mandatory to dismiss loading spinner
       await answerCb();
@@ -1470,6 +1525,19 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       appCache.invalidate('settings');
       clearSession(userId);
       await ctx.reply(`✅ سقف ارسال رایگان به *${fmt(th)} تومان* تغییر یافت.`);
+      await showSettingsMenu(ctx);
+      return;
+    }
+
+    // 7.5. VIP Banner Field Edit
+    if (session.mode === 'edit_vip_field' && session.editingVipKey) {
+      const key = session.editingVipKey;
+      await db.insert(storeSettings).values({ key, value: text })
+        .onConflictDoUpdate({ target: storeSettings.key, set: { value: text } });
+      appCache.invalidate('settings');
+      logAudit('settings.vip.update', `bale-${userId}`, key, { value: text.slice(0, 100) });
+      clearSession(userId);
+      await ctx.reply('✅ بنر باشگاه مشتریان با موفقیت به‌روزرسانی شد.');
       await showSettingsMenu(ctx);
       return;
     }
@@ -2189,6 +2257,7 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
     const [lowStock] = await db.select({ count: sql<number>`count(*)` }).from(products).where(sql`${products.stockQuantity} <= 5`);
     const [pendingOrders] = await db.select({ count: sql<number>`count(*)` }).from(orders).where(sql`status IN ('pending_payment', 'processing')`);
     const [unreadMsgs] = await db.select({ count: sql<number>`count(*)` }).from(contactMessages).where(eq(contactMessages.status, 'unread'));
+    const [subscribers] = await db.select({ count: sql<number>`count(*)` }).from(newsletterSubscribers);
 
     const text =
       '📊 *داشبورد عملکرد و وضعیت زنده فروشگاه*\n\n' +
@@ -2199,7 +2268,8 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       `🛒 *مجموع کل سفارش‌ها:* ${fmt(Number(oCount?.count ?? 0))} سفارش\n` +
       `⏳ *سفارش‌های در جریان:* ${fmt(Number(pendingOrders?.count ?? 0))} سفارش\n` +
       `💳 *کل فروش موفق:* *${fmt(totalRevenue)} تومان*\n` +
-      `📩 *پیام‌های خوانده‌نشده:* ${fmt(Number(unreadMsgs?.count ?? 0))} پیام`;
+      `📩 *پیام‌های خوانده‌نشده:* ${fmt(Number(unreadMsgs?.count ?? 0))} پیام\n` +
+      `📬 *اعضای خبرنامه:* ${fmt(Number(subscribers?.count ?? 0))} نفر`;
 
     const kb = new InlineKeyboard().text('🔄 به‌روزرسانی آمار', 'm:stat').text('🏠 منوی اصلی', 'm:menu');
     await editOrReply(ctx, text, kb);

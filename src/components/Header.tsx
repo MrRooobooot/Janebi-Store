@@ -81,7 +81,8 @@ export default function Header() {
     <header className="bg-[var(--color-surface-light)]/95 dark:bg-[#080d15]/90 backdrop-blur-xl border-b border-zinc-200/80 dark:border-zinc-800/80 sticky top-0 z-40 transition-colors duration-200 w-full">
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
       
-      {/* Top Announcement Bar — Strict Overflow Control */}
+      {/* Top Announcement Bar — Strict Overflow Control (hidden when admin/bot disables it) */}
+      {settings.announcementBarEnabled !== 'false' && (
       <div className="bg-zinc-100 dark:bg-black/60 text-zinc-700 dark:text-zinc-200 text-xs py-1.5 px-3 sm:px-4 border-b border-zinc-200/80 dark:border-white/5 w-full overflow-hidden transition-colors">
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 text-[11px] font-medium text-orange-600 dark:text-amber-400 min-w-0">
@@ -95,6 +96,7 @@ export default function Header() {
           </div>
         </div>
       </div>
+      )}
 
       {/* Main Navbar */}
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 w-full relative z-30">

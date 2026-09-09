@@ -52,10 +52,10 @@ export default function Home() {
   const heroSlides = useMemo(() => [
     {
       id: 1,
-      tag: 'مرجع تخصصی هولدر و استند موبایل',
+      tag: settings.heroSlide1Tag || STORE_SETTINGS_DEFAULTS.heroSlide1Tag,
       title: settings.heroSlide1Title || STORE_SETTINGS_DEFAULTS.heroSlide1Title,
       subtitle: settings.heroSlide1Subtitle || STORE_SETTINGS_DEFAULTS.heroSlide1Subtitle,
-      buttonText: 'مشاهده انواع هولدر و استند',
+      buttonText: settings.heroSlide1ButtonText || STORE_SETTINGS_DEFAULTS.heroSlide1ButtonText,
       buttonLink: settings.heroSlide1Link || STORE_SETTINGS_DEFAULTS.heroSlide1Link,
       badge: settings.heroSlide1Badge || STORE_SETTINGS_DEFAULTS.heroSlide1Badge,
       image: settings.heroSlide1Image || '/products/hld-13.svg',
@@ -63,10 +63,10 @@ export default function Home() {
     },
     {
       id: 2,
-      tag: 'محافظت ۱۰۰٪ از بدنه، لنز و صفحه نمایش',
+      tag: settings.heroSlide2Tag || STORE_SETTINGS_DEFAULTS.heroSlide2Tag,
       title: settings.heroSlide2Title || STORE_SETTINGS_DEFAULTS.heroSlide2Title,
       subtitle: settings.heroSlide2Subtitle || STORE_SETTINGS_DEFAULTS.heroSlide2Subtitle,
-      buttonText: 'انتخاب قاب و محافظ صفحه',
+      buttonText: settings.heroSlide2ButtonText || STORE_SETTINGS_DEFAULTS.heroSlide2ButtonText,
       buttonLink: settings.heroSlide2Link || STORE_SETTINGS_DEFAULTS.heroSlide2Link,
       badge: settings.heroSlide2Badge || STORE_SETTINGS_DEFAULTS.heroSlide2Badge,
       image: settings.heroSlide2Image || '/products/cas-4.svg',
@@ -74,10 +74,10 @@ export default function Home() {
     },
     {
       id: 3,
-      tag: 'کابل‌های فست و محافظ‌های ضدقطعی',
+      tag: settings.heroSlide3Tag || STORE_SETTINGS_DEFAULTS.heroSlide3Tag,
       title: settings.heroSlide3Title || STORE_SETTINGS_DEFAULTS.heroSlide3Title,
       subtitle: settings.heroSlide3Subtitle || STORE_SETTINGS_DEFAULTS.heroSlide3Subtitle,
-      buttonText: 'مشاهده کابل‌ها و محافظ‌ها',
+      buttonText: settings.heroSlide3ButtonText || STORE_SETTINGS_DEFAULTS.heroSlide3ButtonText,
       buttonLink: settings.heroSlide3Link || STORE_SETTINGS_DEFAULTS.heroSlide3Link,
       badge: settings.heroSlide3Badge || STORE_SETTINGS_DEFAULTS.heroSlide3Badge,
       image: settings.heroSlide3Image || '/products/cbl-1.svg',
@@ -146,32 +146,32 @@ export default function Home() {
     return products.slice(0, 8);
   }, [products, activeTab]);
 
-  const valueProps = [
+  const valueProps = useMemo(() => [
     {
-      title: 'فروش تک و عمده همکاران',
-      desc: 'قیمت رقابتی بازار و ارسال کارتنی برای فروشگاه‌ها',
+      title: settings.valueProp1Title || STORE_SETTINGS_DEFAULTS.valueProp1Title,
+      desc: settings.valueProp1Desc || STORE_SETTINGS_DEFAULTS.valueProp1Desc,
       icon: PackageCheck,
       color: 'text-orange-500 bg-orange-500/15 border-orange-500/30',
     },
     {
-      title: 'ارسال فوری پیشتاز',
-      desc: 'تحویل سریع در بسته‌بندی ضدضربه به سراسر کشور',
+      title: settings.valueProp2Title || STORE_SETTINGS_DEFAULTS.valueProp2Title,
+      desc: settings.valueProp2Desc || STORE_SETTINGS_DEFAULTS.valueProp2Desc,
       icon: Truck,
       color: 'text-emerald-500 bg-emerald-500/15 border-emerald-500/30',
     },
     {
-      title: 'تضمین سلامت فیزیکی',
-      desc: 'مهلت تست ۷ روزه و امکان تعویض در صورت مغایرت',
+      title: settings.valueProp3Title || STORE_SETTINGS_DEFAULTS.valueProp3Title,
+      desc: settings.valueProp3Desc || STORE_SETTINGS_DEFAULTS.valueProp3Desc,
       icon: ShieldCheck,
       color: 'text-blue-500 bg-blue-500/15 border-blue-500/30',
     },
     {
-      title: 'مشاوره خرید هولدر و قاب',
-      desc: 'راهنمایی انتخاب مدل متناسب با خودرو و مدل گوشی',
+      title: settings.valueProp4Title || STORE_SETTINGS_DEFAULTS.valueProp4Title,
+      desc: settings.valueProp4Desc || STORE_SETTINGS_DEFAULTS.valueProp4Desc,
       icon: Headset,
       color: 'text-purple-500 bg-purple-500/15 border-purple-500/30',
     },
-  ];
+  ], [settings]);
 
   const currentSlide = heroSlides[activeSlide];
 
@@ -283,15 +283,15 @@ export default function Home() {
               <PackageCheck className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-xs sm:text-sm font-black text-zinc-900 dark:text-white">فروش عمده، کارتنی و همکاران سراسر ایران</h3>
-              <p className="text-[11px] text-zinc-600 dark:text-zinc-300 mt-0.5">قیمت همکاری ویژه برای مغازه‌داران و خریداران عمده هولدر، قاب، گلس و کابل</p>
+              <h3 className="text-xs sm:text-sm font-black text-zinc-900 dark:text-white">{normalizePersianTypography(settings.b2bTitle || STORE_SETTINGS_DEFAULTS.b2bTitle)}</h3>
+              <p className="text-[11px] text-zinc-600 dark:text-zinc-300 mt-0.5">{normalizePersianTypography(settings.b2bDesc || STORE_SETTINGS_DEFAULTS.b2bDesc)}</p>
             </div>
           </div>
           <Link
-            to="/contact?type=wholesale"
+            to={settings.b2bLink || STORE_SETTINGS_DEFAULTS.b2bLink}
             className="px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-black text-xs transition-all shadow-md shadow-orange-600/25 shrink-0 cursor-pointer"
           >
-            استعلام لیست قیمت عمده
+            {normalizePersianTypography(settings.b2bButtonText || STORE_SETTINGS_DEFAULTS.b2bButtonText)}
           </Link>
         </div>
       </section>
@@ -330,8 +330,8 @@ export default function Home() {
                 <Flame className="h-5 w-5 animate-bounce" />
               </div>
               <div>
-                <h2 className="text-lg sm:text-2xl font-black text-zinc-900 dark:text-white">پیشنهادات شگفت‌انگیز روز</h2>
-                <p className="text-xs text-zinc-600 dark:text-zinc-300 mt-0.5">تخفیف‌های محدود با تضمین کمترین قیمت بازار</p>
+                <h2 className="text-lg sm:text-2xl font-black text-zinc-900 dark:text-white">{normalizePersianTypography(settings.dealsTitle || STORE_SETTINGS_DEFAULTS.dealsTitle)}</h2>
+                <p className="text-xs text-zinc-600 dark:text-zinc-300 mt-0.5">{normalizePersianTypography(settings.dealsSubtitle || STORE_SETTINGS_DEFAULTS.dealsSubtitle)}</p>
               </div>
             </div>
 
@@ -510,7 +510,12 @@ export default function Home() {
       <LatestReviews />
 
       {/* 8. VIP Loyalty Club Banner */}
-      <VipClubBanner />
+      <VipClubBanner
+        badge={settings.vipBadge || STORE_SETTINGS_DEFAULTS.vipBadge}
+        title={settings.vipTitle || STORE_SETTINGS_DEFAULTS.vipTitle}
+        subtitle={settings.vipSubtitle || STORE_SETTINGS_DEFAULTS.vipSubtitle}
+        couponCode={settings.vipCouponCode || STORE_SETTINGS_DEFAULTS.vipCouponCode}
+      />
 
       {/* 9. FAQ Section */}
       <FAQ />

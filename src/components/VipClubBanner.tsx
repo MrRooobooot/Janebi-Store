@@ -1,13 +1,33 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Mail, Gift, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Mail, Gift, Sparkles, CheckCircle2, Check, Copy } from 'lucide-react';
 import { useToast } from '../contexts/ToastContext';
 
-export default function VipClubBanner() {
+interface VipClubBannerProps {
+  badge?: string;
+  title?: string;
+  subtitle?: string;
+  couponCode?: string;
+}
+
+export default function VipClubBanner({ badge, title, subtitle, couponCode }: VipClubBannerProps) {
   const [emailOrPhone, setEmailOrPhone] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [copied, setCopied] = useState(false);
   const { addToast } = useToast();
+
+  const copyCoupon = async () => {
+    if (!couponCode) return;
+    try {
+      await navigator.clipboard.writeText(couponCode);
+      setCopied(true);
+      addToast('کد تخفیف کپی شد!', 'success');
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      addToast('کپی کد انجام نشد — لطفاً دستی کپی کنید', 'error');
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,13 +80,13 @@ export default function VipClubBanner() {
       <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
         <div className="text-right max-w-xl">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[var(--color-surface-light)]/20 backdrop-blur-md text-white text-xs font-black mb-4 border border-white/30">
-            <Sparkles className="h-4 w-4 text-yellow-300" /> باشگاه مشتریان جانبی آرنا
+            <Sparkles className="h-4 w-4 text-yellow-300" /> {badge}
           </div>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-black mb-3 leading-tight tracking-tight">
-            کد تخفیف ۱۵٪ هدیه اول عضویت!
+            {title}
           </h2>
           <p className="text-orange-100 text-sm sm:text-base font-medium leading-relaxed">
-            با عضویت در خبرنامه از جدیدترین تخفیف‌های شگفت‌انگیز، جادویی‌ترین پکیج‌های لوازم جانبی و کوپن‌های اختصاصی باخبر شوید.
+            {subtitle}
           </p>
         </div>
 
@@ -79,7 +99,18 @@ export default function VipClubBanner() {
             >
               <CheckCircle2 className="h-12 w-12 text-green-300 mx-auto mb-3" />
               <h3 className="font-extrabold text-lg mb-1">عضویت با موفقیت انجام شد!</h3>
-              <p className="text-xs text-orange-100 font-medium">از تخفیف‌های اختصاصی باشگاه مشتریان باخبر خواهید شد.</p>
+              <p className="text-xs text-orange-100 font-medium mb-3">از تخفیف‌های اختصاصی باشگاه مشتریان باخبر خواهید شد.</p>
+              {couponCode && (
+                <button
+                  type="button"
+                  onClick={copyCoupon}
+                  title="کلیک برای کپی کد تخفیف"
+                  className="inline-flex items-center gap-2 bg-black/25 hover:bg-black/40 border border-dashed border-white/50 rounded-xl px-4 py-2.5 transition-colors cursor-pointer"
+                >
+                  <span dir="ltr" className="font-mono text-xl font-black tracking-widest text-yellow-300">{couponCode}</span>
+                  {copied ? <Check className="h-4 w-4 text-green-300" /> : <Copy className="h-4 w-4 text-white/80" />}
+                </button>
+              )}
             </motion.div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 bg-[var(--color-surface-light)]/15 backdrop-blur-md p-2 rounded-2xl border border-white/25">

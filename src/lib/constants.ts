@@ -48,4 +48,31 @@ export const STORE_SETTINGS_DEFAULTS: Record<string, string> = {
   heroSlide3Subtitle: 'کابل‌های تایپ‌سی، لایتنینگ و محافظ‌های سیلیکونی سر کابل برای جلوگیری از پارگی و افزایش چندبرابری طول عمر شارژر',
   heroSlide3Link: '/products?category=کابل',
   heroSlide3Badge: 'تضمین سلامت فیزیکی ۱۰۰٪',
+  // Homepage sections — admin/bale-bot editable (2026-09-09). Every homepage
+  // block reads these via /api/settings; defaults = current live copy.
+  announcementBarEnabled: 'true', // 'false' hides the top announcement bar (bot toggle st:bar_tog)
+  dealsTitle: 'پیشنهادات شگفت‌انگیز روز',
+  dealsSubtitle: 'تخفیف‌های محدود با تضمین کمترین قیمت بازار',
+  b2bTitle: 'فروش عمده، کارتنی و همکاران سراسر ایران',
+  b2bDesc: 'قیمت همکاری ویژه برای مغازه‌داران و خریداران عمده هولدر، قاب، گلس و کابل',
+  b2bLink: '/contact?type=wholesale',
+  b2bButtonText: 'استعلام لیست قیمت عمده',
+  vipBadge: 'باشگاه مشتریان جانبی آرنا',
+  vipTitle: 'کد تخفیف ۱۵٪ هدیه اول عضویت!',
+  vipSubtitle: 'با عضویت در خبرنامه از جدیدترین تخفیف‌های شگفت‌انگیز، جادویی‌ترین پکیج‌های لوازم جانبی و کوپن‌های اختصاصی باخبر شوید.',
+  vipCouponCode: 'WELCOME10', // shown after successful newsletter signup (real code must exist in coupons table)
+  valueProp1Title: 'فروش تک و عمده همکاران',
+  valueProp1Desc: 'قیمت رقابتی بازار و ارسال کارتنی برای فروشگاه‌ها',
+  valueProp2Title: 'ارسال فوری پیشتاز',
+  valueProp2Desc: 'تحویل سریع در بسته‌بندی ضدضربه به سراسر کشور',
+  valueProp3Title: 'تضمین سلامت فیزیکی',
+  valueProp3Desc: 'مهلت تست ۷ روزه و امکان تعویض در صورت مغایرت',
+  valueProp4Title: 'مشاوره خرید هولدر و قاب',
+  valueProp4Desc: 'راهنمایی انتخاب مدل متناسب با خودرو و مدل گوشی',
+  heroSlide1Tag: 'مرجع تخصصی هولدر و استند موبایل',
+  heroSlide2Tag: 'محافظت ۱۰۰٪ از بدنه، لنز و صفحه نمایش',
+  heroSlide3Tag: 'کابل‌های فست و محافظ‌های ضدقطعی',
+  heroSlide1ButtonText: 'مشاهده انواع هولدر و استند',
+  heroSlide2ButtonText: 'انتخاب قاب و محافظ صفحه',
+  heroSlide3ButtonText: 'مشاهده کابل‌ها و محافظ‌ها',
 };

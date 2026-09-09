@@ -1,6 +1,6 @@
 import { authFetch } from '../../lib/api';
 import React, { useState, useEffect } from 'react';
-import { Settings, Save, Phone, Mail, MapPin, Clock, Truck, Megaphone, Check, Loader2, Database, Download, Sparkles, Layers } from 'lucide-react';
+import { Settings, Save, Phone, Mail, MapPin, Clock, Truck, Megaphone, Check, Loader2, Database, Download, Sparkles, Layers, Zap, Building2, Crown, Star } from 'lucide-react';
 import { useToast } from '../../contexts/ToastContext';
 import { STORE_SETTINGS_DEFAULTS } from '../../lib/constants';
 import { toEnglishDigits } from '../../lib/utils';
@@ -25,6 +25,66 @@ interface StoreSettingsData {
   heroSlide3Subtitle?: string;
   heroSlide3Link?: string;
   heroSlide3Badge?: string;
+  heroSlide1Image?: string;
+  heroSlide2Image?: string;
+  heroSlide3Image?: string;
+  announcementBarEnabled: string;
+  dealsTitle: string;
+  dealsSubtitle: string;
+  b2bTitle: string;
+  b2bDesc: string;
+  b2bLink: string;
+  b2bButtonText: string;
+  vipBadge: string;
+  vipTitle: string;
+  vipSubtitle: string;
+  vipCouponCode: string;
+  valueProp1Title: string;
+  valueProp1Desc: string;
+  valueProp2Title: string;
+  valueProp2Desc: string;
+  valueProp3Title: string;
+  valueProp3Desc: string;
+  valueProp4Title: string;
+  valueProp4Desc: string;
+  heroSlide1Tag: string;
+  heroSlide2Tag: string;
+  heroSlide3Tag: string;
+  heroSlide1ButtonText: string;
+  heroSlide2ButtonText: string;
+  heroSlide3ButtonText: string;
+}
+
+const FIELD =
+  'w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500';
+const FIELD_SM =
+  'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs';
+const SECTION_CARD =
+  'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-4';
+
+/** Collapsible settings card (details/summary) — open by default. */
+function CollapsibleSection({
+  title,
+  icon,
+  children,
+  defaultOpen = false,
+}: {
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+}) {
+  return (
+    <details open={defaultOpen} className={`${SECTION_CARD} group`}>
+      <summary className="text-base font-bold text-[var(--color-text-main-light)] dark:text-white border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pb-3 flex items-center gap-2 cursor-pointer list-none select-none">
+        {icon}
+        {title}
+        <span className="ms-auto text-[10px] font-normal text-gray-400 group-open:hidden">نمایش ▾</span>
+        <span className="ms-auto text-[10px] font-normal text-gray-400 hidden group-open:inline">بستن ▴</span>
+      </summary>
+      <div className="pt-4 space-y-4">{children}</div>
+    </details>
+  );
 }
 
 export default function AdminSettings() {
@@ -187,6 +247,18 @@ export default function AdminSettings() {
               />
             </div>
 
+            <label className="flex items-center gap-3 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={settings.announcementBarEnabled !== 'false'}
+                onChange={e => setSettings({ ...settings, announcementBarEnabled: e.target.checked ? 'true' : 'false' })}
+                className="h-5 w-5 rounded border-gray-300 text-orange-600 focus:ring-orange-500 cursor-pointer"
+              />
+              <span className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                نمایش نوار اعلان بالای سایت {settings.announcementBarEnabled !== 'false' ? '(فعال)' : '(غیرفعال)'}
+              </span>
+            </label>
+
             <div>
               <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">حداقل مبلغ برای ارسال رایگان (تومان)</label>
               <input
@@ -236,6 +308,20 @@ export default function AdminSettings() {
                 onChange={e => setSettings({ ...settings, heroSlide1Subtitle: e.target.value })}
                 className="col-span-full bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
               />
+              <input
+                type="text"
+                placeholder="لینک دکمه"
+                value={settings.heroSlide1Link || ''}
+                onChange={e => setSettings({ ...settings, heroSlide1Link: e.target.value })}
+                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-left dir-ltr"
+              />
+              <input
+                type="text"
+                placeholder="مسیر تصویر (مثلاً /products/hld-13.svg)"
+                value={settings.heroSlide1Image || ''}
+                onChange={e => setSettings({ ...settings, heroSlide1Image: e.target.value })}
+                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-left dir-ltr"
+              />
             </div>
           </div>
 
@@ -263,6 +349,20 @@ export default function AdminSettings() {
                 value={settings.heroSlide2Subtitle || ''}
                 onChange={e => setSettings({ ...settings, heroSlide2Subtitle: e.target.value })}
                 className="col-span-full bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
+              />
+              <input
+                type="text"
+                placeholder="لینک دکمه"
+                value={settings.heroSlide2Link || ''}
+                onChange={e => setSettings({ ...settings, heroSlide2Link: e.target.value })}
+                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-left dir-ltr"
+              />
+              <input
+                type="text"
+                placeholder="مسیر تصویر (مثلاً /products/cas-4.svg)"
+                value={settings.heroSlide2Image || ''}
+                onChange={e => setSettings({ ...settings, heroSlide2Image: e.target.value })}
+                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-left dir-ltr"
               />
             </div>
           </div>
@@ -292,11 +392,122 @@ export default function AdminSettings() {
                 onChange={e => setSettings({ ...settings, heroSlide3Subtitle: e.target.value })}
                 className="col-span-full bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
               />
+              <input
+                type="text"
+                placeholder="لینک دکمه"
+                value={settings.heroSlide3Link || ''}
+                onChange={e => setSettings({ ...settings, heroSlide3Link: e.target.value })}
+                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-left dir-ltr"
+              />
+              <input
+                type="text"
+                placeholder="مسیر تصویر (مثلاً /products/cbl-1.svg)"
+                value={settings.heroSlide3Image || ''}
+                onChange={e => setSettings({ ...settings, heroSlide3Image: e.target.value })}
+                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-left dir-ltr"
+              />
             </div>
           </div>
         </div>
 
-        {/* ۴. پشتیبان‌گیری از دیتابیس */}
+        {/* ۴. بخش‌های محتوایی صفحه اصلی (تاشو) */}
+        <CollapsibleSection
+          title="پیشنهادات شگفت‌انگیز"
+          icon={<Zap className="h-5 w-5 text-red-500" />}
+          defaultOpen
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">عنوان بخش</label>
+              <input type="text" value={settings.dealsTitle} onChange={e => setSettings({ ...settings, dealsTitle: e.target.value })} className={FIELD} />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">زیرعنوان بخش</label>
+              <input type="text" value={settings.dealsSubtitle} onChange={e => setSettings({ ...settings, dealsSubtitle: e.target.value })} className={FIELD} />
+            </div>
+          </div>
+        </CollapsibleSection>
+
+        <CollapsibleSection
+          title="بنر فروش عمده (B2B)"
+          icon={<Building2 className="h-5 w-5 text-emerald-500" />}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="md:col-span-2">
+              <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">عنوان بنر</label>
+              <input type="text" value={settings.b2bTitle} onChange={e => setSettings({ ...settings, b2bTitle: e.target.value })} className={FIELD} />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">توضیحات بنر</label>
+              <input type="text" value={settings.b2bDesc} onChange={e => setSettings({ ...settings, b2bDesc: e.target.value })} className={FIELD} />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">لینک دکمه</label>
+              <input type="text" value={settings.b2bLink} onChange={e => setSettings({ ...settings, b2bLink: e.target.value })} className={`${FIELD} text-left dir-ltr`} />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">متن دکمه</label>
+              <input type="text" value={settings.b2bButtonText} onChange={e => setSettings({ ...settings, b2bButtonText: e.target.value })} className={FIELD} />
+            </div>
+          </div>
+        </CollapsibleSection>
+
+        <CollapsibleSection
+          title="بنر باشگاه مشتریان (VIP)"
+          icon={<Crown className="h-5 w-5 text-amber-500" />}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">بج / برچسب</label>
+              <input type="text" value={settings.vipBadge} onChange={e => setSettings({ ...settings, vipBadge: e.target.value })} className={FIELD} />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">کد تخفیف هدیه</label>
+              <input type="text" value={settings.vipCouponCode} onChange={e => setSettings({ ...settings, vipCouponCode: e.target.value })} className={`${FIELD} text-left dir-ltr`} />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">عنوان</label>
+              <input type="text" value={settings.vipTitle} onChange={e => setSettings({ ...settings, vipTitle: e.target.value })} className={FIELD} />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">توضیحات</label>
+              <textarea rows={2} value={settings.vipSubtitle} onChange={e => setSettings({ ...settings, vipSubtitle: e.target.value })} className={FIELD} />
+            </div>
+          </div>
+        </CollapsibleSection>
+
+        <CollapsibleSection
+          title="کارت‌های ارزش برند"
+          icon={<Star className="h-5 w-5 text-purple-500" />}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[1, 2, 3, 4].map(n => {
+              const tKey = `valueProp${n}Title` as keyof StoreSettingsData;
+              const dKey = `valueProp${n}Desc` as keyof StoreSettingsData;
+              return (
+                <div key={n} className="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 space-y-3">
+                  <span className="text-xs font-black text-purple-600">کارت ارزش {n}</span>
+                  <input
+                    type="text"
+                    placeholder="عنوان کارت"
+                    value={(settings[tKey] as string) || ''}
+                    onChange={e => setSettings({ ...settings, [tKey]: e.target.value })}
+                    className={FIELD_SM}
+                  />
+                  <input
+                    type="text"
+                    placeholder="توضیح کارت"
+                    value={(settings[dKey] as string) || ''}
+                    onChange={e => setSettings({ ...settings, [dKey]: e.target.value })}
+                    className={FIELD_SM}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        </CollapsibleSection>
+
+        {/* ۵. پشتیبان‌گیری از دیتابیس */}
         <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-4">
           <h2 className="text-base font-bold text-[var(--color-text-main-light)] dark:text-white border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pb-3 flex items-center gap-2">
             <Database className="h-5 w-5 text-indigo-500" />
