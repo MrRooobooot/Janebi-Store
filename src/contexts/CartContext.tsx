@@ -81,31 +81,61 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // Guest-only items are pushed to the server (POST is an upsert), then the
   // authoritative server list replaces local state. Runs once per login transition.
   const mergedForToken = React.useRef<string | null>(null);
+  // Flips on logout so an in-flight merge loop stops immediately.
+  const mergeAborted = React.useRef(false);
+  const isLoggedInRef = React.useRef(isLoggedIn);
+  React.useEffect(() => {
+    isLoggedInRef.current = isLoggedIn;
+    if (!isLoggedIn) {
+      mergeAborted.current = true;
+    }
+  }, [isLoggedIn]);
   React.useEffect(() => {
     if (!isLoggedIn) return;
     const token = localStorage.getItem('token');
     if (!token || mergedForToken.current === token) return;
     mergedForToken.current = token;
+    mergeAborted.current = false;
 
     const guestItems = cart.filter(item => typeof item.id === 'number');
-    const pushGuest = guestItems.map(item =>
-      authFetch('/api/cart', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ productId: item.id, quantity: item.quantity })
-      }).catch(err => console.error('Failed to merge guest cart item', err))
-    );
 
-    Promise.all(pushGuest)
-      .then(() => authFetch('/api/cart', { headers: { 'Authorization': `Bearer ${token}` } }))
-      .then(res => res.json())
-      .then(data => {
-        if (Array.isArray(data)) {
+    (async () => {
+      const failedItems: CartItem[] = [];
+      for (const item of guestItems) {
+        // Abort: user logged out mid-merge.
+        if (mergeAborted.current || !isLoggedInRef.current) return;
+        try {
+          const res = await authFetch('/api/cart', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ productId: item.id, quantity: item.quantity })
+          });
+          if (!res.ok) failedItems.push(item);
+        } catch (err) {
+          console.error('Failed to merge guest cart item', err);
+          failedItems.push(item);
+        }
+      }
+      // Partial failure: keep failed items in the local cart, surface a toast.
+      if (failedItems.length > 0) {
+        if (!mergeAborted.current && isLoggedInRef.current) {
+          addToast('برخی اقلام سبد خرید همگام‌سازی نشدند', 'warning');
+          saveCart(failedItems);
+        }
+        return;
+      }
+      if (mergeAborted.current || !isLoggedInRef.current) return;
+      try {
+        const res = await authFetch('/api/cart', { headers: { 'Authorization': `Bearer ${token}` } });
+        const data = await res.json();
+        if (Array.isArray(data) && !mergeAborted.current && isLoggedInRef.current) {
           setCart(data);
           localStorage.setItem('cart', JSON.stringify(data));
         }
-      })
-      .catch(err => console.error('Failed to fetch cart', err));
+      } catch (err) {
+        console.error('Failed to fetch cart', err);
+      }
+    })();
   }, [isLoggedIn]);
 
   const saveCart = (newCart: CartItem[]) => {

@@ -54,6 +54,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [mustChangePassword, setMustChangePassword] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Latest user snapshot — avoids stale-closure reads inside async mutations.
+  const userRef = React.useRef<UserProfile | null>(null);
+  useEffect(() => {
+    userRef.current = user;
+  }, [user]);
+
   const checkAuth = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -244,7 +250,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const addAddress = async (address: Omit<AddressItem, "id">) => {
-    if (!user) return;
+    if (!userRef.current) return;
     try {
       const res = await authFetch("/api/users/me/addresses", {
         method: "POST",
@@ -257,7 +263,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
       if (res.ok) {
         const data = await res.json();
-        setUser({ ...user, addresses: [...(user.addresses || []), data.address] });
+        // Derive from the freshest state — never close over `user`.
+        // Server address payload is the source of truth.
+        setUser(prev => {
+          if (!prev) return prev;
+          if (Array.isArray(data.addresses)) {
+            return { ...prev, addresses: data.addresses };
+          }
+          const existing = prev.addresses || [];
+          if (data.address && existing.some(a => a.id === data.address.id)) {
+            return { ...prev, addresses: existing.map(a => a.id === data.address.id ? data.address : a) };
+          }
+          return { ...prev, addresses: [...existing, data.address] };
+        });
         addToast(data.message, "success");
       } else {
         const error = await res.json();
@@ -269,7 +287,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateAddress = async (id: string, address: Partial<AddressItem>) => {
-    if (!user || !user.addresses) return;
+    if (!userRef.current) return;
     try {
       const res = await authFetch(`/api/users/me/addresses/${id}`, {
         method: "PUT",
@@ -282,9 +300,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
       if (res.ok) {
         const data = await res.json();
-        setUser({
-          ...user,
-          addresses: user.addresses.map(a => a.id === id ? data.address : a)
+        setUser(prev => {
+          if (!prev) return prev;
+          if (Array.isArray(data.addresses)) {
+            return { ...prev, addresses: data.addresses };
+          }
+          const existing = prev.addresses || [];
+          return { ...prev, addresses: existing.map(a => a.id === id ? (data.address || { ...a, ...address }) : a) };
         });
         addToast(data.message, "success");
       } else {
@@ -297,7 +319,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const deleteAddress = async (id: string) => {
-    if (!user || !user.addresses) return;
+    if (!userRef.current) return;
     try {
       const res = await authFetch(`/api/users/me/addresses/${id}`, {
         method: "DELETE",
@@ -305,9 +327,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         credentials: "include"
       });
       if (res.ok) {
-        setUser({
-          ...user,
-          addresses: user.addresses.filter(a => a.id !== id)
+        const data = await res.json().catch(() => ({}));
+        setUser(prev => {
+          if (!prev) return prev;
+          if (Array.isArray(data.addresses)) {
+            return { ...prev, addresses: data.addresses };
+          }
+          const existing = prev.addresses || [];
+          return { ...prev, addresses: existing.filter(a => a.id !== id) };
         });
         addToast("آدرس حذف شد", "success");
       } else {
@@ -320,7 +347,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const setDefaultAddress = async (id: string) => {
-    if (!user || !user.addresses) return;
+    if (!userRef.current) return;
     try {
       const res = await authFetch(`/api/users/me/addresses/${id}/default`, {
         method: "PUT",
@@ -328,12 +355,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         credentials: "include"
       });
       if (res.ok) {
-        setUser({
-          ...user,
-          addresses: user.addresses.map(a => ({
-            ...a,
-            isDefault: a.id === id
-          }))
+        const data = await res.json().catch(() => ({}));
+        setUser(prev => {
+          if (!prev) return prev;
+          if (Array.isArray(data.addresses)) {
+            return { ...prev, addresses: data.addresses };
+          }
+          const existing = prev.addresses || [];
+          return {
+            ...prev,
+            addresses: existing.map(a => ({
+              ...a,
+              isDefault: a.id === id
+            }))
+          };
         });
         addToast("آدرس پیش‌فرض تغییر کرد", "success");
       } else {

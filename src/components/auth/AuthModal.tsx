@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { X, User, Phone, Lock, Eye, EyeOff, LogIn, UserPlus, Sparkles, ArrowLeft, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -41,6 +41,46 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
       document.body.style.overflow = 'unset';
     };
   }, [isOpen, initialMode]);
+
+  // Accessibility: initial focus on the dialog, focus trap on Tab, Escape to close.
+  const dialogRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!isOpen) return;
+    const dialog = dialogRef.current;
+    // Initial focus lands on the dialog itself so Tab cycles from the top.
+    dialog?.focus({ preventScroll: true });
+
+    const selector =
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        onClose();
+        return;
+      }
+      if (e.key !== 'Tab' || !dialog) return;
+      const focusables = Array.from(
+        dialog.querySelectorAll<HTMLElement>(selector)
+      ).filter(el => el.offsetParent !== null || el === document.activeElement);
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey) {
+        if (active === first || active === dialog) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else if (active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown, true);
+    return () => document.removeEventListener('keydown', handleKeyDown, true);
+  }, [isOpen, onClose]);
 
   if (!isOpen || !mounted) return null;
 
@@ -109,7 +149,12 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.92, opacity: 0, y: 15 }}
           transition={{ type: 'spring', damping: 26, stiffness: 320 }}
-          className="relative w-full max-w-md bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 sm:p-8 shadow-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-right z-10 overflow-hidden my-auto max-h-[90vh] flex flex-col"
+          role="dialog"
+          aria-modal="true"
+          aria-label={mode === 'login' ? 'ورود به حساب کاربری' : 'ایجاد حساب کاربری جدید'}
+          tabIndex={-1}
+          ref={dialogRef}
+          className="relative w-full max-w-md bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 sm:p-8 shadow-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-right z-10 overflow-hidden my-auto max-h-[90vh] flex flex-col focus:outline-none"
         >
           {/* Decorative subtle glows */}
           <div className="absolute -top-12 -left-12 w-40 h-40 bg-orange-500/15 rounded-full blur-2xl pointer-events-none" />
