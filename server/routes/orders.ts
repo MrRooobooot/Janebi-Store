@@ -268,11 +268,22 @@ router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
           .where(eq(users.id, userId));
       }
 
-      // Increment coupon redemption counter (transactional with the order)
+      // Increment coupon redemption counter transactionally with the order.
+      // R1-04: atomic conditional increment — replaces the racy read-only
+      // cap check so concurrent orders cannot exceed usage_limit. The
+      // earlier check stays as a friendly pre-flight error; this predicate
+      // is the enforcement. 0 rows => cap reached in the race, abort order.
       if (usedCouponCode) {
-        await tx.update(coupons)
+        const couponRows = await tx.update(coupons)
           .set({ usedCount: sql`COALESCE(${coupons.usedCount}, 0) + 1` })
-          .where(eq(coupons.code, usedCouponCode));
+          .where(and(
+            eq(coupons.code, usedCouponCode),
+            sql`(${coupons.usageLimit} IS NULL OR COALESCE(${coupons.usedCount}, 0) < ${coupons.usageLimit})`
+          ))
+          .returning({ code: coupons.code });
+        if (!couponRows || couponRows.length === 0) {
+          throw new Error("ظرفیت استفاده از این کد تخفیف تکمیل شده است");
+        }
       }
 
       // Clear user cart
@@ -285,7 +296,7 @@ router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
       };
     });
 
-    appCache.invalidate("products");
+    appCache.invalidate("product");
 
     // Proactive event dispatch (non-blocking)
     for (const alert of newOrder.lowStockAlerts) {
@@ -338,6 +349,24 @@ router.post("/:id/cancel", async (req: AuthRequest, res) => {
         throw { status: 400, message: "امکان لغو این سفارش وجود ندارد" };
       }
 
+      // R1-03: flip the status first with an atomic predicate — the
+      // read-then-write pattern allowed two concurrent cancels to both
+      // pass the status check and restock/refund twice. 0 rows updated
+      // means another request already cancelled this order.
+      const cancelledRows = await tx.update(orders)
+        .set({
+          status: "cancelled",
+          statusText: "لغو شده توسط کاربر"
+        })
+        .where(and(
+          eq(orders.id, orderId),
+          inArray(orders.status, ["pending_payment", "processing"])
+        ))
+        .returning({ id: orders.id });
+      if (!cancelledRows || cancelledRows.length === 0) {
+        throw { status: 400, message: "امکان لغو این سفارش وجود ندارد" };
+      }
+
       // Data integrity: restock + refund spent points; earned points are
       // clawed back below only if the order had reached "processing".
       await restockItemsAndRefundPoints(tx, orderId, userId, order.vipPointsUsed);
@@ -351,18 +380,11 @@ router.post("/:id/cancel", async (req: AuthRequest, res) => {
           .where(eq(users.id, userId));
       }
 
-      await tx.update(orders)
-        .set({
-          status: "cancelled",
-          statusText: "لغو شده توسط کاربر"
-        })
-        .where(eq(orders.id, orderId));
-
       const updatedList = await tx.select().from(orders).where(eq(orders.id, orderId));
       return updatedList[0];
     });
 
-    appCache.invalidate("products");
+    appCache.invalidate("product");
     res.json({
       message: "سفارش با موفقیت لغو شد",
       order: cancelledOrder

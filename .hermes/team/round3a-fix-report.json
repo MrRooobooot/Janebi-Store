@@ -1,0 +1,52 @@
+{
+  "member": "fixer-backend",
+  "fixed": [
+    {
+      "id": "R1-01",
+      "files": ["server/routes/payment.ts"],
+      "what": "POST /api/payment/request now rejects (400, Persian error «این سفارش در وضعیت قابل پرداخت نیست») any order whose status is not 'pending_payment', before calling paymentRouter and before overwriting authority."
+    },
+    {
+      "id": "R1-02",
+      "files": ["server/routes/payment.ts"],
+      "what": "markOrderPaid flipped to atomic predicate UPDATE orders SET status='processing' WHERE id=? AND status='pending_payment' with .returning() row-count check; VIP earned points credited only when a row was updated."
+    },
+    {
+      "id": "R1-03",
+      "files": ["server/routes/orders.ts", "server/routes/admin.ts"],
+      "what": "User-cancel and admin cancel branch now flip status first via atomic UPDATE ... WHERE id=? AND status IN ('pending_payment','processing') (.returning()); restock/refund via restockItemsAndRefundPoints and point clawback run only when a row was updated; 0 rows => 400 Persian error / race-lost no-op."
+    },
+    {
+      "id": "R1-04",
+      "files": ["server/routes/orders.ts"],
+      "what": "Coupon usage cap replaced read-only check+increment with conditional atomic UPDATE coupons SET used_count=used_count+1 WHERE code=? AND (usage_limit IS NULL OR COALESCE(used_count,0) < usage_limit); 0 rows => order rejected with Persian cap error (transaction rolls back)."
+    },
+    {
+      "id": "R3-01",
+      "files": ["server/routes/auth.ts"],
+      "what": "Removed req.body.refreshToken fallback on POST /auth/refresh — refresh token now read only from HttpOnly cookie; tokens still returned in JSON responses on login/register/otp/verify/refresh."
+    },
+    {
+      "id": "R3-06",
+      "files": ["server/routes/admin.ts"],
+      "what": "PUT /api/admin/users/:id/role destructures password out of the returning row before res.json (password hash no longer leaked)."
+    },
+    {
+      "id": "R1-05",
+      "files": ["server/routes/orders.ts", "server/routes/admin.ts"],
+      "what": "All mutation-path cache invalidations changed from invalidate('products') to invalidate('product') — substring match now covers both 'products' list keys and 'product:<id>' detail keys."
+    },
+    {
+      "id": "R1-12",
+      "files": ["server/routes/users.ts"],
+      "what": "PUT /api/users/me catches unique-constraint violation on phone (SQLITE_CONSTRAINT[_UNIQUE] / PG 23505) and returns 400 with Persian message «این شماره موبایل قبلاً ثبت شده است» instead of generic 500."
+    }
+  ],
+  "skipped": [],
+  "verify": {
+    "typecheck": "pass",
+    "tests": "pass",
+    "suites": 55,
+    "failed": []
+  }
+}

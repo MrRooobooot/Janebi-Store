@@ -1,0 +1,66 @@
+{
+  "member": "security-validator",
+  "verdicts": [
+    {
+      "id": "R3-01",
+      "verdict": "ADJUSTED",
+      "note": "Evidence verified: auth.ts:109 `cookies.refreshToken || (req.body && req.body.refreshToken)` and tokens spread into JSON at register (:58), login (:98), refresh (:137). BUT removal is NOT zero-risk: the client actively READS body tokens — AuthContext.tsx stores `data.accessToken` into localStorage at lines 86-87, 120-121, 149-150, 180-181, and src/lib/api.ts:8-9 does the same for the refresh flow; localStorage['token'] feeds Bearer headers via getAuthHeaders(). Removing `...tokens` would break the client's Bearer token source unless the client is simultaneously refactored to rely on the cookie path (server authenticate middleware already accepts cookies.accessToken, so this is feasible but is a coordinated client+server change, not a server-only deletion). The req.body.refreshToken fallback on /refresh can be removed safely — client never sends a body token (refresh calls send credentials:'include' with no body).",
+      "corrected_severity": "major"
+    },
+    {
+      "id": "R3-02",
+      "verdict": "CONFIRMED",
+      "note": "auth.ts:17-21 generateTokens signs only {userId}, no jti/tokenVersion. No tokenVersion column anywhere in server/ (grep: 0 matches). /logout (auth.ts:144-147) only clears cookies. Admin password reset (admin.ts:289-315) updates only `password` — nothing bumped, so a stolen 7d refresh token survives admin password reset. OTP reset-password path (auth.ts:184-185) same. Finding accurate.",
+      "corrected_severity": "major"
+    },
+    {
+      "id": "R3-03",
+      "verdict": "CONFIRMED",
+      "note": "Spot-checked 9 of 12: /users/:id/password (:294 hand-rolled length>=6), /users/:id/role (:322 allowlist), /users/:id/points (:349 Number check), POST /products (:376-390 with `parseInt(price) || 0` silently zeroing garbage), PUT /products/:id (:409+ same pattern), /orders/:id/status (:516 allowlist but statusText unvalidated), POST /coupons (:596-622 parseInt coercion), PUT /coupons/:code (:645-660), /settings (:940 string-typed filter but no per-key format checks), /orders/:id/tracking (:806-809 refId only String-trimmed), /reviews/:id/approved (:844 Boolean coercion). No validate() middleware on any. parseInt||0 coercion logic bugs confirmed.",
+      "corrected_severity": "major"
+    },
+    {
+      "id": "R3-04",
+      "verdict": "CONFIRMED",
+      "note": "contact.ts:36-41 manual `if (!name || !email || !message)` checks, no email format validation on /api/contact (newsletter at :84 does have a regex — contrast is real). No dedicated limiter on /api/contact in app.ts (only general 600/15min at :158-165); auth limiter list (:179-183) does not include contact. Length clamping at :47-51 limits abuse but flood risk stands.",
+      "corrected_severity": "minor"
+    },
+    {
+      "id": "R3-05",
+      "verdict": "CONFIRMED",
+      "note": "app.ts:88 `scriptSrc: [\"'self'\", \"'unsafe-inline'\"]` and :91 `imgSrc: [\"'self'\", \"data:\", \"https:\", \"http:\"]`. Both exact. CSP only active in production (env-gated at :84) which is the environment that matters.",
+      "corrected_severity": "minor"
+    },
+    {
+      "id": "R3-06",
+      "verdict": "CONFIRMED",
+      "note": "admin.ts:332-337: `const [updated] = await db.update(users).set({ role })...returning(); ... res.json({ ..., user: updated })` — updated is the full row including password hash. Contrast with GET /users (:275-278) which strips password. Exact as reported.",
+      "corrected_severity": "minor"
+    },
+    {
+      "id": "R3-07",
+      "verdict": "ADJUSTED",
+      "note": "payment.ts:169-175 confirmed passing req.query.provider. PaymentFailoverRouter.verifyPayment (:117-126): explicitProvider==='saman' OR authority.startsWith('SEP_') → secondary; otherwise primary. So explicitProvider does change routing — but only in the failure-safe direction: steering a ZP authority to Saman makes Saman verify an unknown authority (fails); steering a SEP authority to primary makes Zarinpal verify it (fails). There is no path where steering converts a failed verification into a success — amount+authority must still match the chosen gateway. Also /verify is unauthenticated and order lookup is by authority (payment.ts:77), both as context implies. Real issue is trusting a caller-controlled free parameter; exploitability is lower than 'provider steering' implies.",
+      "corrected_severity": "improvement"
+    },
+    {
+      "id": "R3-08",
+      "verdict": "CONFIRMED",
+      "note": "env.ts:18-19 min(10); INSECURE_DEFAULT_SECRETS list at :5-13 has exactly 6 entries, checked only for production (:42-57). No min-length check between JWT_ACCESS_SECRET and JWT_REFRESH_SECRET (they may be identical). All as reported.",
+      "corrected_severity": "improvement"
+    },
+    {
+      "id": "R3-09",
+      "verdict": "CONFIRMED",
+      "note": "cookies.ts:30-31 set plain `accessToken=`/`refreshToken=` names, no __Host- prefix; flags HttpOnly/Path=//Secure(prod)/SameSite=Strict(prod) all correct. Client compatibility is fine: client never reads auth cookies (HttpOnly; all fetches use credentials:'include'; api.ts refresh flow reads only JSON body, not document.cookie), and server-side parseCookies/set/clear all use the same names, so a rename to __Host-* is a server-internal change — only caveat is that __Host- requires Secure, so dev (http, secure flag omitted) would need the prefix omitted in non-production.",
+      "corrected_severity": "improvement"
+    },
+    {
+      "id": "R3-10",
+      "verdict": "CONFIRMED",
+      "note": "app.ts:35 `app.set(\"trust proxy\", 1)`, :161 skip only in test, authLimiter (:168-183) 5/min keyed by IP only, mounted on login/register/otp/reset-password. No per-account keying anywhere. Suggestion is valid; severity improvement is right since it's a hardening measure against distributed low-and-slow stuffing.",
+      "corrected_severity": "improvement"
+    }
+  ],
+  "summary": "All 10 findings verified against actual code: 9 CONFIRMED with exact evidence, 1 materially ADJUSTED (R3-01). Key corrections: (1) R3-01's 'zero-risk removal' claim is wrong — AuthContext.tsx and api.ts DO read accessToken from JSON bodies into localStorage for Bearer auth, so removing ...tokens requires a coordinated client refactor (cookie-only auth), though the req.body.refreshToken fallback on /refresh is independently safe to drop; (2) R3-07 is weaker than stated — explicitProvider only steers toward the wrong gateway, which then fails verification, so no successful-forgery path exists (demoted to improvement). R3-02 revocation gap confirmed: no tokenVersion/jti anywhere; admin password reset (admin.ts:289) never invalidates live 7d refresh tokens. R3-03 confirmed on 9/12 endpoints with real parseInt||0 coercion bugs."
+}

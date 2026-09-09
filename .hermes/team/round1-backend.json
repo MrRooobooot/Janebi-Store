@@ -1,0 +1,150 @@
+{
+  "member": "backend-auditor",
+  "findings": [
+    {
+      "id": "R1-01",
+      "severity": "major",
+      "area": "payment",
+      "file": "server/routes/payment.ts",
+      "line": "22-56",
+      "title": "POST /api/payment/request has no order-status guard — a payment link can be minted for an already-paid/cancelled order",
+      "evidence": "const order = orderList[0];\n    // Verify order ownership\n    if (order.userId !== userId) {\n      return res.status(403).json({ error: 'Unauthorized to pay for this order' });\n    }\n    ...\n    if (paymentRequest.success && paymentRequest.authority) {\n      await db.update(orders)\n        .set({ authority: paymentRequest.authority })\n        .where(eq(orders.id, orderId));",
+      "suggested_fix": "Only allow payment initiation when order.status === 'pending_payment' (return 400 otherwise) before calling paymentRouter.requestPaymentWithFailover and before overwriting `authority`."
+    },
+    {
+      "id": "R1-02",
+      "severity": "major",
+      "area": "payment/vip-points",
+      "file": "server/routes/payment.ts",
+      "line": "107-121",
+      "title": "markOrderPaid double-credits VIP points under concurrent verify callbacks on PostgreSQL",
+      "evidence": "const currentOrder = currentOrderList[0];\n    if (!currentOrder || currentOrder.status !== 'pending_payment') return;\n    await tx.update(orders)\n      .set({ status: 'processing', ... })\n      .where(eq(orders.id, orderId));\n    if (order.vipPointsEarned && order.vipPointsEarned > 0 && order.userId) {\n      await tx.update(users).set({ vipPoints: sql`${users.vipPoints} + ${order.vipPointsEarned}` })...",
+      "suggested_fix": "On PG (READ COMMITTED) two concurrent /verify callbacks can both read status='pending_payment' and both credit points. Make the transition atomic: UPDATE orders SET status='processing' WHERE id=? AND status='pending_payment' RETURNING, and only credit points when a row was returned (same pattern as the oversell fix in orders.ts)."
+    },
+    {
+      "id": "R1-03",
+      "severity": "major",
+      "area": "orders/cancel",
+      "file": "server/routes/orders.ts",
+      "line": "326-363",
+      "title": "User cancel: check-then-act status guard is not atomic — concurrent double-cancel double-restocks and double-refunds on PG",
+      "evidence": "const order = orderList[0];\n      ...\n      if (order.status !== \"pending_payment\" && order.status !== \"processing\") {\n        throw { status: 400, ... };\n      }\n      await restockItemsAndRefundPoints(tx, orderId, userId, order.vipPointsUsed);\n      ...\n      await tx.update(orders).set({ status: \"cancelled\", ... }).where(eq(orders.id, orderId));",
+      "suggested_fix": "Perform the status flip first with an atomic predicate: UPDATE orders SET status='cancelled' WHERE id=? AND status IN ('pending_payment','processing') RETURNING; if no row, abort. Then restock/refund once. Same defect exists in the cancel branch of PUT /api/admin/orders/:id/status (admin.ts:526-550)."
+    },
+    {
+      "id": "R1-04",
+      "severity": "major",
+      "area": "coupons",
+      "file": "server/routes/orders.ts",
+      "line": "153-165, 271-276",
+      "title": "Coupon usage cap is TOCTOU on PostgreSQL — concurrent orders can exceed usageLimit",
+      "evidence": "if (coupon.usageLimit != null && (coupon.usedCount ?? 0) >= coupon.usageLimit) {\n          throw new Error(\"ظرفیت استفاده از این کد تخفیف تکمیل شده است\");\n        }\n        ...\n        await tx.update(coupons)\n          .set({ usedCount: sql`COALESCE(${coupons.usedCount}, 0) + 1` })\n          .where(eq(coupons.code, usedCouponCode));",
+      "suggested_fix": "Apply the same atomic-predicate pattern used for stock: UPDATE coupons SET used_count = used_count + 1 WHERE code = ? AND (usage_limit IS NULL OR used_count < usage_limit) RETURNING code; if 0 rows, reject the coupon. The read-only check at line 154 is racy on PG."
+    },
+    {
+      "id": "R1-05",
+      "severity": "minor",
+      "area": "cache-invalidation",
+      "file": "server/routes/orders.ts",
+      "line": "288 (also admin.ts:394-395, 427-428, 463-464, 555)",
+      "title": "Stock/price changes never bust the `product:<id>` detail cache — invalidate('products') does not match 'product:<id>' keys",
+      "evidence": "appCache.invalidate(\"products\");   // orders.ts after order placement / cancel\n// cache.ts:28-38: match is key.includes(pattern)\n// products.ts:258: const cacheKey = `product:${id}`;  appCache.set(cacheKey, formatted, 60);",
+      "suggested_fix": "'products' is not a substring of 'product:5', so GET /api/products/:id keeps serving stale stockQuantity/price for up to 60s after an order, cancellation, or admin product edit. Invalidate('product:') (prefix) or call appCache.invalidate() with no pattern for product mutations."
+    },
+    {
+      "id": "R1-06",
+      "severity": "minor",
+      "area": "cart",
+      "file": "server/routes/cart.ts",
+      "line": "90-105",
+      "title": "PUT /api/cart/:id accepts any quantity — max-10 and stock guards are not enforced on update",
+      "evidence": "const { quantity } = req.body;\n    try {\n    await db.update(cartItems)\n      .set({ quantity })\n      .where(and(eq(cartItems.userId, userId), eq(cartItems.productId, productId)));",
+      "suggested_fix": "Validate 1 <= quantity <= 10 and quantity <= product.stockQuantity (as POST / does). Currently a client can set quantity=999999; the invariant is only rescued later by the order-transaction stock guard."
+    },
+    {
+      "id": "R1-07",
+      "severity": "minor",
+      "area": "vip-points",
+      "file": "server/routes/orders.ts",
+      "line": "347-352 (also admin.ts:538-543)",
+      "title": "VIP clawback can drive vipPoints negative",
+      "evidence": "const pointsEarnedByOrder = order.status === \"processing\" ? Number(order.vipPointsEarned) || 0 : 0;\n      if (pointsEarnedByOrder > 0) {\n        await tx.update(users)\n          .set({ vipPoints: sql`${users.vipPoints} - ${pointsEarnedByOrder}` })\n          .where(eq(users.id, userId));",
+      "suggested_fix": "If an admin adjusted the user's points (PUT /api/admin/users/:id/points sets an absolute value) after the order was credited, the clawback subtracts from a balance that may not contain those points, producing a negative vip_points. Clamp with SQL: set vipPoints = MAX(0, vipPoints - X) or guard with vipPoints >= X."
+    },
+    {
+      "id": "R1-08",
+      "severity": "minor",
+      "area": "empty-catch",
+      "file": "server/bot/bale.ts",
+      "line": "565, 658, 1741, 1789",
+      "title": "Empty catch blocks silently swallow errors in the Bale bot",
+      "evidence": "} catch {}",
+      "suggested_fix": "At minimum log the swallowed error (console.warn with the method/context); silent catches hide broken notification/fallback paths."
+    },
+    {
+      "id": "R1-09",
+      "severity": "minor",
+      "area": "rate-limiting",
+      "file": "server/app.ts",
+      "line": "158-199",
+      "title": "No dedicated rate limiter on POST /api/orders, POST /api/payment/request, /api/auth/refresh — only the general 600/15min cap",
+      "evidence": "app.use(\"/api/auth/login\", authLimiter);\napp.use(\"/api/auth/register\", authLimiter);\napp.use(\"/api/auth/otp/send\", authLimiter);\napp.use(\"/api/auth/otp/verify\", authLimiter);\napp.use(\"/api/auth/reset-password\", authLimiter);\n// (payment/request, orders POST, auth/refresh absent)",
+      "suggested_fix": "POST /api/payment/request hammers external bank gateways on each call and /api/auth/refresh is an unauthenticated token-oracle endpoint; give both a strict limiter (e.g. 10-20/min/IP), matching the authLimiter pattern."
+    },
+    {
+      "id": "R1-10",
+      "severity": "improvement",
+      "area": "n+1/performance",
+      "file": "server/routes/admin.ts",
+      "line": "139-146",
+      "title": "GET /api/admin/analytics loads every order+items, every user and every product into JS memory",
+      "evidence": "const allOrders = await db.query.orders.findMany({\n      with: { items: true }\n    });\n\n    const allUsers = await db.select().from(users);\n    const allProducts = await db.select().from(products);",
+      "suggested_fix": "Category sales and top-selling products are expressible as SQL GROUP BY joins over order_items; the sales trend can filter orders to the 14-day window instead of scanning all history. Same full-table pattern remains in GET /api/admin/orders when page/limit are omitted (admin.ts:500-505)."
+    },
+    {
+      "id": "R1-11",
+      "severity": "improvement",
+      "area": "n+1/performance",
+      "file": "server/routes/orders.ts",
+      "line": "229-262",
+      "title": "Order creation inserts order items and updates stock one row at a time inside the transaction",
+      "evidence": "for (const item of finalItems) {\n        await tx.insert(orderItems).values({...});\n        const updatedRows = await tx.update(products)... .returning({ id: products.id });\n        ...\n      }",
+      "suggested_fix": "Batch-insert orderItems with a single tx.insert().values(items[]). Keep the per-item guarded UPDATE for the row-count oversell assert, but consider batching the inserts; minor latency win per order, matters most on PG round-trips."
+    },
+    {
+      "id": "R1-12",
+      "severity": "minor",
+      "area": "users",
+      "file": "server/routes/users.ts",
+      "line": "32-52",
+      "title": "PUT /api/users/me can take an already-registered phone — unique-constraint violation surfaces as a generic 500",
+      "evidence": "...(phone !== undefined && { phone })\n      })\n      .where(eq(users.id, userId))\n      .returning();\n\n    const { password: _, ...userWithoutPassword } = updatedUser;",
+      "suggested_fix": "Pre-check `phone` uniqueness (or catch the constraint error and return 400 with a Persian message). A failed unique index currently yields a generic 500 and the profile update is silently lost."
+    },
+    {
+      "id": "R1-13",
+      "severity": "improvement",
+      "area": "coupons",
+      "file": "server/routes/coupons.ts",
+      "line": "61-66",
+      "title": "Coupon validation response leaks internal usage data via raw row",
+      "evidence": "res.json({\n      valid: true,\n      coupon,\n      discount,\n      finalTotal\n    });",
+      "suggested_fix": "`coupon` is the raw DB row including usedCount/usageLimit/expiresAt internals. Return only {code,label,percent,amount,minTotal} plus computed discount/finalTotal."
+    }
+  ],
+  "checked": [
+    "PROJECT_GRAPH.md §5 Known Gaps (all FIXED/GATED items excluded from findings)",
+    "server/routes/orders.ts — order create transaction, stock oversell guard, coupon enforcement, VIP deduct/earn, cancel unwind",
+    "server/lib/orderLifecycle.ts — shared restock/refund helper",
+    "server/routes/payment.ts — request/verify, markOrderPaid, restockOrder, pending-payment reaper",
+    "server/routes/admin.ts — stats, analytics, order status lifecycle (cancel branch), coupons CRUD, bulk ops, review moderation, settings, backup",
+    "server/routes/coupons.ts + coupons-active.ts — validate endpoint",
+    "server/routes/cart.ts, wishlist.ts, users.ts, auth.ts, products.ts, reviews.ts, blog.ts, categories.ts, brands.ts, settings.ts, contact.ts",
+    "server/db/schema.ts vs server/db/schema.pg.ts — full table-by-table parity comparison (no unreported drift found)",
+    "server/db/index.ts — SQLite tx queue/savepoint wrapper, migration journaling (sqlite+pg)",
+    "server/middleware/auth.ts, server/app.ts — rate-limiter coverage, CORS, CSP, error handler wiring",
+    "server/utils/cache.ts + all appCache.invalidate call sites — invalidation key matching",
+    "server/services/payment/PaymentFailoverRouter.ts — circuit breaker, verify routing",
+    "empty-catch sweep across server/ (grep)"
+  ]
+}

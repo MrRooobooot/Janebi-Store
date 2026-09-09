@@ -1,0 +1,114 @@
+{
+  "member": "frontend-validator",
+  "verdicts": [
+    {
+      "id": "R2-01",
+      "verdict": "CONFIRMED",
+      "note": "All four address fns close over render-time `user`: AuthContext.tsx:260 `setUser({ ...user, addresses: [...(user.addresses || []), data.address] })`, :285-288, :308-311, :331-337 — none use functional setState. Contrast: updateProfile (line 235) and clearMustChangePassword (line 211) DO use `setUser(prev => ...)` correctly. Since each fn awaits an HTTP call before setUser, a second mutation issued while the first is in-flight reads the pre-mutation `user` and clobbers it. Evidence and fix are accurate.",
+      "corrected_severity": "major"
+    },
+    {
+      "id": "R2-02",
+      "verdict": "CONFIRMED",
+      "note": "CartContext.tsx:91-96: each pushGuest promise has `.catch(err => console.error(...))` returning undefined, so Promise.all NEVER rejects. Lines 99-108 then unconditionally `setCart(data)` + overwrite localStorage with the server list. A failed POST is silent data loss for that guest item. Also mergedForToken guard (line 87-88) means merge never retries within a token. No abort-on-logout: effect only checks isLoggedIn at run time; a mid-merge logout doesn't cancel the pending setCart (logged-out user gets server cart). Evidence quoted verbatim.",
+      "corrected_severity": "major"
+    },
+    {
+      "id": "R2-03",
+      "verdict": "CONFIRMED",
+      "note": "CartContext.tsx:121-134: `const existing = cart.find(...)`, then `saveCart(cart.map(...))` — `cart` is the render closure; addToCart is async but the state reads happen synchronously before the await, so two clicks in the same tick both read the same `cart` and the second saveCart overwrites the first. Also `setIsCartDrawerOpen` after await doesn't matter. Fix (functional updater) is right, though note sync-to-localStorage inside an updater is impure — an effect is the cleaner half of their suggestion.",
+      "corrected_severity": "minor"
+    },
+    {
+      "id": "R2-04",
+      "verdict": "CONFIRMED",
+      "note": "ProductDetail.tsx:40-70+: useEffect fetches `/api/products/${id}` with no `cancelled` flag or AbortController — verified lines 42-61 call setProduct unconditionally in .then. Out-of-order resolution on fast id navigation can render the wrong product; JSON-LD re-append (lines 66-70) also unconditional. Lightbox Escape handler (89-102) IS cleaned up, but the fetch isn't.",
+      "corrected_severity": "minor"
+    },
+    {
+      "id": "R2-05",
+      "verdict": "CONFIRMED",
+      "note": "HeaderSearch.tsx:147-162: cleanup clears only the setTimeout timer; an already-fired fetch for an earlier query can resolve after a newer query's and overwrite setResults (no latest-query ref, no AbortController). Note lines 53-68 show the codebase knows the pattern (`cancelled` flag for categories) — it's just missing here.",
+      "corrected_severity": "minor"
+    },
+    {
+      "id": "R2-06",
+      "verdict": "CONFIRMED",
+      "note": "ToastContext.tsx:23-25: fire-and-forget setTimeout(3000) with setToasts filter, never stored/cleared. Real but negligible: provider is app-root, functional update is safe after unmount in React 19. Finding itself admits 'low impact'.",
+      "corrected_severity": "improvement"
+    },
+    {
+      "id": "R2-07",
+      "verdict": "CONFIRMED",
+      "note": "ChatWidget.tsx:90-100: setTimeout(800) calls setMessages/setIsTyping with no timer ref or cleanup; unmounting mid-'typing' schedules a dead setState. Harmless-in-practice but real.",
+      "corrected_severity": "minor"
+    },
+    {
+      "id": "R2-08",
+      "verdict": "CONFIRMED",
+      "note": "Login.tsx:50-62 exactly as quoted: interval only self-clears inside the setState updater; startCountdown called again (line 80, on resend) creates a second concurrent interval — both tick down `otpCountdown`, doubling the decrement rate. No useEffect cleanup exists for it. This one is user-visible, arguably more than minor.",
+      "corrected_severity": "minor"
+    },
+    {
+      "id": "R2-09",
+      "verdict": "CONFIRMED",
+      "note": "ProductCard.tsx:30 `setTimeout(() => setAdded(false), 2000)` no cleanup — verified. VipClubBanner.tsx:26 same pattern — verified. static/Blog.tsx:438 same — verified. All three real; impact negligible (one harmless setState on unmounted component).",
+      "corrected_severity": "improvement"
+    },
+    {
+      "id": "R2-10",
+      "verdict": "CONFIRMED",
+      "note": "AuthModal.tsx:95 is verbatim `<div className=\"fixed inset-0 z-[9999] ...\">` — grep of whole file finds zero occurrences of role=, aria-modal, or an Escape/keydown handler (uses createPortal at line 2 but no dialog semantics). No focus trap or autofocus. Evidence and comparison to CartDrawer/Blog (which do have role=\"dialog\" aria-modal + Escape) check out.",
+      "corrected_severity": "major"
+    },
+    {
+      "id": "R2-11",
+      "verdict": "CONFIRMED",
+      "note": "CartDrawer.tsx:50 has role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"cart-drawer-title\"; Escape close at lines 19-28. No focus() call anywhere in the file — focus is never moved in nor restored. Accurate as stated.",
+      "corrected_severity": "improvement"
+    },
+    {
+      "id": "R2-12",
+      "verdict": "CONFIRMED",
+      "note": "Layout.tsx:17 verbatim `bg-[#f8fafc] dark:bg-[#090d16]`; index.css:58 `--color-canvas-dark: #0a1128`. Header.tsx:81 `dark:bg-[#080d15]/90`, CartDrawer.tsx:69 `dark:bg-[#0c1017]` — verified. Could not verify LatestReviews.tsx #0d121c (no such grep hit in src/components/home) — that one cited line appears stale, but the core claim (3+ hardcoded near-blacks drifting from token) stands on the three verified sites.",
+      "corrected_severity": "minor"
+    },
+    {
+      "id": "R2-13",
+      "verdict": "CONFIRMED",
+      "note": "ProductCard.tsx:143 `dark:text-[#f7f8f8]` and Products.tsx:79,92 same — verified; index.css:78 `--color-text-main-dark: #f7f8f8`. Pure token drift, cosmetic.",
+      "corrected_severity": "minor"
+    },
+    {
+      "id": "R2-14",
+      "verdict": "CONFIRMED",
+      "note": "Exact strings verified: CartContext.tsx:125 `addToast(`حداکثر تعداد مجاز (${MAX_CART_QUANTITY} عدد) ...`)` and :174 `` `حداکثر تعداد مجاز ${MAX_CART_QUANTITY} عدد می‌باشد` `` — MAX interpolated raw; constants.ts:13 `MAX_CART_QUANTITY = 99`, so toasts render '(99 عدد)' with English digits in a Persian RTL UI. No toPersianDigits import in CartContext.",
+      "corrected_severity": "minor"
+    },
+    {
+      "id": "R2-15",
+      "verdict": "CONFIRMED",
+      "note": "Recomputed: WCAG relative-luminance ratio of #F47C20 on #FFFFFF = 2.709:1 ≈ the documented 2.7:1 (index.css:33 comment verified verbatim). Suggested alternates recompute: #d94e06 → 4.16:1 (matches comment), #994700 → 6.45:1 (comment says 6.12:1 — slightly off but direction correct, both pass AA). Usage claim verified: ProductFilterSidebar.tsx:192,265 (and :368, ProductSortHeader.tsx:61 at text-[10px]) apply white text on bg-orange-500 for small chips/labels — fails AA for normal text.",
+      "corrected_severity": "improvement"
+    },
+    {
+      "id": "R2-16",
+      "verdict": "CONFIRMED",
+      "note": "CartContext.tsx:139-148 (and 159-167, 181-190): POST/PUT/DELETE responses awaited but body never read; local state keeps requested quantity. Server-side clamping (stock/max-10) can silently diverge from optimistic local cart until next full fetch. Accurate; note the merge fetch (R2-02) is the only reconciliation path.",
+      "corrected_severity": "minor"
+    },
+    {
+      "id": "R2-17",
+      "verdict": "CONFIRMED",
+      "note": "useProductFilters.ts:21 module-scope `clientFilterCache = new Map(...)`, :95 serves if has(cacheKey), :118 sets — no TTL, no invalidation anywhere in file; entries live for the SPA session. Verified.",
+      "corrected_severity": "minor"
+    },
+    {
+      "id": "R2-18",
+      "verdict": "CONFIRMED",
+      "note": "ToastContext.tsx:29 `<ToastContext.Provider value={{ addToast }}>` — new object identity every render; addToast IS useCallback'd (line 20) but the wrapping object is not memoized, so every toast add/remove re-renders all consumers. One-line useMemo fix is valid. Overlaps thematically with R2-06 (same file) but is a distinct issue — not a duplicate.",
+      "corrected_severity": "improvement"
+    }
+  ],
+  "summary": "All 18 findings verified against actual code: 18 CONFIRMED, 0 ADJUSTED, 0 REJECTED — the round1 audit is accurate, including all four special-attention items (R2-01 closure captures confirmed at AuthContext:260/285-288/308-311/331-337 vs functional updates used elsewhere; R2-02 swallowed catch + unconditional server-replace confirmed; R2-14 raw 99 interpolation confirmed in both toasts; R2-15 recomputed 2.709:1 matching the claim; R2-18 unmemoized Provider value confirmed). Two line-level nits: R2-12's fourth site (LatestReviews #0d121c) could not be verified, and R2-15's cited 6.12:1 for #994700 recomputes to 6.45:1. No true duplicate findings — R2-06/R2-18 share a file but are distinct issues; R2-02/R2-16 both concern cart sync but describe different failure modes. Severity adjustments proposed downward for trivial timer-leak items (R2-06, R2-09) to improvement, and upward for R2-08 (double-interval doubles countdown rate, user-visible) and R2-10 (full dialog a11y failure)."
+}

@@ -46,7 +46,19 @@ router.put('/me', validate(updateProfileSchema), async (req: AuthRequest, res) =
 
     const { password: _, ...userWithoutPassword } = updatedUser;
     res.json({ message: 'پروفایل با موفقیت بروزرسانی شد', user: userWithoutPassword });
-  } catch (error) {
+  } catch (error: any) {
+    // R1-12: unique-constraint violation on phone => friendly 400, not 500.
+    // SQLite: SQLITE_CONSTRAINT / code SQLITE_CONSTRAINT_UNIQUE;
+    // PG: error code 23505.
+    const code = error?.code || error?.errcode || '';
+    const isUniqueViolation =
+      error?.code === 'SQLITE_CONSTRAINT_UNIQUE' ||
+      error?.code === 'SQLITE_CONSTRAINT' ||
+      error?.errcode === '23505' ||
+      (typeof code === 'string' && code.includes('SQLITE_CONSTRAINT') && /phone/i.test(error?.message || ''));
+    if (isUniqueViolation) {
+      return res.status(400).json({ message: 'این شماره موبایل قبلاً ثبت شده است' });
+    }
     res.status(500).json({ message: 'خطای سرور' });
   }
 });

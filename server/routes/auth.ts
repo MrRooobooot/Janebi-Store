@@ -106,7 +106,10 @@ router.post("/login", validate(loginSchema), async (req, res) => {
 router.post("/refresh", async (req, res) => {
   try {
     const cookies = parseCookies(req);
-    const refreshToken = cookies.refreshToken || (req.body && req.body.refreshToken);
+    // R3-01: cookies-only. The req.body.refreshToken fallback is removed —
+    // refresh tokens must never travel in a JSON body the client can log or
+    // stash; the client only relies on the HttpOnly cookie.
+    const refreshToken = cookies.refreshToken;
 
     if (!refreshToken) {
       // Anonymous visitor: not an error. 200 keeps the browser console clean

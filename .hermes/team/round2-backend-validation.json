@@ -1,0 +1,91 @@
+{
+  "member": "backend-validator",
+  "verdicts": [
+    {
+      "id": "R1-01",
+      "verdict": "CONFIRMED",
+      "note": "payment.ts:22-56 verified: after ownership check (line 30) there is NO status guard — /request proceeds for any order status including 'processing' (already paid), 'cancelled', 'shipped', 'delivered', and overwrites `authority` (lines 48-50) on the gateway response. A paid order can be re-minted a payment link; a cancelled order's authority can be re-pointed. Note the /verify side is idempotent (status!=='pending_payment' short-circuits at line 85), so actual double-charge is blocked downstream, but stale links and authority overwrite on delivered orders are real. Fix suggestion (gate on status) is correct.",
+      "corrected_severity": "major"
+    },
+    {
+      "id": "R1-02",
+      "verdict": "ADJUSTED",
+      "note": "Code evidence is real (payment.ts:107-121 markOrderPaid does check-then-act: read status at line 108-110, then unconditional update at 111-117, then credit at 118-120). BUT the finding is PG-only, not exploitable in current prod. db/index.ts:302-315 wraps better-sqlite3 transactions in a promise-chain mutex (runQueued/txChain): every db.transaction is queued and executed one at a time on the single connection — two concurrent /verify callbacks can never interleave their BEGIN..COMMIT on SQLite. better-sqlite3's BEGIN also takes the database write lock, so the wrapper's serialization makes the read-modify-write atomic on SQLite prod. On PostgreSQL (pool max:20, READ COMMITTED) the race is real: both callbacks read status='pending_payment' and both credit vipPoints. Severity must drop from 'major' to major-on-PG-path/latent-in-prod; suggested atomic UPDATE..WHERE status='pending_payment' RETURNING fix is still the right PG-parity fix.",
+      "corrected_severity": "minor (latent: PG-only; SQLite prod protected by tx mutex + write lock)"
+    },
+    {
+      "id": "R1-03",
+      "verdict": "ADJUSTED",
+      "note": "Code is real: orders.ts:326-359 check-then-act inside tx (status read at 327-339, restock at 343, status flip at 354-359), and the admin cancel branch admin.ts:523-553 has the identical shape. Same dialect split as R1-02: on SQLite the db/index.ts txChain mutex serializes the whole transaction, so double-cancel/double-restock is impossible in current prod; on PG (READ COMMITTED, no row lock between the read and the update since the guard is a plain SELECT not SELECT FOR UPDATE) two concurrent cancels both pass the status check and both call restockItemsAndRefundPoints. Finding's severity overstated for prod; real for the PG-parity path. Atomic UPDATE..WHERE status IN(...) RETURNING fix is correct.",
+      "corrected_severity": "minor (latent: PG-only; SQLite prod protected by tx mutex)"
+    },
+    {
+      "id": "R1-04",
+      "verdict": "ADJUSTED",
+      "note": "Code is real: orders.ts:154 read-only usage-cap check, orders.ts:272-276 unconditional usedCount increment — classic TOCTOU. Dialect analysis: on SQLite prod the db/index.ts transaction mutex (lines 302-315) serializes the entire order-creation transaction, so the check and increment cannot interleave with another order's transaction — the cap cannot be exceeded on better-sqlite3 (single connection, BEGIN takes the write lock). On PostgreSQL the race is genuine: two orders in READ COMMITTED read usedCount=N simultaneously, both pass, both increment → usedCount=usageLimit+1. Finding claimed 'TOCTOU on PostgreSQL' in the title but severity 'major' reads as prod-exploitable; it is not. Fix (conditional UPDATE ... WHERE used_count < usage_limit RETURNING, mirroring the stock guard at orders.ts:240-261) is correct for the PG path.",
+      "corrected_severity": "minor (latent: PG-only; SQLite prod serialized by tx mutex)"
+    },
+    {
+      "id": "R1-05",
+      "verdict": "CONFIRMED",
+      "note": "Verified the matching logic myself: cache.ts:28-38 invalidate() uses key.includes(pattern) for string patterns. 'product:5'.includes('products') === false (the substring 'products' is not present in 'product:5'), so the detail cache key set by products.ts:258 (`product:${id}`, TTL 60s) is never busted by invalidate('products') in orders.ts:288/365 or admin.ts:394/427/463/555 — those only clear list keys ('products:<query-json>'). Detail page can serve stale stockQuantity/price up to 60s after order/cancel/admin edit. Invalidation on product DELETE (admin.ts:463) and admin review moderation (admin.ts:862-864) also misses 'product:<id>'. Suggested prefix-invalidate ('product:') is correct.",
+      "corrected_severity": "minor"
+    },
+    {
+      "id": "R1-06",
+      "verdict": "ADJUSTED",
+      "note": "Half the evidence is wrong. cart.ts:90 has validate(updateCartItemSchema) and validators/index.ts:159-163 defines it as quantity: z.number().int().positive().max(10) — the max-10 guard IS enforced on PUT (finding's title and evidence claiming 'max-10 not enforced' is a misread; the cited evidence snippet omitted the validate middleware). What remains real: no stockQuantity check on update (POST / checks stock at cart.ts:61-70, PUT does not), so a client can set quantity up to 10 even when stock is 2. Impact is bounded by the order-transaction stock guard, so it is cosmetic/UX, not an oversell. Real but materially lower severity than stated.",
+      "corrected_severity": "improvement"
+    },
+    {
+      "id": "R1-07",
+      "verdict": "CONFIRMED",
+      "note": "Code verified: orders.ts:347-352 and admin.ts:538-543 subtract pointsEarnedByOrder unconditionally (no vipPoints >= X guard, no MAX(0,...)). Admin PUT /users/:id/points (admin.ts:344-362) sets an absolute value, so an admin reset (e.g. to 0 or 50) followed by a cancellation of an older 'processing' order drives vipPoints negative. Schema has no CHECK constraint preventing it. Real.",
+      "corrected_severity": "minor"
+    },
+    {
+      "id": "R1-08",
+      "verdict": "CONFIRMED",
+      "note": "grep verified: empty catch blocks exist exactly at bale.ts:565, 658, 1741, 1789. All four silently swallow errors. Minor hygiene finding stands.",
+      "corrected_severity": "minor"
+    },
+    {
+      "id": "R1-09",
+      "verdict": "CONFIRMED",
+      "note": "Verified app.ts: only authLimiter (login/register/otp send+verify/reset-password, app.ts:179-183), couponLimiter (198-199), newsletterLimiter, cspReportLimiter, and the general 600/15min limiter (app.ts:165). POST /api/orders, POST /api/payment/request, and POST /api/auth/refresh have only the general cap. Severity nuance: payment/request and orders are authenticated (requireAuth), so abuse is per-account not anonymous; /api/auth/refresh does accept a body refreshToken (auth.ts:106-119) making it a mildly unauthenticated JWT-verification oracle. Minor is right.",
+      "corrected_severity": "minor"
+    },
+    {
+      "id": "R1-10",
+      "verdict": "CONFIRMED",
+      "note": "Verified admin.ts:139-146: db.query.orders.findMany({with:{items:true}}) loads every order + items, plus full users and products table scans, all aggregated in JS. Real full-table pattern; improvement-level performance note stands.",
+      "corrected_severity": "improvement"
+    },
+    {
+      "id": "R1-11",
+      "verdict": "CONFIRMED",
+      "note": "Verified orders.ts:229-262: per-item await tx.insert(orderItems) loop inside the transaction (stock update is per-item by necessity for the RETURNING oversell guard, which is correct and should stay). On SQLite the loop is cheap (in-process); the win is on PG round-trips. Improvement-level, accurate as stated.",
+      "corrected_severity": "improvement"
+    },
+    {
+      "id": "R1-12",
+      "verdict": "CONFIRMED",
+      "note": "Verified users.ts:32-52: PUT /me writes phone with no uniqueness pre-check and the bare catch returns generic 500 ('خطای سرور'), losing the update. On the register/login side: both schemas (validators/index.ts:110-128) DO normalize phone via z.preprocess(normalizeIranianPhone, /^09\\d{9}$/), so register's duplicate check (auth.ts:29) and login are format-consistent — but normalization is not the issue here: a normalized-but-already-taken phone on PUT /me still hits the unique index and surfaces as 500. Finding stands as written (the cross-check instruction's hypothesis that normalization catches the duplicate earlier is wrong — nothing in register/login touches PUT /me).",
+      "corrected_severity": "minor"
+    },
+    {
+      "id": "R1-13",
+      "verdict": "CONFIRMED",
+      "note": "Verified coupons.ts: res.json({valid:true, coupon, discount, finalTotal}) returns the raw DB row (usedCount, usageLimit, minTotal, expiresAt, active internals) to unauthenticated callers. Real info-leak/hygiene issue; minor is appropriate.",
+      "corrected_severity": "minor"
+    }
+  ],
+  "summary": "12 of 13 findings verified as real code; R1-06 downgraded to improvement (max-10 IS enforced via updateCartItemSchema, only the stock check is missing). The three 'major' concurrency findings (R1-02, R1-03, R1-04) are all ADJUSTED to latent/minor for current prod: db/index.ts:302-315 queues every better-sqlite3 db.transaction through a promise-chain mutex on the single connection, so check-then-act sequences inside transactions are fully serialized on SQLite — the races are real only on the PG dialect (READ COMMITTED, pool max 20). R1-01 is the only confirmed prod-exploitable major (no status guard on /payment/request); R1-05 confirmed with independent verification that 'product:5'.includes('products') is false.",
+  "verified_files": [
+    "server/routes/payment.ts", "server/routes/orders.ts", "server/routes/admin.ts",
+    "server/routes/cart.ts", "server/routes/users.ts", "server/routes/auth.ts",
+    "server/routes/coupons.ts", "server/routes/products.ts", "server/app.ts",
+    "server/db/index.ts", "server/utils/cache.ts", "server/validators/index.ts",
+    "server/bot/bale.ts"
+  ]
+}

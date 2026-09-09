@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { db } from '../db/index.js';
 import { orders, orderItems, products, users } from '../db/schema.js';
-import { eq, sql } from 'drizzle-orm';
+import { eq, sql, and } from 'drizzle-orm';
 import { authenticate, AuthRequest } from '../middleware/auth.js';
 import { env } from '../env.js';
 import { paymentRouter } from '../services/payment/PaymentFailoverRouter.js';
@@ -29,6 +29,13 @@ router.post('/request', authenticate, async (req: AuthRequest, res) => {
     // Verify order ownership
     if (order.userId !== userId) {
       return res.status(403).json({ error: 'Unauthorized to pay for this order' });
+    }
+
+    // R1-01: only pending_payment orders may be sent to a gateway. Prevents
+    // paying twice for an order already processing/cancelled and stops a
+    // duplicate request from overwriting the stored authority mid-verify.
+    if (order.status !== 'pending_payment') {
+      return res.status(400).json({ error: 'این سفارش در وضعیت قابل پرداخت نیست' });
     }
 
     // Use configured APP_URL or fallback safely to trusted forwarded headers
@@ -105,16 +112,22 @@ router.get('/verify', async (req, res) => {
   // VIP points earned by the order (single source of truth for both the
   // sandbox dummy path and the real verified-payment path).
   const markOrderPaid = async (tx: any, orderId: string, refId: string) => {
-    const currentOrderList = await tx.select().from(orders).where(eq(orders.id, orderId));
-    const currentOrder = currentOrderList[0];
-    if (!currentOrder || currentOrder.status !== 'pending_payment') return;
-    await tx.update(orders)
+    // R1-02: atomic predicate — the read-then-write pattern was TOCTOU-racy.
+    // The status flip only lands if the row is still pending_payment; the
+    // .returning() row count is the arbiter (0 rows => another transaction
+    // already won, e.g. a concurrent verify or the reaper).
+    const updatedRows = await tx.update(orders)
       .set({
         status: 'processing',
         statusText: 'در حال پردازش (پرداخت موفق)',
         refId: refId
       })
-      .where(eq(orders.id, orderId));
+      .where(and(
+        eq(orders.id, orderId),
+        eq(orders.status, 'pending_payment')
+      ))
+      .returning({ id: orders.id });
+    if (!updatedRows || updatedRows.length === 0) return;
     if (order.vipPointsEarned && order.vipPointsEarned > 0 && order.userId) {
       await tx.update(users).set({ vipPoints: sql`${users.vipPoints} + ${order.vipPointsEarned}` }).where(eq(users.id, order.userId));
     }

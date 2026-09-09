@@ -334,7 +334,9 @@ router.put('/users/:id/role', async (req, res) => {
       return res.status(404).json({ error: 'کاربر یافت نشد', message: 'User not found' });
     }
     logAudit(req, 'user.role.update', 'user', id, { role });
-    res.json({ message: 'User role updated successfully', user: updated });
+    // R3-06: never echo the password hash back to the admin client.
+    const { password: _pw, ...safeUser } = updated;
+    res.json({ message: 'User role updated successfully', user: safeUser });
   } catch (error) {
     res.status(500).json({ message: 'Internal server error' });
   }
@@ -391,7 +393,7 @@ router.post('/products', async (req, res) => {
       sku: sku || `SKU-${Date.now()}`
     }).returning();
 
-    appCache.invalidate('products');
+    appCache.invalidate('product');
     appCache.invalidate('categories');
     logAudit(req, 'product.create', 'product', String(inserted.id), { title, category, price });
     res.status(201).json(inserted);
@@ -424,7 +426,7 @@ router.put('/products/:id', async (req, res) => {
       return res.status(404).json({ error: 'محصول یافت نشد', message: 'محصول یافت نشد' });
     }
 
-    appCache.invalidate('products');
+    appCache.invalidate('product');
     appCache.invalidate('categories');
     logAudit(req, 'product.update', 'product', id, { title, category, price });
     res.json(updated);
@@ -460,7 +462,7 @@ router.delete('/products/:id', async (req, res) => {
       await tx.delete(products).where(eq(products.id, prodId));
     });
 
-    appCache.invalidate('products');
+    appCache.invalidate('product');
     appCache.invalidate('categories');
     logAudit(req, 'product.delete', 'product', String(prodId), { title: existing.title });
     res.json({ message: 'محصول با موفقیت حذف شد' });
@@ -534,6 +536,20 @@ router.put('/orders/:id/status', async (req, res) => {
           throw Object.assign(new Error('فقط سفارش‌های در انتظار پرداخت یا در حال پردازش قابل لغو هستند'), { status: 400 });
         }
 
+        // R1-03: flip status first with an atomic predicate — 0 rows updated
+        // means a concurrent cancel won the race; skip restock/refund.
+        const cancelledRows = await tx.update(orders)
+          .set({ status, statusText: statusText || ORDER_STATUS_TEXTS[status] || status })
+          .where(and(
+            eq(orders.id, id),
+            inArray(orders.status, ['pending_payment', 'processing'])
+          ))
+          .returning();
+        if (!cancelledRows || cancelledRows.length === 0) {
+          return { row: order, previousStatus: order.status as string };
+        }
+        const row = cancelledRows[0];
+
         await restockItemsAndRefundPoints(tx, id, order.userId, order.vipPointsUsed);
         const pointsEarnedByOrder = order.status === 'processing' ? Number(order.vipPointsEarned) || 0 : 0;
         if (pointsEarnedByOrder > 0 && order.userId) {
@@ -542,17 +558,13 @@ router.put('/orders/:id/status', async (req, res) => {
             .where(eq(users.id, order.userId));
         }
 
-        const [row] = await tx.update(orders)
-          .set({ status, statusText: statusText || ORDER_STATUS_TEXTS[status] || status })
-          .where(eq(orders.id, id))
-          .returning();
         return { row, previousStatus: order.status as string };
       });
 
       if (cancelResult === null) {
         return res.status(404).json({ error: 'سفارش یافت نشد', message: 'سفارش یافت نشد' });
       }
-      appCache.invalidate('products');
+      appCache.invalidate('product');
       logAudit(req, 'order.status.update', 'order', id, { status, previousStatus: cancelResult.previousStatus });
       return res.json(cancelResult.row);
     }
@@ -861,7 +873,7 @@ router.put('/reviews/:id/approved', async (req, res) => {
         .where(eq(products.id, review.productId));
       appCache.invalidate(`reviews:${review.productId}`);
       appCache.invalidate(`product:${review.productId}`);
-      appCache.invalidate('products');
+      appCache.invalidate('product');
     }
     appCache.invalidate('reviews:latest');
     res.json({ success: true, approved, message: approved ? 'نظر تأیید شد' : 'نظر رد شد (از نمایش عمومی خارج شد)' });
