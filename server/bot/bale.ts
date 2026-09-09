@@ -853,6 +853,12 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
       if (step === 'desc') {
         session.wizard.description = undefined;
         if (session.wizard.photoUrl) {
+          // Guard against stale/incomplete wizard drafts
+          if (!Number.isFinite(session.wizard.price) || !Number.isFinite(session.wizard.stock) || !session.wizard.title || !session.wizard.category) {
+            clearSession(userId);
+            await editOrReply(ctx, '⚠️ پیش‌نویس قبلی ناقص بود. لطفاً ثبت کالا را از ابتدا شروع کنید:', makeMainMenuKeyboard());
+            return;
+          }
           session.wizard.step = 'confirm';
           await showProductConfirmation(ctx, session.wizard);
           return;
@@ -862,6 +868,12 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
         return;
       }
       if (step === 'photo') {
+        // Guard against stale/incomplete wizard drafts (e.g. old buttons from abandoned /new)
+        if (!Number.isFinite(session.wizard.price) || !Number.isFinite(session.wizard.stock) || !session.wizard.title || !session.wizard.category) {
+          clearSession(userId);
+          await editOrReply(ctx, '⚠️ پیش‌نویس قبلی ناقص بود. لطفاً ثبت کالا را از ابتدا شروع کنید:', makeMainMenuKeyboard());
+          return;
+        }
         session.wizard.photoUrl = '/placeholder-product.svg';
         session.wizard.step = 'confirm';
         await showProductConfirmation(ctx, session.wizard);
