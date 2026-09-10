@@ -134,9 +134,12 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Live search effect
+  // Live search effect — R2-05: an out-of-order response guard keeps the latest
+  // query's results authoritative; late responses for older queries are dropped.
+  const latestQueryRef = useRef('');
   useEffect(() => {
     if (!query.trim()) {
+      latestQueryRef.current = '';
       setResults([]);
       setLoading(false);
       setSelectedIndex(-1);
@@ -145,14 +148,18 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
 
     setLoading(true);
     const timer = setTimeout(() => {
-      fetch(`/api/products?search=${encodeURIComponent(query.trim())}`)
+      const q = query.trim();
+      latestQueryRef.current = q;
+      fetch(`/api/products?search=${encodeURIComponent(q)}`)
         .then(res => res.json())
         .then((data: Product[]) => {
+          if (latestQueryRef.current !== q) return; // stale response — drop
           setResults(data);
           setLoading(false);
           setSelectedIndex(-1);
         })
         .catch(() => {
+          if (latestQueryRef.current !== q) return;
           setResults([]);
           setLoading(false);
         });

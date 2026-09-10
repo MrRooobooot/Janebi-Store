@@ -374,10 +374,12 @@ router.post("/:id/cancel", async (req: AuthRequest, res) => {
       // "processing" (COD creation, or a verified online payment). A
       // pending_payment order was never credited, so don't claw those back.
       const pointsEarnedByOrder = order.status === "processing" ? Number(order.vipPointsEarned) || 0 : 0;
+      // R1-07: conditional clawback — only deduct while vipPoints >= X so the
+      // balance can never go negative (clamped at 0 via the predicate).
       if (pointsEarnedByOrder > 0) {
         await tx.update(users)
           .set({ vipPoints: sql`${users.vipPoints} - ${pointsEarnedByOrder}` })
-          .where(eq(users.id, userId));
+          .where(and(eq(users.id, userId), sql`${users.vipPoints} >= ${pointsEarnedByOrder}`));
       }
 
       const updatedList = await tx.select().from(orders).where(eq(orders.id, orderId));

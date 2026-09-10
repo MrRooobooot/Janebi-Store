@@ -36,6 +36,14 @@ export default function ChatWidget() {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  // R2-07: pending bot-reply timer is cleared on unmount.
+  const botReplyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (botReplyTimerRef.current) clearTimeout(botReplyTimerRef.current);
+    };
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -87,7 +95,7 @@ export default function ChatWidget() {
     if (!textToSend) setInput('');
     setIsTyping(true);
 
-    setTimeout(() => {
+    botReplyTimerRef.current = setTimeout(() => {
       const botReplyText = generateBotResponse(messageText);
       const botMsg: Message = {
         id: `bot-${Date.now()}`,

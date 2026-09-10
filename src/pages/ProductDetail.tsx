@@ -39,7 +39,8 @@ export default function ProductDetail() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`/api/products/${id}`)
+    const controller = new AbortController();
+    fetch(`/api/products/${id}`, { signal: controller.signal })
       .then((res) => {
         if (!res.ok) throw new Error('Not found');
         return res.json();
@@ -80,10 +81,12 @@ export default function ProductDetail() {
           document.head.appendChild(schemaScript);
         }
       })
-      .catch(() => {
+      .catch((err) => {
+        if (controller.signal.aborted || err?.name === 'AbortError') return;
         setProduct(null);
         setLoading(false);
       });
+    return () => controller.abort();
   }, [id]);
 
   // Handle Escape key and body scroll lock for Lightbox

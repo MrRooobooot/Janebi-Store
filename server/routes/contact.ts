@@ -5,6 +5,8 @@ import { eq, sql } from "drizzle-orm";
 import { toEnglishDigits } from "../../src/lib/utils.js";
 import { ARCHIVE_AFTER_DAYS } from "../../src/lib/constants.js";
 import { storeEvents } from "../services/events.js";
+import { validate } from "../middleware/validate.js";
+import { contactSchema, newsletterSchema } from "../validators/index.js";
 
 const router = Router();
 
@@ -33,9 +35,10 @@ setInterval(async () => {
 }, 60 * 60 * 1000).unref();
 
 
-router.post("/", async (req, res) => {
+router.post("/", validate(contactSchema), async (req, res) => {
   const { name, email, phone, subject, message } = req.body;
 
+  // Legacy flat error shape (string) — the storefront client renders it directly.
   if (!name || !email || !message) {
     return res.status(400).json({ error: "نام، ایمیل و پیام الزامی است" });
   }
@@ -78,20 +81,12 @@ router.post("/", async (req, res) => {
 
 // Newsletter signup — consumed by the site footer; rows surface in the admin
 // Newsletter page (GET/DELETE /api/admin/newsletter).
-router.post("/newsletter", async (req, res) => {
+router.post("/newsletter", validate(newsletterSchema), async (req, res) => {
   const { email } = req.body;
 
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email))) {
-    return res.status(400).json({ error: "لطفا یک آدرس ایمیل معتبر وارد کنید" });
-  }
-
   try {
-    // Normalize Persian/Arabic digits before validation so ۰۱۲… emails (paste
-    // from Persian keyboards) are not rejected.
+    // Zod schema already normalizes Persian/Arabic digits, trims and lowercases.
     const normalized = toEnglishDigits(String(email)).trim().toLowerCase();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized)) {
-      return res.status(400).json({ error: "لطفا یک آدرس ایمیل معتبر وارد کنید" });
-    }
     const existing = await db.query.newsletterSubscribers.findFirst({
       where: eq(newsletterSubscribers.email, normalized),
     });

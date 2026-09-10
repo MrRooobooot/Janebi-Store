@@ -9,6 +9,7 @@ export default defineConfig({
     // /api/auth/otp/send uses the in-process simulator (debugCode) instead of
     // hitting the live SMS.ir API with fake test phones (intermittent 502s).
     env: {
+      NODE_ENV: 'test',
       SMS_API_KEY: '',
       SMS_PROVIDER: '',
       SMS_TEMPLATE_ID: '',

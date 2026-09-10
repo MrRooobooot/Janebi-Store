@@ -1738,7 +1738,9 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
 
       try {
         if (ctx.chat) await ctx.api.deleteMessage(ctx.chat.id, waitMsg.message_id);
-      } catch {}
+      } catch (delErr) {
+        console.warn('[bale-bot] failed to delete wait message:', delErr);
+      }
 
       // Case 1: In creation wizard
       if (session.mode === 'wizard' && session.wizard && session.wizard.step === 'photo') {
@@ -1786,7 +1788,9 @@ export async function startBaleBot(token: string, adminChatIds: number[]) {
     } catch (err: any) {
       try {
         if (ctx.chat) await ctx.api.deleteMessage(ctx.chat.id, waitMsg.message_id);
-      } catch {}
+      } catch (delErr) {
+        console.warn('[bale-bot] failed to delete wait message on error path:', delErr);
+      }
       await ctx.reply(`❌ خطا در پردازش و ذخیره تصویر: ${err.message}\nلطفاً فرمت فایل (JPG, PNG, WebP) را بررسی نموده و دوباره امتحان فرمایید.`);
     }
   }

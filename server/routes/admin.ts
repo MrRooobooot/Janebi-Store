@@ -7,7 +7,8 @@ import { HERO_IMAGE_DEFAULTS } from './settings.js';
 import { eq, desc, sql, inArray, and } from 'drizzle-orm';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
 import { validate } from '../middleware/validate.js';
-import { bulkIdsSchema } from '../validators/index.js';
+import { bulkIdsSchema, adminPasswordSchema, roleSchema, pointsSchema, productCreateSchema, productUpsertSchema, orderStatusSchema, couponCreateSchema, couponUpsertSchema, trackingSchema, approvedSchema, messageStatusSchema, settingsSchema } from '../validators/index.js';
+import { bumpTokenVersion } from './tokenVersion.js';
 import { restockItemsAndRefundPoints } from '../lib/orderLifecycle.js';
 
 const router = Router();
@@ -286,14 +287,10 @@ router.get('/users', async (req, res) => {
 // Admin password reset for any user — standard panel capability. Used as
 // the recovery path while no SMS provider is wired up (the public OTP flow
 // cannot deliver codes in production yet).
-router.put('/users/:id/password', async (req, res) => {
+router.put('/users/:id/password', validate(adminPasswordSchema), async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params as { id: string };
     const { newPassword } = req.body;
-
-    if (!newPassword || typeof newPassword !== 'string' || newPassword.length < 6) {
-      return res.status(400).json({ error: 'رمز عبور جدید باید حداقل ۶ کاراکتر باشد', message: 'رمز عبور جدید باید حداقل ۶ کاراکتر باشد' });
-    }
 
     const bcrypt = (await import('bcrypt')).default;
     const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -306,6 +303,8 @@ router.put('/users/:id/password', async (req, res) => {
       return res.status(404).json({ error: 'کاربر یافت نشد', message: 'کاربر یافت نشد' });
     }
 
+    // R3-02: password reset revokes the user's existing refresh tokens.
+    bumpTokenVersion(id);
     logAudit(req, 'user.password.reset', 'user', id, { targetName: updated.name });
     res.json({ message: `رمز عبور کاربر ${updated.name} با موفقیت تغییر کرد` });
   } catch (error) {
@@ -314,14 +313,10 @@ router.put('/users/:id/password', async (req, res) => {
   }
 });
 
-router.put('/users/:id/role', async (req, res) => {
+router.put('/users/:id/role', validate(roleSchema), async (req, res) => {
   try {
     const { role } = req.body;
-    const { id } = req.params;
-
-    if (!role || !['admin', 'user'].includes(role)) {
-      return res.status(400).json({ error: 'نقش کاربر نامعتبر است', message: 'Invalid role' });
-    }
+    const { id } = req.params as { id: string };
 
     // Self-lockout guard: an admin cannot demote their own account — the
     // only admins left with panel access would be zero and the panel dies.
@@ -343,17 +338,13 @@ router.put('/users/:id/role', async (req, res) => {
 });
 
 // Admin modify VIP loyalty points for any user
-router.put('/users/:id/points', async (req, res) => {
+router.put('/users/:id/points', validate(pointsSchema), async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params as { id: string };
     const { vipPoints } = req.body;
 
-    if (vipPoints === undefined || isNaN(Number(vipPoints)) || Number(vipPoints) < 0) {
-      return res.status(400).json({ error: 'مقدار امتیاز نامعتبر است' });
-    }
-
     const [updated] = await db.update(users)
-      .set({ vipPoints: Number(vipPoints) })
+      .set({ vipPoints })
       .where(eq(users.id, id))
       .returning();
 
@@ -371,25 +362,21 @@ router.put('/users/:id/points', async (req, res) => {
 // ---------------------------------------------------------
 // PRODUCTS MANAGEMENT
 // ---------------------------------------------------------
-router.post('/products', async (req, res) => {
+router.post('/products', validate(productCreateSchema), async (req, res) => {
   try {
     const { title, category, price, originalPrice, discount, image, brand, warranty, description, stockQuantity, sku } = req.body;
-    
-    if (!title || !category || price === undefined) {
-      return res.status(400).json({ message: 'Title, category, and price are required' });
-    }
 
     const [inserted] = await db.insert(products).values({
       title,
       category,
-      price: parseInt(price) || 0,
-      originalPrice: originalPrice ? parseInt(originalPrice) : null,
-      discount: discount ? parseInt(discount) : 0,
+      price,
+      originalPrice: originalPrice ?? null,
+      discount: discount ?? 0,
       image: image || '/placeholder.png',
       brand: brand || 'متفرقه',
       warranty: warranty || null,
       description: description || null,
-      stockQuantity: stockQuantity !== undefined ? parseInt(stockQuantity) : 10,
+      stockQuantity: stockQuantity !== undefined ? stockQuantity : 10,
       sku: sku || `SKU-${Date.now()}`
     }).returning();
 
@@ -403,22 +390,22 @@ router.post('/products', async (req, res) => {
   }
 });
 
-router.put('/products/:id', async (req, res) => {
+router.put('/products/:id', validate(productUpsertSchema), async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params as { id: string };
     const { title, category, price, originalPrice, discount, image, brand, warranty, description, stockQuantity, sku } = req.body;
-    
+
     const [updated] = await db.update(products).set({
       ...(title !== undefined && { title }),
       ...(category !== undefined && { category }),
-      ...(price !== undefined && { price: parseInt(price) || 0 }),
-      ...(originalPrice !== undefined && { originalPrice: originalPrice ? parseInt(originalPrice) : null }),
-      ...(discount !== undefined && { discount: parseInt(discount) || 0 }),
+      ...(price !== undefined && { price }),
+      ...(originalPrice !== undefined && { originalPrice: originalPrice ?? null }),
+      ...(discount !== undefined && { discount: discount ?? 0 }),
       ...(image !== undefined && { image }),
       ...(brand !== undefined && { brand }),
       ...(warranty !== undefined && { warranty }),
       ...(description !== undefined && { description }),
-      ...(stockQuantity !== undefined && { stockQuantity: parseInt(stockQuantity) || 0 }),
+      ...(stockQuantity !== undefined && { stockQuantity }),
       ...(sku !== undefined && { sku })
     }).where(eq(products.id, parseInt(id))).returning();
 
@@ -438,7 +425,7 @@ router.put('/products/:id', async (req, res) => {
 
 router.delete('/products/:id', async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params as { id: string };
     const prodId = parseInt(id);
 
     if (isNaN(prodId)) {
@@ -510,15 +497,10 @@ router.get('/orders', async (req, res) => {
   }
 });
 
-router.put('/orders/:id/status', async (req, res) => {
+router.put('/orders/:id/status', validate(orderStatusSchema), async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params as { id: string };
     const { status, statusText } = req.body;
-
-    const allowedStatuses = ['pending_payment', 'processing', 'shipped', 'delivered', 'cancelled'];
-    if (!status || !allowedStatuses.includes(status)) {
-      return res.status(400).json({ error: 'وضعیت سفارش نامعتبر است', message: 'وضعیت سفارش نامعتبر است' });
-    }
 
     // Cancelling from the admin panel must have the same data-integrity
     // effects as a user-initiated cancellation: restock items and unwind
@@ -552,10 +534,12 @@ router.put('/orders/:id/status', async (req, res) => {
 
         await restockItemsAndRefundPoints(tx, id, order.userId, order.vipPointsUsed);
         const pointsEarnedByOrder = order.status === 'processing' ? Number(order.vipPointsEarned) || 0 : 0;
+        // R1-07: conditional clawback — only deduct while vipPoints >= X so the
+        // balance can never go negative (clamped at 0 via the predicate).
         if (pointsEarnedByOrder > 0 && order.userId) {
           await tx.update(users)
             .set({ vipPoints: sql`${users.vipPoints} - ${pointsEarnedByOrder}` })
-            .where(eq(users.id, order.userId));
+            .where(and(eq(users.id, order.userId), sql`${users.vipPoints} >= ${pointsEarnedByOrder}`));
         }
 
         return { row, previousStatus: order.status as string };
@@ -602,12 +586,9 @@ router.get('/coupons', async (req, res) => {
   }
 });
 
-router.post('/coupons', async (req, res) => {
+router.post('/coupons', validate(couponCreateSchema), async (req, res) => {
   try {
     const { code, percent, amount, minTotal, label, active, usageLimit, expiresAt } = req.body;
-    if (!code || !label) {
-      return res.status(400).json({ message: 'Code and label are required' });
-    }
 
     if (percent && amount) {
       return res.status(400).json({ message: 'فقط یکی از درصد یا مبلغ تخفیف مجاز است' });
@@ -619,18 +600,14 @@ router.post('/coupons', async (req, res) => {
       return res.status(409).json({ message: 'این کد تخفیف قبلاً ثبت شده است' });
     }
 
-    if (expiresAt !== undefined && expiresAt !== null && expiresAt !== '' && Number.isNaN(Date.parse(expiresAt))) {
-      return res.status(400).json({ message: 'تاریخ انقضا نامعتبر است' });
-    }
-
     const inserted = await db.insert(coupons).values({
       code: upperCode,
-      percent: percent ? parseInt(percent) : null,
-      amount: amount ? parseInt(amount) : null,
-      minTotal: minTotal ? parseInt(minTotal) : 0,
+      percent: percent ?? null,
+      amount: amount ?? null,
+      minTotal: minTotal ?? 0,
       label,
       active: active ?? true,
-      usageLimit: usageLimit ? parseInt(usageLimit) : null,
+      usageLimit: usageLimit ?? null,
       expiresAt: expiresAt ? new Date(expiresAt).toISOString() : null
     }).returning();
 
@@ -644,9 +621,9 @@ router.post('/coupons', async (req, res) => {
 
 // PUT /api/admin/coupons/:code — edit an existing coupon. All fields optional;
 // omitted fields keep their current value. Audit-logged (§3.7).
-router.put('/coupons/:code', async (req, res) => {
+router.put('/coupons/:code', validate(couponUpsertSchema), async (req, res) => {
   try {
-    const upperCode = req.params.code.toUpperCase();
+    const upperCode = String(req.params.code).toUpperCase();
     const { percent, amount, minTotal, label, active, usageLimit, expiresAt } = req.body;
 
     const existing = await db.query.coupons.findFirst({ where: eq(coupons.code, upperCode) });
@@ -658,17 +635,13 @@ router.put('/coupons/:code', async (req, res) => {
       return res.status(400).json({ message: 'فقط یکی از درصد یا مبلغ تخفیف مجاز است' });
     }
 
-    if (expiresAt !== undefined && expiresAt !== null && expiresAt !== '' && Number.isNaN(Date.parse(expiresAt))) {
-      return res.status(400).json({ message: 'تاریخ انقضا نامعتبر است' });
-    }
-
     const [updated] = await db.update(coupons).set({
-      ...(percent !== undefined && { percent: percent === null ? null : parseInt(percent) }),
-      ...(amount !== undefined && { amount: amount === null ? null : parseInt(amount) }),
-      ...(minTotal !== undefined && { minTotal: minTotal ? parseInt(minTotal) : 0 }),
+      ...(percent !== undefined && { percent: percent === null ? null : percent }),
+      ...(amount !== undefined && { amount: amount === null ? null : amount }),
+      ...(minTotal !== undefined && { minTotal: minTotal ?? 0 }),
       ...(label !== undefined && { label }),
       ...(active !== undefined && { active: Boolean(active) }),
-      ...(usageLimit !== undefined && { usageLimit: usageLimit === null || usageLimit === '' ? null : parseInt(usageLimit) }),
+      ...(usageLimit !== undefined && { usageLimit: usageLimit === null ? null : usageLimit }),
       ...(expiresAt !== undefined && { expiresAt: expiresAt === null || expiresAt === '' ? null : new Date(expiresAt).toISOString() })
     }).where(eq(coupons.code, upperCode)).returning();
 
@@ -726,16 +699,11 @@ router.get('/contact-messages', async (req, res) => {
   }
 });
 
-router.put('/contact-messages/:id/status', async (req, res) => {
+router.put('/contact-messages/:id/status', validate(messageStatusSchema), async (req, res) => {
   try {
     const { contactMessages } = await import('../db/schema.js');
-    const { id } = req.params;
+    const { id } = req.params as { id: string };
     const { status } = req.body;
-
-    // STRICT validation — exact match against the allowed set.
-    if (!['unread', 'read', 'resolved', 'archived'].includes(status)) {
-      return res.status(400).json({ message: 'Invalid status' });
-    }
 
     await db.update(contactMessages)
       .set({ status })
@@ -812,13 +780,13 @@ router.post('/orders/bulk-delete', validate(bulkIdsSchema), async (req, res) => 
   }
 });
 
-router.put('/orders/:id/tracking', async (req, res) => {
+router.put('/orders/:id/tracking', validate(trackingSchema), async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params as { id: string };
     const { refId } = req.body;
 
     const [updated] = await db.update(orders)
-      .set({ refId: refId ? String(refId).trim() : null })
+      .set({ refId: refId ?? null })
       .where(eq(orders.id, id))
       .returning();
 
@@ -850,10 +818,10 @@ router.get('/reviews', async (req, res) => {
 
 // PUT /reviews/:id/approved — moderation toggle. Recomputes the product's
 // aggregate rating from approved reviews and busts review caches.
-router.put('/reviews/:id/approved', async (req, res) => {
+router.put('/reviews/:id/approved', validate(approvedSchema), async (req, res) => {
   try {
-    const { id } = req.params;
-    const approved = Boolean(req.body?.approved);
+    const { id } = req.params as { id: string };
+    const { approved } = req.body;
     const review = await db.query.reviews.findFirst({ where: eq(reviews.id, id) });
     if (!review) return res.status(404).json({ message: 'نظر یافت نشد' });
 
@@ -885,7 +853,7 @@ router.put('/reviews/:id/approved', async (req, res) => {
 
 router.delete('/reviews/:id', async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params as { id: string };
     await db.delete(reviews).where(eq(reviews.id, id));
     appCache.invalidate('reviews:latest');
     res.json({ success: true, message: 'نظر با موفقیت حذف شد' });
@@ -944,10 +912,10 @@ router.get('/settings', async (req, res) => {
   }
 });
 
-router.put('/settings', async (req, res) => {
+router.put('/settings', validate(settingsSchema), async (req, res) => {
   try {
     const body = req.body || {};
-    // Accept only known keys, and only string values (hero image fields are
+    // Accept only known keys and only string values (hero image fields are
     // asset paths/URLs; anything non-string is rejected rather than coerced).
     const updates = Object.entries(body).filter(
       ([key, value]) => key in DEFAULT_SETTINGS && typeof value === 'string'

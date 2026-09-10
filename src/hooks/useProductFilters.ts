@@ -17,8 +17,14 @@ export const PRICE_PRESETS: PricePreset[] = [
   { label: 'بالای ۵ میلیون تومان', min: 5000000, max: '' },
 ];
 
-// In-memory client cache to instantly switch between filtered tabs/pages
-const clientFilterCache = new Map<string, { products: Product[]; total: number; totalPages: number }>();
+// In-memory client cache to instantly switch between filtered tabs/pages.
+// R2-17: entries carry a TTL — stale stock/prices are never served beyond it.
+const FILTER_CACHE_TTL_MS = 60_000; // 1 minute
+const clientFilterCache = new Map<string, { products: Product[]; total: number; totalPages: number; fetchedAt: number }>();
+
+export function invalidateFilterCache() {
+  clientFilterCache.clear();
+}
 
 export function useProductFilters() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -94,11 +100,14 @@ export function useProductFilters() {
     });
     if (clientFilterCache.has(cacheKey)) {
       const cached = clientFilterCache.get(cacheKey)!;
-      setProducts(cached.products);
-      setTotalProducts(cached.total);
-      setTotalPages(cached.totalPages);
-      setLoading(false);
-      return;
+      if (Date.now() - cached.fetchedAt < FILTER_CACHE_TTL_MS) {
+        setProducts(cached.products);
+        setTotalProducts(cached.total);
+        setTotalPages(cached.totalPages);
+        setLoading(false);
+        return;
+      }
+      clientFilterCache.delete(cacheKey); // expired — refetch fresh stock/prices
     }
 
     setLoading(true);
@@ -115,7 +124,7 @@ export function useProductFilters() {
       })
       .then(({ data, count, pages }) => {
         if (cancelled) return;
-        clientFilterCache.set(cacheKey, { products: data, total: count, totalPages: pages });
+        clientFilterCache.set(cacheKey, { products: data, total: count, totalPages: pages, fetchedAt: Date.now() });
         setProducts(data);
         setTotalProducts(count);
         setTotalPages(pages);

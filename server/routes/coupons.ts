@@ -58,9 +58,18 @@ const handleCouponValidation = async (req: any, res: any) => {
       });
     }
 
+    // R1-13: never leak the raw coupon row (usageLimit/usedCount internals).
+    // Return only the public fields the client reads (src/hooks/useCartSummary.ts
+    // uses code/percent/amount/minTotal/label to seed calculateCouponDiscount).
     res.json({
       valid: true,
-      coupon,
+      coupon: {
+        code: coupon.code,
+        label: coupon.label ?? coupon.code,
+        percent: coupon.percent ?? null,
+        amount: coupon.amount ?? null,
+        minTotal: coupon.minTotal ?? 0,
+      },
       discount,
       finalTotal
     });

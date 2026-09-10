@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Phone, Lock, Eye, EyeOff, LogIn, ArrowLeft, KeyRound, ShieldCheck } from "lucide-react";
 import { motion } from "motion/react";
@@ -47,12 +47,23 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // R2-08: countdown interval is cleared on unmount to avoid setState on
+  // unmounted components / leaking intervals between resend attempts.
+  const otpIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  useEffect(() => {
+    return () => {
+      if (otpIntervalRef.current) clearInterval(otpIntervalRef.current);
+    };
+  }, []);
+
   const startCountdown = (sec: number = 120) => {
     setOtpCountdown(sec);
-    const interval = setInterval(() => {
+    if (otpIntervalRef.current) clearInterval(otpIntervalRef.current);
+    otpIntervalRef.current = setInterval(() => {
       setOtpCountdown((prev) => {
         if (prev <= 1) {
-          clearInterval(interval);
+          if (otpIntervalRef.current) clearInterval(otpIntervalRef.current);
+          otpIntervalRef.current = null;
           return 0;
         }
         return prev - 1;

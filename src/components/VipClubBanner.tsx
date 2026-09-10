@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import { Mail, Gift, Sparkles, CheckCircle2, Check, Copy } from 'lucide-react';
 import { useToast } from '../contexts/ToastContext';
@@ -16,6 +16,13 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
   const [submitting, setSubmitting] = useState(false);
   const [copied, setCopied] = useState(false);
   const { addToast } = useToast();
+  // R2-09: reset timer is cleared on unmount.
+  const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    return () => {
+      if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
+    };
+  }, []);
 
   const copyCoupon = async () => {
     if (!couponCode) return;
@@ -23,7 +30,8 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
       await navigator.clipboard.writeText(couponCode);
       setCopied(true);
       addToast('کد تخفیف کپی شد!', 'success');
-      setTimeout(() => setCopied(false), 2000);
+      if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
+      copiedTimerRef.current = setTimeout(() => setCopied(false), 2000);
     } catch {
       addToast('کپی کد انجام نشد — لطفاً دستی کپی کنید', 'error');
     }

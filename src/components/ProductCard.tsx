@@ -1,4 +1,4 @@
-import React, { useState, memo } from 'react';
+import React, { useState, useEffect, useRef, memo } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, ShieldCheck, Heart, Scale, CheckCircle2, Star, Sparkles } from 'lucide-react';
 import { useWishlist } from '../contexts/WishlistContext';
@@ -18,16 +18,24 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
   const inCompare = isInCompare(product.id);
   const [added, setAdded] = useState(false);
   const outOfStock = typeof product.stockQuantity === 'number' && product.stockQuantity <= 0;
+  // R2-09: reset timer is cleared on unmount.
+  const addedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    return () => {
+      if (addedTimerRef.current) clearTimeout(addedTimerRef.current);
+    };
+  }, []);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (outOfStock) return;
-    
+
     addToCart(product);
     setAdded(true);
     addToast(`${product.title} به سبد خرید افزوده شد`, 'success');
-    setTimeout(() => setAdded(false), 2000);
+    if (addedTimerRef.current) clearTimeout(addedTimerRef.current);
+    addedTimerRef.current = setTimeout(() => setAdded(false), 2000);
   };
 
   return (
@@ -140,7 +148,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
           </div>
 
           {/* 4. Product Title */}
-          <h3 className="font-black text-xs sm:text-sm text-zinc-900 dark:text-[#f7f8f8] line-clamp-2 leading-relaxed h-10 sm:h-11 flex items-start group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+          <h3 className="font-black text-xs sm:text-sm text-zinc-900 dark:text-[var(--color-text-main-dark)] line-clamp-2 leading-relaxed h-10 sm:h-11 flex items-start group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
             {product.title}
           </h3>
         </Link>

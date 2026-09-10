@@ -178,14 +178,15 @@ router.get('/verify', async (req, res) => {
       return res.redirect(`/checkout/callback?status=success&orderId=${order.id}&ref_id=${dummyRefId}`);
     }
 
-    // Verify transaction through PaymentFailoverRouter
-    const explicitProvider = req.query.provider as any;
+    // Verify transaction through PaymentFailoverRouter.
+    // R3-07: route by authority prefix ONLY — req.query.provider is
+    // attacker-controlled and must never pick the gateway.
     const verifyResult = await paymentRouter.verifyPayment({
       authority,
       status,
       amountTomans: order.total,
       orderId: order.id
-    }, explicitProvider);
+    });
 
     if (verifyResult.success) {
       const refId = verifyResult.refId || `REF-${Math.floor(Math.random() * 1000000)}`;

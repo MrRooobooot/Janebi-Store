@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { toEnglishDigits } from '../../src/lib/utils.js';
 
 export const productQuerySchema = z.object({
   query: z.object({
@@ -188,6 +189,152 @@ export const resetPasswordSchema = z.object({
     code: z.string().regex(/^\d{5}$/, "کد تایید باید ۵ رقم باشد"),
     newPassword: z.string().min(6, "رمز عبور جدید باید حداقل ۶ کاراکتر باشد")
   })
+});
+
+// ---------------------------------------------------------
+// Admin endpoint schemas (R3-03) — preserve hand-rolled semantics
+// ---------------------------------------------------------
+
+export const adminPasswordSchema = z.object({
+  params: z.object({ id: z.string().min(1) }),
+  body: z.object({
+    newPassword: z.string().min(6, "رمز عبور جدید باید حداقل ۶ کاراکتر باشد"),
+  }),
+});
+
+export const roleSchema = z.object({
+  params: z.object({ id: z.string().min(1) }),
+  body: z.object({
+    role: z.enum(['admin', 'user'], { message: 'نقش کاربر نامعتبر است' }),
+  }),
+});
+
+// Strict numeric coercion: a numeric string is accepted, anything that is not
+// exactly a non-negative integer is rejected — no parseInt()||0 zeroing.
+const strictInt = z.preprocess(
+  (v) => (typeof v === 'string' && /^-?\d+$/.test(v.trim()) ? Number(v.trim()) : v),
+  z.number().int().nonnegative('مقدار امتیاز نامعتبر است')
+);
+
+export const pointsSchema = z.object({
+  params: z.object({ id: z.string().min(1) }),
+  body: z.object({ vipPoints: strictInt }),
+});
+
+const optionalPrice = z.preprocess(
+  (v) => (v === '' || v === null ? undefined : (typeof v === 'string' && /^-?\d+$/.test(v.trim()) ? Number(v.trim()) : v)),
+  z.number().int().nonnegative('مقدار عددی نامعتبر است')
+);
+
+export const productUpsertSchema = z.object({
+  body: z.object({
+    title: z.string().min(1, 'عنوان محصول الزامی است').optional(),
+    category: z.string().min(1, 'دسته‌بندی الزامی است').optional(),
+    price: optionalPrice.optional(),
+    originalPrice: optionalPrice.nullish(),
+    discount: optionalPrice.nullish(),
+    image: z.string().min(1).optional(),
+    brand: z.string().min(1).optional(),
+    warranty: z.string().nullish(),
+    description: z.string().nullish(),
+    stockQuantity: optionalPrice.optional(),
+    sku: z.string().min(1).optional(),
+  }),
+});
+
+// POST /api/admin/products requires the core fields; PUT accepts partial bodies.
+export const productCreateSchema = productUpsertSchema
+  .transform((p) => p)
+  .superRefine((p, ctx) => {
+    if (p.body.title === undefined || p.body.category === undefined || p.body.price === undefined) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Title, category, and price are required' });
+    }
+  });
+
+export const orderStatusSchema = z.object({
+  params: z.object({ id: z.string().min(1) }),
+  body: z.object({
+    status: z.enum(['pending_payment', 'processing', 'shipped', 'delivered', 'cancelled'], { message: 'وضعیت سفارش نامعتبر است' }),
+    statusText: z.string().min(1).optional(),
+  }),
+});
+
+const couponInt = z.preprocess(
+  (v) => (v === '' || v === null ? undefined : (typeof v === 'string' && /^-?\d+$/.test(v.trim()) ? Number(v.trim()) : v)),
+  z.number().int().nonnegative('مقدار عددی نامعتبر است')
+);
+
+const couponExpiresAt = z
+  .string()
+  .refine((v) => !Number.isNaN(Date.parse(v)), { message: 'تاریخ انقضا نامعتبر است' });
+
+export const couponUpsertSchema = z.object({
+  body: z.object({
+    code: z.string().min(1, 'Code and label are required').optional(),
+    label: z.string().min(1, 'Code and label are required').optional(),
+    percent: couponInt.nullish(),
+    amount: couponInt.nullish(),
+    minTotal: couponInt.optional(),
+    active: z.boolean().optional(),
+    usageLimit: couponInt.nullish(),
+    expiresAt: couponExpiresAt.nullish(),
+  }),
+});
+
+// POST /api/admin/coupons requires code + label; PUT is partial.
+export const couponCreateSchema = couponUpsertSchema.superRefine((p, ctx) => {
+  if (!p.body.code?.trim() || !p.body.label?.trim()) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Code and label are required' });
+  }
+});
+
+export const trackingSchema = z.object({
+  params: z.object({ id: z.string().min(1) }),
+  body: z.object({
+    refId: z.string().trim().min(1).nullable().optional(),
+  }),
+});
+
+export const approvedSchema = z.object({
+  params: z.object({ id: z.string().min(1) }),
+  body: z.object({ approved: z.boolean() }),
+});
+
+export const messageStatusSchema = z.object({
+  params: z.object({ id: z.string().min(1) }),
+  body: z.object({
+    status: z.enum(['unread', 'read', 'resolved', 'archived'], { message: 'Invalid status' }),
+  }),
+});
+
+export const settingsSchema = z.object({
+  body: z.record(z.string(), z.unknown()),
+});
+
+// ---------------------------------------------------------
+// Contact / newsletter (R3-04)
+// ---------------------------------------------------------
+const emailSchema = z.preprocess(
+  (v) => (typeof v === 'string' ? toEnglishDigits(v).trim().toLowerCase() : v),
+  z.string().email('لطفا یک آدرس ایمیل معتبر وارد کنید')
+);
+
+// Required-field presence (name/email/message) is checked in the handler so the
+// response keeps the legacy flat shape `{ error: "…الزامی است" }` that the
+// storefront client renders directly. Zod here enforces shape/format (email
+// format, Persian-digit normalization, max lengths).
+export const contactSchema = z.object({
+  body: z.object({
+    name: z.string().max(200).optional(),
+    email: emailSchema.optional(),
+    phone: z.string().max(20).optional().or(z.literal('')),
+    subject: z.string().max(300).optional().or(z.literal('')),
+    message: z.string().max(5000).optional(),
+  }),
+});
+
+export const newsletterSchema = z.object({
+  body: z.object({ email: emailSchema }),
 });
 
 // Admin bulk operations — ids are primary keys of contact_messages / orders

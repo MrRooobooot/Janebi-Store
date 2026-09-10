@@ -13,10 +13,14 @@ import { setAuthCookies, clearAuthCookies, parseCookies } from "../utils/cookies
 
 const router = Router();
 
+// R3-02: tokenVersion lives in server/routes/tokenVersion.ts (shared with the
+// admin password-reset route so a reset bumps the same store).
+import { getTokenVersion, bumpTokenVersion } from "./tokenVersion.js";
+
 // Generate tokens
 const generateTokens = (userId: string) => {
   const accessToken = jwt.sign({ userId }, env.JWT_ACCESS_SECRET, { expiresIn: "1d" });
-  const refreshToken = jwt.sign({ userId }, env.JWT_REFRESH_SECRET, { expiresIn: "7d" });
+  const refreshToken = jwt.sign({ userId, tokenVersion: getTokenVersion(userId) }, env.JWT_REFRESH_SECRET, { expiresIn: "7d" });
   return { accessToken, refreshToken };
 };
 
@@ -130,6 +134,13 @@ router.post("/refresh", async (req, res) => {
       return res.status(401).json({ message: "User not found" });
     }
 
+    // R3-02: a token minted before a version bump (logout / password reset)
+    // must no longer refresh.
+    if (typeof decoded.tokenVersion === 'number' && decoded.tokenVersion !== getTokenVersion(user.id)) {
+      clearAuthCookies(res, env.NODE_ENV === "production");
+      return res.status(401).json({ message: "Invalid or expired refresh token" });
+    }
+
     const tokens = generateTokens(user.id);
     setAuthCookies(res, tokens.accessToken, tokens.refreshToken, env.NODE_ENV === "production");
 
@@ -145,6 +156,14 @@ router.post("/refresh", async (req, res) => {
 });
 
 router.post("/logout", (req, res) => {
+  // R3-02: revoke the refresh token for this user, if any cookie exists.
+  try {
+    const cookies = parseCookies(req);
+    if (cookies.refreshToken) {
+      const decoded = jwt.verify(cookies.refreshToken, env.JWT_REFRESH_SECRET) as any;
+      if (decoded?.userId) bumpTokenVersion(decoded.userId);
+    }
+  } catch { /* invalid/expired token: nothing to revoke */ }
   clearAuthCookies(res, env.NODE_ENV === "production");
   res.json({ message: "با موفقیت خارج شدید" });
 });
@@ -188,6 +207,8 @@ router.post("/reset-password", validate(resetPasswordSchema), async (req, res) =
     await db.update(users).set({ password: hashedPassword }).where(eq(users.id, user.id));
 
     otpStore.delete(phone); // single-use
+    // R3-02: password change revokes existing refresh tokens.
+    bumpTokenVersion(user.id);
 
     res.json({ message: "رمز عبور با موفقیت تغییر کرد. اکنون می‌توانید وارد شوید." });
   } catch (error) {

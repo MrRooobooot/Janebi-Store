@@ -5,6 +5,7 @@ import { MAX_CART_QUANTITY } from '../lib/constants';
 import { authFetch } from '../lib/api';
 import { useAuth } from './AuthContext';
 import { CouponData, calculateCouponDiscount } from '../lib/coupon';
+import { toPersianDigits } from '../lib/utils';
 
 interface CartContextType {
   cart: CartItem[];
@@ -73,6 +74,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const { addToast } = useToast();
+  // R2-03: live mirror of the cart for mutation handlers (avoids stale closures).
+  const cartRef = React.useRef<CartItem[]>(cart);
 
   const openCartDrawer = () => setIsCartDrawerOpen(true);
   const closeCartDrawer = () => setIsCartDrawerOpen(false);
@@ -139,6 +142,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [isLoggedIn]);
 
   const saveCart = (newCart: CartItem[]) => {
+    cartRef.current = newCart;
     setCart(newCart);
     try {
       localStorage.setItem('cart', JSON.stringify(newCart));
@@ -147,50 +151,74 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  // Keeps cartRef in sync with every setCart (merge effect calls setCart directly).
+  React.useEffect(() => {
+    cartRef.current = cart;
+  }, [cart]);
+
+  // R2-16: When a cart mutation endpoint echoes back the authoritative server
+  // cart list, replace the optimistic local state with it.
+  const applyServerCart = async (res: Response) => {
+    if (!res.ok) return;
+    try {
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        saveCart(data);
+      }
+    } catch {
+      // endpoint returned no JSON body — keep optimistic state
+    }
+  };
+
+  // R2-03: Reads the live cart (not a stale closure) so rapid consecutive
+  // addToCart calls compute quantities from the latest state.
   const addToCart = async (product: Product, quantity = 1) => {
-    const existing = cart.find(item => item.id === product.id);
+    const existing = cartRef.current.find(item => item.id === product.id);
     let newQty = quantity;
     if (existing) {
       if (existing.quantity >= MAX_CART_QUANTITY) {
-        addToast(`حداکثر تعداد مجاز (${MAX_CART_QUANTITY} عدد) در سبد خرید قرار دارد`, 'warning');
+        addToast(`حداکثر تعداد مجاز (${toPersianDigits(MAX_CART_QUANTITY)} عدد) در سبد خرید قرار دارد`, 'warning');
         return;
       }
       newQty = Math.min(existing.quantity + quantity, MAX_CART_QUANTITY);
-      saveCart(cart.map(item => 
+      saveCart(cartRef.current.map(item =>
         item.id === product.id ? { ...item, quantity: newQty } : item
       ));
     } else {
       newQty = Math.min(quantity, MAX_CART_QUANTITY);
-      saveCart([...cart, { ...product, quantity: newQty }]);
+      saveCart([...cartRef.current, { ...product, quantity: newQty }]);
     }
-    
+
     if (isLoggedIn) {
       const token = localStorage.getItem('token');
       try {
-        await authFetch('/api/cart', {
+        const res = await authFetch('/api/cart', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
           body: JSON.stringify({ productId: product.id, quantity })
         });
+        // Server responds with the authoritative cart list (upsert) — adopt it.
+        await applyServerCart(res);
       } catch (err) {
         console.error('Failed to sync add to cart', err);
       }
     }
-    
+
     addToast('محصول به سبد خرید اضافه شد', 'success');
     setIsCartDrawerOpen(true);
   };
 
   const removeFromCart = async (id: number) => {
-    saveCart(cart.filter(item => item.id !== id));
-    
+    saveCart(cartRef.current.filter(item => item.id !== id));
+
     if (isLoggedIn) {
       const token = localStorage.getItem('token');
       try {
-        await authFetch(`/api/cart/${id}`, {
+        const res = await authFetch(`/api/cart/${id}`, {
           method: 'DELETE',
           headers: { 'Authorization': `Bearer ${token}` }
         });
+        await applyServerCart(res);
       } catch (err) {
         console.error('Failed to sync remove from cart', err);
       }
@@ -201,19 +229,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const updateQuantity = async (id: number, quantity: number) => {
     if (quantity < 1) return;
     if (quantity > MAX_CART_QUANTITY) {
-      addToast(`حداکثر تعداد مجاز ${MAX_CART_QUANTITY} عدد می‌باشد`, 'warning');
+      addToast(`حداکثر تعداد مجاز ${toPersianDigits(MAX_CART_QUANTITY)} عدد می‌باشد`, 'warning');
       return;
     }
-    saveCart(cart.map(item => item.id === id ? { ...item, quantity } : item));
-    
+    saveCart(cartRef.current.map(item => item.id === id ? { ...item, quantity } : item));
+
     if (isLoggedIn) {
       const token = localStorage.getItem('token');
       try {
-        await authFetch(`/api/cart/${id}`, {
+        const res = await authFetch(`/api/cart/${id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
           body: JSON.stringify({ quantity })
         });
+        await applyServerCart(res);
       } catch (err) {
         console.error('Failed to sync update quantity', err);
       }

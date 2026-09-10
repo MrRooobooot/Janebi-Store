@@ -213,6 +213,39 @@ const newsletterLimiter = rateLimit({
 });
 app.use("/api/contact/newsletter", newsletterLimiter);
 
+// R3-04: contact message submission — stricter than the general limiter to
+// stop message-bombing of the contact_messages table.
+const contactLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10, // 10 submissions per IP per 15 minutes
+  skip: () => process.env.NODE_ENV === "test" || env.NODE_ENV === "test",
+  message: {
+    message: "تعداد درخواست‌های ارسال پیام بیش از حد مجاز است. لطفاً بعداً تلاش کنید.",
+    error: "Too many contact requests",
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use("/api/contact", contactLimiter);
+
+// R1-09: dedicated strict limiters on expensive/mutating storefront endpoints
+// (order creation, payment gateway calls, token refresh) — abuse caps that the
+// general 600/15min limiter is far too loose to provide.
+const strictActionLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 20, // 20/min per IP
+  skip: () => process.env.NODE_ENV === "test" || env.NODE_ENV === "test",
+  message: {
+    message: "تعداد درخواست‌ها بیش از حد مجاز است. لطفاً یک دقیقه دیگر تلاش کنید.",
+    error: "Too many requests",
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use("/api/orders", strictActionLimiter);
+app.use("/api/payment/request", strictActionLimiter);
+app.use("/api/auth/refresh", strictActionLimiter);
+
 // CSP violation reporting endpoint (§3.15 observability).
 // Browsers POST violation reports (report-uri legacy shape or report-to
 // report lists) here; they are logged via pino for security triage.
