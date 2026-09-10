@@ -59,7 +59,7 @@ export default function RecentlyViewed({
       {/* Header */}
       <div className="flex items-center justify-between mb-6 pb-3 border-b border-gray-200/70 dark:border-[var(--color-border-dark)]">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-xl bg-orange-50 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400">
+          <div className="p-2 rounded-xl bg-orange-50 dark:bg-orange-950/50 text-[var(--color-emphasis-text)]">
             <History className="h-5 w-5" />
           </div>
           <div>

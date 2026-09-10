@@ -11,7 +11,7 @@ export default function FAQPage() {
       transition={{ duration: 0.4 }}
       className="space-y-8"
     >
-      <div className="bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 text-white rounded-3xl p-8 sm:p-10 relative overflow-hidden shadow-lg shadow-orange-500/20">
+      <div className="text-white rounded-3xl [background:linear-gradient(135deg,#b3500a,#994700)] p-8 sm:p-10 relative overflow-hidden shadow-lg shadow-orange-500/20">
         <div className="relative z-10 max-w-xl">
           <span className="inline-flex items-center gap-1.5 bg-[var(--color-surface-light)]/20 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full mb-3">
             <HelpCircle className="h-3.5 w-3.5" /> مرکز راهنمایی و پشتیبانی

@@ -89,7 +89,7 @@ export default function CheckoutRecipientForm({
                       {addr.title}
                     </span>
                     {addr.isDefault && (
-                      <span className="text-[10px] bg-orange-100 dark:bg-orange-950 text-orange-600 dark:text-orange-400 px-2 py-0.5 rounded-md font-black">
+                      <span className="text-[10px] bg-orange-100 dark:bg-orange-950 text-[var(--color-emphasis-text)] px-2 py-0.5 rounded-md font-black">
                         پیش‌فرض
                       </span>
                     )}

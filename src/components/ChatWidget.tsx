@@ -123,7 +123,7 @@ export default function ChatWidget() {
             <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border-b border-gray-200 dark:border-[var(--color-border-dark)] text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] p-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full bg-orange-50 dark:bg-orange-500/10 flex items-center justify-center">
-                  <Bot className="h-5 w-5 text-orange-600 dark:text-orange-500" />
+                  <Bot className="h-5 w-5 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)]" />
                 </div>
                 <div>
                   <h3 className="font-extrabold text-sm flex items-center gap-1.5">
@@ -149,7 +149,7 @@ export default function ChatWidget() {
                   key={msg.id} 
                   className={`max-w-[85%] p-3.5 rounded-2xl text-xs sm:text-sm leading-relaxed ${
                     msg.isUser 
-                      ? 'bg-orange-600 text-white self-end rounded-br-none shadow-sm' 
+                      ? 'bg-[var(--color-cta)] text-white self-end rounded-br-none shadow-sm' 
                       : 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-gray-800 dark:text-[var(--color-text-main-dark)] self-start rounded-bl-none shadow-sm'
                   }`}
                 >
@@ -176,7 +176,7 @@ export default function ChatWidget() {
                 <button
                   key={idx}
                   onClick={() => handleSend(q)}
-                  className="whitespace-nowrap px-2.5 py-1 text-[11px] font-medium bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-full transition-colors shrink-0"
+                  className="whitespace-nowrap px-2.5 py-1 text-[11px] font-medium bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-gray-700 dark:text-gray-300 hover:text-[var(--color-emphasis-text)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-full transition-colors shrink-0"
                 >
                   {q}
                 </button>
@@ -195,7 +195,7 @@ export default function ChatWidget() {
               <button 
                 type="submit" 
                 disabled={!input.trim()}
-                className="bg-orange-600 hover:bg-orange-700 disabled:opacity-50 text-white p-2.5 rounded-xl transition-all flex items-center justify-center shrink-0 active:scale-95"
+                className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] disabled:opacity-50 text-white p-2.5 rounded-xl transition-all flex items-center justify-center shrink-0 active:scale-95"
               >
                 <Send className="h-4 w-4" />
               </button>
@@ -210,7 +210,7 @@ export default function ChatWidget() {
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(true)}
           aria-label="باز کردن راهنمای خرید"
-          className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-[var(--color-border-dark)] text-orange-600 dark:text-orange-500 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all relative group cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-900/20"
+          className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-[var(--color-border-dark)] text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all relative group cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-900/20"
         >
           <MessageCircle className="h-6 w-6" />
           <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-500 border-2 border-white dark:border-gray-900 rounded-full"></span>

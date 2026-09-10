@@ -55,17 +55,17 @@ export default function ProductSortHeader({
           onClick={() => setMobileFilterOpen(true)}
           className="lg:hidden flex items-center gap-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 px-4 py-2.5 rounded-2xl text-xs font-bold text-gray-800 dark:text-gray-200 transition-colors"
         >
-          <SlidersHorizontal className="h-4 w-4 text-orange-500" />
+          <SlidersHorizontal className="h-4 w-4 text-[var(--color-emphasis-text)]" />
           <span>فیلترها</span>
           {activeFiltersCount > 0 && (
-            <span className="bg-orange-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">
+            <span className="bg-[var(--color-cta)] text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">
               {activeFiltersCount}
             </span>
           )}
         </button>
 
         <div className="text-xs font-bold text-gray-600 dark:text-gray-400">
-          نمایش <span className="text-orange-600 dark:text-orange-400 font-black">{toPersianDigits(filteredCount)}</span> محصول از {toPersianDigits(totalCount)}
+          نمایش <span className="text-[var(--color-emphasis-text)] font-black">{toPersianDigits(filteredCount)}</span> محصول از {toPersianDigits(totalCount)}
         </div>
       </div>
 

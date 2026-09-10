@@ -79,7 +79,7 @@ export default function Dashboard() {
         <p>{error}</p>
         <button
           onClick={() => { setError(""); setLoading(true); fetchStats(); }}
-          className="px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold transition-colors"
+          className="px-4 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold transition-colors"
         >
           تلاش مجدد
         </button>
@@ -95,7 +95,7 @@ export default function Dashboard() {
     { title: "درآمد کل", value: `${metrics.totalRevenue.toLocaleString()} تومان`, icon: DollarSign, color: "text-emerald-500", bg: "bg-emerald-100 dark:bg-emerald-500/20" },
     { title: "سفارشات", value: metrics.totalOrders, icon: ShoppingCart, color: "text-blue-500", bg: "bg-blue-100 dark:bg-blue-500/20" },
     { title: "محصولات", value: metrics.totalProducts, icon: Package, color: "text-purple-500", bg: "bg-purple-100 dark:bg-purple-500/20" },
-    { title: "کاربران", value: metrics.totalUsers, icon: Users, color: "text-orange-500", bg: "bg-orange-100 dark:bg-orange-500/20" },
+    { title: "کاربران", value: metrics.totalUsers, icon: Users, color: "text-[var(--color-emphasis-text)]", bg: "bg-orange-100 dark:bg-orange-500/20" },
     { title: "پیام‌های خوانده‌نشده", value: toPersianDigits(metrics.unreadMessages || 0), icon: Mail, color: "text-rose-500", bg: "bg-rose-100 dark:bg-rose-500/20" },
     { title: "نظرات در انتظار بررسی", value: toPersianDigits(metrics.pendingReviews || 0), icon: MessageSquare, color: "text-sky-500", bg: "bg-sky-100 dark:bg-sky-500/20" },
   ];
@@ -112,7 +112,7 @@ export default function Dashboard() {
         <div className="flex flex-wrap items-center gap-2">
           <Link
             to="/admin/products"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold transition-all shadow-sm"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold transition-all shadow-sm"
           >
             <Package className="h-3.5 w-3.5" />
             <span>مدیریت کالاها</span>
@@ -138,7 +138,7 @@ export default function Dashboard() {
       {emptyState && (
         <div className="rounded-2xl p-6 border border-orange-200 dark:border-orange-900/40 bg-orange-50/70 dark:bg-orange-950/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-start gap-3">
-            <div className="p-3 rounded-xl bg-orange-100 dark:bg-orange-900/40 text-orange-600 shrink-0">
+            <div className="p-3 rounded-xl bg-orange-100 dark:bg-orange-900/40 text-[var(--color-emphasis-text)] shrink-0">
               <Rocket className="h-6 w-6" />
             </div>
             <div className="space-y-1">
@@ -155,7 +155,7 @@ export default function Dashboard() {
           <div className="flex flex-wrap items-center gap-2 shrink-0">
             <Link
               to="/admin/products"
-              className="min-h-[44px] inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold transition-all shadow-sm"
+              className="min-h-[44px] inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold transition-all shadow-sm"
             >
               <Package className="h-4 w-4" />
               <span>افزودن محصول</span>
@@ -266,7 +266,7 @@ export default function Dashboard() {
                 <div key={idx} className="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-xl flex items-center justify-between text-xs">
                   <span className="font-bold text-gray-800 dark:text-gray-200">{cat.category}</span>
                   <div className="text-left">
-                    <div className="font-mono font-bold text-orange-600 dark:text-orange-400">{cat.revenue.toLocaleString()} ت</div>
+                    <div className="font-mono font-bold text-[var(--color-emphasis-text)]">{cat.revenue.toLocaleString()} ت</div>
                     <div className="text-[10px] text-gray-500 dark:text-gray-400">{cat.count} فروش</div>
                   </div>
                 </div>
@@ -280,7 +280,7 @@ export default function Dashboard() {
       <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700 overflow-hidden shadow-xs">
         <div className="p-6 border-b border-[var(--color-border-light)] dark:border-gray-700 flex items-center justify-between">
           <h2 className="text-base sm:text-lg font-bold text-[var(--color-text-main-light)] dark:text-white">آخرین سفارشات</h2>
-          <Link to="/admin/orders" className="text-xs sm:text-sm font-bold text-orange-600 hover:text-orange-700">مشاهده همه</Link>
+          <Link to="/admin/orders" className="text-xs sm:text-sm font-bold text-[var(--color-emphasis-text)] hover:text-[var(--color-cta-hover)]">مشاهده همه</Link>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-right">

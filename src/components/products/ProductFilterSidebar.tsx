@@ -82,7 +82,7 @@ export default function ProductFilterSidebar({
             placeholder="نام، مدل یا برند..."
             className="w-full bg-[var(--color-surface-light)] dark:bg-gray-800/80 border-2 border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl py-3 px-4 pr-10 text-xs font-medium text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500/50 focus:ring-4 focus:ring-orange-500/10 dark:focus:ring-orange-500/5 transition-all shadow-xs group-hover:border-gray-200 dark:group-hover:border-gray-700"
           />
-          <Search className="h-4 w-4 text-gray-500 absolute right-3.5 top-1/2 -translate-y-1/2 transition-colors group-hover:text-orange-500" />
+          <Search className="h-4 w-4 text-gray-500 absolute right-3.5 top-1/2 -translate-y-1/2 transition-colors group-hover:text-[var(--color-emphasis-text)]" />
           {inPageQuery && (
             <button
               onClick={() => setInPageQuery('')}
@@ -97,7 +97,7 @@ export default function ProductFilterSidebar({
       {/* Category Filter */}
       <div className="border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pt-6">
         <h4 className="font-bold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] mb-4 flex items-center gap-2">
-          <div className="p-1.5 rounded-lg bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400">
+          <div className="p-1.5 rounded-lg bg-orange-100 dark:bg-orange-500/20 text-[var(--color-emphasis-text)]">
             <Tag className="h-4 w-4" />
           </div>
           دسته‌بندی‌ها
@@ -110,7 +110,7 @@ export default function ProductFilterSidebar({
             }}
             className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all duration-200 ${
               selectedCategory === 'همه'
-                ? 'bg-gradient-to-l from-orange-50 to-transparent dark:from-orange-500/10 dark:to-transparent border-r-2 border-orange-500 text-orange-600 dark:text-orange-400 font-bold shadow-xs shadow-orange-100/50 dark:shadow-none'
+                ? 'bg-gradient-to-l from-orange-50 to-transparent dark:from-orange-500/10 dark:to-transparent border-r-2 border-orange-500 text-[var(--color-emphasis-text)] font-bold shadow-xs shadow-orange-100/50 dark:shadow-none'
                 : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/80 border-r-2 border-transparent'
             }`}
           >
@@ -118,7 +118,7 @@ export default function ProductFilterSidebar({
             <span
               className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition-colors ${
                 selectedCategory === 'همه'
-                  ? 'bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400'
+                  ? 'bg-orange-100 dark:bg-orange-500/20 text-[var(--color-emphasis-text)]'
                   : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
               }`}
             >
@@ -135,7 +135,7 @@ export default function ProductFilterSidebar({
               }}
               className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all duration-200 ${
                 selectedCategory === cat.name
-                  ? 'bg-gradient-to-l from-orange-50 to-transparent dark:from-orange-500/10 dark:to-transparent border-r-2 border-orange-500 text-orange-600 dark:text-orange-400 font-bold shadow-xs shadow-orange-100/50 dark:shadow-none'
+                  ? 'bg-gradient-to-l from-orange-50 to-transparent dark:from-orange-500/10 dark:to-transparent border-r-2 border-orange-500 text-[var(--color-emphasis-text)] font-bold shadow-xs shadow-orange-100/50 dark:shadow-none'
                   : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/80 border-r-2 border-transparent'
               }`}
             >
@@ -143,7 +143,7 @@ export default function ProductFilterSidebar({
               <span
                 className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition-colors ${
                   selectedCategory === cat.name
-                    ? 'bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400'
+                    ? 'bg-orange-100 dark:bg-orange-500/20 text-[var(--color-emphasis-text)]'
                     : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
                 }`}
               >
@@ -158,7 +158,7 @@ export default function ProductFilterSidebar({
       <div className="border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pt-6">
         <h4 className="font-bold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] mb-4 flex items-center justify-between">
           <span className="flex items-center gap-2">
-            <div className="p-1.5 rounded-lg bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400">
+            <div className="p-1.5 rounded-lg bg-orange-100 dark:bg-orange-500/20 text-[var(--color-emphasis-text)]">
               <Sparkles className="h-4 w-4" />
             </div>
             برند
@@ -166,7 +166,7 @@ export default function ProductFilterSidebar({
           {selectedBrands.length > 0 && (
             <button
               onClick={() => setSelectedBrands([])}
-              className="text-[11px] text-orange-600 hover:text-orange-700 font-medium px-2 py-1 rounded-lg hover:bg-orange-50 dark:hover:bg-orange-500/10 transition-colors"
+              className="text-[11px] text-[var(--color-emphasis-text)] hover:text-[var(--color-cta-hover)] font-medium px-2 py-1 rounded-lg hover:bg-orange-50 dark:hover:bg-orange-500/10 transition-colors"
             >
               پاک کردن
             </button>
@@ -189,7 +189,7 @@ export default function ProductFilterSidebar({
                   <div
                     className={`w-4.5 h-4.5 rounded-lg flex items-center justify-center transition-all duration-200 ${
                       isChecked
-                        ? 'bg-orange-500 text-white shadow-md shadow-orange-500/30 scale-110'
+                        ? 'bg-[var(--color-cta)] text-white shadow-md shadow-orange-500/30 scale-110'
                         : 'border-2 border-gray-300 dark:border-gray-600 bg-[var(--color-surface-light)] dark:bg-gray-800'
                     }`}
                   >
@@ -199,7 +199,7 @@ export default function ProductFilterSidebar({
                 </div>
                 <span
                   className={`text-[10px] font-bold ${
-                    isChecked ? 'text-orange-500' : 'text-gray-500 dark:text-gray-400'
+                    isChecked ? 'text-[var(--color-emphasis-text)]' : 'text-gray-500 dark:text-gray-400'
                   }`}
                 >
                   {b.count}
@@ -213,7 +213,7 @@ export default function ProductFilterSidebar({
       {/* Price Range Filter */}
       <div className="border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pt-6">
         <h4 className="font-bold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] mb-4 flex items-center gap-2">
-          <div className="p-1.5 rounded-lg bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400">
+          <div className="p-1.5 rounded-lg bg-orange-100 dark:bg-orange-500/20 text-[var(--color-emphasis-text)]">
             <DollarSign className="h-4 w-4" />
           </div>
           محدوده قیمت (تومان)
@@ -222,7 +222,7 @@ export default function ProductFilterSidebar({
         {/* Min & Max Inputs */}
         <div className="grid grid-cols-2 gap-3 mb-4">
           <div className="group">
-            <label className="block text-[10px] font-medium text-gray-600 dark:text-gray-400 mb-1.5 group-focus-within:text-orange-500 transition-colors">
+            <label className="block text-[10px] font-medium text-gray-600 dark:text-gray-400 mb-1.5 group-focus-within:text-[var(--color-emphasis-text)] transition-colors">
               از قیمت
             </label>
             <input
@@ -235,7 +235,7 @@ export default function ProductFilterSidebar({
             />
           </div>
           <div className="group">
-            <label className="block text-[10px] font-medium text-gray-600 dark:text-gray-400 mb-1.5 group-focus-within:text-orange-500 transition-colors">
+            <label className="block text-[10px] font-medium text-gray-600 dark:text-gray-400 mb-1.5 group-focus-within:text-[var(--color-emphasis-text)] transition-colors">
               تا قیمت
             </label>
             <input
@@ -262,7 +262,7 @@ export default function ProductFilterSidebar({
                 }}
                 className={`text-[10px] px-3 py-1.5 rounded-lg transition-all duration-200 border-2 ${
                   isActive
-                    ? 'bg-orange-500 text-white border-orange-500 font-bold shadow-md shadow-orange-500/20'
+                    ? 'bg-[var(--color-cta)] text-white border-[var(--color-cta)] font-bold shadow-md shadow-orange-500/20'
                     : 'bg-[var(--color-surface-light)] dark:bg-gray-800/80 text-gray-600 dark:text-gray-300 border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] hover:border-gray-200 dark:hover:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 font-medium'
                 }`}
               >
@@ -277,8 +277,8 @@ export default function ProductFilterSidebar({
       <div className="border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pt-6 space-y-4">
         {/* Discounted only toggle */}
         <label className="flex items-center justify-between cursor-pointer group bg-gray-50 dark:bg-gray-800/50 p-3 rounded-2xl hover:bg-orange-50 dark:hover:bg-orange-500/5 transition-colors border border-transparent hover:border-orange-100 dark:hover:border-orange-500/10">
-          <span className="text-xs font-bold text-gray-800 dark:text-gray-200 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors flex items-center gap-2">
-            <Flame className="h-4 w-4 text-orange-500" />
+          <span className="text-xs font-bold text-gray-800 dark:text-gray-200 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors flex items-center gap-2">
+            <Flame className="h-4 w-4 text-[var(--color-emphasis-text)]" />
             <span>فقط کالاهای تخفیف‌دار</span>
           </span>
           <div
@@ -365,7 +365,7 @@ export default function ProductFilterSidebar({
             <span>فیلترهای پیشرفته</span>
           </h3>
           {activeFiltersCount > 0 && (
-            <span className="bg-orange-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-xs">
+            <span className="bg-[var(--color-cta)] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-xs">
               {activeFiltersCount}
             </span>
           )}
@@ -412,7 +412,7 @@ export default function ProductFilterSidebar({
                 <div className="pt-6 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] mt-6 sticky bottom-0 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)]">
                   <button
                     onClick={() => setMobileFilterOpen(false)}
-                    className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-orange-500/25 active:scale-98 transition-transform text-sm cursor-pointer"
+                    className="w-full bg-[var(--color-cta)] text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-orange-500/25 active:scale-98 transition-transform text-sm cursor-pointer"
                   >
                     مشاهده نتایج ({productsCount})
                   </button>

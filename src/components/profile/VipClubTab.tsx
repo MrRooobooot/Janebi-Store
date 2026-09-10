@@ -58,7 +58,7 @@ export default function VipClubTab() {
               </p>
             </div>
           </div>
-          <span className="text-xs font-black bg-[var(--color-surface-light)] text-orange-600 px-3 py-1.5 rounded-full">
+          <span className="text-xs font-black bg-[var(--color-surface-light)] text-[var(--color-emphasis-text)] px-3 py-1.5 rounded-full">
             سطح بعدی: الماس
           </span>
         </div>
@@ -81,7 +81,7 @@ export default function VipClubTab() {
       {/* Exclusive Coupons */}
       <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 shadow-xs space-y-4">
         <h3 className="font-extrabold text-base text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2 pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
-          <Gift className="h-5 w-5 text-orange-500" />
+          <Gift className="h-5 w-5 text-[var(--color-emphasis-text)]" />
           <span>کدهای تخفیف اختصاصی شما</span>
         </h3>
 
@@ -101,7 +101,7 @@ export default function VipClubTab() {
             >
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-black text-sm text-orange-600 dark:text-orange-400 tracking-wider">
+                  <span className="font-black text-sm text-[var(--color-emphasis-text)] tracking-wider">
                     {cp.code}
                   </span>
                   <span className="text-[10px] font-bold text-gray-400">اعتبار: {cp.expiresAt ? new Date(cp.expiresAt).toLocaleDateString('fa-IR') : 'بدون محدودیت'}</span>
@@ -113,7 +113,7 @@ export default function VipClubTab() {
 
               <button
                 onClick={() => handleCopy(cp.code)}
-                className="w-full py-2 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] hover:bg-orange-500 hover:text-white text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-500/30 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-xs"
+                className="w-full py-2 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] hover:bg-[var(--color-cta)] hover:text-white text-[var(--color-emphasis-text)] dark:text-orange-400 border border-orange-200 dark:border-orange-500/30 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-xs"
               >
                 {copiedCode === cp.code ? (
                   <>

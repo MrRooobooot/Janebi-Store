@@ -231,7 +231,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
             </div>
           ) : (
             <span
-              className="inline-block bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 text-sm font-black px-4 py-2 rounded-full mb-2"
+              className="inline-block bg-orange-100 dark:bg-orange-950/60 text-[var(--color-emphasis-text)] text-sm font-black px-4 py-2 rounded-full mb-2"
               aria-label="این محصول هنوز امتیازی ثبت نشده است"
             >
               جدید
@@ -273,7 +273,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
         {/* Rating Bars Breakdown */}
         <div className="lg:col-span-8 flex flex-col justify-center space-y-2.5 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] p-6 rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/80 shadow-xs">
           <h4 className="text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1 flex items-center gap-1.5">
-            <Sparkles className="h-4 w-4 text-orange-500" />
+            <Sparkles className="h-4 w-4 text-[var(--color-emphasis-text)]" />
             توزیع امتیاز خریداران (تحلیل امتیاز خریداران):
           </h4>
 
@@ -295,7 +295,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
               {/* Progress Bar */}
               <div className="flex-1 bg-zinc-100 dark:bg-zinc-800 h-2.5 rounded-full overflow-hidden">
                 <div
-                  className="bg-orange-500 group-hover:bg-orange-600 h-full rounded-full transition-all duration-500"
+                  className="bg-[var(--color-cta)] group-hover:hover:bg-[var(--color-cta-hover)] h-full rounded-full transition-all duration-500"
                   style={{ width: `${percentage}%` }}
                 />
               </div>
@@ -313,7 +313,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
         <div>
           <h3 className="text-lg font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
             نظرات و بازخورد خریداران
-            <span className="text-xs font-bold bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 px-2.5 py-0.5 rounded-full">
+            <span className="text-xs font-bold bg-orange-100 dark:bg-orange-950/60 text-[var(--color-emphasis-text)] px-2.5 py-0.5 rounded-full">
               {filteredReviews.length.toLocaleString('fa-IR')}
             </span>
           </h3>
@@ -325,7 +325,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
         {isLoggedIn ? (
           <button
             onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold px-5 py-3 rounded-2xl shadow-md hover:shadow-lg transition-all shrink-0"
+            className="flex items-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold px-5 py-3 rounded-2xl shadow-md hover:shadow-lg transition-all shrink-0"
           >
             <MessageSquarePlus className="h-4 w-4" />
             <span>{showForm ? 'بستن فرم ثبت نظر' : 'افزودن نظر جدید'}</span>
@@ -350,7 +350,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
           >
             <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
               <h4 className="font-black text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
-                <Send className="h-4 w-4 text-orange-600" />
+                <Send className="h-4 w-4 text-[var(--color-emphasis-text)]" />
                 ثبت نظر و امتیاز برای این محصول
               </h4>
               <span className="text-xs text-zinc-400">تمام فیلدها الزامی هستند</span>
@@ -418,7 +418,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
                   ))}
                 </div>
 
-                <span className="text-xs font-bold text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/60 px-3 py-1 rounded-xl">
+                <span className="text-xs font-bold text-[var(--color-emphasis-text)] bg-orange-50 dark:bg-orange-950/60 px-3 py-1 rounded-xl">
                   {RATING_LABELS[hoverRating || userRating]}
                 </span>
               </div>
@@ -487,7 +487,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold px-7 py-2.5 rounded-xl transition-all shadow-md flex items-center gap-2 disabled:opacity-50"
+                className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold px-7 py-2.5 rounded-xl transition-all shadow-md flex items-center gap-2 disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <span>در حال ارسال...</span>
@@ -515,7 +515,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
             onClick={() => setRatingFilter('all')}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
               ratingFilter === 'all'
-                ? 'bg-orange-600 text-white shadow-xs'
+                ? 'bg-[var(--color-cta)] text-white shadow-xs'
                 : 'bg-[var(--color-surface-light)] dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100'
             }`}
           >
@@ -528,7 +528,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
               onClick={() => setRatingFilter(star)}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 ${
                 ratingFilter === star
-                  ? 'bg-orange-600 text-white shadow-xs'
+                  ? 'bg-[var(--color-cta)] text-white shadow-xs'
                   : 'bg-[var(--color-surface-light)] dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100'
               }`}
             >

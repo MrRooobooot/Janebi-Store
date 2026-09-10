@@ -214,7 +214,7 @@ export default function Blog() {
       transition={{ duration: prefersReducedMotion ? 0 : 0.4 }}
       className="space-y-8"
     >
-      <div className="bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 text-white rounded-3xl p-8 sm:p-10 relative overflow-hidden shadow-lg shadow-orange-500/20">
+      <div className="text-white rounded-3xl [background:linear-gradient(135deg,#b3500a,#994700)] p-8 sm:p-10 relative overflow-hidden shadow-lg shadow-orange-500/20">
         <div className="relative z-10 max-w-xl">
           <span className="inline-flex items-center gap-1.5 bg-[var(--color-surface-light)]/20 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full mb-3">
             <BookOpen className="h-3.5 w-3.5" /> مجله تخصصی جانبی آرنا
@@ -267,7 +267,7 @@ export default function Blog() {
           <p className="text-sm text-red-600 dark:text-red-400 font-bold">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="mt-4 inline-flex items-center justify-center min-h-[44px] px-5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold transition-colors"
+            className="mt-4 inline-flex items-center justify-center min-h-[44px] px-5 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold transition-colors"
           >
             تلاش مجدد
           </button>
@@ -299,7 +299,7 @@ export default function Blog() {
                 aria-pressed={active}
                 className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-bold border transition-colors motion-reduce:transition-none min-h-[36px] ${
                   active
-                    ? 'bg-orange-600 border-orange-600 text-white shadow-sm'
+                    ? 'bg-[var(--color-cta)] border-[var(--color-cta)] text-white'
                     : 'bg-zinc-50 dark:bg-zinc-900/60 border-zinc-200/80 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300 hover:border-orange-300 dark:hover:border-zinc-700'
                 }`}
               >
@@ -336,7 +336,7 @@ export default function Blog() {
               >
                 <div className="aspect-video w-full relative overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50 dark:from-zinc-800 dark:to-zinc-900 flex items-center justify-center">
                   <img src={art.image || FALLBACK_IMAGE} alt={art.title} loading="lazy" decoding="async" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 motion-reduce:transition-none motion-reduce:group-hover:scale-100" />
-                  <span className="absolute top-3 right-3 bg-orange-600 text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
+                  <span className="absolute top-3 right-3 bg-[var(--color-cta)] text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
                     {art.category}
                   </span>
                 </div>
@@ -349,7 +349,7 @@ export default function Blog() {
                         <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {art.readTime}</span>
                       )}
                     </div>
-                    <h3 className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-base leading-snug mb-3 h-10 sm:h-11 line-clamp-2 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors motion-reduce:transition-none">
+                    <h3 className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-base leading-snug mb-3 h-10 sm:h-11 line-clamp-2 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors motion-reduce:transition-none">
                       {art.title}
                     </h3>
                     <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed line-clamp-3 mb-6">
@@ -360,7 +360,7 @@ export default function Blog() {
                     )}
                   </div>
 
-                  <div className="pt-4 border-t border-zinc-200/80 dark:border-zinc-800 flex items-center justify-between text-xs font-bold text-orange-600 dark:text-orange-400">
+                  <div className="pt-4 border-t border-zinc-200/80 dark:border-zinc-800 flex items-center justify-between text-xs font-bold text-[var(--color-emphasis-text)]">
                     <span className="flex items-center gap-1.5 text-zinc-500 dark:text-zinc-400 font-medium text-[11px]">
                       <User className="h-3.5 w-3.5" /> {art.author}
                     </span>
@@ -426,7 +426,7 @@ export default function Blog() {
                 >
                   <X className="h-5 w-5" />
                 </button>
-                <span className="absolute top-4 right-4 bg-orange-600 text-white text-[11px] font-bold px-3 py-1 rounded-full shadow">
+                <span className="absolute top-4 right-4 bg-[var(--color-cta)] text-white text-[11px] font-bold px-3 py-1 rounded-full shadow">
                   {openArticle.category}
                 </span>
                 <button
@@ -490,7 +490,7 @@ export default function Blog() {
                 {related.length > 0 && (
                   <div className="mt-8 pt-6 border-t border-zinc-200/80 dark:border-zinc-800">
                     <h3 className="flex items-center gap-2 text-sm font-black text-[var(--color-text-main-light)] dark:text-white mb-4">
-                      <BookOpen className="h-4 w-4 text-orange-600 dark:text-orange-400" /> مطالب مرتبط
+                      <BookOpen className="h-4 w-4 text-[var(--color-emphasis-text)]" /> مطالب مرتبط
                     </h3>
                     <div className="grid gap-3">
                       {related.map((rel) => (
@@ -508,7 +508,7 @@ export default function Blog() {
                           />
                           <span className="min-w-0">
                             <span className="block text-xs font-bold text-[var(--color-text-main-light)] dark:text-zinc-200 line-clamp-2 mb-1">{rel.title}</span>
-                            <span className="block text-[11px] text-orange-600 dark:text-orange-400 font-bold">{rel.category} · {rel.readTime || 'مقاله'}</span>
+                            <span className="block text-[11px] text-[var(--color-emphasis-text)] font-bold">{rel.category} · {rel.readTime || 'مقاله'}</span>
                           </span>
                         </button>
                       ))}
@@ -518,7 +518,7 @@ export default function Blog() {
 
                 <button
                   onClick={() => setOpenArticle(null)}
-                  className="mt-8 inline-flex items-center min-h-[44px] gap-2 text-sm font-bold text-orange-600 dark:text-orange-400 hover:gap-3 transition-all"
+                  className="mt-8 inline-flex items-center min-h-[44px] gap-2 text-sm font-bold text-[var(--color-emphasis-text)] hover:gap-3 transition-all"
                 >
                   <ArrowRight className="h-4 w-4" /> بازگشت به مجله
                 </button>

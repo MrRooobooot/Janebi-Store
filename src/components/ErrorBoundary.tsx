@@ -42,7 +42,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
             <button
               onClick={() => window.location.reload()}
-              className="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs px-6 py-3 rounded-2xl transition-all shadow-md mx-auto"
+              className="inline-flex items-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold text-xs px-6 py-3 rounded-2xl transition-all shadow-md mx-auto"
             >
               <RefreshCw className="h-4 w-4" />
               بارگذاری مجدد صفحه

@@ -71,7 +71,7 @@ export default function CheckoutCallback() {
         <div className="flex flex-col gap-3">
           <Link 
             to="/profile?tab=orders"
-            className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
+            className="w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
           >
             <ShoppingBag className="h-5 w-5" />
             مشاهده سفارشات من

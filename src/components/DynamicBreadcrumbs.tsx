@@ -163,7 +163,7 @@ export default function DynamicBreadcrumbs() {
               {index === 0 ? (
                 <Link
                   to={item.href || '/'}
-                  className="inline-flex items-center gap-1 text-gray-500 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors font-medium"
+                  className="inline-flex items-center gap-1 text-gray-500 dark:text-gray-400 hover:text-[var(--color-emphasis-text)] transition-colors font-medium"
                   title="خانه"
                 >
                   <Home className="h-3.5 w-3.5" />
@@ -172,7 +172,7 @@ export default function DynamicBreadcrumbs() {
               ) : item.href ? (
                 <Link
                   to={item.href}
-                  className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors font-medium text-gray-600 dark:text-gray-300"
+                  className="hover:text-[var(--color-emphasis-text)] transition-colors font-medium text-gray-600 dark:text-gray-300"
                 >
                   {item.label}
                 </Link>

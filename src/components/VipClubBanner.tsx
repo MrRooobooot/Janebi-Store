@@ -79,7 +79,7 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
-      className="relative rounded-3xl bg-gradient-to-r from-orange-600 via-amber-600 to-orange-700 text-white p-6 sm:p-10 md:p-12 overflow-hidden shadow-xl"
+      className="relative rounded-3xl text-white [background:linear-gradient(135deg,#b3500a,#994700)] p-6 sm:p-10 md:p-12 overflow-hidden shadow-xl"
     >
       {/* Background Decorative Blur circles */}
       <div className="absolute -top-24 -right-24 w-72 h-72 bg-[var(--color-surface-light)]/10 rounded-full blur-3xl pointer-events-none" />
@@ -135,7 +135,7 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
               <button
                 type="submit"
                 disabled={submitting}
-                className="bg-zinc-900 hover:bg-black dark:bg-orange-500 dark:hover:bg-orange-600 disabled:opacity-60 text-white px-6 py-3.5 rounded-xl font-extrabold text-xs sm:text-sm transition-all duration-300 flex items-center justify-center gap-2 shrink-0 shadow-lg active:scale-95 cursor-pointer"
+                className="bg-zinc-900 hover:bg-black dark:bg-[var(--color-cta)] dark:hover:bg-[var(--color-cta-hover)] disabled:opacity-60 text-white px-6 py-3.5 rounded-xl font-extrabold text-xs sm:text-sm transition-all duration-300 flex items-center justify-center gap-2 shrink-0 shadow-lg active:scale-95 cursor-pointer"
               >
                 <Gift className="h-4 w-4 text-orange-400" />
                 {submitting ? 'در حال ثبت...' : 'دریافت هدیه'}

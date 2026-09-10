@@ -32,7 +32,7 @@ export default function FreeShippingBar({
             className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-md ${
               isFreeShipping
                 ? 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-500'
-                : 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-orange-200 dark:border-orange-800 text-orange-600 dark:text-orange-500'
+                : 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-orange-200 dark:border-orange-800 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)]'
             }`}
           >
             {isFreeShipping ? (
@@ -55,8 +55,8 @@ export default function FreeShippingBar({
             ) : (
               <div>
                 <h3 className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-base md:text-lg">
-                  تنها <span className="text-orange-600 dark:text-orange-400 font-black text-xl">{formatPrice(amountLeft)}</span> دیگر تا{' '}
-                  <span className="text-orange-600 dark:text-orange-400 font-black">ارسال رایگان</span>
+                  تنها <span className="text-[var(--color-emphasis-text)] font-black text-xl">{formatPrice(amountLeft)}</span> دیگر تا{' '}
+                  <span className="text-[var(--color-emphasis-text)] font-black">ارسال رایگان</span>
                 </h3>
                 <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 mt-1 font-medium">
                   برای سفارش‌های بالای {formatPrice(FREE_SHIPPING_THRESHOLD)}، ارسال به سراسر کشور کاملاً رایگان است.

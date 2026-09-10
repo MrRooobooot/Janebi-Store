@@ -92,7 +92,7 @@ export default function FAQ() {
                     aria-hidden="true"
                     className={`flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg text-xs sm:text-sm font-black transition-colors ${
                       isOpen
-                        ? 'bg-orange-600 text-white dark:bg-orange-500'
+                        ? 'bg-[var(--color-cta)] text-white dark:bg-[var(--color-cta)]'
                         : 'bg-orange-50 text-orange-700 dark:bg-zinc-800/90 dark:text-orange-400'
                     }`}
                   >
@@ -102,7 +102,7 @@ export default function FAQ() {
                     className={`font-bold pr-0 text-sm sm:text-base transition-colors ${
                       isOpen
                         ? 'text-orange-700 dark:text-orange-400'
-                        : 'text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] group-hover:text-orange-600 dark:group-hover:text-orange-400'
+                        : 'text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)]'
                     }`}
                   >
                     {faq.question}
@@ -111,7 +111,7 @@ export default function FAQ() {
                 <ChevronDown
                   aria-hidden="true"
                   className={`h-5 w-5 flex-shrink-0 text-zinc-500 dark:text-zinc-400 transition-transform duration-300 ${
-                    isOpen ? 'rotate-180 text-orange-600 dark:text-orange-400' : ''
+                    isOpen ? 'rotate-180 text-[var(--color-emphasis-text)]' : ''
                   }`}
                 />
               </button>

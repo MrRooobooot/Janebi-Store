@@ -85,8 +85,8 @@ export default function Header() {
       {settings.announcementBarEnabled !== 'false' && (
       <div className="bg-zinc-100 dark:bg-black/60 text-zinc-700 dark:text-zinc-200 text-xs py-1.5 px-3 sm:px-4 border-b border-zinc-200/80 dark:border-white/5 w-full overflow-hidden transition-colors">
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5 text-[11px] font-medium text-orange-600 dark:text-amber-400 min-w-0">
-            <Sparkles className="h-3.5 w-3.5 animate-pulse shrink-0" />
+          <div className="flex items-center gap-1.5 text-[11px] font-medium text-[var(--color-cta)] min-w-0">
+            <Sparkles className="h-3.5 w-3.5 animate-none shrink-0" />
             <span className="text-zinc-800 dark:text-zinc-200 truncate font-semibold">{settings.announcement}</span>
           </div>
           <div className="hidden md:flex items-center gap-4 text-[11px] text-zinc-600 dark:text-zinc-400 font-medium shrink-0">
@@ -106,7 +106,7 @@ export default function Header() {
           <div className="shrink-0 flex items-center gap-2 sm:gap-3">
             <button
               aria-label={mobileMenuOpen ? "بستن منو" : "باز کردن منو"}
-              className="lg:hidden p-1.5 sm:p-2 text-zinc-700 dark:text-zinc-300 hover:text-orange-600 dark:hover:text-orange-400 focus:outline-none rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              className="lg:hidden p-1.5 sm:p-2 text-zinc-700 dark:text-zinc-300 hover:text-[var(--color-emphasis-text)] focus:outline-none rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? <X className="h-5 w-5 sm:h-6 sm:w-6" /> : <Menu className="h-5 w-5 sm:h-6 sm:w-6" />}
@@ -127,7 +127,7 @@ export default function Header() {
             {/* Mobile Search Button */}
             <button
               aria-label="جستجو"
-              className="md:hidden p-1.5 sm:p-2 text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              className="md:hidden p-1.5 sm:p-2 text-zinc-600 dark:text-zinc-400 hover:text-[var(--color-emphasis-text)] rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800"
               onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
             >
               <Search className="h-5 w-5" />
@@ -138,7 +138,7 @@ export default function Header() {
               aria-label={isDarkMode ? "تغییر به حالت روز" : "تغییر به حالت شب"}
               title={isDarkMode ? "حالت روز (روشن)" : "حالت شب (تاریک)"}
               onClick={toggleTheme}
-              className="p-1.5 sm:p-2 text-zinc-600 dark:text-zinc-300 hover:text-orange-600 dark:hover:text-orange-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-[var(--color-surface-light)]/[0.06] transition-colors"
+              className="p-1.5 sm:p-2 text-zinc-600 dark:text-zinc-300 hover:text-[var(--color-emphasis-text)] rounded-xl hover:bg-zinc-100 dark:hover:bg-[var(--color-surface-light)]/[0.06] transition-colors"
             >
               {isDarkMode ? <Sun className="h-5 w-5 text-amber-400" /> : <Moon className="h-5 w-5 text-zinc-600" />}
             </button>
@@ -147,7 +147,7 @@ export default function Header() {
             <Link
               to="/compare"
               aria-label="مشاهده لیست مقایسه کالاها"
-              className="p-1.5 sm:p-2 text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors relative hidden sm:flex items-center min-touch-target"
+              className="p-1.5 sm:p-2 text-zinc-600 dark:text-zinc-400 hover:text-[var(--color-emphasis-text)] rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors relative hidden sm:flex items-center min-touch-target"
               title="مقایسه کالاها"
             >
               <ArrowLeftRight className="h-5 w-5" />
@@ -176,12 +176,12 @@ export default function Header() {
             <button
               onClick={openCartDrawer}
               aria-label="مشاهده سبد خرید"
-              className="flex items-center gap-1 bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 hover:bg-orange-600 hover:text-white dark:hover:bg-orange-600 dark:hover:text-white border border-orange-200 dark:border-orange-900/50 px-1.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl transition-all duration-200 shadow-xs cursor-pointer"
+              className="flex items-center gap-1 bg-orange-50 dark:bg-orange-950/40 text-[var(--color-emphasis-text)] hover:bg-[var(--color-cta-hover)] hover:text-white border border-orange-200 dark:border-orange-900/50 px-1.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl transition-all duration-200 shadow-xs cursor-pointer"
             >
               <div className="relative">
                 <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-orange-600 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border-2 border-white dark:border-zinc-900">
+                  <span className="absolute -top-2 -right-2 bg-[var(--color-cta)] text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border-2 border-white dark:border-zinc-900">
                     {toPersianDigits(cartCount)}
                   </span>
                 )}
@@ -198,7 +198,7 @@ export default function Header() {
                   aria-haspopup="menu"
                   className="flex items-center gap-1 p-1 sm:p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-xs font-bold transition-colors"
                 >
-                  <User className="h-4 w-4 text-orange-600" />
+                  <User className="h-4 w-4 text-[var(--color-emphasis-text)]" />
                   <span className="hidden sm:inline max-w-[100px] truncate">{user?.name || 'حساب کاربری'}</span>
                   <ChevronDown className="hidden sm:inline h-3.5 w-3.5 text-zinc-500 dark:text-zinc-400" />
                 </button>
@@ -216,7 +216,7 @@ export default function Header() {
                     <Link
                       to="/profile"
                       onClick={() => setUserDropdownOpen(false)}
-                      className="flex items-center gap-2 px-4 py-2.5 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-orange-50 dark:hover:bg-orange-950/30 hover:text-orange-600"
+                      className="flex items-center gap-2 px-4 py-2.5 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-orange-50 dark:hover:bg-orange-950/30 hover:text-[var(--color-emphasis-text)]"
                     >
                       <Package className="h-4 w-4" />
                       داشبورد و سفارش‌ها
@@ -251,7 +251,7 @@ export default function Header() {
               <button
                 onClick={() => setAuthModalOpen(true)}
                 aria-label="ورود یا ثبت نام در سایت"
-                className="flex items-center gap-1 bg-orange-600 hover:bg-orange-500 text-white px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-black transition-all shadow-sm shadow-orange-600/25 cursor-pointer active:scale-95 shrink-0"
+                className="flex items-center gap-1 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-black transition-all shadow-sm shadow-orange-600/25 cursor-pointer active:scale-95 shrink-0"
               >
                 <LogIn className="h-4 w-4" />
                 <span className="hidden sm:inline">ورود / عضویت</span>
@@ -275,11 +275,11 @@ export default function Header() {
               <Link
                 key={link.to}
                 to={link.to}
-                className={`hover:text-orange-600 dark:hover:text-orange-400 transition-colors py-1 ${
+                className={`hover:text-[var(--color-emphasis-text)] transition-colors py-1 ${
                   (link as any).highlight 
-                    ? 'text-amber-500 dark:text-amber-400 font-black px-2.5 py-0.5 rounded-lg bg-amber-500/10 border border-amber-500/25'
+                    ? 'text-[var(--color-cta)] font-black px-2.5 py-0.5 rounded-lg bg-[var(--color-cta)]/10 border border-[var(--color-cta)]/25'
                     : isActive 
-                      ? 'text-orange-600 dark:text-orange-400 font-black' 
+                      ? 'text-[var(--color-emphasis-text)] font-black' 
                       : ''
                 }`}
               >
@@ -299,7 +299,7 @@ export default function Header() {
                 key={link.to}
                 to={link.to}
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 hover:bg-orange-50 dark:hover:bg-orange-950/30 hover:text-orange-600 text-zinc-800 dark:text-zinc-200 text-center"
+                className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 hover:bg-orange-50 dark:hover:bg-orange-950/30 hover:text-[var(--color-emphasis-text)] text-zinc-800 dark:text-zinc-200 text-center"
               >
                 {link.label}
               </Link>

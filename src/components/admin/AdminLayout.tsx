@@ -74,7 +74,7 @@ export default function AdminLayout() {
           </p>
           <button 
             onClick={() => navigate('/')}
-            className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3.5 rounded-xl transition-all"
+            className="w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold py-3.5 rounded-xl transition-all"
           >
             بازگشت به فروشگاه
           </button>
@@ -144,7 +144,7 @@ export default function AdminLayout() {
           </div>
           <div>
             <span className="text-sm font-black text-[var(--color-text-main-light)] dark:text-white">
-              جانبی <span className="text-orange-500">آرنا</span>
+              جانبی <span className="text-[var(--color-emphasis-text)]">آرنا</span>
             </span>
             <span className="block text-[9px] text-zinc-500 dark:text-zinc-400 font-bold uppercase tracking-widest font-mono">ADMIN PANEL</span>
           </div>
@@ -153,7 +153,7 @@ export default function AdminLayout() {
           <button
             onClick={toggleTheme}
             aria-label={isDarkMode ? 'تغییر به حالت روز' : 'تغییر به حالت شب'}
-            className="w-11 h-11 flex items-center justify-center rounded-xl text-gray-500 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors motion-reduce:transition-none"
+            className="w-11 h-11 flex items-center justify-center rounded-xl text-gray-500 hover:text-[var(--color-emphasis-text)] hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors motion-reduce:transition-none"
             title={isDarkMode ? 'حالت روز' : 'حالت شب'}
           >
             {isDarkMode ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4 text-indigo-500" />}
@@ -200,7 +200,7 @@ export default function AdminLayout() {
               className={({ isActive }) => 
                 `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
                   isActive 
-                    ? 'bg-gradient-to-r from-orange-600 to-amber-600 text-white shadow-md shadow-orange-500/25' 
+                    ? 'bg-[var(--color-cta)] text-white' 
                     : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-[var(--color-text-main-light)] dark:hover:text-gray-100'
                 }`
               }
@@ -227,7 +227,7 @@ export default function AdminLayout() {
           className="flex items-center justify-between w-full px-3.5 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl text-xs font-bold transition-all"
         >
           <div className="flex items-center gap-2">
-            <ExternalLink className="h-4 w-4 text-orange-500" />
+            <ExternalLink className="h-4 w-4 text-[var(--color-emphasis-text)]" />
             <span>مشاهده فروشگاه</span>
           </div>
           <ArrowRight className="h-3.5 w-3.5 text-gray-500 dark:text-gray-400" />
@@ -290,9 +290,9 @@ export default function AdminLayout() {
               <LogoSymbol className="w-5 h-5" />
             </div>
             <span className="text-xs font-black text-[var(--color-text-main-light)] dark:text-white">
-              جانبی <span className="text-orange-500">آرنا</span>
+              جانبی <span className="text-[var(--color-emphasis-text)]">آرنا</span>
             </span>
-            <span className="text-[9px] bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 font-black px-2 py-0.5 rounded-md border border-orange-200 dark:border-orange-900/50">مدیریت</span>
+            <span className="text-[9px] bg-orange-100 dark:bg-orange-950/60 text-[var(--color-emphasis-text)] font-black px-2 py-0.5 rounded-md border border-orange-200 dark:border-orange-900/50">مدیریت</span>
           </div>
           <button
             onClick={toggleTheme}

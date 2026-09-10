@@ -44,7 +44,7 @@ export default function PageControls({ page, pageSize, totalItems, onPageChange 
           onClick={() => onPageChange(p)}
           className={`${btnBase} px-3 ${
             p === page
-              ? 'bg-orange-600 text-white shadow-sm'
+              ? 'bg-[var(--color-cta)] text-white shadow-sm'
               : 'bg-[var(--color-surface-light)] dark:bg-gray-800 border border-[var(--color-border-light)] dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'
           }`}
         >

@@ -43,7 +43,7 @@ export default function LatestReviews() {
     <section className="w-full" aria-labelledby="latest-reviews-heading">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
-          <MessageSquareQuote className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+          <MessageSquareQuote className="h-5 w-5 text-[var(--color-emphasis-text)]" />
           <div>
             <h2 id="latest-reviews-heading" className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white">
               نظرات مشتریان
@@ -55,7 +55,7 @@ export default function LatestReviews() {
         </div>
         <Link
           to="/products"
-          className="text-xs font-black text-orange-600 dark:text-orange-400 hover:underline flex items-center gap-1"
+          className="text-xs font-black text-[var(--color-emphasis-text)] hover:underline flex items-center gap-1"
         >
           <span>مشاهده محصولات</span>
         </Link>
@@ -117,7 +117,7 @@ export default function LatestReviews() {
               {productTitle && (
                 <Link
                   to="/products"
-                  className="mt-auto pt-2 border-t border-zinc-100 dark:border-zinc-800 text-[11px] font-bold text-zinc-500 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors truncate"
+                  className="mt-auto pt-2 border-t border-zinc-100 dark:border-zinc-800 text-[11px] font-bold text-zinc-500 dark:text-zinc-400 hover:text-[var(--color-emphasis-text)] transition-colors truncate"
                 >
                   محصول: {productTitle}
                 </Link>

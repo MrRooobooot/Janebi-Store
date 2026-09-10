@@ -136,7 +136,7 @@ export default function ProductDetail() {
   if (!product)
     return (
       <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-12 text-center border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex flex-col items-center shadow-xs">
-        <div className="w-16 h-16 rounded-2xl bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 flex items-center justify-center mb-4 border border-orange-100 dark:border-orange-800/60 shadow-inner">
+        <div className="w-16 h-16 rounded-2xl bg-orange-50 dark:bg-orange-950/40 text-[var(--color-emphasis-text)] flex items-center justify-center mb-4 border border-orange-100 dark:border-orange-800/60 shadow-inner">
           <AlertCircle className="h-8 w-8" />
         </div>
         <h3 className="text-xl font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] mb-2">محصول یافت نشد!</h3>
@@ -145,7 +145,7 @@ export default function ProductDetail() {
         </p>
         <Link
           to="/products"
-          className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 rounded-xl font-medium transition-colors"
+          className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white px-8 py-3 rounded-xl font-medium transition-colors"
         >
           بازگشت به محصولات
         </Link>
@@ -297,7 +297,7 @@ export default function ProductDetail() {
               <div>
                 {/* Brand & Action Share Header */}
                 <div className="flex items-center justify-between mb-3">
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 border border-orange-200/50 dark:border-orange-800/50 text-xs font-extrabold">
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-orange-50 dark:bg-orange-950/40 text-[var(--color-emphasis-text)] border border-orange-200/50 dark:border-orange-800/50 text-xs font-extrabold">
                     <span>برند: {product.brand}</span>
                   </div>
                   <button
@@ -357,7 +357,7 @@ export default function ProductDetail() {
                           </span>
                         </div>
                       )}
-                      <div className="text-3xl font-black text-orange-600 dark:text-orange-400 tracking-tight">
+                      <div className="text-3xl font-black text-[var(--color-emphasis-text)] tracking-tight">
                         {formatPrice(product.price)}
                       </div>
                     </div>
@@ -391,7 +391,7 @@ export default function ProductDetail() {
                           key={idx}
                           className="bg-orange-50/70 dark:bg-orange-950/30 text-orange-700 dark:text-orange-300 text-xs font-bold px-3 py-1.5 rounded-xl border border-orange-100/80 dark:border-orange-900/40 flex items-center gap-1.5"
                         >
-                          <Zap className="h-3.5 w-3.5 text-orange-500" />
+                          <Zap className="h-3.5 w-3.5 text-[var(--color-emphasis-text)]" />
                           {feat}
                         </span>
                       ))}
@@ -410,7 +410,7 @@ export default function ProductDetail() {
                       ? 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed shadow-none'
                       : addedToCart
                       ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/20'
-                      : 'bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 hover:from-orange-700 hover:to-amber-600 text-white shadow-orange-500/25'
+                      : 'bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white shadow-orange-500/25'
                   }`}
                 >
                   {outOfStock ? (
@@ -463,7 +463,7 @@ export default function ProductDetail() {
               onClick={() => setActiveTab('description')}
               className={`pb-4 font-bold text-sm sm:text-base border-b-2 transition-all whitespace-nowrap relative ${
                 activeTab === 'description'
-                  ? 'text-orange-600 dark:text-orange-400 border-orange-600 dark:border-orange-400 font-black'
+                  ? 'text-[var(--color-emphasis-text)] border-orange-600 dark:border-orange-400 font-black'
                   : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-800 dark:hover:text-gray-200'
               }`}
             >
@@ -473,7 +473,7 @@ export default function ProductDetail() {
               onClick={() => setActiveTab('specs')}
               className={`pb-4 font-bold text-sm sm:text-base border-b-2 transition-all whitespace-nowrap relative ${
                 activeTab === 'specs'
-                  ? 'text-orange-600 dark:text-orange-400 border-orange-600 dark:border-orange-400 font-black'
+                  ? 'text-[var(--color-emphasis-text)] border-orange-600 dark:border-orange-400 font-black'
                   : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-800 dark:hover:text-gray-200'
               }`}
             >
@@ -483,7 +483,7 @@ export default function ProductDetail() {
               onClick={() => setActiveTab('reviews')}
               className={`pb-4 font-bold text-sm sm:text-base border-b-2 transition-all whitespace-nowrap relative ${
                 activeTab === 'reviews'
-                  ? 'text-orange-600 dark:text-orange-400 border-orange-600 dark:border-orange-400 font-black'
+                  ? 'text-[var(--color-emphasis-text)] border-orange-600 dark:border-orange-400 font-black'
                   : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-800 dark:hover:text-gray-200'
               }`}
             >
@@ -644,7 +644,7 @@ export default function ProductDetail() {
                     <p className="text-xs text-gray-600 dark:text-gray-300 truncate font-bold leading-tight">
                       {product.title}
                     </p>
-                    <p className="text-sm font-black text-orange-600 dark:text-orange-400 leading-tight mt-1">
+                    <p className="text-sm font-black text-[var(--color-emphasis-text)] leading-tight mt-1">
                       {formatPrice(product.price)}
                     </p>
                   </div>
@@ -669,7 +669,7 @@ export default function ProductDetail() {
                         ? 'bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed'
                         : addedToCart
                         ? 'bg-emerald-600 text-white shadow-emerald-600/20'
-                        : 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-orange-500/20'
+                        : 'bg-[var(--color-cta)] text-white shadow-orange-500/20'
                     }`}
                   >
                     {outOfStock ? (
@@ -708,7 +708,7 @@ export default function ProductDetail() {
                   {product.title}
                 </p>
                 <div className="flex items-center gap-3 mt-1">
-                  <span className="text-lg font-black text-orange-600 dark:text-orange-400 tracking-tight leading-none">
+                  <span className="text-lg font-black text-[var(--color-emphasis-text)] tracking-tight leading-none">
                     {formatPrice(product.price)}
                   </span>
                   {product.discount && product.originalPrice && (
@@ -759,7 +759,7 @@ export default function ProductDetail() {
                       ? 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed shadow-none'
                       : addedToCart
                       ? 'bg-emerald-600 text-white shadow-emerald-600/20'
-                      : 'bg-gradient-to-r from-orange-600 to-amber-500 text-white shadow-orange-600/25'
+                      : 'bg-[var(--color-cta)] text-white shadow-orange-600/25'
                   }`}
                 >
                   {outOfStock ? (

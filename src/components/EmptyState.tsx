@@ -28,7 +28,7 @@ export default function EmptyState({
         initial={shouldReduceMotion ? false : { scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={shouldReduceMotion ? { duration: 0 } : { type: 'spring', stiffness: 200, damping: 15 }}
-        className="w-20 h-20 sm:w-24 sm:h-24 bg-orange-50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400 rounded-2xl sm:rounded-3xl flex items-center justify-center mb-6 border border-orange-100/80 dark:border-orange-900/40 shadow-inner"
+        className="w-20 h-20 sm:w-24 sm:h-24 bg-orange-50 dark:bg-orange-950/30 text-[var(--color-emphasis-text)] rounded-2xl sm:rounded-3xl flex items-center justify-center mb-6 border border-orange-100/80 dark:border-orange-900/40 shadow-inner"
       >
         {icon}
       </motion.div>

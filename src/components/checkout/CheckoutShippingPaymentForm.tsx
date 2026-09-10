@@ -33,13 +33,13 @@ export default function CheckoutShippingPaymentForm({
                 : 'border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] hover:border-gray-200 dark:hover:border-gray-700 bg-gray-50/50 dark:bg-gray-800/20'
             }`}
           >
-            <div className="p-3 bg-orange-100 dark:bg-orange-950/80 text-orange-600 dark:text-orange-400 rounded-2xl shrink-0">
+            <div className="p-3 bg-orange-100 dark:bg-orange-950/80 text-[var(--color-emphasis-text)] rounded-2xl shrink-0">
               <Zap className="h-6 w-6" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between">
                 <span className="font-black text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">پست پیشتاز هوایی</span>
-                <span className="font-black text-xs text-orange-600 dark:text-orange-400">
+                <span className="font-black text-xs text-[var(--color-emphasis-text)]">
                   {isFreeShipping ? 'رایگان' : formatPrice(SHIPPING_FEES.express)}
                 </span>
               </div>
@@ -63,7 +63,7 @@ export default function CheckoutShippingPaymentForm({
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between">
                 <span className="font-black text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">پست سفارشی زمینی</span>
-                <span className="font-black text-xs text-orange-600 dark:text-orange-400">
+                <span className="font-black text-xs text-[var(--color-emphasis-text)]">
                   {isFreeShipping ? 'رایگان' : formatPrice(SHIPPING_FEES.standard)}
                 </span>
               </div>

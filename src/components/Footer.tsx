@@ -46,7 +46,7 @@ export default function Footer() {
         {/* Value Propositions */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-12 border-b border-zinc-200/80 dark:border-zinc-800 pb-12">
           <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/80 dark:border-zinc-800 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:bg-white dark:hover:bg-zinc-800/70 focus-within:ring-2 focus-within:ring-orange-500/40">
-            <div className="p-2.5 rounded-xl bg-orange-100/80 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 shrink-0">
+            <div className="p-2.5 rounded-xl bg-orange-100/80 dark:bg-orange-950/40 text-[var(--color-emphasis-text)] shrink-0">
               <Truck className="h-6 w-6" strokeWidth={2} />
             </div>
             <div>
@@ -98,11 +98,11 @@ export default function Footer() {
             </div>
             <div className="space-y-2 text-xs text-zinc-600 dark:text-zinc-400 pt-2 font-medium border-t border-zinc-200/80 dark:border-zinc-800">
               <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-orange-500 shrink-0" />
+                <Phone className="h-4 w-4 text-[var(--color-emphasis-text)] shrink-0" />
                 <span>تلفن پشتیبانی: <span dir="ltr" className="font-bold font-mono">{toPersianDigits(settings.phone)}</span></span>
               </div>
               <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4 text-orange-500 shrink-0" />
+                <Mail className="h-4 w-4 text-[var(--color-emphasis-text)] shrink-0" />
                 <span>ایمیل: <span dir="ltr" className="font-bold font-mono">{settings.email}</span></span>
               </div>
             </div>
@@ -126,7 +126,7 @@ export default function Footer() {
               <button 
                 type="submit" 
                 aria-label="ارسال عضویت در خبرنامه"
-                className="bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600 text-white px-5 rounded-l-2xl flex items-center justify-center transition-colors font-medium cursor-pointer"
+                className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] dark:bg-[var(--color-cta)] dark:hover:bg-[var(--color-cta-hover)] text-white px-5 rounded-l-2xl flex items-center justify-center transition-colors font-medium cursor-pointer"
               >
                 <Send className="h-4 w-4" />
               </button>
@@ -136,7 +136,7 @@ export default function Footer() {
           {/* Enamad Trust Seal Badge - Responsive Card */}
           <div className="md:col-span-2 lg:col-span-3 flex flex-col items-center justify-center p-6 rounded-3xl bg-white dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800 shadow-xs text-center">
             <span className="text-xs font-black text-zinc-800 dark:text-zinc-200 mb-3 flex items-center gap-1.5">
-              <Award className="h-4 w-4 text-orange-500" />
+              <Award className="h-4 w-4 text-[var(--color-emphasis-text)]" />
               نماد اعتماد الکترونیکی
             </span>
             
@@ -178,7 +178,7 @@ export default function Footer() {
               />
               {imgError && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-2 bg-zinc-100 text-center">
-                  <Award className="h-6 w-6 text-orange-500 mb-1" />
+                  <Award className="h-6 w-6 text-[var(--color-emphasis-text)] mb-1" />
                   <span className="text-[10px] font-black text-zinc-700">دارای اینماد رسمی</span>
                   <span className="text-[8px] text-zinc-400">کلیک برای استعلام</span>
                 </div>

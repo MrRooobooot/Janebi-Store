@@ -70,12 +70,12 @@ export default function ProfileSidebar({
               onClick={() => setActiveTab(item.id)}
               className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl text-xs font-bold transition-all duration-200 ${
                 isActive
-                  ? 'bg-gradient-to-l from-orange-50 to-amber-50/30 dark:from-orange-500/10 dark:to-amber-500/5 text-orange-600 dark:text-orange-400 border-r-4 border-orange-500 shadow-xs'
+                  ? 'bg-gradient-to-l from-orange-50 to-amber-50/30 dark:from-orange-500/10 dark:to-amber-500/5 text-[var(--color-emphasis-text)] border-r-4 border-orange-500 shadow-xs'
                   : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/60 border-r-4 border-transparent'
               }`}
             >
               <div className="flex items-center gap-3">
-                <Icon className={`h-4.5 w-4.5 ${isActive ? 'text-orange-500' : 'text-gray-400'}`} />
+                <Icon className={`h-4.5 w-4.5 ${isActive ? 'text-[var(--color-emphasis-text)]' : 'text-gray-400'}`} />
                 <span>{item.label}</span>
               </div>
 
@@ -84,14 +84,14 @@ export default function ProfileSidebar({
                   <span
                     className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
                       isActive
-                        ? 'bg-orange-500 text-white'
+                        ? 'bg-[var(--color-cta)] text-white'
                         : 'bg-gray-100 dark:bg-gray-800 text-gray-500'
                     }`}
                   >
                     {item.badge}
                   </span>
                 )}
-                <ChevronLeft className={`h-4 w-4 ${isActive ? 'text-orange-500' : 'text-gray-300 dark:text-gray-600'}`} />
+                <ChevronLeft className={`h-4 w-4 ${isActive ? 'text-[var(--color-emphasis-text)]' : 'text-gray-300 dark:text-gray-600'}`} />
               </div>
             </button>
           );

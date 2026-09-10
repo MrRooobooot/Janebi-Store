@@ -122,7 +122,7 @@ export default function AddressBookTab() {
       <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h2 className="font-extrabold text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
-            <MapPin className="h-5 w-5 text-orange-500" />
+            <MapPin className="h-5 w-5 text-[var(--color-emphasis-text)]" />
             <span>آدرس‌های تحویل سفارش ({addresses.length})</span>
           </h2>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">
@@ -132,7 +132,7 @@ export default function AddressBookTab() {
 
         <button
           onClick={handleOpenAddModal}
-          className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs px-5 py-3 rounded-2xl flex items-center gap-2 transition-all shadow-md shadow-orange-500/20 active:scale-95 shrink-0"
+          className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold text-xs px-5 py-3 rounded-2xl flex items-center gap-2 transition-all shadow-md shadow-orange-500/20 active:scale-95 shrink-0"
         >
           <Plus className="h-4 w-4" />
           افزودن آدرس جدید
@@ -148,7 +148,7 @@ export default function AddressBookTab() {
           <div>هنوز هیچ آدرسی ثبت نکرده‌اید.</div>
           <button
             onClick={handleOpenAddModal}
-            className="text-xs text-orange-600 dark:text-orange-400 hover:underline font-bold"
+            className="text-xs text-[var(--color-emphasis-text)] hover:underline font-bold"
           >
             ثبت اولین آدرس تحویل
           </button>
@@ -168,11 +168,11 @@ export default function AddressBookTab() {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <span className="font-extrabold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-1.5">
-                      <Building className="h-4 w-4 text-orange-500" />
+                      <Building className="h-4 w-4 text-[var(--color-emphasis-text)]" />
                       {addr.title}
                     </span>
                     {addr.isDefault && (
-                      <span className="bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                      <span className="bg-orange-100 dark:bg-orange-500/20 text-[var(--color-emphasis-text)] text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
                         <Star className="h-3 w-3 fill-orange-500" /> پیش‌فرض
                       </span>
                     )}
@@ -226,7 +226,7 @@ export default function AddressBookTab() {
                 {!addr.isDefault ? (
                   <button
                     onClick={() => setDefaultAddress(addr.id)}
-                    className="text-xs font-bold text-orange-600 dark:text-orange-400 hover:underline flex items-center gap-1"
+                    className="text-xs font-bold text-[var(--color-emphasis-text)] hover:underline flex items-center gap-1"
                   >
                     <Star className="h-3.5 w-3.5" />
                     تنظیم به عنوان آدرس پیش‌فرض
@@ -255,7 +255,7 @@ export default function AddressBookTab() {
           <div className="relative w-full max-w-lg bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 sm:p-8 shadow-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] z-10 text-right space-y-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
               <h3 className="font-extrabold text-base text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-orange-500" />
+                <MapPin className="h-5 w-5 text-[var(--color-emphasis-text)]" />
                 {editingId ? 'ویرایش آدرس تحویل' : 'ثبت آدرس جدید تحویل'}
               </h3>
               <button
@@ -387,7 +387,7 @@ export default function AddressBookTab() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-6 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-2xl text-xs font-bold shadow-md shadow-orange-500/20 active:scale-95 disabled:opacity-50"
+                  className="px-6 py-2.5 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white rounded-2xl text-xs font-bold shadow-md shadow-orange-500/20 active:scale-95 disabled:opacity-50"
                 >
                   {submitting ? 'در حال ثبت...' : editingId ? 'ویرایش آدرس' : 'ذخیره آدرس'}
                 </button>

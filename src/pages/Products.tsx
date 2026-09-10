@@ -69,7 +69,7 @@ export default function Products() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Page Title Header */}
-        <div className="mb-8 text-right bg-gradient-to-r from-orange-500/10 via-amber-500/5 to-transparent dark:from-white/[0.04] dark:via-white/[0.02] dark:to-transparent p-6 rounded-3xl border border-orange-500/20 dark:border-white/[0.08]">
+        <div className="mb-8 text-right bg-gradient-to-r from-[var(--color-cta)]/10 via-transparent to-transparent dark:from-white/[0.04] dark:via-white/[0.02] dark:to-transparent p-6 rounded-3xl border border-[var(--color-cta)]/15 dark:border-white/[0.08]">
           {isCategoryFiltered ? (
             <>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 dark:bg-orange-950/70 text-orange-700 dark:text-orange-300 text-xs font-bold mb-2">
@@ -179,7 +179,7 @@ export default function Products() {
                       onClick={() => setPage(i + 1)}
                       className={`w-10 h-10 rounded-xl flex items-center justify-center text-xs font-extrabold transition-all cursor-pointer ${
                         page === i + 1
-                          ? 'bg-gradient-to-tr from-orange-600 to-amber-600 text-white shadow-md shadow-orange-500/25 scale-105'
+                          ? 'bg-[var(--color-cta)] text-white ring-2 ring-[var(--color-cta)]/30'
                           : 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-[var(--color-border-dark)] hover:border-orange-500/50 text-gray-700 dark:text-gray-300'
                       }`}
                     >

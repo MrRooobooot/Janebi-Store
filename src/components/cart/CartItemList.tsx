@@ -26,7 +26,7 @@ export default function CartItemList({
       <div className="flex items-center justify-between px-2 mb-2">
         <h2 className="text-lg font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
           <span>اقلام سبد خرید</span>
-          <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400">
+          <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-orange-100 dark:bg-orange-950/60 text-[var(--color-emphasis-text)]">
             {toPersianDigits(cart.length)} قلم کالا
           </span>
         </h2>
@@ -73,7 +73,7 @@ export default function CartItemList({
                     {item.brand}
                   </span>
                   {item.category && (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-orange-50 dark:bg-orange-950/40 text-[var(--color-emphasis-text)]">
                       {item.category}
                     </span>
                   )}
@@ -81,7 +81,7 @@ export default function CartItemList({
 
                 <Link
                   to={`/products/${item.id}`}
-                  className="font-bold text-sm sm:text-base text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] hover:text-orange-600 dark:hover:text-orange-400 transition-colors line-clamp-2 leading-snug"
+                  className="font-bold text-sm sm:text-base text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] hover:text-[var(--color-emphasis-text)] transition-colors line-clamp-2 leading-snug"
                 >
                   {item.title}
                 </Link>

@@ -23,7 +23,7 @@ export default function DashboardOverviewTab({
   return (
     <div className="space-y-6 text-right">
       {/* Welcome Hero Banner */}
-      <div className="bg-gradient-to-br from-orange-500 via-amber-500 to-orange-600 rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-lg shadow-orange-500/20">
+      <div className="rounded-3xl p-6 sm:p-8 text-white [background:linear-gradient(135deg,#b3500a,#994700)] relative overflow-hidden shadow-lg shadow-orange-500/20">
         <div className="absolute top-0 left-0 w-64 h-64 bg-[var(--color-surface-light)]/10 rounded-full blur-2xl pointer-events-none" />
         <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div>
@@ -84,7 +84,7 @@ export default function DashboardOverviewTab({
               <ShieldCheck className="h-5 w-5" />
             </div>
           </div>
-          <div className="font-black text-lg text-orange-600 dark:text-orange-400">
+          <div className="font-black text-lg text-[var(--color-emphasis-text)]">
             {formatPrice(totalSpent)}
           </div>
         </div>
@@ -100,7 +100,7 @@ export default function DashboardOverviewTab({
 
           <button
             onClick={() => setActiveTab('orders')}
-            className="text-xs font-bold text-orange-600 dark:text-orange-400 hover:underline flex items-center gap-1"
+            className="text-xs font-bold text-[var(--color-emphasis-text)] hover:underline flex items-center gap-1"
           >
             مشاهده همه سفارش‌ها <ArrowLeft className="h-3.5 w-3.5" />
           </button>
@@ -110,7 +110,12 @@ export default function DashboardOverviewTab({
           <div className="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] space-y-3">
             <div className="flex items-center justify-between text-xs font-bold">
               <span className="text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">کد سفارش: {orders[0].id}</span>
-              <span className="px-3 py-1 rounded-full text-[10px] bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300">
+              <span className={`px-3 py-1 rounded-full text-[10px] ${
+                  orders[0].status === 'delivered' ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300'
+                  : orders[0].status === 'cancelled' ? 'bg-rose-100 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300'
+                  : orders[0].status === 'processing' ? 'bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300'
+                  : 'bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300'
+                }`}>
                 {orders[0].statusText}
               </span>
             </div>
@@ -137,7 +142,7 @@ export default function DashboardOverviewTab({
 
             <div className="flex justify-between items-center pt-2 text-xs font-bold text-gray-600 dark:text-gray-400">
               <span>تاریخ: {orders[0].date}</span>
-              <span className="text-orange-600 dark:text-orange-400 text-sm">{formatPrice(orders[0].total)}</span>
+              <span className="text-[var(--color-emphasis-text)] text-sm">{formatPrice(orders[0].total)}</span>
             </div>
           </div>
         ) : (

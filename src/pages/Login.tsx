@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Phone, Lock, Eye, EyeOff, LogIn, ArrowLeft, KeyRound, ShieldCheck } from "lucide-react";
+import { AlertCircle,  Phone, Lock, Eye, EyeOff, LogIn, ArrowLeft, KeyRound, ShieldCheck } from "lucide-react";
 import { motion } from "motion/react";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../contexts/ToastContext";
@@ -45,6 +45,7 @@ export default function Login() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   // R2-08: countdown interval is cleared on unmount to avoid setState on
@@ -158,18 +159,22 @@ export default function Login() {
     e.preventDefault();
     const normalizedPhone = normalizeIranianMobile(phone);
     if (!isValidIranianMobile(normalizedPhone)) {
-      addToast("لطفاً شماره موبایل معتبر وارد کنید (مثلا ۰۹۱۲۳۴۵۶۷۸۹)", "error");
+      setLoginError("لطفاً شماره موبایل معتبر وارد کنید (مثلا ۰۹۱۲۳۴۵۶۷۸۹)");
       return;
     }
 
     if (!password || password.length < 4) {
-      addToast("رمز عبور باید حداقل ۴ کاراکتر باشد", "error");
+      setLoginError("رمز عبور باید حداقل ۴ کاراکتر باشد");
       return;
     }
 
+    setLoginError(null);
     setIsLoading(true);
     const result = await login(normalizedPhone, password);
     setIsLoading(false);
+    if (!result.ok) {
+      setLoginError("شماره موبایل یا رمز عبور اشتباه است");
+    }
     if (result.ok) {
       // Admin still on the initial password → forced change screen, not /profile.
       // Read the flag from the login RESULT — the context state is a stale
@@ -193,7 +198,7 @@ export default function Login() {
         <div className="absolute -top-12 -right-12 w-40 h-40 bg-orange-500/10 rounded-full blur-2xl pointer-events-none" />
 
         <div className="text-center mb-6">
-          <div className="inline-flex p-3 rounded-2xl bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 mb-3">
+          <div className="inline-flex p-3 rounded-2xl bg-orange-100 dark:bg-orange-500/20 text-[var(--color-emphasis-text)] mb-3">
             <LogIn className="h-7 w-7" />
           </div>
           <h1 className="text-2xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
@@ -209,7 +214,7 @@ export default function Login() {
         {/* Single password-login mode (OTP login removed — dead feature) */}
         <div className="flex bg-gray-100 dark:bg-gray-800 p-1 rounded-2xl mb-6 text-xs font-bold">
           <div
-            className="flex-1 py-2.5 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-700 text-orange-600 dark:text-orange-400 shadow-sm text-center"
+            className="flex-1 py-2.5 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-700 text-[var(--color-emphasis-text)] shadow-sm text-center"
           >
             ورود با رمز عبور
           </div>
@@ -250,7 +255,7 @@ export default function Login() {
                     کد تایید پیامک‌شده *
                   </label>
                   {otpSent && (
-                    <span className="text-[11px] text-orange-600 dark:text-orange-400 font-mono">
+                    <span className="text-[11px] text-[var(--color-emphasis-text)] font-mono">
                       {otpCountdown > 0
                         ? `${toPersianDigits(otpCountdown)} ثانیه تا ارسال مجدد`
                         : "پیامک نرسیده؟ ارسال مجدد"}
@@ -277,7 +282,7 @@ export default function Login() {
                     type="button"
                     onClick={handleSendOtp}
                     disabled={isLoading || otpCountdown > 0}
-                    className="px-4 py-3.5 rounded-2xl bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 text-xs font-extrabold hover:bg-orange-200 transition-all disabled:opacity-50"
+                    className="px-4 py-3.5 rounded-2xl bg-orange-100 dark:bg-orange-500/20 text-[var(--color-emphasis-text)] text-xs font-extrabold hover:bg-orange-200 transition-all disabled:opacity-50"
                   >
                     {otpSent ? "ارسال مجدد" : "دریافت کد"}
                   </button>
@@ -350,11 +355,18 @@ export default function Login() {
             </div>
           ) : null}
 
+          {loginError && (
+            <div className="flex items-center gap-2 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs rounded-xl p-3 font-bold" role="alert">
+              <AlertCircle className="h-4 w-4 shrink-0" />
+              <span>{loginError}</span>
+            </div>
+          )}
+
           {!(mode === "forgot" && !otpEnabled) && (
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-extrabold py-4 px-6 rounded-2xl shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 transition-all active:scale-98 text-sm mt-6 disabled:opacity-60"
+              className="w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-extrabold py-4 px-6 rounded-2xl shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 transition-all active:scale-98 text-sm mt-6 disabled:opacity-60"
             >
               <span>{mode === "forgot" ? "تغییر رمز عبور" : "ورود به حساب"}</span>
               <ArrowLeft className="h-4 w-4" />
@@ -371,7 +383,7 @@ export default function Login() {
                 setNewPassword("");
                 setConfirmPassword("");
               }}
-              className="w-full text-center text-xs font-bold text-gray-500 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
+              className="w-full text-center text-xs font-bold text-gray-500 dark:text-gray-400 hover:text-[var(--color-emphasis-text)] transition-colors"
             >
               رمز عبور خود را فراموش کرده‌اید؟
             </button>
@@ -380,7 +392,7 @@ export default function Login() {
             <button
               type="button"
               onClick={() => setMode("password")}
-              className="w-full text-center text-xs font-bold text-gray-500 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
+              className="w-full text-center text-xs font-bold text-gray-500 dark:text-gray-400 hover:text-[var(--color-emphasis-text)] transition-colors"
             >
               بازگشت به ورود
             </button>
@@ -389,7 +401,7 @@ export default function Login() {
 
         <div className="mt-8 pt-6 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-center text-xs font-medium text-gray-500">
           حساب کاربری ندارید؟{" "}
-          <Link to="/register" className="font-extrabold text-orange-600 dark:text-orange-400 hover:underline">
+          <Link to="/register" className="font-extrabold text-[var(--color-emphasis-text)] hover:underline">
             ثبت‌نام کنید
           </Link>
         </div>

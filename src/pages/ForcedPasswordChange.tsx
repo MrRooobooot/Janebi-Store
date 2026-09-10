@@ -140,7 +140,7 @@ export default function ForcedPasswordChange() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold py-4 px-6 rounded-2xl shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 transition-all active:scale-98 text-sm mt-6 disabled:opacity-60"
+            className="w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-extrabold py-4 px-6 rounded-2xl shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 transition-all active:scale-98 text-sm mt-6 disabled:opacity-60"
           >
             <span>{isLoading ? "در حال ثبت..." : "ثبت رمز جدید و ورود به پنل"}</span>
             <ArrowLeft className="h-4 w-4" />

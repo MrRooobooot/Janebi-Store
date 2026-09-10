@@ -24,7 +24,7 @@ export default function Terms() {
 
       <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 sm:p-10 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-6 text-gray-700 dark:text-gray-300 leading-relaxed text-sm sm:text-base">
         <div className="flex items-center gap-3 text-lg font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
-          <CheckCircle2 className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+          <CheckCircle2 className="h-5 w-5 text-[var(--color-emphasis-text)]" />
           <span>شرایط عمومی و ثبت سفارش</span>
         </div>
         <p>

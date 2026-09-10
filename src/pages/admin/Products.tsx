@@ -385,7 +385,7 @@ export default function AdminProducts() {
         </div>
         <button
           onClick={() => openModal()}
-          className="flex items-center gap-2 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-extrabold px-5 py-3 rounded-2xl text-xs shadow-lg shadow-orange-500/25 transition-all cursor-pointer self-start sm:self-auto hover:scale-105 active:scale-95"
+          className="flex items-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-extrabold px-5 py-3 rounded-2xl text-xs shadow-lg shadow-orange-500/25 transition-all cursor-pointer self-start sm:self-auto hover:scale-105 active:scale-95"
         >
           <Plus className="h-4 w-4" />
           <span>افزودن محصول جدید</span>
@@ -480,7 +480,7 @@ export default function AdminProducts() {
                           <div className="min-w-0">
                             <h4 className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] line-clamp-1 leading-snug">{p.title}</h4>
                             <div className="flex items-center gap-2 mt-1">
-                              <span className="inline-block px-2 py-0.5 rounded-md text-[10px] font-bold bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 border border-orange-200/50 dark:border-orange-800/40">
+                              <span className="inline-block px-2 py-0.5 rounded-md text-[10px] font-bold bg-orange-50 dark:bg-orange-950/40 text-[var(--color-emphasis-text)] border border-orange-200/50 dark:border-orange-800/40">
                                 {p.category}
                               </span>
                               {(p as any).sku && (
@@ -507,7 +507,7 @@ export default function AdminProducts() {
                           <span className="text-gray-400 text-[11px]">-</span>
                         )}
                       </td>
-                      <td className="p-4 font-bold text-orange-600 dark:text-orange-400 font-mono">
+                      <td className="p-4 font-bold text-[var(--color-emphasis-text)] font-mono">
                         {formatPrice(p.price)}
                       </td>
                       <td className="p-4">
@@ -582,7 +582,7 @@ export default function AdminProducts() {
             {/* Modal Sticky Header */}
             <div className="p-5 border-b border-[var(--color-border-light)] dark:border-gray-700 flex items-center justify-between bg-[var(--color-surface-light)]/80 dark:bg-gray-800/80 backdrop-blur-md shrink-0">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400">
+                <div className="p-2 rounded-xl bg-orange-100 dark:bg-orange-950/60 text-[var(--color-emphasis-text)]">
                   <Package className="h-5 w-5" />
                 </div>
                 <div>
@@ -623,7 +623,7 @@ export default function AdminProducts() {
                 <div>
                   <label className="block text-gray-800 dark:text-gray-200 mb-1.5 flex items-center justify-between">
                     <span>دسته‌بندی <span className="text-rose-500">*</span></span>
-                    <span className="text-[10px] text-orange-600 dark:text-orange-400 flex items-center gap-1 font-bold">
+                    <span className="text-[10px] text-[var(--color-emphasis-text)] flex items-center gap-1 font-bold">
                       <Wand2 className="h-3 w-3" /> انتخاب خودکار وکتور
                     </span>
                   </label>
@@ -661,7 +661,7 @@ export default function AdminProducts() {
               {/* Price Calculation Hub */}
               <div className="bg-orange-50/50 dark:bg-orange-950/20 p-4 rounded-2xl border border-orange-200/60 dark:border-orange-800/40 space-y-4">
                 <div className="flex items-center gap-2 text-orange-800 dark:text-orange-300 font-black">
-                  <Calculator className="h-4 w-4 text-orange-600" />
+                  <Calculator className="h-4 w-4 text-[var(--color-emphasis-text)]" />
                   <span>محاسبه هوشمند قیمت و تخفیف کالا</span>
                 </div>
 
@@ -697,7 +697,7 @@ export default function AdminProducts() {
                       value={formData.price ? formatPrice(parseInt(toEnglishDigits(formData.price), 10) || 0) : ''}
                       onChange={(e) => handlePriceChange(e.target.value)}
                       placeholder="مثال: ۹۸۰,۰۰۰"
-                      className="w-full bg-[var(--color-surface-light)] dark:bg-gray-800 border border-orange-300 dark:border-orange-500 rounded-xl p-2.5 text-xs font-mono font-black text-orange-600 dark:text-orange-400 focus:outline-none focus:border-orange-500"
+                      className="w-full bg-[var(--color-surface-light)] dark:bg-gray-800 border border-orange-300 dark:border-orange-500 rounded-xl p-2.5 text-xs font-mono font-black text-[var(--color-emphasis-text)] focus:outline-none focus:border-orange-500"
                     />
                   </div>
                 </div>
@@ -734,7 +734,7 @@ export default function AdminProducts() {
               <div>
                 <label className="block text-gray-800 dark:text-gray-200 mb-2 flex items-center justify-between">
                   <span>تصویر و وکتور کالا (کاملاً متقارن و سنتر)</span>
-                  <span className="text-[11px] text-orange-600 dark:text-orange-400 font-bold">
+                  <span className="text-[11px] text-[var(--color-emphasis-text)] font-bold">
                     پیشنهاد متناسب با دسته: {formData.category}
                   </span>
                 </label>
@@ -751,7 +751,7 @@ export default function AdminProducts() {
                   />
                   <div className="overflow-hidden grow">
                     <span className="text-[11px] text-gray-500 dark:text-gray-400 block mb-0.5">آدرس فایل تصویر وکتور:</span>
-                    <span className="font-mono text-xs text-orange-600 dark:text-orange-400 font-bold truncate block dir-ltr text-left">
+                    <span className="font-mono text-xs text-[var(--color-emphasis-text)] font-bold truncate block dir-ltr text-left">
                       {formData.image}
                     </span>
                     <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold block mt-1">
@@ -789,7 +789,7 @@ export default function AdminProducts() {
                         onClick={() => setFormData({ ...formData, image: item.url })}
                         className={`flex w-full items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all border text-right ${
                           isSelected 
-                            ? 'bg-orange-500 text-white border-orange-600 shadow-md scale-102' 
+                            ? 'bg-[var(--color-cta)] text-white border-orange-600 shadow-md scale-102' 
                             : isCategoryMatch
                               ? 'bg-orange-50/70 dark:bg-orange-950/20 text-gray-800 dark:text-[var(--color-text-main-dark)] border-orange-200 dark:border-orange-800 hover:border-orange-400'
                               : 'bg-[var(--color-surface-light)] dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-gray-200 dark:border-gray-700 hover:border-gray-400'
@@ -831,7 +831,7 @@ export default function AdminProducts() {
               <button
                 type="submit"
                 form="product-form"
-                className="px-6 py-2.5 rounded-2xl text-xs font-black bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white shadow-md shadow-orange-500/25 transition-all cursor-pointer hover:scale-102 active:scale-95"
+                className="px-6 py-2.5 rounded-2xl text-xs font-black bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white shadow-md shadow-orange-500/25 transition-all cursor-pointer hover:scale-102 active:scale-95"
               >
                 {editingProduct ? 'ذخیره تغییرات محصول' : 'ثبت و انتشار محصول'}
               </button>

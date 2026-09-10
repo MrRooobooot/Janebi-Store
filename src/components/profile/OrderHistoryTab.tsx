@@ -65,7 +65,7 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
       {/* Header & Search */}
       <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         <h2 className="font-extrabold text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
-          <Package className="h-5 w-5 text-orange-500" />
+          <Package className="h-5 w-5 text-[var(--color-emphasis-text)]" />
           <span>سفارش‌های من ({toPersianDigits(orders.length)})</span>
         </h2>
 
@@ -96,7 +96,7 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
             onClick={() => setActiveTab(tab.id as any)}
             className={`px-4 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2 ${
               activeTab === tab.id
-                ? 'bg-orange-500 text-white shadow-md shadow-orange-500/20'
+                ? 'bg-[var(--color-cta)] text-white shadow-md shadow-orange-500/20'
                 : 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'
             }`}
           >
@@ -137,9 +137,9 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
                       order.status === 'delivered'
                         ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300'
                         : order.status === 'cancelled'
-                        ? 'bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-300'
-                        : order.status === 'pending_payment'
-                        ? 'bg-orange-100 dark:bg-orange-950/50 text-orange-700 dark:text-orange-300'
+                        ? 'bg-rose-100 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300'
+                        : order.status === 'processing'
+                        ? 'bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300'
                         : 'bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300'
                     }`}
                   >
@@ -152,7 +152,7 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
                     <Calendar className="h-3.5 w-3.5" />
                     {order.date}
                   </span>
-                  <span className="font-black text-orange-600 dark:text-orange-400 text-sm">
+                  <span className="font-black text-[var(--color-emphasis-text)] text-sm">
                     {formatPrice(order.total)}
                   </span>
                 </div>
@@ -206,7 +206,7 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
                     <button
                       onClick={() => handleRetryPayment(order.id)}
                       disabled={retryingId === order.id}
-                      className="px-3.5 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 disabled:opacity-60 text-white font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                      className="px-3.5 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] disabled:opacity-60 text-white font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
                     >
                       <CreditCard className="h-3.5 w-3.5" />
                       {retryingId === order.id ? 'در حال اتصال...' : 'پرداخت سفارش'}

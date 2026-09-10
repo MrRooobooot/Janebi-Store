@@ -112,7 +112,7 @@ export default function AdminNewsletter() {
         </div>
 
         <div className="text-xs font-bold text-gray-600 dark:text-gray-300">
-          تعداد اعضا: <span className="font-mono text-orange-600 font-bold">{filteredSubscribers.length}</span>
+          تعداد اعضا: <span className="font-mono text-[var(--color-emphasis-text)] font-bold">{filteredSubscribers.length}</span>
         </div>
       </div>
 

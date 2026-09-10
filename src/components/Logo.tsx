@@ -99,7 +99,7 @@ export default function Logo({ className = "", variant = 'full', size = 'md' }: 
       </div>
       <div className={`${size === 'md' ? 'max-[379px]:hidden ' : ''}flex flex-col text-right`}>
         <div className="flex items-center gap-1">
-          <span className={`${textSizes[size]} font-black tracking-tight text-[#0B1536] dark:text-white group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors`}>
+          <span className={`${textSizes[size]} font-black tracking-tight text-[#0B1536] dark:text-white group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors`}>
             جانبی
           </span>
           <span className={`${textSizes[size]} font-black tracking-tight text-[#F47C20]`}>

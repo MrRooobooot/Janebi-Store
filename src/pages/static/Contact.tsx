@@ -73,7 +73,7 @@ export default function Contact() {
         {/* Contact Info Cards */}
         <div className="space-y-4 lg:col-span-1">
           <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs flex items-start gap-4">
-            <div className="p-3 bg-orange-100 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400 rounded-xl shrink-0">
+            <div className="p-3 bg-orange-100 dark:bg-orange-950/50 text-[var(--color-emphasis-text)] rounded-xl shrink-0">
               <MapPin className="h-6 w-6" />
             </div>
             <div>
@@ -125,7 +125,7 @@ export default function Contact() {
         {/* Contact Form */}
         <div className="lg:col-span-2 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 sm:p-8 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs">
           <div className="flex items-center gap-2 mb-6">
-            <MessageSquare className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+            <MessageSquare className="h-5 w-5 text-[var(--color-emphasis-text)]" />
             <h3 className="text-xl font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">ارسال پیام مستقیم به پشتیبانی</h3>
           </div>
 
@@ -182,7 +182,7 @@ export default function Contact() {
             <button 
               type="submit" 
               disabled={isSubmitting}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-700 hover:to-amber-600 text-white font-bold py-3 px-8 rounded-xl shadow-md shadow-orange-500/20 transition-all duration-300 active:scale-98 disabled:opacity-50"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold py-3 px-8 rounded-xl shadow-md shadow-orange-500/20 transition-all duration-300 active:scale-98 disabled:opacity-50"
             >
               <Send className="h-4 w-4" /> {isSubmitting ? 'در حال ارسال...' : 'ارسال پیام'}
             </button>

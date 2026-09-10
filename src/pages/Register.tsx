@@ -64,7 +64,7 @@ export default function Register() {
         <div className="absolute -top-12 -left-12 w-40 h-40 bg-orange-500/10 rounded-full blur-2xl pointer-events-none" />
 
         <div className="text-center mb-8">
-          <div className="inline-flex p-3 rounded-2xl bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 mb-3">
+          <div className="inline-flex p-3 rounded-2xl bg-orange-100 dark:bg-orange-500/20 text-[var(--color-emphasis-text)] mb-3">
             <UserPlus className="h-7 w-7" />
           </div>
           <h1 className="text-2xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
@@ -160,7 +160,7 @@ export default function Register() {
               type="checkbox"
               checked={agreeTerms}
               onChange={(e) => setAgreeTerms(e.target.checked)}
-              className="rounded-md border-gray-300 text-orange-500 focus:ring-orange-500"
+              className="rounded-md border-gray-300 text-[var(--color-emphasis-text)] focus:ring-orange-500"
             />
             <span>
               قوانین و حریم خصوصی را مطالعه کرده و می‌پذیرم
@@ -169,7 +169,7 @@ export default function Register() {
 
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-extrabold py-4 px-6 rounded-2xl shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 transition-all active:scale-98 text-sm mt-6"
+            className="w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-extrabold py-4 px-6 rounded-2xl shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 transition-all active:scale-98 text-sm mt-6"
           >
             <span>ثبت‌نام و عضویت</span>
             <ArrowLeft className="h-4 w-4" />
@@ -178,7 +178,7 @@ export default function Register() {
 
         <div className="mt-8 pt-6 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-center text-xs font-medium text-gray-500">
           قبلاً ثبت‌نام کرده‌اید؟{' '}
-          <Link to="/login" className="font-extrabold text-orange-600 dark:text-orange-400 hover:underline">
+          <Link to="/login" className="font-extrabold text-[var(--color-emphasis-text)] hover:underline">
             وارد شوید
           </Link>
         </div>

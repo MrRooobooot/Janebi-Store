@@ -327,7 +327,7 @@ export default function AdminOrders() {
             onClick={() => setStatusFilter(tab.id)}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
               statusFilter === tab.id
-                ? 'bg-orange-600 text-white shadow-sm'
+                ? 'bg-[var(--color-cta)] text-white shadow-sm'
                 : 'bg-[var(--color-surface-light)] dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-[var(--color-border-light)] dark:border-gray-700/60 hover:bg-gray-50'
             }`}
           >
@@ -420,7 +420,7 @@ export default function AdminOrders() {
                     <div className="font-bold text-gray-800 dark:text-gray-200">{order.recipientName}</div>
                     <div className="text-[11px] text-gray-500 font-mono" dir="ltr">{order.recipientPhone}</div>
                   </td>
-                  <td className="p-3.5 font-black text-orange-600 dark:text-orange-400">{formatPrice(order.total)}</td>
+                  <td className="p-3.5 font-black text-[var(--color-emphasis-text)]">{formatPrice(order.total)}</td>
                   <td className="p-3.5 text-gray-600 dark:text-gray-300 font-mono text-[11px]">
                     {order.refId ? (
                       <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 font-bold">
@@ -457,7 +457,7 @@ export default function AdminOrders() {
                       <div className="relative group">
                         <button 
                           disabled={updatingId === order.id}
-                          className="flex items-center gap-1 bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-colors"
+                          className="flex items-center gap-1 bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/30 text-[var(--color-emphasis-text)] px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-colors"
                         >
                           {updatingId === order.id ? '...' : 'تغییر وضعیت'}
                           <ChevronDown className="w-3 h-3" />
@@ -493,9 +493,9 @@ export default function AdminOrders() {
           <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 sm:p-8 space-y-6">
             <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-gray-700">
               <div className="flex items-center gap-2">
-                <Package className="w-5 h-5 text-orange-500" />
+                <Package className="w-5 h-5 text-[var(--color-emphasis-text)]" />
                 <h3 className="font-extrabold text-base text-[var(--color-text-main-light)] dark:text-white">
-                  جزئیات سفارش <span className="font-mono text-orange-600" dir="ltr">{selectedOrder.id}</span>
+                  جزئیات سفارش <span className="font-mono text-[var(--color-emphasis-text)]" dir="ltr">{selectedOrder.id}</span>
                 </h3>
               </div>
               <button
@@ -536,7 +536,7 @@ export default function AdminOrders() {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-gray-50 dark:bg-[var(--color-surface-dark)]/60 p-4 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700 text-xs">
               <div>
                 <span className="text-gray-500 block mb-1">وضعیت:</span>
-                <span className="font-bold text-orange-600">{selectedOrder.statusText}</span>
+                <span className="font-bold text-[var(--color-emphasis-text)]">{selectedOrder.statusText}</span>
               </div>
               <div>
                 <span className="text-gray-500 block mb-1">تاریخ ثبت:</span>
@@ -548,14 +548,14 @@ export default function AdminOrders() {
               </div>
               <div>
                 <span className="text-gray-500 block mb-1">مبلغ کل:</span>
-                <span className="font-black text-orange-600">{formatPrice(selectedOrder.total)}</span>
+                <span className="font-black text-[var(--color-emphasis-text)]">{formatPrice(selectedOrder.total)}</span>
               </div>
             </div>
 
             {/* Recipient Information */}
             <div className="p-4 rounded-2xl bg-orange-50/40 dark:bg-orange-950/20 border border-orange-100 dark:border-orange-900/30 text-xs space-y-2">
               <div className="font-bold text-[var(--color-text-main-light)] dark:text-white flex items-center gap-1.5">
-                <User className="w-4 h-4 text-orange-500" />
+                <User className="w-4 h-4 text-[var(--color-emphasis-text)]" />
                 <span>مشخصات تحویل‌گیرنده:</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-gray-600 dark:text-gray-300 font-medium">
@@ -583,7 +583,7 @@ export default function AdminOrders() {
                     </div>
                     <div className="text-left font-bold text-gray-700 dark:text-gray-300">
                       <div>{toPersianDigits(item.qty || item.quantity)} عدد</div>
-                      <div className="text-orange-600 text-[11px]">{formatPrice(item.price)}</div>
+                      <div className="text-[var(--color-emphasis-text)] text-[11px]">{formatPrice(item.price)}</div>
                     </div>
                   </div>
                 ))}

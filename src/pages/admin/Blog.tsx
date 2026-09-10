@@ -131,7 +131,7 @@ export default function AdminBlog() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
-            <Newspaper className="h-5 w-5 text-orange-600" /> مدیریت مجله (بلاگ)
+            <Newspaper className="h-5 w-5 text-[var(--color-emphasis-text)]" /> مدیریت مجله (بلاگ)
           </h1>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             {posts.length} مقاله — انتشار، ویرایش و حذف مقالات مجله جانبی آرنا
@@ -139,7 +139,7 @@ export default function AdminBlog() {
         </div>
         <button
           onClick={openCreate}
-          className="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-colors shadow-xs"
+          className="flex items-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-colors shadow-xs"
         >
           <Plus className="h-4 w-4" /> مقاله جدید
         </button>
@@ -196,14 +196,14 @@ export default function AdminBlog() {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => togglePublish(post)}
-                          className="p-1.5 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:text-orange-600 transition-colors"
+                          className="p-1.5 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:text-[var(--color-emphasis-text)] transition-colors"
                           title={post.published ? 'پیش‌نویس کردن' : 'انتشار'}
                         >
                           {post.published ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
                         </button>
                         <button
                           onClick={() => openEdit(post)}
-                          className="p-1.5 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:text-orange-600 transition-colors"
+                          className="p-1.5 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:text-[var(--color-emphasis-text)] transition-colors"
                           title="ویرایش"
                         >
                           <Pencil className="h-3.5 w-3.5" />
@@ -310,7 +310,7 @@ export default function AdminBlog() {
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="flex items-center gap-2 px-5 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold disabled:opacity-50"
+                className="flex items-center gap-2 px-5 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold disabled:opacity-50"
               >
                 {saving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                 {form.id ? 'ذخیره تغییرات' : 'انتشار مقاله'}

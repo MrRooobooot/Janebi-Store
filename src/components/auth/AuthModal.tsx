@@ -163,7 +163,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
           {/* Header Bar */}
           <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/80 mb-5 relative">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center font-bold">
+              <div className="w-8 h-8 rounded-xl bg-orange-100 dark:bg-orange-500/20 text-[var(--color-emphasis-text)] flex items-center justify-center font-bold">
                 <Sparkles className="h-4 w-4" />
               </div>
               <span className="font-black text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
@@ -187,7 +187,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
               onClick={() => setMode('login')}
               className={`flex-1 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all duration-200 ${
                 mode === 'login'
-                  ? 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-orange-600 dark:text-orange-400 shadow-xs'
+                  ? 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-[var(--color-emphasis-text)] shadow-xs'
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
               }`}
             >
@@ -200,7 +200,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
               onClick={() => setMode('register')}
               className={`flex-1 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all duration-200 ${
                 mode === 'register'
-                  ? 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-orange-600 dark:text-orange-400 shadow-xs'
+                  ? 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-[var(--color-emphasis-text)] shadow-xs'
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
               }`}
             >
@@ -278,7 +278,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-extrabold py-3.5 px-6 rounded-2xl shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] text-sm mt-6 disabled:opacity-60 cursor-pointer"
+              className="w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-extrabold py-3.5 px-6 rounded-2xl shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] text-sm mt-6 disabled:opacity-60 cursor-pointer"
             >
               {loading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -299,7 +299,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                   <Link
                     to="/login"
                     onClick={onClose}
-                    className="font-bold text-gray-500 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
+                    className="font-bold text-gray-500 dark:text-gray-400 hover:text-[var(--color-emphasis-text)] transition-colors"
                   >
                     رمز عبور خود را فراموش کرده‌اید؟
                   </Link>

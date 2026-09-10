@@ -230,7 +230,7 @@ export default function AdminMessages() {
               onClick={() => setFilterStatus(tab.id)}
               className={`px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1 cursor-pointer ${
                 filterStatus === tab.id
-                  ? 'bg-orange-600 text-white shadow-xs'
+                  ? 'bg-[var(--color-cta)] text-white shadow-xs'
                   : 'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100'
               }`}
             >
@@ -316,7 +316,7 @@ export default function AdminMessages() {
                   </div>
                 </div>
 
-                <h3 className="font-extrabold text-sm text-[var(--color-text-main-light)] dark:text-white mb-1 group-hover:text-orange-600 transition-colors line-clamp-1">
+                <h3 className="font-extrabold text-sm text-[var(--color-text-main-light)] dark:text-white mb-1 group-hover:text-[var(--color-emphasis-text)] transition-colors line-clamp-1">
                   {msg.subject || 'بدون موضوع'}
                 </h3>
 
@@ -327,11 +327,11 @@ export default function AdminMessages() {
 
               <div className="pt-3 border-t border-[var(--color-border-light)] dark:border-gray-700 flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
                 <div className="flex items-center gap-1.5 truncate max-w-[160px]">
-                  <User className="h-3.5 w-3.5 text-orange-500 shrink-0" />
+                  <User className="h-3.5 w-3.5 text-[var(--color-emphasis-text)] shrink-0" />
                   <span className="font-bold text-gray-800 dark:text-gray-200 truncate">{msg.name}</span>
                 </div>
 
-                <span className="text-[11px] text-orange-600 dark:text-orange-400 font-bold flex items-center gap-1">
+                <span className="text-[11px] text-[var(--color-emphasis-text)] font-bold flex items-center gap-1">
                   <span>مشاهده پیام</span>
                   <ArrowLeft className="h-3 w-3" />
                 </span>
@@ -355,7 +355,7 @@ export default function AdminMessages() {
           <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl max-w-xl w-full p-6 shadow-2xl border border-[var(--color-border-light)] dark:border-gray-700 text-right animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-gray-700 mb-5">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-xl bg-orange-100 dark:bg-orange-950/60 text-orange-600">
+                <div className="p-2 rounded-xl bg-orange-100 dark:bg-orange-950/60 text-[var(--color-emphasis-text)]">
                   <Mail className="h-5 w-5" />
                 </div>
                 <div>
@@ -383,7 +383,7 @@ export default function AdminMessages() {
               <div>
                 <span className="text-gray-500 dark:text-gray-400 block mb-0.5">شماره تماس:</span>
                 {selectedMessage.phone ? (
-                  <a href={`tel:${selectedMessage.phone}`} className="font-mono font-bold text-orange-600 hover:underline flex items-center gap-1">
+                  <a href={`tel:${selectedMessage.phone}`} className="font-mono font-bold text-[var(--color-emphasis-text)] hover:underline flex items-center gap-1">
                     <Phone className="h-3.5 w-3.5" />
                     <span>{selectedMessage.phone}</span>
                   </a>
@@ -394,7 +394,7 @@ export default function AdminMessages() {
 
               <div>
                 <span className="text-gray-500 dark:text-gray-400 block mb-0.5">ایمیل فرستنده:</span>
-                <a href={`mailto:${selectedMessage.email}`} className="font-mono text-orange-600 hover:underline truncate block">
+                <a href={`mailto:${selectedMessage.email}`} className="font-mono text-[var(--color-emphasis-text)] hover:underline truncate block">
                   {selectedMessage.email}
                 </a>
               </div>

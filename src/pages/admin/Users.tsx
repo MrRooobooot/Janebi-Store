@@ -246,7 +246,7 @@ export default function AdminUsers() {
                           className="px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
                           title="تغییر رمز عبور"
                         >
-                          <KeyRound className="h-3.5 w-3.5 text-orange-500" />
+                          <KeyRound className="h-3.5 w-3.5 text-[var(--color-emphasis-text)]" />
                           <span>رمز جدید</span>
                         </button>
                         <button
@@ -284,7 +284,7 @@ export default function AdminUsers() {
           <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-[var(--color-border-light)] dark:border-gray-700 text-right">
             <div className="flex items-center justify-between pb-3 border-b border-[var(--color-border-light)] dark:border-gray-700 mb-4">
               <h3 className="font-black text-[var(--color-text-main-light)] dark:text-white text-base flex items-center gap-2">
-                <KeyRound className="h-5 w-5 text-orange-500" />
+                <KeyRound className="h-5 w-5 text-[var(--color-emphasis-text)]" />
                 <span>تغییر رمز عبور کاربر</span>
               </h3>
               <button onClick={() => setPasswordModalUser(null)} aria-label="بستن پنجره تغییر رمز" className="p-3 -m-2 flex items-center justify-center rounded-xl text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
@@ -321,7 +321,7 @@ export default function AdminUsers() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-5 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold transition-all disabled:opacity-50"
+                  className="px-5 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold transition-all disabled:opacity-50"
                 >
                   {submitting ? 'در حال ثبت...' : 'ذخیره رمز جدید'}
                 </button>

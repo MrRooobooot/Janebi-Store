@@ -132,7 +132,7 @@ export default function Brands() {
           <p className="text-sm text-red-600 dark:text-red-400 font-bold">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="mt-4 px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold transition-colors"
+            className="mt-4 px-4 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold transition-colors"
           >
             تلاش مجدد
           </button>
@@ -193,10 +193,10 @@ export default function Brands() {
                       <BrandLogo name={b.name} size="md" />
                     </div>
                     <div>
-                      <h3 className="text-base font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                      <h3 className="text-base font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors">
                         {b.faName} <span className="font-sans text-xs text-gray-400 font-medium">({b.name})</span>
                       </h3>
-                      <span className="text-[11px] text-orange-600/80 dark:text-orange-400/80 font-bold">
+                      <span className="text-[11px] text-[var(--color-emphasis-text)]/80 font-bold">
                         نمایندگی رسمی <Star className="inline h-3 w-3 fill-current -mt-0.5" />
                       </span>
                     </div>
@@ -211,7 +211,7 @@ export default function Brands() {
                 </div>
 
                 {/* Card Footer Action */}
-                <div className="flex items-center justify-between pt-4 border-t border-[var(--color-border-light)] dark:border-gray-700/60 text-xs font-bold text-orange-600 dark:text-orange-400">
+                <div className="flex items-center justify-between pt-4 border-t border-[var(--color-border-light)] dark:border-gray-700/60 text-xs font-bold text-[var(--color-emphasis-text)]">
                   <span className="flex items-center gap-1 text-gray-400 font-medium text-[11px]">
                     <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" /> گارانتی معتبر شرکتی
                   </span>

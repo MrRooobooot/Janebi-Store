@@ -49,7 +49,7 @@ export default function Compare() {
       >
         <EmptyState
           icon={
-            <div className="w-16 h-16 rounded-2xl bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 flex items-center justify-center mx-auto mb-4 border border-orange-100 dark:border-orange-800/60 shadow-inner">
+            <div className="w-16 h-16 rounded-2xl bg-orange-50 dark:bg-orange-950/40 text-[var(--color-emphasis-text)] flex items-center justify-center mx-auto mb-4 border border-orange-100 dark:border-orange-800/60 shadow-inner">
               <Scale className="h-8 w-8" />
             </div>
           }
@@ -79,7 +79,7 @@ export default function Compare() {
             مقایسه محصولات
             <span className="absolute bottom-1 left-0 right-0 h-3 bg-orange-200/50 dark:bg-orange-500/20 -z-10 rounded-sm"></span>
           </span>
-          <span className="text-xs font-extrabold bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 px-3 py-1 rounded-full border border-orange-200 dark:border-orange-900/50">
+          <span className="text-xs font-extrabold bg-orange-100 dark:bg-orange-950/60 text-[var(--color-emphasis-text)] px-3 py-1 rounded-full border border-orange-200 dark:border-orange-900/50">
             {toPersianDigits(compareItems.length)} کالا
           </span>
         </h1>
@@ -141,18 +141,18 @@ export default function Compare() {
 
                         <Link
                           to={`/products/${item.id}`}
-                          className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] hover:text-orange-600 dark:hover:text-orange-400 line-clamp-2 mb-3 text-xs sm:text-sm transition-colors h-10 leading-snug"
+                          className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] hover:text-[var(--color-emphasis-text)] line-clamp-2 mb-3 text-xs sm:text-sm transition-colors h-10 leading-snug"
                         >
                           {item.title}
                         </Link>
 
-                        <div className="text-orange-600 dark:text-orange-400 font-black text-base mb-4 bg-orange-50 dark:bg-orange-500/10 px-3 py-1 rounded-xl">
+                        <div className="text-[var(--color-emphasis-text)] font-black text-base mb-4 bg-orange-50 dark:bg-orange-500/10 px-3 py-1 rounded-xl">
                           {formatPrice(item.price)}
                         </div>
 
                         <button
                           onClick={() => addToCart(item)}
-                          className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white py-2.5 rounded-xl flex items-center justify-center gap-2 text-xs font-bold transition-all shadow-md active:scale-95"
+                          className="w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white py-2.5 rounded-xl flex items-center justify-center gap-2 text-xs font-bold transition-all shadow-md active:scale-95"
                         >
                           <ShoppingCart className="h-4 w-4" /> افزودن به سبد
                         </button>
@@ -185,7 +185,7 @@ export default function Compare() {
               <tr className="hover:bg-[var(--color-canvas-light)]/50 dark:hover:bg-[var(--color-canvas-dark)]/30 transition-colors">
                 <td className="p-4 font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] bg-[var(--color-canvas-light)]/50 dark:bg-[var(--color-canvas-dark)]/30 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 w-1/4 text-xs sm:text-sm">
                   <div className="flex items-center gap-2">
-                    <Tag className="h-4 w-4 text-orange-500" /> برند سازنده
+                    <Tag className="h-4 w-4 text-[var(--color-emphasis-text)]" /> برند سازنده
                   </div>
                 </td>
                 {compareItems.map((item) => (
@@ -208,7 +208,7 @@ export default function Compare() {
               <tr className="hover:bg-[var(--color-canvas-light)]/50 dark:hover:bg-[var(--color-canvas-dark)]/30 transition-colors">
                 <td className="p-4 font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] bg-[var(--color-canvas-light)]/50 dark:bg-[var(--color-canvas-dark)]/30 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-xs sm:text-sm">
                   <div className="flex items-center gap-2">
-                    <Info className="h-4 w-4 text-orange-500" /> دسته‌بندی
+                    <Info className="h-4 w-4 text-[var(--color-emphasis-text)]" /> دسته‌بندی
                   </div>
                 </td>
                 {compareItems.map((item) => (

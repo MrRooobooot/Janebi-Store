@@ -156,7 +156,7 @@ export default function AdminSettings() {
     <div className="max-w-5xl mx-auto space-y-8 pb-12">
       <div>
         <h1 className="text-2xl font-black text-[var(--color-text-main-light)] dark:text-white flex items-center gap-2">
-          <Settings className="h-6 w-6 text-orange-600" />
+          <Settings className="h-6 w-6 text-[var(--color-emphasis-text)]" />
           تنظیمات عمومی و محتوای فروشگاه
         </h1>
         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">مدیریت اطلاعات تماس، آستانه ارسال رایگان، بنرها و اسلایدرهای صفحه اصلی</p>
@@ -167,7 +167,7 @@ export default function AdminSettings() {
         {/* ۱. اطلاعات اصلی و ارتباطی */}
         <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-4">
           <h2 className="text-base font-bold text-[var(--color-text-main-light)] dark:text-white border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pb-3 flex items-center gap-2">
-            <Phone className="h-5 w-5 text-orange-500" />
+            <Phone className="h-5 w-5 text-[var(--color-emphasis-text)]" />
             اطلاعات تماس و هویت سایت
           </h2>
 
@@ -252,7 +252,7 @@ export default function AdminSettings() {
                 type="checkbox"
                 checked={settings.announcementBarEnabled !== 'false'}
                 onChange={e => setSettings({ ...settings, announcementBarEnabled: e.target.checked ? 'true' : 'false' })}
-                className="h-5 w-5 rounded border-gray-300 text-orange-600 focus:ring-orange-500 cursor-pointer"
+                className="h-5 w-5 rounded border-gray-300 text-[var(--color-emphasis-text)] focus:ring-orange-500 cursor-pointer"
               />
               <span className="text-xs font-bold text-gray-700 dark:text-gray-300">
                 نمایش نوار اعلان بالای سایت {settings.announcementBarEnabled !== 'false' ? '(فعال)' : '(غیرفعال)'}
@@ -279,13 +279,13 @@ export default function AdminSettings() {
         {/* ۳. مدیریت ۳ اسلایدر هیرو صفحه اول */}
         <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-6">
           <h2 className="text-base font-bold text-[var(--color-text-main-light)] dark:text-white border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pb-3 flex items-center gap-2">
-            <Layers className="h-5 w-5 text-orange-600" />
+            <Layers className="h-5 w-5 text-[var(--color-emphasis-text)]" />
             مدیریت اسلایدرهای هیرو صفحه اول
           </h2>
 
           {/* اسلاید ۱ */}
           <div className="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 space-y-3">
-            <span className="text-xs font-black text-orange-600">اسلاید شماره ۱ (شارژر و آداپتور)</span>
+            <span className="text-xs font-black text-[var(--color-emphasis-text)]">اسلاید شماره ۱ (شارژر و آداپتور)</span>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <input
                 type="text"
@@ -537,7 +537,7 @@ export default function AdminSettings() {
           <button
             type="submit"
             disabled={saving}
-            className="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white font-bold text-sm px-8 py-3.5 rounded-2xl transition-all shadow-md disabled:opacity-50"
+            className="flex items-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold text-sm px-8 py-3.5 rounded-2xl transition-all shadow-md disabled:opacity-50"
           >
             {saving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
             {saving ? 'در حال ذخیره...' : 'ذخیره تمام تنظیمات'}

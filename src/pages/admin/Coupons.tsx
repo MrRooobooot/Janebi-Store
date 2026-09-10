@@ -193,7 +193,7 @@ export default function AdminCoupons() {
 
         <button
           onClick={() => openCreateModal()}
-          className="flex items-center gap-2 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-extrabold px-5 py-3 rounded-2xl text-xs shadow-lg shadow-orange-500/25 transition-all cursor-pointer self-start sm:self-auto hover:scale-105 active:scale-95"
+          className="flex items-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-extrabold px-5 py-3 rounded-2xl text-xs shadow-lg shadow-orange-500/25 transition-all cursor-pointer self-start sm:self-auto hover:scale-105 active:scale-95"
         >
           <Plus className="h-4 w-4" />
           <span>افزودن کد تخفیف جدید</span>
@@ -237,7 +237,7 @@ export default function AdminCoupons() {
               {/* Coupon Code Block */}
               <div className="bg-gray-50 dark:bg-[var(--color-surface-dark)]/60 p-4 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 flex items-center justify-between mb-4">
                 <div>
-                  <span className="font-mono text-lg font-black text-orange-600 dark:text-orange-400 tracking-wider">
+                  <span className="font-mono text-lg font-black text-[var(--color-emphasis-text)] tracking-wider">
                     {coupon.code}
                   </span>
                   <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5 font-bold truncate max-w-[180px]">
@@ -248,7 +248,7 @@ export default function AdminCoupons() {
                 <button
                   type="button"
                   onClick={() => handleCopyCode(coupon.code)}
-                  className="p-3.5 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-800 hover:bg-orange-50 text-gray-600 hover:text-orange-600 border border-gray-200 dark:border-gray-700 transition-all cursor-pointer shadow-xs"
+                  className="p-3.5 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-800 hover:bg-orange-50 text-gray-600 hover:text-[var(--color-emphasis-text)] border border-gray-200 dark:border-gray-700 transition-all cursor-pointer shadow-xs"
                   title="کپی کردن کد"
                   aria-label={`کپی کد تخفیف ${coupon.code}`}
                 >
@@ -341,7 +341,7 @@ export default function AdminCoupons() {
                   value={formData.code}
                   onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
                   placeholder="مثال: OFF20 یا JANEBI100"
-                  className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 font-mono font-black text-sm text-orange-600 dark:text-orange-400 focus:outline-none focus:border-orange-500 text-left dir-ltr"
+                  className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 font-mono font-black text-sm text-[var(--color-emphasis-text)] focus:outline-none focus:border-orange-500 text-left dir-ltr"
                 />
               </div>
 
@@ -435,7 +435,7 @@ export default function AdminCoupons() {
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 text-white font-extrabold shadow-md shadow-orange-500/20"
+                  className="px-6 py-2.5 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-extrabold shadow-md shadow-orange-500/20"
                 >
                   {editingCode ? 'ذخیره تغییرات' : 'ایجاد کد تخفیف'}
                 </button>

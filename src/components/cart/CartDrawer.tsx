@@ -71,7 +71,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               {/* Drawer Header */}
               <div className="p-4 sm:p-5 border-b border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-orange-50 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400 flex items-center justify-center">
+                  <div className="w-9 h-9 rounded-xl bg-orange-50 dark:bg-orange-950/50 text-[var(--color-emphasis-text)] flex items-center justify-center">
                     <ShoppingBag className="h-5 w-5" />
                   </div>
                   <div>
@@ -101,7 +101,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     </span>
                   ) : (
                     <span className="text-zinc-600 dark:text-zinc-400">
-                      تنها <strong className="text-orange-600 dark:text-orange-400 font-black">{formatPrice(amountLeft)}</strong> تا ارسال رایگان
+                      تنها <strong className="text-[var(--color-emphasis-text)] font-black">{formatPrice(amountLeft)}</strong> تا ارسال رایگان
                     </span>
                   )}
                   <span className="font-mono text-zinc-500 dark:text-zinc-400 text-[11px]">
@@ -133,7 +133,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     </div>
                     <button
                       onClick={() => { onClose(); navigate('/products'); }}
-                      className="bg-orange-600 hover:bg-orange-700 text-white text-xs font-black px-5 py-2.5 rounded-xl shadow-md transition-all cursor-pointer"
+                      className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-black px-5 py-2.5 rounded-xl shadow-md transition-all cursor-pointer"
                     >
                       مشاهده کاتالوگ محصولات
                     </button>
@@ -150,13 +150,13 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <h4 className="font-bold text-xs line-clamp-1 text-zinc-900 dark:text-zinc-100 group-hover:text-orange-600 transition-colors">
+                          <h4 className="font-bold text-xs line-clamp-1 text-zinc-900 dark:text-zinc-100 group-hover:text-[var(--color-emphasis-text)] transition-colors">
                             {item.title}
                           </h4>
 
                           {/* Price & Savings Display */}
                           <div className="mt-1 flex items-center gap-2">
-                            <span className="text-xs font-black text-orange-600 dark:text-orange-400 font-mono">
+                            <span className="text-xs font-black text-[var(--color-emphasis-text)] font-mono">
                               {formatPrice(item.price * item.quantity)}
                             </span>
                             {hasDiscount && (
@@ -179,7 +179,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                               <button
                                 onClick={() => updateQuantity(item.id, item.quantity + 1)}
                                 disabled={item.quantity >= MAX_CART_QUANTITY}
-                                className="min-touch-target w-9 h-9 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-orange-600 disabled:opacity-30 cursor-pointer rounded-lg transition-colors"
+                                className="min-touch-target w-9 h-9 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-[var(--color-emphasis-text)] disabled:opacity-30 cursor-pointer rounded-lg transition-colors"
                                 aria-label="افزایش تعداد"
                               >
                                 <Plus className="h-4 w-4" />
@@ -190,7 +190,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                               <button
                                 onClick={() => updateQuantity(item.id, item.quantity - 1)}
                                 disabled={item.quantity <= 1}
-                                className="min-touch-target w-9 h-9 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-orange-600 disabled:opacity-30 cursor-pointer rounded-lg transition-colors"
+                                className="min-touch-target w-9 h-9 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:text-[var(--color-emphasis-text)] disabled:opacity-30 cursor-pointer rounded-lg transition-colors"
                                 aria-label="کاهش تعداد"
                               >
                                 <Minus className="h-4 w-4" />
@@ -218,7 +218,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 <div className="p-4 sm:p-5 border-t border-zinc-100 dark:border-zinc-800/80 bg-zinc-50/70 dark:bg-zinc-900/40 space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400">مجموع کل قابل پرداخت:</span>
-                    <span aria-live="polite" className="text-base font-black text-orange-600 dark:text-orange-400 font-mono">
+                    <span aria-live="polite" className="text-base font-black text-[var(--color-emphasis-text)] font-mono">
                       {formatPrice(cartTotal)}
                     </span>
                   </div>
@@ -232,7 +232,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     </button>
                     <button
                       onClick={() => { onClose(); navigate('/checkout'); }}
-                      className="w-full bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-500 hover:to-amber-400 text-white font-black py-3 rounded-xl text-xs shadow-md shadow-orange-600/20 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                      className="w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-black py-3 rounded-xl text-xs shadow-md shadow-orange-600/20 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       <span>تکمیل و پرداخت</span>
                       <ArrowLeft className="h-4 w-4" />

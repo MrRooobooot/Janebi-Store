@@ -39,7 +39,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
   };
 
   return (
-    <div className="linear-card bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-light)]/[0.025] rounded-2xl border border-zinc-200/80 dark:border-white/[0.08] p-4 transition-all duration-300 relative flex flex-col justify-between h-full group select-none hover:-translate-y-0.5">
+    <div className="linear-card bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-light)]/[0.025] rounded-2xl border border-zinc-200/80 dark:border-white/[0.08] p-4 transition-all duration-300 relative flex flex-col justify-between h-full group select-none hover:-translate-y-0.5 hover:shadow-[var(--shadow-elevation-2)]">
       
       {/* 1. Header Badges & Quick Action Floating Buttons */}
       <div>
@@ -80,7 +80,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
               aria-label={inCompare ? "حذف از مقایسه" : "افزودن به مقایسه"}
               className={`w-11 h-11 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition-all ${
                 inCompare 
-                  ? 'bg-orange-50 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-800' 
+                  ? 'bg-orange-50 dark:bg-orange-950/60 text-[var(--color-emphasis-text)] border border-orange-200 dark:border-orange-800' 
                   : 'bg-zinc-50 dark:bg-[var(--color-surface-light)]/[0.03] text-zinc-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-950/30 border border-zinc-200/40 dark:border-white/[0.05]'
               }`}
               title="مقایسه مشخصات"
@@ -117,7 +117,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
           {/* 3. Category & Rating Strip — value-colored stars per Digikala DDS convention
                  (low rating ۰–۲ amber #f9bc00 → high ۴–۵ green #00a049) */}
           <div className="flex items-center justify-between text-[11px] text-zinc-400 mb-1.5 px-0.5">
-            <span className="font-semibold text-orange-600/90 dark:text-orange-400/90">{product.category}</span>
+            <span className="font-semibold text-[var(--color-emphasis-text)]/90">{product.category}</span>
             {product.rating ? (
               <div
                 className={`flex items-center gap-1 font-bold ${
@@ -148,7 +148,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
           </div>
 
           {/* 4. Product Title */}
-          <h3 className="font-black text-xs sm:text-sm text-zinc-900 dark:text-[var(--color-text-main-dark)] line-clamp-2 leading-relaxed h-10 sm:h-11 flex items-start group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+          <h3 className="font-black text-xs sm:text-sm text-zinc-900 dark:text-[var(--color-text-main-dark)] line-clamp-2 leading-relaxed h-10 sm:h-11 flex items-start group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors">
             {product.title}
           </h3>
         </Link>
@@ -165,7 +165,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
                 {formatPrice(product.originalPrice)}
               </span>
             )}
-            <div className="text-sm sm:text-base font-black text-orange-600 dark:text-orange-400 font-mono tracking-tight">
+            <div className="text-sm sm:text-base font-black text-[var(--color-emphasis-text)] font-mono tracking-tight">
               {formatPrice(product.price)}
             </div>
           </div>
@@ -181,7 +181,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
                 ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400 cursor-not-allowed shadow-none'
                 : added 
                   ? 'bg-emerald-600 text-white shadow-emerald-600/30'
-                  : 'bg-gradient-to-b from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 active:scale-95 text-white'
+                  : 'bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] active:scale-95 text-white'
             }`}
             title="افزودن به سبد خرید"
           >

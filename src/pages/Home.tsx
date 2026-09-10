@@ -151,25 +151,25 @@ export default function Home() {
       title: settings.valueProp1Title || STORE_SETTINGS_DEFAULTS.valueProp1Title,
       desc: settings.valueProp1Desc || STORE_SETTINGS_DEFAULTS.valueProp1Desc,
       icon: PackageCheck,
-      color: 'text-orange-500 bg-orange-500/15 border-orange-500/30',
+      color: 'text-[var(--color-cta)] bg-[var(--color-cta)]/10 border-[var(--color-cta)]/20',
     },
     {
       title: settings.valueProp2Title || STORE_SETTINGS_DEFAULTS.valueProp2Title,
       desc: settings.valueProp2Desc || STORE_SETTINGS_DEFAULTS.valueProp2Desc,
       icon: Truck,
-      color: 'text-emerald-500 bg-emerald-500/15 border-emerald-500/30',
+      color: 'text-[var(--color-cta)] bg-[var(--color-cta)]/10 border-[var(--color-cta)]/20',
     },
     {
       title: settings.valueProp3Title || STORE_SETTINGS_DEFAULTS.valueProp3Title,
       desc: settings.valueProp3Desc || STORE_SETTINGS_DEFAULTS.valueProp3Desc,
       icon: ShieldCheck,
-      color: 'text-blue-500 bg-blue-500/15 border-blue-500/30',
+      color: 'text-[var(--color-cta)] bg-[var(--color-cta)]/10 border-[var(--color-cta)]/20',
     },
     {
       title: settings.valueProp4Title || STORE_SETTINGS_DEFAULTS.valueProp4Title,
       desc: settings.valueProp4Desc || STORE_SETTINGS_DEFAULTS.valueProp4Desc,
       icon: Headset,
-      color: 'text-purple-500 bg-purple-500/15 border-purple-500/30',
+      color: 'text-[var(--color-cta)] bg-[var(--color-cta)]/10 border-[var(--color-cta)]/20',
     },
   ], [settings]);
 
@@ -183,10 +183,10 @@ export default function Home() {
         to={`/products?category=${encodeURIComponent(cat.title)}`}
         className="relative flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-[var(--color-surface-light)] dark:bg-[#0d121c] border border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 transition-colors group text-center shadow-xs"
       >
-        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800/80 flex items-center justify-center text-zinc-700 dark:text-zinc-200 group-hover:bg-orange-600 group-hover:text-white transition-all mb-2">
+        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800/80 flex items-center justify-center text-zinc-700 dark:text-zinc-200 group-hover:bg-[var(--color-cta)] group-hover:text-white transition-all mb-2">
           <Icon className="h-5 w-5 sm:h-6 sm:w-6 stroke-[1.8]" />
         </div>
-        <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+        <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors">
           {cat.title}
         </span>
         <span className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">
@@ -212,7 +212,7 @@ export default function Home() {
             {/* Text & Actions */}
             <div className="md:col-span-7 space-y-4 text-right">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 dark:bg-zinc-800/90 border border-orange-200 dark:border-zinc-700 text-orange-700 dark:text-amber-400 text-xs font-black shadow-xs">
-                <Sparkles className="h-3.5 w-3.5 animate-pulse text-orange-600 dark:text-amber-400 shrink-0" />
+                <Sparkles className="h-3.5 w-3.5 animate-pulse text-[var(--color-emphasis-text)] dark:text-amber-400 shrink-0" />
                 <span>{normalizePersianTypography(currentSlide.tag)}</span>
               </div>
 
@@ -234,7 +234,7 @@ export default function Home() {
                 </Link>
 
                 <div className={`text-xs font-black px-4 py-2.5 rounded-2xl border bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-500/20 dark:text-orange-300 dark:border-orange-500/40 flex items-center gap-2`}>
-                  <Award className="h-4 w-4 shrink-0 text-orange-600 dark:text-inherit" />
+                  <Award className="h-4 w-4 shrink-0 text-[var(--color-emphasis-text)] dark:text-inherit" />
                   <span>{normalizePersianTypography(currentSlide.badge)}</span>
                 </div>
               </div>
@@ -289,7 +289,7 @@ export default function Home() {
           </div>
           <Link
             to={settings.b2bLink || STORE_SETTINGS_DEFAULTS.b2bLink}
-            className="px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-black text-xs transition-all shadow-md shadow-orange-600/25 shrink-0 cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-black text-xs transition-all shadow-md shadow-orange-600/25 shrink-0 cursor-pointer"
           >
             {normalizePersianTypography(settings.b2bButtonText || STORE_SETTINGS_DEFAULTS.b2bButtonText)}
           </Link>
@@ -326,7 +326,7 @@ export default function Home() {
           {/* Section Header */}
           <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-orange-100 dark:border-zinc-800">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-orange-500/10 dark:bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-orange-600 dark:text-orange-400">
+              <div className="w-10 h-10 rounded-xl bg-orange-500/10 dark:bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-[var(--color-emphasis-text)]">
                 <Flame className="h-5 w-5 animate-bounce" />
               </div>
               <div>
@@ -337,9 +337,9 @@ export default function Home() {
 
             {/* Countdown Clock */}
             <div className="flex items-center gap-2 bg-white/90 dark:bg-zinc-800/90 border border-orange-200/80 dark:border-zinc-700/80 px-3.5 py-1.5 rounded-2xl text-xs font-bold font-mono shadow-xs">
-              <Clock className="h-4 w-4 text-orange-600 dark:text-orange-400 shrink-0" />
+              <Clock className="h-4 w-4 text-[var(--color-emphasis-text)] shrink-0" />
               <span className="text-zinc-700 dark:text-zinc-200">فرصت باقی‌مانده:</span>
-              <div className="flex items-center gap-1 text-sm font-black text-orange-600 dark:text-orange-400">
+              <div className="flex items-center gap-1 text-sm font-black text-[var(--color-emphasis-text)]">
                 <span className="bg-orange-100/70 dark:bg-zinc-900 px-1.5 py-0.5 rounded-lg border border-orange-200 dark:border-zinc-700 text-orange-700 dark:text-orange-300">{toPersianDigits(timeLeft.hours.toString().padStart(2, '0'))}</span>
                 <span>:</span>
                 <span className="bg-orange-100/70 dark:bg-zinc-900 px-1.5 py-0.5 rounded-lg border border-orange-200 dark:border-zinc-700 text-orange-700 dark:text-orange-300">{toPersianDigits(timeLeft.minutes.toString().padStart(2, '0'))}</span>
@@ -375,7 +375,7 @@ export default function Home() {
                     </span>
                   </div>
 
-                  <h3 className="text-xs font-bold line-clamp-2 leading-relaxed min-h-[36px] text-zinc-800 dark:text-zinc-100 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                  <h3 className="text-xs font-bold line-clamp-2 leading-relaxed min-h-[36px] text-zinc-800 dark:text-zinc-100 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors">
                     {p.title}
                   </h3>
 
@@ -385,7 +385,7 @@ export default function Home() {
                         {formatPrice(p.originalPrice)}
                       </span>
                     )}
-                    <span className="text-xs sm:text-sm font-black text-orange-600 dark:text-orange-400">
+                    <span className="text-xs sm:text-sm font-black text-[var(--color-emphasis-text)]">
                       {formatPrice(p.price)}
                     </span>
                   </div>
@@ -407,7 +407,7 @@ export default function Home() {
             <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white">دسته‌بندی‌های تخصصی</h2>
             <p className="text-xs text-zinc-600 dark:text-zinc-300 mt-0.5">انتخاب تجهیزات بر اساس دسته‌بندی</p>
           </div>
-          <Link to="/products" className="text-xs font-black text-orange-600 dark:text-orange-400 hover:underline flex items-center gap-1">
+          <Link to="/products" className="text-xs font-black text-[var(--color-emphasis-text)] hover:underline flex items-center gap-1">
             <span>مشاهده کاتالوگ کامل</span>
             <ArrowLeft className="h-3.5 w-3.5" />
           </Link>
@@ -426,7 +426,7 @@ export default function Home() {
               aria-hidden="true"
               className="pointer-events-none absolute inset-y-0 left-1 z-10 hidden sm:flex items-center"
             >
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-600 text-white shadow-lg animate-pulse">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-cta)] text-white shadow-lg animate-pulse">
                 <ChevronLeft className="h-4 w-4" />
               </span>
             </div>
@@ -454,7 +454,7 @@ export default function Home() {
       <section className="w-full">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-zinc-200 dark:border-zinc-800 pb-3">
           <div className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-orange-600" />
+            <TrendingUp className="h-5 w-5 text-[var(--color-emphasis-text)]" />
             <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white">کالاهای برگزیده بازار</h2>
           </div>
 
@@ -472,7 +472,7 @@ export default function Home() {
                 onClick={() => setActiveTab(tab.id as any)}
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-colors shrink-0 ${
                   activeTab === tab.id
-                    ? 'bg-orange-600 text-white shadow-xs'
+                    ? 'bg-[var(--color-cta)] text-white shadow-xs'
                     : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700'
                 }`}
               >
@@ -491,7 +491,7 @@ export default function Home() {
               <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4">خطا در بارگذاری محصولات. اتصال اینترنت خود را بررسی کنید.</p>
               <button
                 onClick={() => setReloadKey((k) => k + 1)}
-                className="bg-orange-600 hover:bg-orange-700 text-white text-xs font-black px-6 py-2.5 rounded-xl transition-colors"
+                className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-black px-6 py-2.5 rounded-xl transition-colors"
               >
                 تلاش مجدد
               </button>

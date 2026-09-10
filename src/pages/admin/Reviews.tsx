@@ -115,7 +115,7 @@ export default function AdminReviews() {
           </p>
         </div>
         <div className="text-xs font-bold text-gray-500 bg-[var(--color-surface-light)] dark:bg-gray-800 px-3.5 py-2 rounded-xl border border-[var(--color-border-light)] dark:border-gray-700">
-          تعداد کل نظرات: <span className="text-orange-600 font-mono font-bold">{reviews.length}</span>
+          تعداد کل نظرات: <span className="text-[var(--color-emphasis-text)] font-mono font-bold">{reviews.length}</span>
         </div>
       </div>
 
@@ -218,7 +218,7 @@ export default function AdminReviews() {
                         </button>
                         <button
                           onClick={() => setSelectedReview(rev)}
-                          className="px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:text-orange-600 font-medium"
+                          className="px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:text-[var(--color-emphasis-text)] font-medium"
                         >
                           مشاهده
                         </button>

@@ -65,7 +65,7 @@ export default function MobileBottomNav() {
               aria-label={item.label}
               className={`relative flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-300 min-touch-target ${
                 isActive
-                  ? 'text-orange-600 dark:text-orange-400 font-bold'
+                  ? 'text-[var(--color-emphasis-text)] font-bold'
                   : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-[var(--color-surface-light)]/[0.04]'
               }`}
             >
@@ -85,7 +85,7 @@ export default function MobileBottomNav() {
                     animate={{ scale: 1 }}
                     className={`absolute -top-1.5 -right-2 text-[10px] font-extrabold h-4 min-w-4 px-1 rounded-full flex items-center justify-center shadow-sm ${
                       item.highlight
-                        ? 'bg-orange-600 text-white'
+                        ? 'bg-[var(--color-cta)] text-white'
                         : 'bg-rose-500 text-white'
                     }`}
                   >
