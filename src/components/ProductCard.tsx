@@ -50,11 +50,11 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
                 ناموجود
               </span>
             ) : product.discount && product.discount > 0 ? (
-              <span className="bg-rose-600 dark:bg-rose-500 text-white text-[11px] font-black px-2.5 py-0.5 rounded-full">
+              <span className="bg-primary-600 text-white text-[11px] font-black px-2.5 py-0.5 rounded-full shadow-xs">
                 {toPersianDigits(product.discount)}٪ تخفیف
               </span>
             ) : (
-              <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-[var(--color-surface-light)]/[0.04] px-2.5 py-0.5 rounded-lg border border-zinc-200/60 dark:border-white/[0.06]">
+              <span className="text-[10px] font-bold text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-white/[0.04] px-2.5 py-0.5 rounded-lg border border-zinc-200/60 dark:border-white/[0.06]">
                 {product.brand || 'اورجینال'}
               </span>
             )}

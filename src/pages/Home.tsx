@@ -383,7 +383,7 @@ export default function Home() {
                       height="160"
                       className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300 drop-shadow-[0_4px_8px_rgba(0,0,0,0.06)] dark:drop-shadow-none" 
                     />
-                    <span className="absolute top-2 right-2 bg-rose-600 text-white text-[10px] font-black px-2 py-0.5 rounded-lg shadow-xs">
+                    <span className="absolute top-2 right-2 bg-primary-600 text-white text-[10px] font-black px-2 py-0.5 rounded-lg shadow-xs">
                       {toPersianDigits(p.discount || 0)}٪
                     </span>
                   </div>
@@ -432,12 +432,12 @@ export default function Home() {
           {/* left-edge fade (direction of more content in RTL) */}
           <div
             aria-hidden="true"
-            className={`pointer-events-none absolute inset-y-0 left-0 w-10 sm:w-14 z-10 bg-gradient-to-r from-zinc-50 to-transparent dark:from-[#05070c] transition-opacity duration-300 ${catScrolled ? 'opacity-0' : 'opacity-100'}`}
+            className={`pointer-events-none absolute inset-y-0 left-0 w-12 sm:w-16 z-10 bg-gradient-to-r from-white via-white/80 to-transparent dark:from-[var(--color-canvas-dark)] dark:via-[var(--color-canvas-dark)]/80 transition-opacity duration-300 ${catScrolled ? 'opacity-0' : 'opacity-100'}`}
           />
           {!catScrolled && (
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-y-0 left-1 z-10 hidden sm:flex items-center"
+              className="pointer-events-none absolute inset-y-0 left-2 z-10 hidden sm:flex items-center"
             >
               <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-cta)] text-white shadow-lg animate-pulse">
                 <ChevronLeft className="h-4 w-4" />

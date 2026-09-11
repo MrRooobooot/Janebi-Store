@@ -176,17 +176,17 @@ export default function Header() {
             <button
               onClick={openCartDrawer}
               aria-label="مشاهده سبد خرید"
-              className="flex items-center gap-1 bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/40 text-[var(--color-emphasis-text)] hover:bg-[var(--color-cta-hover)] hover:text-white border border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/50 px-1.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl transition-all duration-200 shadow-xs cursor-pointer"
+              className="flex items-center gap-1.5 bg-primary-50 hover:bg-primary-100 dark:bg-primary-950/40 text-[var(--color-emphasis-text)] border border-primary-200 dark:border-primary-800/60 px-2 sm:px-3.5 py-1.5 sm:py-2 rounded-xl transition-all duration-200 shadow-xs cursor-pointer active:scale-95 min-touch-target"
             >
               <div className="relative">
                 <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-[var(--color-cta)] text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border-2 border-white dark:border-zinc-900">
+                  <span className="absolute -top-2 -right-2 bg-primary-600 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center border-2 border-white dark:border-zinc-900 shadow-xs font-mono">
                     {toPersianDigits(cartCount)}
                   </span>
                 )}
               </div>
-              <span className="text-xs font-bold hidden md:inline">سبد خرید</span>
+              <span className="text-xs font-black hidden md:inline">سبد خرید</span>
             </button>
 
             {/* User Account Menu / Login */}
