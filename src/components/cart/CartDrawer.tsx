@@ -80,17 +80,17 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-              className="w-screen max-w-md bg-[var(--color-surface-light)] dark:bg-[#0c1017] text-zinc-900 dark:text-zinc-100 shadow-2xl border-r border-zinc-200/80 dark:border-zinc-800 flex flex-col justify-between outline-none"
+              className="w-screen max-w-md bg-white dark:bg-[#0e1629] text-slate-900 dark:text-slate-100 shadow-2xl border-r border-slate-200/80 dark:border-white/[0.08] flex flex-col justify-between outline-none"
             >
               {/* Drawer Header */}
-              <div className="p-4 sm:p-5 border-b border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between">
+              <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-white/[0.06] flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
                   <div className="w-9 h-9 rounded-xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/50 text-[var(--color-emphasis-text)] flex items-center justify-center">
                     <ShoppingBag className="h-5 w-5" />
                   </div>
                   <div>
                     <h2 id="cart-drawer-title" className="font-black text-base">سبد خرید شما</h2>
-                    <p aria-live="polite" className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">
+                    <p aria-live="polite" className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                       {toPersianDigits(cartCount)} کالا در سبد
                     </p>
                   </div>
@@ -99,14 +99,14 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 <button
                   onClick={onClose}
                   aria-label="بستن سبد خرید"
-                  className="min-touch-target p-2 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
+                  className="min-touch-target p-2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/[0.06] rounded-xl transition-colors cursor-pointer"
                 >
                   <X className="h-5 w-5" />
                 </button>
               </div>
 
               {/* Free Shipping Progress Bar */}
-              <div className="px-5 py-3 bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-100 dark:border-zinc-800/60">
+              <div className="px-5 py-3 bg-slate-50 dark:bg-white/[0.03] border-b border-slate-100 dark:border-white/[0.06]">
                 <div className="flex items-center justify-between text-xs font-bold mb-1.5">
                   {isFreeShipping ? (
                     <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1">

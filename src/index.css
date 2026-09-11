@@ -1,6 +1,17 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ═══════════════════════════════════════════════════════════════════
+   DESIGN TOKEN SYSTEM — Single Source of Truth
+   ─────────────────────────────────────────────────────────────────────
+   This @theme block is the MIRROR of `src/design/tokens.json`.
+   To re-theme the whole store: edit tokens.json → mirror values here.
+   Component code must ONLY consume these CSS vars / Tailwind theme
+   colors (e.g. `bg-[var(--color-cta)]`, `text-brand-600`) — never raw
+   hex values. Inspired by Digikala DDS token architecture (#ef4056)
+   adapted to Janebi rose brand (#e11d48).
+   ═══════════════════════════════════════════════════════════════════ */
+
 /* ── Local Self-Hosted High Performance Persian Fonts ────────────── */
 @font-face {
   font-family: 'Vazirmatn';
@@ -28,33 +39,44 @@
 
 @theme {
   --font-sans: "Vazirmatn", system-ui, -apple-system, sans-serif;
-  
-  /* ── Core Brand Palette (Rose / Magenta Redesign — Approved) ──
-     CTA fills = --color-cta #e11d48 (white text 4.70:1, WCAG AA)
-     #fb7185 / #f43f5e = secondary emphasis fills / decorative gradients
-     hover #be123c = hover shifts (6.29:1)
-     active #9f1239 = active states (8.02:1)
-     primary #be123c = focus rings / small emphasis (6.29:1)                */
-  --color-primary-50: #fff1f2;
-  --color-primary-100: #ffe4e6;
-  --color-primary-200: #fecdd3;
-  --color-primary-300: #fda4af;
-  --color-primary-400: #fb7185;
-  --color-primary-500: #f43f5e;
-  --color-primary-600: #e11d48;
-  --color-primary-700: #be123c;
-  --color-primary-800: #9f1239;
-  --color-primary-900: #881337;
-  --color-primary-950: #4c0519;
 
-  /* ── Secondary & Accent Tokens (Emerald, Indigo, Rose, Gold) ── */
-  --color-accent-gold: #f59e0b;
-  --color-accent-emerald: #10b981;
+  /* ── Brand Scale (token: color.brand.*) — DDS-inspired rose ── */
+  --color-brand-50: #fff1f2;
+  --color-brand-100: #ffe4e6;
+  --color-brand-200: #fecdd3;
+  --color-brand-300: #fda4af;
+  --color-brand-400: #fb7185;
+  --color-brand-500: #f43f5e;
+  --color-brand-600: #e11d48;
+  --color-brand-700: #be123c;
+  --color-brand-800: #9f1239;
+  --color-brand-900: #881337;
+  --color-brand-950: #4c0519;
+  /* Aliases — legacy components reference primary-*; kept in sync with brand */
+  --color-primary-50: var(--color-brand-50);
+  --color-primary-100: var(--color-brand-100);
+  --color-primary-200: var(--color-brand-200);
+  --color-primary-300: var(--color-brand-300);
+  --color-primary-400: var(--color-brand-400);
+  --color-primary-500: var(--color-brand-500);
+  --color-primary-600: var(--color-brand-600);
+  --color-primary-700: var(--color-brand-700);
+  --color-primary-800: var(--color-brand-800);
+  --color-primary-900: var(--color-brand-900);
+  --color-primary-950: var(--color-brand-950);
+
+  /* ── Semantic Accents (token: color.semantic.*) ── */
+  --color-accent-success: #10b981;
+  --color-accent-warning: #f59e0b;
+  --color-accent-info: #3b82f6;
+  --color-accent-error: #dc2626;
+  --color-accent-gold: var(--color-accent-warning);
+  --color-accent-emerald: var(--color-accent-success);
   --color-accent-cyan: #06b6d4;
   --color-accent-rose: #f43f5e;
   --color-accent-violet: #8b5cf6;
 
-  /* ── Luxury Titanium Palette (Unified Dark & Light Canvas Architecture) ── */
+  /* ── Surfaces (token: color.surface.*) — one family per theme ── */
   --color-canvas-light: #f1f5f9;
   --color-canvas-dark: #090d16;
   --color-surface-light: #ffffff;
@@ -65,8 +87,12 @@
   --color-surface-card-dark: #0e1629;
   --color-surface-glass-light: rgba(255, 255, 255, 0.88);
   --color-surface-glass-dark: rgba(14, 22, 41, 0.85);
+  --color-surface-header-dark: #0c1220;
+  --color-surface-topbar-dark: #060910;
+  --color-surface-footer-light: #f8fafc;
+  --color-surface-footer-dark: #070b14;
 
-  /* ── Precision Border & Divider Tokens ── */
+  /* ── Borders (token: color.border.*) ── */
   --color-border-light: rgba(15, 23, 42, 0.09);
   --color-border-dark: rgba(255, 255, 255, 0.08);
   --color-border-subtle-light: rgba(15, 23, 42, 0.05);
@@ -74,7 +100,7 @@
   --color-border-dark-hover: rgba(225, 29, 72, 0.45);
   --color-border-light-hover: rgba(225, 29, 72, 0.35);
 
-  /* ── High-Luminance Typography Tokens ── */
+  /* ── Typography (token: color.text.*, typography.fontSize.*) ── */
   --color-text-main-light: #0f172a;
   --color-text-main-dark: #f8fafc;
   --color-text-muted-light: #475569;
@@ -82,7 +108,7 @@
   --color-text-subtle-light: #64748b;
   --color-text-subtle-dark: #64748b;
 
-/* ── Elevation Box Shadows (DESIGN.md: 0 4px 20px rgba(11,21,54,0.04)) ── */
+  /* ── Elevation Shadows (token: shadow.*) ── */
   --shadow-elevation-1: 0 4px 20px rgba(11, 21, 54, 0.04);
   --shadow-elevation-2: 0 4px 20px rgba(11, 21, 54, 0.07), 0 2px 6px -2px rgba(11, 21, 54, 0.05);
   --shadow-elevation-3: 0 10px 15px -3px rgba(11, 21, 54, 0.08), 0 4px 6px -4px rgba(11, 21, 54, 0.04);
@@ -90,7 +116,7 @@
   --shadow-glow-amber: 0 8px 24px -4px rgba(244, 124, 32, 0.30);
   --shadow-glow-emerald: 0 8px 24px -4px rgba(16, 185, 129, 0.30);
 
-  /* ── CTA Fill Tokens (Rose Magenta — white text 4.70:1 AA ✅) ── */
+  /* ── CTA Fill Tokens (token: color.semantic.cta.*) — white text 4.70:1 AA ✅ ── */
   --color-cta: #e11d48;
   --color-cta-hover: #be123c;
   --color-cta-active: #9f1239;
