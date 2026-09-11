@@ -31,14 +31,22 @@
    "spec": "design-spec-v1.md",
    "commit": "101d441",
    "deployed": true
+  },
+  {
+   "wave": "6 struct-design",
+   "agents": 3,
+   "commit": "dd13df0",
+   "deployed": true,
+   "items": "all 25 [STRUCT] applied across ProductDetail/Products/Cart/Checkout/Login/Profile/Blog/Footer/Home/CartDrawer"
   }
  ],
- "total_fixes": 26,
+ "total_fixes": 51,
  "design": {
   "palette": "Copper Titanium",
   "cta_contrast": "2.7:1 -> 4.63:1 WCAG AA",
   "struct_deferred": 25
  },
  "gate": "399 tests / 55 suites green, tsc clean, live CTA token verified in prod CSS bundle",
- "backlog": "25 [STRUCT] design items in design-spec-v1.md; remaining minor/improvement findings in final-validated.json"
+ "backlog": "25 [STRUCT] design items in design-spec-v1.md; remaining minor/improvement findings in final-validated.json",
+ "status": "design-spec-v1.md fully implemented ([CSS] wave5 + [STRUCT] wave6), deployed"
 }
