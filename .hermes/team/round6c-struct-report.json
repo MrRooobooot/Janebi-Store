@@ -1,0 +1,53 @@
+{
+  "wave": "6c-struct",
+  "task": "STRUCT items H1, H3, H4, H5, P4, C3, C4, C5 from design-spec-v1.md",
+  "files_modified": [
+    "src/pages/Home.tsx",
+    "src/components/cart/CartDrawer.tsx"
+  ],
+  "items": {
+    "H1": {
+      "status": "done",
+      "detail": "Hero slide title -> text-3xl sm:text-4xl lg:text-5xl font-black leading-[1.15]; subtitle -> text-sm sm:text-base with --color-text-muted-light/dark tokens; hero CTA button -> bg-[var(--color-cta)] + hover/active/focus-outline cta tokens (was primary-300/500).",
+      "file": "src/pages/Home.tsx"
+    },
+    "H4": {
+      "status": "done",
+      "detail": "Countdown card container -> bg-[var(--color-cta)]/10; digits tabular-nums font-black in cta color; added thin seconds bar h-1 bg-[var(--color-cta)]/40 rounded-full with progressbar a11y role (driven by existing timeLeft.seconds state, no logic change).",
+      "file": "src/pages/Home.tsx"
+    },
+    "H5": {
+      "status": "done",
+      "detail": "Hero product/category row already has dir=rtl on the scroll container (catRowRef row) — verified natural RTL behavior; no programmatic nav arrows exist in the row (only a static decorative ChevronLeft hint pill), so no rotate-180 mirroring needed.",
+      "file": "src/pages/Home.tsx"
+    },
+    "H3": {
+      "status": "done",
+      "detail": "Category tabs (Home کالاهای برگزیده بازار): active -> border-b-2 border-[var(--color-cta)] text-[var(--color-cta)]; inactive -> muted token with hover to main text; container -> overflow-x-auto custom-scrollbar scroll-smooth snap-x, tabs snap-start. Selectors/logic unchanged.",
+      "file": "src/pages/Home.tsx"
+    },
+    "P4": {
+      "status": "skipped",
+      "detail": "Mobile filter UI lives in src/components/products/ProductFilterSidebar.tsx, owned by sibling w6 — skipped per coordination rule. Nothing in my allowed files renders a mobile filter panel."
+    },
+    "C3": {
+      "status": "done",
+      "detail": "CartDrawer free-shipping progress bar: h-2 rounded-full track, fill now bg-[var(--color-cta)] (emerald kept for achieved state); existing text already shows «{formatPrice(amountLeft)} تا ارسال رایگان» with Persian digits — unchanged.",
+      "file": "src/components/cart/CartDrawer.tsx"
+    },
+    "C4": {
+      "status": "done",
+      "detail": "CartDrawer empty state: Lucide ShoppingCart in w-16 h-16 rounded-2xl bg-[var(--color-cta)]/10 text-[var(--color-cta)] + existing CTA («مشاهده کاتالوگ محصولات») preserved.",
+      "file": "src/components/cart/CartDrawer.tsx"
+    },
+    "C5": {
+      "status": "skipped",
+      "detail": "No coupon input exists in CartDrawer; the only coupon form lives in src/components/cart/CartSummaryCard.tsx (already dir=ltr) which is w6-owned — not in my allowed file list, so skipped."
+    }
+  },
+  "verification": {
+    "tsc": "npx tsc --noEmit -> clean (exit 0)",
+    "tests": "npm test -> 55/55 suites passed, 399 passed + 5 skipped"
+  },
+  "logic_changes": "none — layout/classes only; e2e selectors and handlers preserved"
+}

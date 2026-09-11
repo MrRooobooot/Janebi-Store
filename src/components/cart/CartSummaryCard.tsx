@@ -34,7 +34,7 @@ export default function CartSummaryCard({
   const payable = finalTotal + (isFreeShipping ? 0 : SHIPPING_FEES.standard);
 
   return (
-    <div className="bg-[var(--color-surface-light)]/90 dark:bg-[var(--color-surface-dark)]/90 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 sm:p-7 shadow-sm lg:sticky lg:top-28 space-y-6">
+    <div className="bg-[var(--color-surface-light)]/90 dark:bg-[var(--color-surface-dark)]/90 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] surface-card rounded-2xl p-5 shadow-sm lg:sticky lg:top-24 space-y-6">
       <h3 className="font-black text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex items-center justify-between">
         <span>خلاصه پیش‌فاکتور</span>
         <span className="text-xs font-bold text-primary-500 dark:text-primary-300 bg-primary-50 dark:bg-primary-950/40 px-2.5 py-1 rounded-xl">
@@ -152,7 +152,7 @@ export default function CartSummaryCard({
         <div className="border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pt-4 flex justify-between items-center text-sm">
           <span className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">مبلغ نهایی قابل پرداخت:</span>
           <div className="text-left">
-            <div className="font-black text-2xl text-primary-400 dark:text-primary-300 tracking-tight">
+            <div className="font-black text-lg text-[var(--color-cta)] tracking-tight">
               {formatPrice(payable)}
             </div>
           </div>

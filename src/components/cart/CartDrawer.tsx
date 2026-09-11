@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ShoppingBag, X, Trash2, ArrowLeft, Plus, Minus, Sparkles, Percent } from 'lucide-react';
+import { ShoppingBag, ShoppingCart, X, Trash2, ArrowLeft, Plus, Minus, Sparkles, Percent } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../contexts/CartContext';
 import { formatPrice, toPersianDigits } from '../../lib/utils';
@@ -110,8 +110,8 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 </div>
                 <div className="w-full h-2 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden" role="progressbar" aria-valuenow={progressPercent} aria-valuemin={0} aria-valuemax={100}>
                   <div
-                    className={`h-full rounded-full transition-all duration-500 ${
-                      isFreeShipping ? 'bg-emerald-500' : 'bg-orange-500'
+                    className={`h-2 rounded-full transition-all duration-500 ${
+                      isFreeShipping ? 'bg-emerald-500' : 'bg-[var(--color-cta)]'
                     }`}
                     style={{ width: `${progressPercent}%` }}
                   />
@@ -122,8 +122,8 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-3.5 divide-y divide-zinc-100 dark:divide-zinc-800/60">
                 {cart.length === 0 ? (
                   <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-4">
-                    <div className="w-16 h-16 rounded-3xl bg-zinc-100 dark:bg-zinc-800/60 text-zinc-400 flex items-center justify-center">
-                      <ShoppingBag className="h-8 w-8" />
+                    <div className="w-16 h-16 rounded-2xl bg-[var(--color-cta)]/10 text-[var(--color-cta)] flex items-center justify-center">
+                      <ShoppingCart className="h-8 w-8" />
                     </div>
                     <div>
                       <h3 className="font-black text-base text-zinc-800 dark:text-zinc-200">سبد خرید خالی است</h3>

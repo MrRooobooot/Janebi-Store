@@ -246,7 +246,7 @@ export default function Blog() {
 
       {/* Loading */}
       {loading && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(3)].map((_, i) => (
             <div key={i} className="bg-zinc-50 dark:bg-zinc-900/60 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 overflow-hidden animate-pulse motion-reduce:animate-none">
               <div className="aspect-video bg-zinc-100 dark:bg-zinc-800" />
@@ -318,7 +318,7 @@ export default function Blog() {
       )}
 
       {!loading && !error && filteredArticles.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredArticles.map((art, idx) => {
             const paragraphs = art.body.split('\n\n').filter(Boolean);
             return (
@@ -334,9 +334,9 @@ export default function Blog() {
                 aria-label={`خواندن مقاله: ${art.title}`}
                 className="bg-zinc-50 dark:bg-zinc-900/60 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 overflow-hidden hover:shadow-lg dark:hover:shadow-black/30 hover:border-orange-300 dark:hover:border-zinc-700 hover:-translate-y-1 motion-reduce:hover:translate-y-0 transition-all duration-300 motion-reduce:transition-none flex flex-col group h-full cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 will-change-transform"
               >
-                <div className="aspect-video w-full relative overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50 dark:from-zinc-800 dark:to-zinc-900 flex items-center justify-center">
+                <div className="aspect-[16/9] w-full relative rounded-2xl overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50 dark:from-zinc-800 dark:to-zinc-900 flex items-center justify-center">
                   <img src={art.image || FALLBACK_IMAGE} alt={art.title} loading="lazy" decoding="async" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 motion-reduce:transition-none motion-reduce:group-hover:scale-100" />
-                  <span className="absolute top-3 right-3 bg-[var(--color-cta)] text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
+                  <span className="absolute top-3 right-3 bg-zinc-100 dark:bg-zinc-800 text-[var(--color-text-main-light)] dark:text-zinc-200 text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
                     {art.category}
                   </span>
                 </div>
@@ -349,7 +349,7 @@ export default function Blog() {
                         <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {art.readTime}</span>
                       )}
                     </div>
-                    <h3 className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-base leading-snug mb-3 h-10 sm:h-11 line-clamp-2 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors motion-reduce:transition-none">
+                    <h3 className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-base leading-7 mb-3 h-10 sm:h-11 line-clamp-2 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors motion-reduce:transition-none">
                       {art.title}
                     </h3>
                     <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed line-clamp-3 mb-6">
@@ -426,7 +426,7 @@ export default function Blog() {
                 >
                   <X className="h-5 w-5" />
                 </button>
-                <span className="absolute top-4 right-4 bg-[var(--color-cta)] text-white text-[11px] font-bold px-3 py-1 rounded-full shadow">
+                <span className="absolute top-4 right-4 bg-zinc-100 dark:bg-zinc-800 text-[var(--color-text-main-light)] dark:text-zinc-200 text-[11px] font-bold px-2.5 py-1 rounded-full shadow">
                   {openArticle.category}
                 </span>
                 <button
@@ -455,14 +455,14 @@ export default function Blog() {
                   <span className="flex items-center gap-1"><User className="h-3.5 w-3.5" /> {openArticle.author}</span>
                 </div>
 
-                <h2 className="blog-article-title text-xl sm:text-2xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] leading-relaxed mb-6">
+                <h2 className="blog-article-title mt-8 mb-3 text-xl sm:text-2xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] leading-relaxed">
                   {openArticle.title}
                 </h2>
 
                 {/* blog-article-body: speakable target for the BlogPosting JSON-LD */}
                 <div className="blog-article-body space-y-4">
                   {openArticle.body.split('\n\n').filter(Boolean).map((para, i) => (
-                    <p key={i} className="text-sm text-zinc-700 dark:text-zinc-300 leading-loose">
+                    <p key={i} className="text-[15px] text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] leading-8">
                       {para}
                     </p>
                   ))}
@@ -489,7 +489,7 @@ export default function Blog() {
                 {/* Related posts: same category, most recent first, excludes current */}
                 {related.length > 0 && (
                   <div className="mt-8 pt-6 border-t border-zinc-200/80 dark:border-zinc-800">
-                    <h3 className="flex items-center gap-2 text-sm font-black text-[var(--color-text-main-light)] dark:text-white mb-4">
+                    <h3 className="flex items-center gap-2 mt-8 mb-3 text-sm font-black text-[var(--color-text-main-light)] dark:text-white">
                       <BookOpen className="h-4 w-4 text-[var(--color-emphasis-text)]" /> مطالب مرتبط
                     </h3>
                     <div className="grid gap-3">

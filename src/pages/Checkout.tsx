@@ -60,7 +60,7 @@ export default function Checkout() {
         </h1>
       </div>
 
-      <CheckoutStepsBar />
+      <CheckoutStepsBar currentStep={2} />
 
       <form onSubmit={handleCheckout} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Recipient details + Shipping & Payment Selection */}

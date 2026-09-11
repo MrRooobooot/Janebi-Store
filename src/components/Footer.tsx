@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Truck, HeadphonesIcon, Shield, CheckCircle, Send, Phone, Mail, Award } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Truck, HeadphonesIcon, Shield, CheckCircle, Send, Phone, Mail, Award, PackageSearch } from 'lucide-react';
 import Logo from './Logo';
 import { useToast } from '../contexts/ToastContext';
 import { FREE_SHIPPING_THRESHOLD } from '../lib/constants';
@@ -108,8 +109,22 @@ export default function Footer() {
             </div>
           </div>
 
+          {/* Links column (§2.7 / §9): quick customer links incl. order tracking */}
+          <div className="lg:col-span-3 space-y-3 text-right">
+            <h4 className="text-sm font-black text-zinc-900 dark:text-zinc-100">دسترسی سریع</h4>
+            <nav className="flex flex-col items-start gap-2.5 text-xs text-zinc-600 dark:text-zinc-400" aria-label="لینک‌های فوتر">
+              <Link
+                to="/profile/orders"
+                className="inline-flex items-center gap-2 font-bold hover:text-[var(--color-emphasis-text)] transition-colors"
+              >
+                <PackageSearch className="h-4 w-4 text-[var(--color-emphasis-text)] shrink-0" />
+                پیگیری سفارش
+              </Link>
+            </nav>
+          </div>
+
           {/* Newsletter Section */}
-          <div className="lg:col-span-5 flex flex-col justify-between bg-gradient-to-r from-orange-50 to-amber-50 dark:from-zinc-900 dark:to-zinc-800/60 p-6 rounded-3xl border border-orange-200/60 dark:border-zinc-800 text-right">
+          <div className="lg:col-span-2 flex flex-col justify-between bg-gradient-to-r from-orange-50 to-amber-50 dark:from-zinc-900 dark:to-zinc-800/60 p-6 rounded-3xl border border-orange-200/60 dark:border-zinc-800 text-right">
             <div>
               <h4 className="text-base font-black text-zinc-900 dark:text-zinc-100 mb-1">عضویت در خبرنامه جانبی آرنا</h4>
               <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">از جدیدترین تخفیف‌ها، پکیج‌ها و کدهای تخفیف اختصاصی باخبر شوید.</p>

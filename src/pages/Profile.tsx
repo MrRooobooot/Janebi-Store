@@ -125,7 +125,7 @@ export default function Profile() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Right Sidebar */}
-          <div className="lg:col-span-4 sticky top-28">
+          <div className="lg:col-span-4 lg:sticky lg:top-28">
             <ProfileSidebar
               user={user}
               activeTab={activeTab}

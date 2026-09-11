@@ -4,7 +4,6 @@ import { UserProfile } from '../../contexts/AuthContext';
 import { toPersianDigits } from '../../lib/utils';
 
 export type ProfileTabType = 'overview' | 'orders' | 'addresses' | 'info' | 'wishlist' | 'vip';
-
 interface ProfileSidebarProps {
   user: UserProfile;
   activeTab: ProfileTabType;
@@ -20,15 +19,59 @@ export default function ProfileSidebar({
 }: ProfileSidebarProps) {
   const menuItems: { id: ProfileTabType; label: string; icon: React.ElementType; badge?: string }[] = [
     { id: 'overview', label: 'داشبورد حساب', icon: User },
-    { id: 'orders', label: 'سفارش‌های من', icon: Package },
+    { id: 'orders', label: 'سفارش‌ها', icon: Package },
     { id: 'addresses', label: 'مدیریت آدرس‌ها', icon: MapPin, badge: `${user.addresses?.length || 0}` },
-    { id: 'info', label: 'اطلاعات شخصی و امنیت', icon: Settings },
+    { id: 'info', label: 'اطلاعات حساب', icon: Settings },
     { id: 'wishlist', label: 'علاقه‌مندی‌ها', icon: Heart },
     { id: 'vip', label: 'باشگاه مشتریان VIP', icon: Gift, badge: `${toPersianDigits(user.vipPoints || 0)} امتیاز` },
   ];
 
   return (
-    <aside className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 shadow-xs text-right space-y-6">
+    <>
+      {/* U4: mobile horizontal scrollable tabs (lg:hidden) — same items + خروج */}
+      <div
+        className="lg:hidden overflow-x-auto snap-x custom-scrollbar"
+        role="tablist"
+        aria-label="ناوبری حساب کاربری"
+      >
+        <div className="flex items-center gap-2 pb-1 min-w-max">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                role="tab"
+                aria-selected={isActive}
+                className={`snap-start shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold border transition-all duration-200 ${
+                  isActive
+                    ? 'bg-[var(--color-cta)]/10 text-[var(--color-cta)] border-[var(--color-cta)]'
+                    : 'text-gray-600 dark:text-gray-400 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]'
+                }`}
+              >
+                <Icon className={`h-4 w-4 ${isActive ? 'text-[var(--color-cta)]' : 'text-gray-400'}`} />
+                <span>{item.label}</span>
+                {item.badge && (
+                  <span className="text-[10px] px-1.5 py-0.5 rounded-full font-bold bg-gray-100 dark:bg-gray-800 text-gray-500">
+                    {item.badge}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+          <button
+            onClick={onLogoutClick}
+            className="snap-start shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold text-red-500 border border-red-200 dark:border-red-500/30 bg-red-50 dark:bg-red-500/10"
+          >
+            <LogOut className="h-4 w-4" />
+            <span>خروج</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Desktop sidebar (lg and up only) */}
+      <aside className="hidden lg:block bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 shadow-xs text-right space-y-6">
       {/* User Header Badge */}
       <div className="flex items-center gap-4 pb-6 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
         <div className="relative shrink-0">
@@ -70,12 +113,12 @@ export default function ProfileSidebar({
               onClick={() => setActiveTab(item.id)}
               className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl text-xs font-bold transition-all duration-200 ${
                 isActive
-                  ? 'bg-gradient-to-l from-orange-50 to-amber-50/30 dark:from-orange-500/10 dark:to-amber-500/5 text-[var(--color-emphasis-text)] border-r-4 border-orange-500 shadow-xs'
-                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/60 border-r-4 border-transparent'
+                  ? 'bg-[var(--color-cta)]/10 text-[var(--color-cta)] border-r-2 border-[var(--color-cta)]'
+                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/60 border-r-2 border-transparent'
               }`}
             >
               <div className="flex items-center gap-3">
-                <Icon className={`h-4.5 w-4.5 ${isActive ? 'text-[var(--color-emphasis-text)]' : 'text-gray-400'}`} />
+                <Icon className={`h-4.5 w-4.5 ${isActive ? 'text-[var(--color-cta)]' : 'text-gray-400'}`} />
                 <span>{item.label}</span>
               </div>
 
@@ -91,7 +134,7 @@ export default function ProfileSidebar({
                     {item.badge}
                   </span>
                 )}
-                <ChevronLeft className={`h-4 w-4 ${isActive ? 'text-[var(--color-emphasis-text)]' : 'text-gray-300 dark:text-gray-600'}`} />
+                <ChevronLeft className={`h-4 w-4 ${isActive ? 'text-[var(--color-cta)]' : 'text-gray-300 dark:text-gray-600'}`} />
               </div>
             </button>
           );
@@ -111,5 +154,6 @@ export default function ProfileSidebar({
         </button>
       </div>
     </aside>
+    </>
   );
 }

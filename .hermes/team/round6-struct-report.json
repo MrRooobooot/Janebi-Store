@@ -1,0 +1,75 @@
+{
+  "member": "struct-impl-w6",
+  "applied": [
+    {
+      "id": "D1",
+      "priority": "P1",
+      "file": "src/pages/ProductDetail.tsx",
+      "change": "Purchase column made lg:sticky lg:top-24 self-start; Digikala-style trust-badges row added after action buttons: تحویل اکسپرس / پرداخت در محل / ۷ روز ضمانت بازگشت / ضمانت اصالت with Lucide Truck/HandCoins/PackageCheck/Award icons, text-xs, CTA-colored icons"
+    },
+    {
+      "id": "D2",
+      "priority": "P1",
+      "file": "src/pages/ProductDetail.tsx",
+      "change": "Price block: main price text-2xl font-black + تومان text-xs muted; old price line-through text-sm subtle tokens; discount badge bg-rose-600 text-white rounded-full text-[11px] font-black (Persian digits via toPersianDigits)"
+    },
+    {
+      "id": "D4",
+      "priority": "P1",
+      "file": "src/pages/ProductDetail.tsx",
+      "change": "Mobile sticky bottom bar (lg:hidden, pb-safe) restyled to surface-glass; add-to-cart button now full-width flex-1 with bg-[var(--color-cta)] and min-touch-target"
+    },
+    {
+      "id": "P2",
+      "priority": "P1",
+      "file": "src/components/products/ProductGrid.tsx",
+      "change": "Grid density: grid-cols-2 gap-3 → sm:grid-cols-3 → lg:grid-cols-4 → xl:grid-cols-5 lg:gap-4 (both loading skeleton and real grid)"
+    },
+    {
+      "id": "P6",
+      "priority": "P2",
+      "file": "src/pages/Products.tsx",
+      "change": "Active filter chips bar above grid: rounded-full bg-[var(--color-cta)]/10 text-[var(--color-cta)] chips with small Lucide X; removable chips for category, brands, price range, onlyDiscounted, onlyInStock, in-page search — uses existing filter setters only, no logic change"
+    },
+    {
+      "id": "C1",
+      "priority": "P1",
+      "file": "src/components/cart/CartItemList.tsx",
+      "change": "Row image fixed at w-20 h-20 rounded-xl; product name text-sm font-bold; quantity controls already carry min-touch-target (kept)"
+    },
+    {
+      "id": "C2",
+      "priority": "P1",
+      "file": "src/components/cart/CartSummaryCard.tsx",
+      "change": "Summary card: surface-card rounded-2xl p-5 lg:sticky lg:top-24; final total text-lg font-black text-[var(--color-cta)]"
+    },
+    {
+      "id": "K1",
+      "priority": "P1",
+      "file": "src/components/checkout/CheckoutStepsBar.tsx",
+      "change": "4-step indicator سبد ← آدرس ← ارسال ← پرداخت; active step bg-[var(--color-cta)] text-white rounded-full; completed steps Lucide CheckCircle2 text-emerald-600; kept /cart href + no /payment href (unit test contract preserved); Checkout.tsx now passes currentStep={2} (آدرس)"
+    },
+    {
+      "id": "L1",
+      "priority": "P1",
+      "file": "src/pages/Login.tsx",
+      "change": "Login card max-w-md surface-card rounded-3xl centered (already was); phone input dir=ltr text-center tracking-[0.3em] visual-only (autoComplete=username preserved)"
+    }
+  ],
+  "skipped": [],
+  "verify": {
+    "tsc": "pass (npx tsc --noEmit clean)",
+    "tests": "pass (55 suites, 399 passed, 5 skipped)",
+    "build": "pass (npm run build — client + server.cjs)"
+  },
+  "filesModified": [
+    "src/pages/ProductDetail.tsx",
+    "src/pages/Products.tsx",
+    "src/pages/Checkout.tsx",
+    "src/pages/Login.tsx",
+    "src/components/products/ProductGrid.tsx",
+    "src/components/cart/CartItemList.tsx",
+    "src/components/cart/CartSummaryCard.tsx",
+    "src/components/checkout/CheckoutStepsBar.tsx"
+  ]
+}

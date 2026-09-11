@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { 
   Star, ShieldCheck, Truck, ShoppingCart, Heart, ArrowLeftRight, Zap, 
-  CheckCircle2, Check, Maximize2, X, RotateCcw, Award, PackageCheck, AlertCircle, Share2
+  CheckCircle2, Check, Maximize2, X, RotateCcw, Award, PackageCheck, AlertCircle, Share2, HandCoins
 } from 'lucide-react';
 import { useWishlist } from '../contexts/WishlistContext';
 import { useCompare } from '../contexts/CompareContext';
@@ -293,7 +293,7 @@ export default function ProductDetail() {
             </div>
 
             {/* Product Info Column */}
-            <div className="w-full lg:w-7/12 flex flex-col justify-between">
+            <div className="w-full lg:w-7/12 flex flex-col justify-between self-start lg:sticky lg:top-24">
               <div>
                 {/* Brand & Action Share Header */}
                 <div className="flex items-center justify-between mb-3">
@@ -349,16 +349,17 @@ export default function ProductDetail() {
                       </span>
                       {product.originalPrice && product.discount && (
                         <div className="flex items-center gap-2 mb-0.5">
-                          <span className="text-gray-400 dark:text-gray-500 text-sm line-through font-medium">
+                          <span className="text-[var(--color-text-subtle-light)] dark:text-[var(--color-text-subtle-dark)] text-sm line-through font-medium">
                             {formatPrice(product.originalPrice)}
                           </span>
-                          <span className="bg-rose-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded-md">
-                            سود شما: {formatPrice(product.originalPrice - product.price)}
+                          <span className="bg-rose-600 text-white text-[11px] font-black px-2 py-0.5 rounded-full">
+                            {toPersianDigits(product.discount)}٪ تخفیف
                           </span>
                         </div>
                       )}
-                      <div className="text-3xl font-black text-[var(--color-emphasis-text)] tracking-tight">
+                      <div className="text-2xl font-black text-[var(--color-emphasis-text)] tracking-tight flex items-baseline gap-1.5">
                         {formatPrice(product.price)}
+                        <span className="text-xs font-bold text-[var(--color-text-muted-light)] dark:text-[var(--color-text-muted-dark)]">تومان</span>
                       </div>
                     </div>
 
@@ -452,11 +453,27 @@ export default function ProductDetail() {
                   <ArrowLeftRight className="h-5 w-5" />
                 </button>
               </div>
+
+              {/* Trust Badges Row — Digikala-style (D1) */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-6 pt-6 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
+                {[
+                  { icon: Truck, label: 'تحویل اکسپرس' },
+                  { icon: HandCoins, label: 'پرداخت در محل' },
+                  { icon: PackageCheck, label: '۷ روز ضمانت بازگشت' },
+                  { icon: Award, label: 'ضمانت اصالت' },
+                ].map(({ icon: Icon, label }) => (
+                  <div
+                    key={label}
+                    className="flex items-center gap-2 px-2.5 py-2.5 rounded-xl bg-[var(--color-canvas-light)]/70 dark:bg-white/[0.035] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/50 text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]"
+                  >
+                    <Icon className="h-4 w-4 text-[var(--color-cta)] shrink-0" />
+                    <span className="text-xs font-bold leading-tight">{label}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
-
-        {/* Tabs Section (Description, Specs, Reviews) */}
         <div className="bg-[var(--color-surface-light)]/85 dark:bg-[var(--color-surface-dark)]/85 backdrop-blur-xl rounded-3xl p-6 sm:p-8 lg:p-10 shadow-sm border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
           <div className="flex gap-4 sm:gap-8 border-b border-gray-200 dark:border-[var(--color-border-dark)] mb-8 overflow-x-auto pb-px">
             <button
@@ -627,7 +644,7 @@ export default function ProductDetail() {
             className="fixed bottom-0 left-0 right-0 z-50 lg:hidden pb-safe pointer-events-none"
           >
             <div className="mx-3 mb-[76px] pointer-events-auto">
-              <div className="bg-[var(--color-surface-light)]/95 dark:bg-[var(--color-surface-dark)]/95 backdrop-blur-2xl rounded-2xl border border-gray-200/80 dark:border-gray-700/80 shadow-2xl p-3 flex items-center gap-3 text-right">
+              <div className="surface-glass rounded-2xl shadow-2xl p-3 flex items-center gap-3 text-right">
                 <div className="flex items-center gap-2.5 min-w-0 flex-1">
                   <div className="w-12 h-12 rounded-xl bg-[var(--color-canvas-light)] dark:bg-white/[0.045] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex items-center justify-center shrink-0 overflow-hidden">
                     <img
@@ -650,10 +667,10 @@ export default function ProductDetail() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-2 shrink-0 flex-1 justify-end">
                   <button
                     onClick={() => toggleWishlist(product)}
-                    className={`w-11 h-11 rounded-xl border flex items-center justify-center transition-colors active:scale-95 ${
+                    className={`min-touch-target w-11 h-11 rounded-xl border flex items-center justify-center transition-colors active:scale-95 shrink-0 ${
                       inWishlist
                         ? 'text-rose-500 bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-900/50'
                         : 'text-gray-400 border-gray-200 dark:border-gray-700 hover:bg-[var(--color-canvas-light)] dark:hover:bg-white/[0.06]'
@@ -664,7 +681,7 @@ export default function ProductDetail() {
                   <button
                     onClick={handleAddToCart}
                     disabled={outOfStock}
-                    className={`h-11 px-4 sm:px-5 rounded-xl font-black text-xs flex items-center gap-1.5 transition-all active:scale-95 shadow-md ${
+                    className={`min-touch-target flex-1 h-11 px-4 sm:px-5 rounded-xl font-black text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-md ${
                       outOfStock
                         ? 'bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed'
                         : addedToCart

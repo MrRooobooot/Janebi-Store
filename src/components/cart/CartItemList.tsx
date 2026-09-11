@@ -54,7 +54,7 @@ export default function CartItemList({
             {/* Product Info */}
             <div className="flex items-center gap-4 sm:gap-5 flex-1 min-w-0">
               <Link to={`/products/${item.id}`} className="shrink-0 group/img">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100/60 dark:from-gray-800/60 dark:to-gray-800/20 p-2.5 border border-[var(--color-border-light)] dark:border-gray-700/60 overflow-hidden group-hover/img:scale-105 transition-transform duration-300 flex items-center justify-center">
+                <div className="w-20 h-20 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100/60 dark:from-gray-800/60 dark:to-gray-800/20 p-2.5 border border-[var(--color-border-light)] dark:border-gray-700/60 overflow-hidden group-hover/img:scale-105 transition-transform duration-300 flex items-center justify-center">
                   <img
                     src={item.image}
                     alt={item.title}
@@ -81,7 +81,7 @@ export default function CartItemList({
 
                 <Link
                   to={`/products/${item.id}`}
-                  className="font-bold text-sm sm:text-base text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] hover:text-[var(--color-emphasis-text)] transition-colors line-clamp-2 leading-snug"
+                  className="font-bold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] hover:text-[var(--color-emphasis-text)] transition-colors line-clamp-2 leading-snug"
                 >
                   {item.title}
                 </Link>

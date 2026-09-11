@@ -216,18 +216,18 @@ export default function Home() {
                 <span>{normalizePersianTypography(currentSlide.tag)}</span>
               </div>
 
-              <h1 className="text-xl sm:text-3xl lg:text-4xl font-black text-zinc-900 dark:text-white leading-snug tracking-tight">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-zinc-900 dark:text-white leading-[1.15] tracking-tight">
                 {normalizePersianTypography(currentSlide.title)}
               </h1>
 
-              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-normal">
+              <p className="text-sm sm:text-base text-[var(--color-text-muted-light)] dark:text-[var(--color-text-muted-dark)] leading-relaxed font-normal">
                 {normalizePersianTypography(currentSlide.subtitle)}
               </p>
 
               <div className="pt-2 flex flex-wrap items-center gap-3">
                 <Link
                   to={currentSlide.buttonLink}
-                  className="bg-primary-300 hover:bg-primary-500 active:bg-primary-600 text-white font-black px-6 py-3 rounded-2xl text-xs sm:text-sm transition-colors duration-200 shadow-lg shadow-primary-500/30 flex items-center gap-2 group active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700"
+                  className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] text-white font-black px-6 py-3 rounded-2xl text-xs sm:text-sm transition-colors duration-200 shadow-lg shadow-[var(--color-cta)]/30 flex items-center gap-2 group active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-cta)]"
                 >
                   <span>{normalizePersianTypography(currentSlide.buttonText)}</span>
                   <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
@@ -336,15 +336,28 @@ export default function Home() {
             </div>
 
             {/* Countdown Clock */}
-            <div className="flex items-center gap-2 bg-white/90 dark:bg-zinc-800/90 border border-orange-200/80 dark:border-zinc-700/80 px-3.5 py-1.5 rounded-2xl text-xs font-bold font-mono shadow-xs">
+            <div className="bg-[var(--color-cta)]/10 border border-orange-200/80 dark:border-zinc-700/80 px-3.5 py-1.5 rounded-2xl text-xs font-bold shadow-xs">
+              <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-[var(--color-emphasis-text)] shrink-0" />
               <span className="text-zinc-700 dark:text-zinc-200">فرصت باقی‌مانده:</span>
               <div className="flex items-center gap-1 text-sm font-black text-[var(--color-emphasis-text)]">
-                <span className="bg-orange-100/70 dark:bg-zinc-900 px-1.5 py-0.5 rounded-lg border border-orange-200 dark:border-zinc-700 text-orange-700 dark:text-orange-300">{toPersianDigits(timeLeft.hours.toString().padStart(2, '0'))}</span>
+                <span className="tabular-nums bg-white/70 dark:bg-zinc-900 px-1.5 py-0.5 rounded-lg border border-orange-200 dark:border-zinc-700 text-[var(--color-cta)] dark:text-orange-300">{toPersianDigits(timeLeft.hours.toString().padStart(2, '0'))}</span>
                 <span>:</span>
-                <span className="bg-orange-100/70 dark:bg-zinc-900 px-1.5 py-0.5 rounded-lg border border-orange-200 dark:border-zinc-700 text-orange-700 dark:text-orange-300">{toPersianDigits(timeLeft.minutes.toString().padStart(2, '0'))}</span>
+                <span className="tabular-nums bg-white/70 dark:bg-zinc-900 px-1.5 py-0.5 rounded-lg border border-orange-200 dark:border-zinc-700 text-[var(--color-cta)] dark:text-orange-300">{toPersianDigits(timeLeft.minutes.toString().padStart(2, '0'))}</span>
                 <span>:</span>
-                <span className="bg-orange-100/70 dark:bg-zinc-900 px-1.5 py-0.5 rounded-lg border border-orange-200 dark:border-zinc-700 text-orange-700 dark:text-orange-300">{toPersianDigits(timeLeft.seconds.toString().padStart(2, '0'))}</span>
+                <span className="tabular-nums bg-white/70 dark:bg-zinc-900 px-1.5 py-0.5 rounded-lg border border-orange-200 dark:border-zinc-700 text-[var(--color-cta)] dark:text-orange-300">{toPersianDigits(timeLeft.seconds.toString().padStart(2, '0'))}</span>
+              </div>
+              </div>
+              {/* Thin seconds bar */}
+              <div
+                role="progressbar"
+                aria-label="ثانیه‌های باقی‌مانده"
+                aria-valuenow={59 - timeLeft.seconds}
+                aria-valuemin={0}
+                aria-valuemax={59}
+                className="mt-1.5 h-1 rounded-full bg-white/60 dark:bg-zinc-900/60 overflow-hidden"
+              >
+                <div className="h-1 bg-[var(--color-cta)]/40 rounded-full transition-all duration-1000 ease-linear" style={{ width: `${((59 - timeLeft.seconds) / 59) * 100}%` }} />
               </div>
             </div>
           </div>
@@ -459,7 +472,7 @@ export default function Home() {
           </div>
 
           {/* Core Category Tabs */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+          <div className="flex items-center gap-1.5 overflow-x-auto custom-scrollbar scroll-smooth snap-x pb-1 sm:pb-0">
             {[
               { id: 'all', label: 'همه محصولات' },
               { id: 'holders', label: 'هولدر و پایه' },
@@ -470,10 +483,10 @@ export default function Home() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-colors shrink-0 ${
+                className={`shrink-0 snap-start px-3.5 py-1.5 rounded-xl text-xs font-black transition-colors ${
                   activeTab === tab.id
-                    ? 'bg-[var(--color-cta)] text-white shadow-xs'
-                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                    ? 'border-b-2 border-[var(--color-cta)] text-[var(--color-cta)]'
+                    : 'text-[var(--color-text-muted-light)] dark:text-[var(--color-text-muted-dark)] hover:text-[var(--color-text-main-light)] dark:hover:text-[var(--color-text-main-dark)]'
                 }`}
               >
                 {tab.label}

@@ -3,7 +3,7 @@ import { useProductFilters } from '../hooks/useProductFilters';
 import ProductFilterSidebar from '../components/products/ProductFilterSidebar';
 import ProductSortHeader from '../components/products/ProductSortHeader';
 import ProductGrid from '../components/products/ProductGrid';
-import { ChevronRight, ChevronLeft, Sparkles } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Sparkles, X } from 'lucide-react';
 import { useEffect } from 'react';
 import { toPersianDigits } from '../lib/utils';
 import { applyCatalogSeo, restoreCatalogSeo } from '../lib/catalogSeo';
@@ -45,6 +45,13 @@ export default function Products() {
 
   const isCategoryFiltered = selectedCategory !== 'همه';
   const realCount = totalProducts; // real count returned by the live API — never fabricated
+
+  const priceFiltersActive =
+    (minPrice !== null && minPrice !== undefined && minPrice !== ('' as unknown as number)) ||
+    (maxPrice !== null && maxPrice !== undefined && maxPrice !== ('' as unknown as number));
+  const toggleFiltersActive = onlyDiscounted || onlyInStock;
+  const hasActiveFilters =
+    isCategoryFiltered || selectedBrands.length > 0 || priceFiltersActive || toggleFiltersActive || inPageQuery.trim() !== '';
 
   // Category-aware <head> SEO (title / description / CollectionPage JSON-LD).
   // Runs only on settled API data (loading=false) so meta always reflects the
@@ -153,6 +160,76 @@ export default function Products() {
               inPageQuery={inPageQuery}
               setInPageQuery={setInPageQuery}
             />
+
+            {/* Active Filter Chips (P6) */}
+            {hasActiveFilters && (
+              <div className="flex flex-wrap items-center gap-2">
+                {isCategoryFiltered && (
+                  <button
+                    onClick={() => setSelectedCategory('همه')}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--color-cta)]/10 text-[var(--color-cta)] text-xs font-bold hover:bg-[var(--color-cta)]/20 transition-colors cursor-pointer"
+                    aria-label={`حذف فیلتر دسته‌بندی ${selectedCategory}`}
+                  >
+                    <span>{selectedCategory}</span>
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                )}
+                {selectedBrands.map((brand) => (
+                  <button
+                    key={brand}
+                    onClick={() => toggleBrand(brand)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--color-cta)]/10 text-[var(--color-cta)] text-xs font-bold hover:bg-[var(--color-cta)]/20 transition-colors cursor-pointer"
+                    aria-label={`حذف فیلتر برند ${brand}`}
+                  >
+                    <span>{brand}</span>
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                ))}
+                {priceFiltersActive && (
+                  <button
+                    onClick={() => {
+                      setMinPrice('');
+                      setMaxPrice('');
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--color-cta)]/10 text-[var(--color-cta)] text-xs font-bold hover:bg-[var(--color-cta)]/20 transition-colors cursor-pointer"
+                    aria-label="حذف فیلتر محدوده قیمت"
+                  >
+                    <span>محدوده قیمت</span>
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                )}
+                {onlyDiscounted && (
+                  <button
+                    onClick={() => setOnlyDiscounted(false)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--color-cta)]/10 text-[var(--color-cta)] text-xs font-bold hover:bg-[var(--color-cta)]/20 transition-colors cursor-pointer"
+                    aria-label="حذف فیلتر فقط تخفیف‌دار"
+                  >
+                    <span>فقط تخفیف‌دار</span>
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                )}
+                {onlyInStock && (
+                  <button
+                    onClick={() => setOnlyInStock(false)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--color-cta)]/10 text-[var(--color-cta)] text-xs font-bold hover:bg-[var(--color-cta)]/20 transition-colors cursor-pointer"
+                    aria-label="حذف فیلتر فقط موجود"
+                  >
+                    <span>فقط موجود</span>
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                )}
+                {inPageQuery.trim() !== '' && (
+                  <button
+                    onClick={() => setInPageQuery('')}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--color-cta)]/10 text-[var(--color-cta)] text-xs font-bold hover:bg-[var(--color-cta)]/20 transition-colors cursor-pointer"
+                    aria-label="حذف جستجو"
+                  >
+                    <span>جستجو: {inPageQuery}</span>
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                )}
+              </div>
+            )}
 
             <ProductGrid
               products={filteredProducts}
