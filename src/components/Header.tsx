@@ -8,6 +8,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useCart } from '../contexts/CartContext';
 import { useCompare } from '../contexts/CompareContext';
 import HeaderSearch from './HeaderSearch';
+import { getJson } from '../lib/jsonFetch';
 import { useStoreSettings } from '../hooks/useStoreSettings';
 import AuthModal from './auth/AuthModal';
 import { toPersianDigits } from '../lib/utils';
@@ -31,15 +32,14 @@ export default function Header() {
   const [navCategories, setNavCategories] = useState<{ title: string }[]>([]);
   useEffect(() => {
     let cancelled = false;
-    fetch('/api/categories')
-      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+    getJson<{ title: string; count?: number }[]>('/api/categories')
       .then((cats) => {
         if (cancelled || !Array.isArray(cats)) return;
         setNavCategories(
           [...cats]
-            .sort((a: any, b: any) => (b.count || 0) - (a.count || 0))
+            .sort((a: { count?: number }, b: { count?: number }) => (b.count || 0) - (a.count || 0))
             .slice(0, 6)
-            .map((c: any) => ({ title: c.title }))
+            .map((c: { title: string }) => ({ title: c.title }))
         );
       })
       .catch(() => {

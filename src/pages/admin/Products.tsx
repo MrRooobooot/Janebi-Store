@@ -1,4 +1,5 @@
 import { authFetch } from '../../lib/api';
+import { jsonFetch, getJson } from '../../lib/jsonFetch';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -64,23 +65,17 @@ export default function AdminProducts() {
     }
     setStockSaving(true);
     try {
-      const res = await fetch(`/api/admin/products/${id}`, {
+      await jsonFetch(`/api/admin/products/${id}`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ stockQuantity: stockNum })
       });
-      if (res.ok) {
-        setProducts(prev => prev.map(p => p.id === id ? { ...p, stockQuantity: stockNum } : p));
-        addToast('موجودی بروزرسانی شد', 'success');
-      } else {
-        const data = await res.json().catch(() => ({}));
-        addToast(data.error || 'خطا در تغییر موجودی', 'error');
-      }
-    } catch {
-      addToast('خطا در ارتباط با سرور', 'error');
+      setProducts(prev => prev.map(p => p.id === id ? { ...p, stockQuantity: stockNum } : p));
+      addToast('موجودی بروزرسانی شد', 'success');
+    } catch (err) {
+      addToast(err instanceof Error ? err.message : 'خطا در ارتباط با سرور', 'error');
     } finally {
       setStockSaving(false);
       setStockEditId(null);
@@ -129,15 +124,10 @@ export default function AdminProducts() {
       // catalogue must see every product, not just the first page.
       // no-store: the public list is served with Cache-Control max-age=30;
       // after create/delete the browser must NOT replay the stale cached list.
-      const res = await fetch('/api/products?limit=1000', { cache: 'no-store' });
-      if (res.ok) {
-        const data = await res.json();
-        setProducts(data);
-      } else {
-        addToast('خطا در دریافت لیست محصولات', 'error');
-      }
+      const data = await getJson<Product[]>('/api/products?limit=1000');
+      setProducts(data);
     } catch (err) {
-      addToast('خطا در ارتباط با سرور', 'error');
+      addToast(err instanceof Error ? err.message : 'خطا در ارتباط با سرور', 'error');
     } finally {
       setLoading(false);
     }

@@ -6,6 +6,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { SearchItemSkeleton } from './Skeletons';
+import { getJson } from '../lib/jsonFetch';
 
 interface Product {
   id: number;
@@ -51,15 +52,14 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
 
   useEffect(() => {
     let cancelled = false;
-    fetch('/api/categories')
-      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+    getJson<{ title: string; count?: number }[]>('/api/categories')
       .then((cats) => {
         if (cancelled || !Array.isArray(cats)) return;
         setPopularCats(
           [...cats]
-            .sort((a: any, b: any) => (b.count || 0) - (a.count || 0))
+            .sort((a: { count?: number }, b: { count?: number }) => (b.count || 0) - (a.count || 0))
             .slice(0, 6)
-            .map((c: any) => ({ name: c.title, icon: CATEGORY_ICON_MAP[c.title] || Smartphone }))
+            .map((c: { title: string }) => ({ name: c.title, icon: CATEGORY_ICON_MAP[c.title] || Smartphone }))
         );
       })
       .catch(() => {
@@ -150,8 +150,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
     const timer = setTimeout(() => {
       const q = query.trim();
       latestQueryRef.current = q;
-      fetch(`/api/products?search=${encodeURIComponent(q)}`)
-        .then(res => res.json())
+      getJson<Product[]>(`/api/products?search=${encodeURIComponent(q)}`)
         .then((data: Product[]) => {
           if (latestQueryRef.current !== q) return; // stale response — drop
           setResults(data);

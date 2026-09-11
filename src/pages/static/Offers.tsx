@@ -4,6 +4,7 @@ import { ProductCardSkeleton } from '../../components/Skeletons';
 import { Sparkles, Clock, Flame } from 'lucide-react';
 import { motion } from 'motion/react';
 import { buildProductQuery } from '../../lib/productQuery';
+import { getJson } from '../../lib/jsonFetch';
 
 export default function Offers() {
   const [products, setProducts] = useState<any[]>([]);
@@ -36,11 +37,7 @@ export default function Offers() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch(`/api/products?${buildProductQuery({ onlyDiscounted: true, sortBy: 'discount-desc' })}`)
-      .then(async (res) => {
-        if (!res.ok) throw new Error('fetch failed');
-        return res.json();
-      })
+    getJson(`/api/products?${buildProductQuery({ onlyDiscounted: true, sortBy: 'discount-desc' })}`)
       .then((data) => { if (!cancelled) setProducts(Array.isArray(data) ? data : []); })
       .catch(() => { if (!cancelled) setError('خطا در دریافت پیشنهادهای ویژه. لطفاً صفحه را دوباره بارگذاری کنید.'); })
       .finally(() => { if (!cancelled) setLoading(false); });

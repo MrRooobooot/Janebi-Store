@@ -3,6 +3,7 @@ import { Gift, Award, Sparkles, Copy, Check } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
 import { toPersianDigits } from '../../lib/utils';
+import { getJson } from '../../lib/jsonFetch';
 
 // Live active coupons from GET /api/coupons-active (DB-driven). The previous
 // hardcoded list drifted from the admin coupon table.
@@ -22,9 +23,8 @@ export default function VipClubTab() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch('/api/coupons-active')
-      .then(async (res) => (res.ok ? res.json() : []))
-      .then((rows) => { if (!cancelled) setCoupons(Array.isArray(rows) ? rows : []); })
+    getJson<ActiveCoupon[]>('/api/coupons-active')
+    .then((rows) => { if (!cancelled) setCoupons(Array.isArray(rows) ? rows : []); })
       .catch(() => {})
       .finally(() => { if (!cancelled) setLoadingCoupons(false); });
     return () => { cancelled = true; };

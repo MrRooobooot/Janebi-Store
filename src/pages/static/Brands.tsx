@@ -4,6 +4,7 @@ import { ShieldCheck, ArrowLeft, Award, Search, Star } from 'lucide-react';
 import { motion } from 'motion/react';
 import BrandLogo from '../../components/BrandLogo';
 import { toPersianDigits } from '../../lib/utils';
+import { getJson } from '../../lib/jsonFetch';
 
 // Live brand directory from GET /api/brands (real per-brand product counts
 // computed by the server). The previous static 8-brand array with invented
@@ -25,11 +26,7 @@ export default function Brands() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch('/api/brands')
-      .then(async (res) => {
-        if (!res.ok) throw new Error('fetch failed');
-        return res.json();
-      })
+    getJson<unknown[]>('/api/brands')
       .then((data) => {
         if (cancelled) return;
         setBrands(

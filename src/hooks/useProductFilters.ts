@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Product } from '../types';
 import { buildProductQuery } from '../lib/productQuery';
+import { getJson } from '../lib/jsonFetch';
 
 export interface PricePreset {
   label: string;
@@ -76,8 +77,8 @@ export function useProductFilters() {
   // Fetch Categories and Brands once
   useEffect(() => {
     Promise.all([
-      fetch('/api/categories').then((res) => res.json()),
-      fetch('/api/brands').then((res) => res.json())
+      getJson('/api/categories'),
+      getJson('/api/brands')
     ]).then(([catsData, brandsData]) => {
       setCategories(Array.isArray(catsData) ? catsData.map((c: any) => ({ name: c.title || c.name, count: c.count || 0 })) : []);
       setBrands(Array.isArray(brandsData) ? brandsData.map((b: any) => ({ name: typeof b === 'string' ? b : (b.name || b.title || 'Unknown'), count: b.count || 0 })) : []);

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import { Mail, Gift, Sparkles, CheckCircle2, Check, Copy } from 'lucide-react';
 import { useToast } from '../contexts/ToastContext';
+import { jsonFetch } from '../lib/jsonFetch';
 
 interface VipClubBannerProps {
   badge?: string;
@@ -54,20 +55,14 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
 
     setSubmitting(true);
     try {
-      const res = await fetch('/api/contact/newsletter', {
+      await jsonFetch('/api/contact/newsletter', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: value }),
       });
-      const data = await res.json().catch(() => ({}));
-      if (res.ok) {
-        setSubmitted(true);
-        addToast('عضویت در خبرنامه با موفقیت انجام شد!', 'success');
-      } else {
-        addToast(data.error || 'خطا در ثبت عضویت خبرنامه', 'error');
-      }
-    } catch {
-      addToast('خطا در برقراری ارتباط با سرور', 'error');
+      setSubmitted(true);
+      addToast('عضویت در خبرنامه با موفقیت انجام شد!', 'success');
+    } catch (err) {
+      addToast(err instanceof Error ? err.message : 'خطا در برقراری ارتباط با سرور', 'error');
     } finally {
       setSubmitting(false);
     }

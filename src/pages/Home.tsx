@@ -12,6 +12,7 @@ import {
   Clock, TrendingUp, Award, CheckCircle2, Navigation, Layers, ShieldAlert, PackageCheck, ChevronLeft, ChevronRight,
   Watch, Gamepad2, Radio
 } from 'lucide-react';
+import { getJson } from '../lib/jsonFetch';
 import { Product } from '../types';
 import { toPersianDigits, formatPrice, getAssetUrl, normalizePersianTypography } from '../lib/utils';
 import { useStoreSettings } from '../hooks/useStoreSettings';
@@ -173,8 +174,8 @@ export default function Home() {
     setLoading(true);
     setLoadError(false);
     Promise.all([
-      fetch('/api/products').then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status))))),
-      fetch('/api/categories').then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status))))),
+      getJson('/api/products'),
+      getJson('/api/categories'),
     ]).then(([prods, cats]) => {
       if (cancelled) return;
       setProducts(Array.isArray(prods) ? prods : []);

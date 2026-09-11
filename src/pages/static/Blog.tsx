@@ -4,6 +4,7 @@ import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { useParams } from 'react-router-dom';
 import { toPersianDigits } from '../../lib/utils';
 import { buildBlogPostingJsonLd } from '../../lib/blogJsonLd';
+import { getJson } from '../../lib/jsonFetch';
 
 // Live blog posts from GET /api/blog (admin-managed blog_posts table).
 // The previous hardcoded 3-article array is gone.
@@ -49,11 +50,7 @@ export default function Blog() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch('/api/blog')
-      .then(async (res) => {
-        if (!res.ok) throw new Error('fetch failed');
-        return res.json();
-      })
+    getJson<unknown[]>('/api/blog')
       .then((rows) => {
         if (cancelled) return;
         setArticles(

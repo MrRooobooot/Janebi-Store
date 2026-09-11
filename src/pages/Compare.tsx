@@ -6,6 +6,8 @@ import { Trash2, ShoppingCart, Check, X, ShieldCheck, Tag, Info, ArrowLeftRight,
 import { motion, AnimatePresence } from 'motion/react';
 import EmptyState from '../components/EmptyState';
 import { formatPrice, toPersianDigits } from '../lib/utils';
+import { getJson } from '../lib/jsonFetch';
+import { Product } from '../types';
 
 export default function Compare() {
   const { compareItems, toggleCompare, clearCompare, replaceCompare } = useCompare();
@@ -20,8 +22,7 @@ export default function Compare() {
     let cancelled = false;
     Promise.all(
       compareItems.map(item =>
-        fetch(`/api/products/${item.id}`)
-          .then(res => (res.ok ? res.json() : null))
+        getJson<Product>(`/api/products/${item.id}`)
           .catch(() => null)
       )
     ).then(fresh => {

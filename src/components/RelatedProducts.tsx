@@ -3,6 +3,7 @@ import { Layers } from 'lucide-react';
 import { Product } from '../types';
 import ProductCard from './ProductCard';
 import { toPersianDigits } from '../lib/utils';
+import { getJson } from '../lib/jsonFetch';
 
 /**
  * RelatedProducts — internal-linking + UX section on the product detail page.
@@ -17,8 +18,7 @@ export default function RelatedProducts({ product }: { product: Product }) {
     let cancelled = false;
     if (!product?.category) return;
 
-    fetch(`/api/products?category=${encodeURIComponent(product.category)}&limit=8`)
-      .then((res) => (res.ok ? res.json() : Promise.reject(new Error('failed'))))
+    getJson<Product[]>(`/api/products?category=${encodeURIComponent(product.category)}&limit=8`)
       .then((data: Product[]) => {
         if (cancelled || !Array.isArray(data)) return;
         const sameCategory = data.filter((p) => p.id !== product.id).slice(0, 4);

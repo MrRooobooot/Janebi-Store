@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { STORE_SETTINGS_DEFAULTS } from '../lib/constants';
+import { getJson } from '../lib/jsonFetch';
 
 interface StoreSettings {
   storeName: string;
@@ -66,8 +67,7 @@ export function useStoreSettings(): StoreSettings {
 
   useEffect(() => {
     let cancelled = false;
-    fetch('/api/settings')
-      .then((res) => res.json())
+    getJson<StoreSettings>('/api/settings')
       .then((data) => {
         if (!cancelled && data && typeof data === 'object' && data.storeName) {
           cache = data as StoreSettings;

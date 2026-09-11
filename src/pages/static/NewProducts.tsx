@@ -4,6 +4,7 @@ import { ProductCardSkeleton } from '../../components/Skeletons';
 import { Sparkles, Zap } from 'lucide-react';
 import { motion } from 'motion/react';
 import { buildProductQuery } from '../../lib/productQuery';
+import { getJson } from '../../lib/jsonFetch';
 
 export default function NewProducts() {
   const [products, setProducts] = useState<any[]>([]);
@@ -12,11 +13,7 @@ export default function NewProducts() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch(`/api/products?${buildProductQuery({ sortBy: 'newest' })}`)
-      .then(async (res) => {
-        if (!res.ok) throw new Error('fetch failed');
-        return res.json();
-      })
+    getJson(`/api/products?${buildProductQuery({ sortBy: 'newest' })}`)
       .then((data) => { if (!cancelled) setProducts(Array.isArray(data) ? data : []); })
       .catch(() => { if (!cancelled) setError('خطا در دریافت محصولات. لطفاً صفحه را دوباره بارگذاری کنید.'); })
       .finally(() => { if (!cancelled) setLoading(false); });

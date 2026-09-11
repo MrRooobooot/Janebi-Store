@@ -6,6 +6,7 @@ import { useToast } from '../contexts/ToastContext';
 import { FREE_SHIPPING_THRESHOLD } from '../lib/constants';
 import { useStoreSettings } from '../hooks/useStoreSettings';
 import { toPersianDigits } from '../lib/utils';
+import { jsonFetch } from '../lib/jsonFetch';
 
 export default function Footer() {
   const [email, setEmail] = useState('');
@@ -24,20 +25,14 @@ export default function Footer() {
     }
     
     try {
-      const res = await fetch('/api/contact/newsletter', {
+      const data = await jsonFetch<{ message?: string }>('/api/contact/newsletter', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.trim() }),
       });
-      const data = await res.json();
-      if (res.ok) {
-        addToast(data.message || 'با موفقیت در خبرنامه عضو شدید', 'success');
-        setEmail('');
-      } else {
-        addToast(data.error || 'خطا در ثبت عضویت خبرنامه', 'error');
-      }
-    } catch {
-      addToast('خطا در برقراری ارتباط با سرور', 'error');
+      addToast(data.message || 'با موفقیت در خبرنامه عضو شدید', 'success');
+      setEmail('');
+    } catch (err) {
+      addToast(err instanceof Error ? err.message : 'خطا در برقراری ارتباط با سرور', 'error');
     }
   };
 

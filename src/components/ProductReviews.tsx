@@ -4,6 +4,7 @@ import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import { authFetch } from '../lib/api';
+import { getJson } from '../lib/jsonFetch';
 import { toPersianDigits } from '../lib/utils';
 import { ReviewSkeleton } from './Skeletons';
 
@@ -72,8 +73,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
 
   const loadReviews = React.useCallback((targetPage: number) => {
     setLoading(true);
-    fetch(`/api/products/${productId}/reviews?page=${targetPage}&limit=${REVIEWS_PAGE_SIZE}`)
-      .then(res => res.json())
+    getJson<{ reviews?: Review[]; pages?: number; total?: number; page?: number } | Review[]>(`/api/products/${productId}/reviews?page=${targetPage}&limit=${REVIEWS_PAGE_SIZE}`)
       .then(data => {
         if (Array.isArray(data)) {
           // Legacy (non-paginated) shape: full array

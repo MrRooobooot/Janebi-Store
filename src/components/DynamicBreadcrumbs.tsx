@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { Home, ChevronLeft } from 'lucide-react';
+import { getJson } from '../lib/jsonFetch';
 
 const CATEGORY_PARENTS: Record<string, string> = {
   'کابل': 'لوازم جانبی و اتصالات',
@@ -50,8 +51,7 @@ export default function DynamicBreadcrumbs() {
   useEffect(() => {
     if (productId) {
       let isMounted = true;
-      fetch(`/api/products/${productId}`)
-        .then((res) => (res.ok ? res.json() : null))
+      getJson<{ title: string; category: string }>(`/api/products/${productId}`)
         .then((data) => {
           if (isMounted && data) {
             setProductInfo({ title: data.title, category: data.category });

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { MapPin, Phone, Mail, Clock, Send, MessageSquare, Sparkles } from 'lucide-react';
 import { useToast } from '../../contexts/ToastContext';
 import { useStoreSettings } from '../../hooks/useStoreSettings';
+import { jsonFetch } from '../../lib/jsonFetch';
 import { motion } from 'motion/react';
 
 export default function Contact() {
@@ -22,9 +23,8 @@ export default function Contact() {
     
     setIsSubmitting(true);
     try {
-      const res = await fetch('/api/contact', {
+      await jsonFetch('/api/contact', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: formData.name,
           email: formData.contactInfo,
@@ -34,16 +34,10 @@ export default function Contact() {
         }),
       });
 
-      const data = await res.json();
-      
-      if (!res.ok) {
-        throw new Error(data.error || 'خطا در ارسال پیام');
-      }
-
       addToast('پیام شما با موفقیت ثبت شد! کارشناسان ما به زودی با شما تماس خواهند گرفت.', 'success');
       setFormData({ name: '', contactInfo: '', subject: '', message: '' });
-    } catch (err: any) {
-      addToast(err.message || 'خطا در برقراری ارتباط با سرور', 'error');
+    } catch (err) {
+      addToast(err instanceof Error ? err.message : 'خطا در برقراری ارتباط با سرور', 'error');
     } finally {
       setIsSubmitting(false);
     }

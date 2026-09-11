@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MessageSquareQuote, Star, User } from 'lucide-react';
 import { toPersianDigits } from '../lib/utils';
+import { getJson } from '../lib/jsonFetch';
 
 interface LatestReview {
   id: number | string;
@@ -22,8 +23,7 @@ export default function LatestReviews() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch('/api/reviews/latest')
-      .then((res) => (res.ok ? res.json() : Promise.reject(new Error('not ok'))))
+    getJson<LatestReview[]>('/api/reviews/latest')
       .then((data) => {
         if (cancelled) return;
         setReviews(Array.isArray(data) ? data : []);
