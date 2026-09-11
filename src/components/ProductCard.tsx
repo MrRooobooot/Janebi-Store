@@ -162,14 +162,18 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
       <div className="mt-4 pt-3 border-t border-zinc-100 dark:border-white/[0.06]">
         <div className="flex items-end justify-between gap-2">
           
-          {/* Price Stack */}
-          <div className="flex flex-col text-right shrink-0 min-w-0">
-            {product.originalPrice && product.originalPrice > product.price && (
-              <span className="text-[11px] text-zinc-400 dark:text-zinc-500 line-through truncate">
+          {/* Price Stack — guaranteed uniform 2-line baseline across cards */}
+          <div className="flex flex-col justify-end text-right shrink-0 min-w-0 min-h-[36px]">
+            {product.originalPrice && product.originalPrice > product.price ? (
+              <span className="text-[11px] text-zinc-400 dark:text-zinc-500 line-through truncate leading-tight">
                 {formatPrice(product.originalPrice)}
               </span>
+            ) : (
+              <span className="text-[11px] text-transparent select-none leading-tight" aria-hidden="true">
+                -
+              </span>
             )}
-            <div className="text-xs sm:text-sm font-black text-[var(--color-emphasis-text)] font-mono tracking-tight whitespace-nowrap">
+            <div className="text-xs sm:text-sm font-black text-[var(--color-emphasis-text)] font-mono tracking-tight whitespace-nowrap leading-tight">
               {formatPrice(product.price)}
             </div>
           </div>

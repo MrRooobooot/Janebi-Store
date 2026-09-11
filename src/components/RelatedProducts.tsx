@@ -63,20 +63,24 @@ export default function RelatedProducts({ product }: { product: Product }) {
   if (related.length === 0) return null;
 
   return (
-    <section aria-labelledby="related-products-heading" className="mt-10">
-      <div className="flex items-center gap-2.5 mb-5">
-        <Layers className="h-5 w-5 text-[var(--color-primary)]" aria-hidden="true" />
-        <h2
-          id="related-products-heading"
-          className="text-lg font-black text-zinc-900 dark:text-zinc-100"
-        >
-          محصولات مشابه در دسته‌بندی {product.category}
-        </h2>
-        <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800/80 px-2 py-0.5 rounded-full border border-zinc-200/80 dark:border-zinc-700">
+    <section aria-labelledby="related-products-heading" className="mt-10 pt-6 border-t border-zinc-200/70 dark:border-zinc-800">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-8 h-8 rounded-xl bg-[var(--color-cta)]/10 flex items-center justify-center text-[var(--color-emphasis-text)] shrink-0">
+            <Layers className="h-4 w-4" aria-hidden="true" />
+          </div>
+          <h2
+            id="related-products-heading"
+            className="text-base sm:text-lg font-black text-zinc-900 dark:text-zinc-100 truncate"
+          >
+            محصولات مشابه در دسته‌بندی «{product.category}»
+          </h2>
+        </div>
+        <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800/80 px-2.5 py-1 rounded-full border border-zinc-200/80 dark:border-zinc-700 shrink-0">
           {toPersianDigits(related.length)} کالا
         </span>
       </div>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
         {related.map((p) => (
           <ProductCard key={p.id} product={p} />
         ))}

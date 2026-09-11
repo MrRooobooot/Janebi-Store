@@ -29,7 +29,7 @@ export default function WishlistPage() {
           className="bg-[var(--color-surface-light)]/80 dark:bg-[var(--color-surface-dark)]/80 backdrop-blur-xl rounded-3xl p-12 shadow-sm border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]"
         />
       ) : (
-        <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <motion.div layout className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
           <AnimatePresence mode="popLayout">
             {wishlist.map((product) => (
               <motion.div
