@@ -9,7 +9,7 @@ import VipClubBanner from '../components/VipClubBanner';
 import {
   Sparkles, ArrowLeft, Smartphone, Shield, Zap, Cable, Headphones,
   BatteryCharging, Truck, ShieldCheck, RefreshCw, Headset, Flame, Star,
-  Clock, TrendingUp, Award, CheckCircle2, Navigation, Layers, ShieldAlert, PackageCheck, ChevronLeft
+  Clock, TrendingUp, Award, CheckCircle2, Navigation, Layers, ShieldAlert, PackageCheck, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { Product } from '../types';
 import { toPersianDigits, formatPrice, getAssetUrl, normalizePersianTypography } from '../lib/utils';
@@ -22,12 +22,64 @@ export default function Home() {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'all' | 'holders' | 'cables' | 'cases' | 'protectors'>('all');
-  const [catScrolled, setCatScrolled] = useState(false);
-  const catRowRef = useRef<HTMLDivElement>(null);
+  const catScrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollPrev, setCanScrollPrev] = useState(false);
+  const [canScrollNext, setCanScrollNext] = useState(true);
+  const isDraggingCat = useRef(false);
+  const catStartX = useRef(0);
+  const catStartScroll = useRef(0);
+  const catDragMoved = useRef(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [loadError, setLoadError] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
   const settings = useStoreSettings();
+
+  const updateCatScrollBounds = () => {
+    const el = catScrollRef.current;
+    if (!el) return;
+    const scrollLeft = Math.abs(el.scrollLeft);
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    setCanScrollPrev(scrollLeft > 15);
+    setCanScrollNext(scrollLeft < maxScroll - 15);
+  };
+
+  const scrollCats = (direction: 'prev' | 'next') => {
+    const el = catScrollRef.current;
+    if (!el) return;
+    const step = Math.min(el.clientWidth * 0.75, 360);
+    el.scrollBy({
+      left: direction === 'next' ? -step : step,
+      behavior: 'smooth',
+    });
+    setTimeout(updateCatScrollBounds, 350);
+  };
+
+  const handleCatMouseDown = (e: React.MouseEvent) => {
+    const el = catScrollRef.current;
+    if (!el) return;
+    isDraggingCat.current = true;
+    catDragMoved.current = false;
+    catStartX.current = e.pageX - el.offsetLeft;
+    catStartScroll.current = el.scrollLeft;
+  };
+
+  const handleCatMouseMove = (e: React.MouseEvent) => {
+    if (!isDraggingCat.current) return;
+    const el = catScrollRef.current;
+    if (!el) return;
+    e.preventDefault();
+    const x = e.pageX - el.offsetLeft;
+    const walk = (x - catStartX.current);
+    if (Math.abs(walk) > 4) {
+      catDragMoved.current = true;
+    }
+    el.scrollLeft = catStartScroll.current - walk;
+    updateCatScrollBounds();
+  };
+
+  const handleCatMouseUp = () => {
+    isDraggingCat.current = false;
+  };
 
   // Live countdown to midnight (daily deals cycle) — computed from real clock
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
@@ -186,12 +238,18 @@ export default function Home() {
       <Link
         key={`${cat.slug}-${idx}`}
         to={`/products?category=${encodeURIComponent(cat.title)}`}
-        className="relative flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-[var(--color-surface-light)] dark:bg-[#0d121c] border border-zinc-200 dark:border-zinc-800 hover:border-[var(--color-cta)]/30 dark:hover:border-[var(--color-cta)]/30 transition-colors group text-center shadow-xs"
+        onClick={(e) => {
+          if (catDragMoved.current) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }}
+        className="relative flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-[var(--color-surface-light)] dark:bg-[#0d121c] border border-zinc-200 dark:border-zinc-800 hover:border-[var(--color-cta)]/40 dark:hover:border-[var(--color-cta)]/40 transition-all group text-center shadow-xs select-none min-touch-target"
       >
-        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800/80 flex items-center justify-center text-zinc-700 dark:text-zinc-200 group-hover:bg-[var(--color-cta)] group-hover:text-white transition-all mb-2">
+        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800/80 flex items-center justify-center text-zinc-700 dark:text-zinc-200 group-hover:bg-[var(--color-cta)] group-hover:text-white transition-all mb-2 group-hover:scale-105 shadow-xs">
           <Icon className="h-5 w-5 sm:h-6 sm:w-6 stroke-[1.8]" />
         </div>
-        <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors">
+        <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors whitespace-nowrap">
           {cat.title}
         </span>
         <span className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">
@@ -260,6 +318,24 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Navigation Arrows for PC Mouse & Mobile Tap */}
+          <button
+            type="button"
+            onClick={() => setActiveSlide((prev) => (prev === 0 ? heroSlides.length - 1 : prev - 1))}
+            aria-label="اسلاید قبلی"
+            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black/90 border border-zinc-200/80 dark:border-white/10 text-zinc-800 dark:text-zinc-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer"
+          >
+            <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveSlide((prev) => (prev + 1) % heroSlides.length)}
+            aria-label="اسلاید بعدی"
+            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black/90 border border-zinc-200/80 dark:border-white/10 text-zinc-800 dark:text-zinc-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer"
+          >
+            <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
+          </button>
+
           {/* Slide Indicator Dots (Centered — theme-aware contrast) */}
           <div className="relative z-10 flex items-center justify-center gap-2 mt-6 pt-3 border-t border-zinc-200/80 dark:border-zinc-800/80" role="tablist" aria-label="اسلایدهای صفحه اصلی">
             {heroSlides.map((slide, idx) => (
@@ -269,7 +345,7 @@ export default function Home() {
                 role="tab"
                 aria-selected={activeSlide === idx}
                 aria-label={`اسلاید ${toPersianDigits(idx + 1)}`}
-                className={`h-2.5 rounded-full transition-all duration-300 motion-reduce:transition-none ${
+                className={`h-2.5 rounded-full transition-all duration-300 motion-reduce:transition-none cursor-pointer ${
                   activeSlide === idx
                     ? 'w-8 bg-primary-600 dark:bg-primary-400 shadow-md shadow-primary-500/50'
                     : 'w-2.5 bg-zinc-400 dark:bg-zinc-600 hover:bg-zinc-500 dark:hover:bg-zinc-400'
@@ -420,57 +496,99 @@ export default function Home() {
 
       {/* 5. Category Visual Circles */}
       <section className="w-full">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
           <div>
             <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white">دسته‌بندی‌های تخصصی</h2>
             <p className="text-xs text-zinc-600 dark:text-zinc-300 mt-0.5">انتخاب تجهیزات بر اساس دسته‌بندی</p>
           </div>
-          <Link to="/products" className="text-xs font-black text-[var(--color-emphasis-text)] hover:underline flex items-center gap-1">
-            <span>مشاهده کاتالوگ کامل</span>
-            <ArrowLeft className="h-3.5 w-3.5" />
-          </Link>
+
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Desktop / Tablet Prev/Next Arrow Buttons (Interactive with mouse click) */}
+            <div className="flex items-center gap-1.5" role="group" aria-label="کنترل‌های ناوبری دسته‌بندی">
+              <button
+                type="button"
+                onClick={() => scrollCats('prev')}
+                disabled={!canScrollPrev}
+                aria-label="دسته‌بندی‌های قبلی"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-[var(--color-surface-light)] dark:bg-[#0d121c] text-zinc-700 dark:text-zinc-200 hover:text-[var(--color-emphasis-text)] hover:border-[var(--color-cta)]/40 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollCats('next')}
+                disabled={!canScrollNext}
+                aria-label="دسته‌بندی‌های بعدی"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-[var(--color-surface-light)] dark:bg-[#0d121c] text-zinc-700 dark:text-zinc-200 hover:text-[var(--color-emphasis-text)] hover:border-[var(--color-cta)]/40 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+            </div>
+
+            <Link to="/products" className="text-xs font-black text-[var(--color-emphasis-text)] hover:underline flex items-center gap-1 shrink-0 mr-1 sm:mr-2">
+              <span className="hidden sm:inline">مشاهده کاتالوگ کامل</span>
+              <span className="sm:hidden">همه</span>
+              <ArrowLeft className="h-3.5 w-3.5" />
+            </Link>
+          </div>
         </div>
 
-        {/* Categories: Mobile horizontal swipe carousel, Tablet 4-col grid, Desktop 8-col single row */}
-        <div className="relative">
-          {/* Mobile swipe indicators (hidden on tablet/desktop) */}
+        {/* Unified Category Carousel for Mobile & PC with Mouse Drag + Touch Swipe + Floating Arrows */}
+        <div className="relative group/cat">
+          {/* Floating Left Navigation Button (Mouse click for PC) */}
+          <button
+            type="button"
+            onClick={() => scrollCats('next')}
+            disabled={!canScrollNext}
+            aria-label="رفتن به دسته‌های بعد"
+            className={`hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/90 dark:bg-zinc-900/90 text-zinc-800 dark:text-zinc-100 hover:bg-[var(--color-cta)] hover:text-white border border-zinc-200 dark:border-zinc-700 shadow-lg items-center justify-center transition-all active:scale-90 cursor-pointer backdrop-blur-md ${
+              canScrollNext ? 'opacity-80 hover:opacity-100' : 'opacity-0 pointer-events-none'
+            }`}
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+
+          {/* Floating Right Navigation Button (Mouse click for PC) */}
+          <button
+            type="button"
+            onClick={() => scrollCats('prev')}
+            disabled={!canScrollPrev}
+            aria-label="رفتن به دسته‌های قبل"
+            className={`hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/90 dark:bg-zinc-900/90 text-zinc-800 dark:text-zinc-100 hover:bg-[var(--color-cta)] hover:text-white border border-zinc-200 dark:border-zinc-700 shadow-lg items-center justify-center transition-all active:scale-90 cursor-pointer backdrop-blur-md ${
+              canScrollPrev ? 'opacity-80 hover:opacity-100' : 'opacity-0 pointer-events-none'
+            }`}
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+
+          {/* Edge fade gradients */}
           <div
             aria-hidden="true"
-            className={`pointer-events-none absolute inset-y-0 left-0 w-12 z-10 bg-gradient-to-r from-white via-white/80 to-transparent dark:from-[var(--color-canvas-dark)] dark:via-[var(--color-canvas-dark)]/80 transition-opacity duration-300 sm:hidden ${catScrolled ? 'opacity-0' : 'opacity-100'}`}
+            className={`pointer-events-none absolute inset-y-0 left-0 w-8 sm:w-12 z-10 bg-gradient-to-r from-white via-white/70 to-transparent dark:from-[var(--color-canvas-dark)] dark:via-[var(--color-canvas-dark)]/70 transition-opacity duration-300 ${
+              canScrollNext ? 'opacity-100' : 'opacity-0'
+            }`}
           />
-          {!catScrolled && (
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-y-0 left-2 z-10 flex sm:hidden items-center"
-            >
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--color-cta)] text-white shadow-lg animate-pulse">
-                <ChevronLeft className="h-3.5 w-3.5" />
-              </span>
-            </div>
-          )}
+          <div
+            aria-hidden="true"
+            className={`pointer-events-none absolute inset-y-0 right-0 w-8 sm:w-12 z-10 bg-gradient-to-l from-white via-white/70 to-transparent dark:from-[var(--color-canvas-dark)] dark:via-[var(--color-canvas-dark)]/70 transition-opacity duration-300 ${
+              canScrollPrev ? 'opacity-100' : 'opacity-0'
+            }`}
+          />
 
-          {/* Mobile Horizontal Carousel */}
+          {/* Scroll Track: Supports Mouse Click-and-Drag (PC) + Native Touch Momentum Swipe (Mobile) */}
           <div
             dir="rtl"
-            ref={catRowRef}
-            onScroll={() => {
-              const el = catRowRef.current;
-              if (el && !catScrolled && Math.abs(el.scrollLeft) > 20) setCatScrolled(true);
-            }}
-            className="flex sm:hidden gap-3 overflow-x-auto pb-2 -mx-4 px-4 scroll-smooth hide-scrollbar"
+            ref={catScrollRef}
+            onScroll={updateCatScrollBounds}
+            onMouseDown={handleCatMouseDown}
+            onMouseMove={handleCatMouseMove}
+            onMouseUp={handleCatMouseUp}
+            onMouseLeave={handleCatMouseUp}
+            className="flex gap-3 sm:gap-4 overflow-x-auto pb-3 -mx-4 px-4 sm:mx-0 sm:px-0 scroll-smooth hide-scrollbar select-none cursor-grab active:cursor-grabbing"
             style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
           >
-            {categories.slice(0, 8).map((cat, idx) => (
-              <div key={`mobile-${cat.slug}-${idx}`} className="shrink-0 w-[30vw] min-w-[110px]">
-                {renderCategoryCard(cat, idx)}
-              </div>
-            ))}
-          </div>
-
-          {/* Desktop/Tablet Responsive Grid: 4 cols on tablet, 8 cols on desktop */}
-          <div className="hidden sm:grid sm:grid-cols-4 lg:grid-cols-8 gap-3 sm:gap-4">
-            {categories.slice(0, 8).map((cat, idx) => (
-              <div key={`desktop-${cat.slug}-${idx}`} className="w-full">
+            {categories.map((cat, idx) => (
+              <div key={`${cat.slug}-${idx}`} className="shrink-0 w-28 sm:w-36 lg:w-[140px]">
                 {renderCategoryCard(cat, idx)}
               </div>
             ))}

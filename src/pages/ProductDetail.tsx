@@ -2,7 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { 
   Star, ShieldCheck, Truck, ShoppingCart, Heart, ArrowLeftRight, Zap, 
-  CheckCircle2, Check, Maximize2, X, RotateCcw, Award, PackageCheck, AlertCircle, Share2, HandCoins
+  CheckCircle2, Check, Maximize2, X, RotateCcw, Award, PackageCheck, AlertCircle, Share2, HandCoins,
+  ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { useWishlist } from '../contexts/WishlistContext';
 import { useCompare } from '../contexts/CompareContext';
@@ -218,6 +219,34 @@ export default function ProductDetail() {
                 >
                   <Maximize2 className="h-4 w-4" />
                 </button>
+
+                {/* Main Image Prev/Next Navigation Arrows for Mouse & Touch */}
+                {hasGallery && galleryImages.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedImageIndex((prev) => (prev === 0 ? galleryImages.length - 1 : prev - 1));
+                      }}
+                      aria-label="تصویر قبلی"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black text-zinc-800 dark:text-zinc-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer opacity-80 hover:opacity-100"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedImageIndex((prev) => (prev + 1) % galleryImages.length);
+                      }}
+                      aria-label="تصویر بعدی"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black text-zinc-800 dark:text-zinc-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer opacity-80 hover:opacity-100"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
+                  </>
+                )}
 
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.div
@@ -616,11 +645,40 @@ export default function ProductDetail() {
             <button
               onClick={() => setIsLightboxOpen(false)}
               aria-label="بستن نمایش تصویر"
-              className="absolute top-6 left-6 w-11 h-11 flex items-center justify-center text-white/80 hover:text-white bg-[var(--color-surface-light)]/10 rounded-full backdrop-blur-md transition-colors"
+              className="absolute top-6 left-6 w-11 h-11 flex items-center justify-center text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-full backdrop-blur-md transition-colors z-50 cursor-pointer"
             >
               <X className="h-6 w-6" />
             </button>
+
+            {hasGallery && galleryImages.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedImageIndex((prev) => (prev === 0 ? galleryImages.length - 1 : prev - 1));
+                  }}
+                  aria-label="تصویر قبلی"
+                  className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-50 w-12 h-12 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center backdrop-blur-md transition-all cursor-pointer active:scale-90"
+                >
+                  <ChevronRight className="h-6 w-6" />
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedImageIndex((prev) => (prev + 1) % galleryImages.length);
+                  }}
+                  aria-label="تصویر بعدی"
+                  className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-50 w-12 h-12 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center backdrop-blur-md transition-all cursor-pointer active:scale-90"
+                >
+                  <ChevronLeft className="h-6 w-6" />
+                </button>
+              </>
+            )}
+
             <motion.img
+              key={selectedImageIndex}
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
