@@ -49,7 +49,7 @@ export default function Checkout() {
       initial={shouldReduceMotion ? false : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-right"
+      className="w-full text-right space-y-6"
     >
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-3">

@@ -72,11 +72,9 @@ export default function Products() {
   }, [isCategoryFiltered, selectedCategory, realCount, loading]);
 
   return (
-    <div className="min-h-screen bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Page Title Header */}
-        <div className="mb-8 text-right bg-gradient-to-r from-[var(--color-cta)]/10 via-transparent to-transparent dark:from-white/[0.04] dark:via-white/[0.02] dark:to-transparent p-6 rounded-3xl border border-[var(--color-cta)]/15 dark:border-white/[0.08]">
+    <div className="w-full space-y-6">
+      {/* Page Title Header */}
+      <div className="mb-6 text-right bg-gradient-to-r from-[var(--color-cta)]/10 via-transparent to-transparent dark:from-white/[0.04] dark:via-white/[0.02] dark:to-transparent p-5 sm:p-6 rounded-3xl border border-[var(--color-cta)]/15 dark:border-white/[0.08]">
           {isCategoryFiltered ? (
             <>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/70 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] text-xs font-bold mb-2">
@@ -137,7 +135,7 @@ export default function Products() {
           />
 
           {/* Main Product Area */}
-          <main className="lg:col-span-9 space-y-6">
+          <div className="lg:col-span-9 space-y-6">
             <ProductSortHeader
               filteredCount={totalProducts}
               totalCount={totalProducts}
@@ -275,9 +273,8 @@ export default function Products() {
                 </button>
               </div>
             )}
-          </main>
+          </div>
         </div>
-      </div>
     </div>
   );
 }

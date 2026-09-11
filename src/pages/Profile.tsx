@@ -118,24 +118,22 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50/50 dark:bg-gray-950/50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="w-full">
+      {/* Main Profile Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
-        {/* Main Profile Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
-          {/* Right Sidebar */}
-          <div className="lg:col-span-4 lg:sticky lg:top-28">
-            <ProfileSidebar
-              user={user}
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-              onLogoutClick={() => setShowLogoutModal(true)}
-            />
-          </div>
+        {/* Right Sidebar */}
+        <div className="lg:col-span-4 lg:sticky lg:top-28">
+          <ProfileSidebar
+            user={user}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            onLogoutClick={() => setShowLogoutModal(true)}
+          />
+        </div>
 
-          {/* Main Active Tab Content */}
-          <main className="lg:col-span-8">
+        {/* Main Active Tab Content */}
+        <div className="lg:col-span-8">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
@@ -168,9 +166,8 @@ export default function Profile() {
                 {activeTab === 'vip' && <VipClubTab />}
               </motion.div>
             </AnimatePresence>
-          </main>
+          </div>
         </div>
-      </div>
 
       {/* Logout Confirmation Modal */}
       {showLogoutModal && createPortal(

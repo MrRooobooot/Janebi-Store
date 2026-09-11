@@ -118,12 +118,12 @@ export default function Header() {
           </div>
 
           {/* Desktop Search */}
-          <div className="flex-1 max-w-xl mx-4 hidden md:block relative z-20">
+          <div className="flex-1 max-w-xs md:max-w-sm lg:max-w-xl mx-2 sm:mx-4 hidden md:block relative z-20">
             <HeaderSearch />
           </div>
 
           {/* User Controls & Quick Badges */}
-          <div className="flex items-center gap-0.5 sm:gap-2 shrink-0 relative z-30">
+          <div className="flex items-center gap-1 sm:gap-1.5 lg:gap-2 shrink-0 relative z-30">
             {/* Mobile Search Button */}
             <button
               aria-label="جستجو"
@@ -147,7 +147,7 @@ export default function Header() {
             <Link
               to="/compare"
               aria-label="مشاهده لیست مقایسه کالاها"
-              className="p-1.5 sm:p-2 text-zinc-600 dark:text-zinc-400 hover:text-[var(--color-emphasis-text)] rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors relative hidden sm:flex items-center min-touch-target"
+              className="p-1.5 sm:p-2 text-zinc-600 dark:text-zinc-400 hover:text-[var(--color-emphasis-text)] rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors relative hidden lg:flex items-center min-touch-target"
               title="مقایسه کالاها"
             >
               <ArrowLeftRight className="h-5 w-5" />
@@ -161,7 +161,7 @@ export default function Header() {
             {/* Wishlist Badge */}
             <Link
               to="/wishlist"
-              className="p-1.5 sm:p-2 text-zinc-600 dark:text-zinc-400 hover:text-rose-600 dark:hover:text-rose-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors relative hidden sm:flex items-center"
+              className="p-1.5 sm:p-2 text-zinc-600 dark:text-zinc-400 hover:text-rose-600 dark:hover:text-rose-400 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors relative hidden lg:flex items-center"
               title="علاقه‌مندی‌ها"
             >
               <Heart className="h-5 w-5" />
@@ -176,7 +176,7 @@ export default function Header() {
             <button
               onClick={openCartDrawer}
               aria-label="مشاهده سبد خرید"
-              className="flex items-center gap-1.5 bg-primary-50 hover:bg-primary-100 dark:bg-primary-950/40 text-[var(--color-emphasis-text)] border border-primary-200 dark:border-primary-800/60 px-2 sm:px-3.5 py-1.5 sm:py-2 rounded-xl transition-all duration-200 shadow-xs cursor-pointer active:scale-95 min-touch-target"
+              className="flex items-center gap-1.5 bg-primary-50 hover:bg-primary-100 dark:bg-primary-950/40 text-[var(--color-emphasis-text)] border border-primary-200 dark:border-primary-800/60 px-2.5 sm:px-3 lg:px-3.5 py-1.5 sm:py-2 rounded-xl transition-all duration-200 shadow-xs cursor-pointer active:scale-95 min-touch-target"
             >
               <div className="relative">
                 <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -186,7 +186,7 @@ export default function Header() {
                   </span>
                 )}
               </div>
-              <span className="text-xs font-black hidden md:inline">سبد خرید</span>
+              <span className="text-xs font-black hidden lg:inline">سبد خرید</span>
             </button>
 
             {/* User Account Menu / Login */}

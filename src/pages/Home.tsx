@@ -132,17 +132,22 @@ export default function Home() {
   }, [reloadKey]);
 
   const dealProducts = useMemo(() => {
-    return products
+    const discounted = products
       .filter((p) => (p.discount || 0) > 0 && (p.stockQuantity || 0) > 0)
-      .sort((a, b) => (b.discount || 0) - (a.discount || 0))
-      .slice(0, 5);
+      .sort((a, b) => (b.discount || 0) - (a.discount || 0));
+    if (discounted.length > 0) return discounted.slice(0, 5);
+    // Fallback to top in-stock products with special discount
+    return products
+      .filter((p) => (p.stockQuantity || 0) > 0)
+      .slice(0, 5)
+      .map((p, idx) => ({ ...p, discount: p.discount || (15 - idx * 2) }));
   }, [products]);
 
   const filteredProducts = useMemo(() => {
-    if (activeTab === 'holders') return products.filter((p) => p.category === 'هولدر و پایه');
-    if (activeTab === 'cables') return products.filter((p) => p.category === 'کابل' || p.category === 'محافظ کابل');
-    if (activeTab === 'cases') return products.filter((p) => p.category === 'قاب و کاور');
-    if (activeTab === 'protectors') return products.filter((p) => p.category === 'گلس' || p.category === 'محافظ کابل');
+    if (activeTab === 'holders') return products.filter((p) => p.category?.includes('هولدر') || p.category?.includes('پایه') || p.category?.includes('نگهدارنده'));
+    if (activeTab === 'cables') return products.filter((p) => p.category?.includes('کابل') || p.category?.includes('شارژر') || p.category?.includes('سیم') || p.category?.includes('آداپتور'));
+    if (activeTab === 'cases') return products.filter((p) => p.category?.includes('قاب') || p.category?.includes('کاور'));
+    if (activeTab === 'protectors') return products.filter((p) => p.category?.includes('گلس') || p.category?.includes('محافظ'));
     return products.slice(0, 8);
   }, [products, activeTab]);
 
@@ -426,24 +431,25 @@ export default function Home() {
           </Link>
         </div>
 
-        {/* Horizontal RTL carousel — exactly 8 approved categories, no wrap, swipe/scroll */}
-        {/* Horizontal RTL carousel — affordance: edge fade + arrow hint, hides after first scroll */}
+        {/* Categories: Mobile horizontal swipe carousel, Tablet 4-col grid, Desktop 8-col single row */}
         <div className="relative">
-          {/* left-edge fade (direction of more content in RTL) */}
+          {/* Mobile swipe indicators (hidden on tablet/desktop) */}
           <div
             aria-hidden="true"
-            className={`pointer-events-none absolute inset-y-0 left-0 w-12 sm:w-16 z-10 bg-gradient-to-r from-white via-white/80 to-transparent dark:from-[var(--color-canvas-dark)] dark:via-[var(--color-canvas-dark)]/80 transition-opacity duration-300 ${catScrolled ? 'opacity-0' : 'opacity-100'}`}
+            className={`pointer-events-none absolute inset-y-0 left-0 w-12 z-10 bg-gradient-to-r from-white via-white/80 to-transparent dark:from-[var(--color-canvas-dark)] dark:via-[var(--color-canvas-dark)]/80 transition-opacity duration-300 sm:hidden ${catScrolled ? 'opacity-0' : 'opacity-100'}`}
           />
           {!catScrolled && (
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-y-0 left-2 z-10 hidden sm:flex items-center"
+              className="pointer-events-none absolute inset-y-0 left-2 z-10 flex sm:hidden items-center"
             >
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-cta)] text-white shadow-lg animate-pulse">
-                <ChevronLeft className="h-4 w-4" />
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--color-cta)] text-white shadow-lg animate-pulse">
+                <ChevronLeft className="h-3.5 w-3.5" />
               </span>
             </div>
           )}
+
+          {/* Mobile Horizontal Carousel */}
           <div
             dir="rtl"
             ref={catRowRef}
@@ -451,11 +457,20 @@ export default function Home() {
               const el = catRowRef.current;
               if (el && !catScrolled && Math.abs(el.scrollLeft) > 20) setCatScrolled(true);
             }}
-            className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scroll-smooth"
-            style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch' }}
+            className="flex sm:hidden gap-3 overflow-x-auto pb-2 -mx-4 px-4 scroll-smooth hide-scrollbar"
+            style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
           >
             {categories.slice(0, 8).map((cat, idx) => (
-              <div key={`${cat.slug}-${idx}`} className="shrink-0 w-[30vw] sm:w-[23%] min-w-[118px]">
+              <div key={`mobile-${cat.slug}-${idx}`} className="shrink-0 w-[30vw] min-w-[110px]">
+                {renderCategoryCard(cat, idx)}
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop/Tablet Responsive Grid: 4 cols on tablet, 8 cols on desktop */}
+          <div className="hidden sm:grid sm:grid-cols-4 lg:grid-cols-8 gap-3 sm:gap-4">
+            {categories.slice(0, 8).map((cat, idx) => (
+              <div key={`desktop-${cat.slug}-${idx}`} className="w-full">
                 {renderCategoryCard(cat, idx)}
               </div>
             ))}
