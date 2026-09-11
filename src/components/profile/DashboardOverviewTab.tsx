@@ -23,7 +23,7 @@ export default function DashboardOverviewTab({
   return (
     <div className="space-y-6 text-right">
       {/* Welcome Hero Banner */}
-      <div className="rounded-3xl p-6 sm:p-8 text-white [background:linear-gradient(135deg,#c2410c,#9a3412)] relative overflow-hidden shadow-lg shadow-[var(--color-cta)]/25">
+      <div className="rounded-3xl p-6 sm:p-8 text-white [background:linear-gradient(135deg,#e11d48,#be123c)] relative overflow-hidden shadow-lg shadow-[var(--color-cta)]/25">
         <div className="absolute top-0 left-0 w-64 h-64 bg-[var(--color-surface-light)]/10 rounded-full blur-2xl pointer-events-none" />
         <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div>

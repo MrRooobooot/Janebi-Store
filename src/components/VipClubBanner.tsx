@@ -79,7 +79,7 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
-      className="relative rounded-3xl text-white [background:linear-gradient(135deg,#c2410c,#9a3412)] p-6 sm:p-10 md:p-12 overflow-hidden shadow-xl"
+      className="relative rounded-3xl text-white [background:linear-gradient(135deg,#e11d48,#be123c)] p-6 sm:p-10 md:p-12 overflow-hidden shadow-xl"
     >
       {/* Background Decorative Blur circles */}
       <div className="absolute -top-24 -right-24 w-72 h-72 bg-[var(--color-surface-light)]/10 rounded-full blur-3xl pointer-events-none" />

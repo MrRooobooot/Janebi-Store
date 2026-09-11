@@ -151,7 +151,7 @@ export default function AdminBlog() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="جستجوی عنوان یا دسته..."
-          className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 pr-10 pl-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500"
+          className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 pr-10 pl-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500"
         />
       </div>
 
@@ -244,21 +244,21 @@ export default function AdminBlog() {
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
               placeholder="عنوان مقاله *"
-              className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 px-3 text-xs font-bold text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500"
+              className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 px-3 text-xs font-bold text-gray-900 dark:text-gray-100 focus:outline-none focus:border-primary-500"
             />
             <textarea
               value={form.excerpt}
               onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
               placeholder="خلاصه مقاله (تا ۱۰۰۰ کاراکتر) *"
               rows={2}
-              className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 px-3 text-xs text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500"
+              className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 px-3 text-xs text-gray-900 dark:text-gray-100 focus:outline-none focus:border-primary-500"
             />
             <textarea
               value={form.body}
               onChange={(e) => setForm({ ...form, body: e.target.value })}
               placeholder="متن کامل مقاله — پاراگراف‌ها را با خط خالی جدا کنید *"
               rows={10}
-              className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 px-3 text-xs leading-6 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500"
+              className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 px-3 text-xs leading-6 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-primary-500"
             />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <input
@@ -266,39 +266,39 @@ export default function AdminBlog() {
                 onChange={(e) => setForm({ ...form, image: e.target.value })}
                 placeholder="آدرس تصویر (مثلاً /products/pb-7.svg)"
                 dir="ltr"
-                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 px-3 text-xs text-gray-900 dark:text-gray-100 text-left focus:outline-none focus:border-orange-500"
+                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 px-3 text-xs text-gray-900 dark:text-gray-100 text-left focus:outline-none focus:border-primary-500"
               />
               <input
                 value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
                 placeholder="دسته‌بندی"
-                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 px-3 text-xs text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500"
+                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 px-3 text-xs text-gray-900 dark:text-gray-100 focus:outline-none focus:border-primary-500"
               />
               <input
                 value={form.author}
                 onChange={(e) => setForm({ ...form, author: e.target.value })}
                 placeholder="نویسنده"
-                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 px-3 text-xs text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500"
+                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 px-3 text-xs text-gray-900 dark:text-gray-100 focus:outline-none focus:border-primary-500"
               />
               <input
                 value={form.readTime}
                 onChange={(e) => setForm({ ...form, readTime: e.target.value })}
                 placeholder="زمان مطالعه (مثلاً ۵ دقیقه)"
-                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 px-3 text-xs text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500"
+                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 px-3 text-xs text-gray-900 dark:text-gray-100 focus:outline-none focus:border-primary-500"
               />
             </div>
             <input
               value={form.tags}
               onChange={(e) => setForm({ ...form, tags: e.target.value })}
               placeholder="تگ‌های SEO (با کاما جدا کنید)"
-              className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 px-3 text-xs text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-500"
+              className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 px-3 text-xs text-gray-900 dark:text-gray-100 focus:outline-none focus:border-primary-500"
             />
             <label className="flex items-center gap-2 text-xs font-bold text-gray-700 dark:text-gray-300 cursor-pointer w-fit">
               <input
                 type="checkbox"
                 checked={form.published}
                 onChange={(e) => setForm({ ...form, published: e.target.checked })}
-                className="accent-orange-600 w-4 h-4"
+                className="accent-primary-600 w-4 h-4"
               />
               انتشار عمومی
             </label>

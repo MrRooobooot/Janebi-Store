@@ -212,7 +212,7 @@ export default function AdminMessages() {
             placeholder="جستجوی نام فرستنده، شماره، ایمیل یا موضوع..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl pr-10 pl-4 py-2.5 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500"
+            className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl pr-10 pl-4 py-2.5 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500"
           />
           <Search className="h-4 w-4 text-gray-500 absolute right-3.5 top-1/2 -translate-y-1/2" />
         </div>
@@ -297,7 +297,7 @@ export default function AdminMessages() {
                       checked={selectedIds.has(msg.id)}
                       onClick={(e) => e.stopPropagation()}
                       onChange={() => toggleSelected(msg.id)}
-                      className="w-4 h-4 cursor-pointer accent-orange-600"
+                      className="w-4 h-4 cursor-pointer accent-primary-600"
                     />
                     {getStatusBadge(msg.status)}
                   </div>
@@ -355,7 +355,7 @@ export default function AdminMessages() {
           <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl max-w-xl w-full p-6 shadow-2xl border border-[var(--color-border-light)] dark:border-gray-700 text-right animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-gray-700 mb-5">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-xl bg-orange-100 dark:bg-orange-950/60 text-[var(--color-emphasis-text)]">
+                <div className="p-2 rounded-xl bg-primary-100 dark:bg-primary-950/60 text-primary-700 dark:text-primary-300">
                   <Mail className="h-5 w-5" />
                 </div>
                 <div>

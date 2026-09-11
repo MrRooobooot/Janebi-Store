@@ -163,7 +163,7 @@ export default function AdminUsers() {
             placeholder="جستجوی نام کاربر، شماره موبایل یا ایمیل..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl pr-10 pl-4 py-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500"
+            className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl pr-10 pl-4 py-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500"
           />
           <Search className="h-4 w-4 text-gray-500 absolute right-3.5 top-1/2 -translate-y-1/2" />
         </div>
@@ -306,7 +306,7 @@ export default function AdminUsers() {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500 font-mono dir-ltr"
+                  className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500 font-mono dir-ltr"
                 />
               </div>
 

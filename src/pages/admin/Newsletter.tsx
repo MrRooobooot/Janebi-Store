@@ -82,7 +82,7 @@ export default function AdminNewsletter() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-[var(--color-text-main-light)] dark:text-white flex items-center gap-2">
-            <MailCheck className="h-6 w-6 text-orange-500" />
+            <MailCheck className="h-6 w-6 text-primary-500" />
             اعضای خبرنامه ایمیلی
           </h1>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -106,7 +106,7 @@ export default function AdminNewsletter() {
             placeholder="جستجو در ایمیل‌ها..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl py-2 px-3.5 pr-9 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500"
+            className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl py-2 px-3.5 pr-9 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500"
           />
           <Search className="h-4 w-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
         </div>

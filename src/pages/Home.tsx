@@ -266,7 +266,7 @@ export default function Home() {
                 aria-label={`اسلاید ${toPersianDigits(idx + 1)}`}
                 className={`h-2.5 rounded-full transition-all duration-300 motion-reduce:transition-none ${
                   activeSlide === idx
-                    ? 'w-8 bg-primary-400 dark:bg-primary-300 shadow-md shadow-primary-500/50'
+                    ? 'w-8 bg-primary-600 dark:bg-primary-400 shadow-md shadow-primary-500/50'
                     : 'w-2.5 bg-zinc-400 dark:bg-zinc-600 hover:bg-zinc-500 dark:hover:bg-zinc-400'
                 }`}
               />

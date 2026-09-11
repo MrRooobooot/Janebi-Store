@@ -23,10 +23,10 @@ export function LogoSymbol({ className = "w-9 h-9", size, theme = 'default' }: L
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
     >
-      {/* Top-left orange arc */}
+      {/* Top-left rose arc */}
       <path 
         d="M 23 40 A 32 32 0 0 1 54 18" 
-        stroke="#F47C20" 
+        stroke="#e11d48" 
         strokeWidth="12" 
         strokeLinecap="round" 
       />
@@ -82,7 +82,7 @@ export default function Logo({ className = "", variant = 'full', size = 'md' }: 
         </div>
         <div className="flex flex-col text-left">
           <span className={`${textSizes[size]} font-black tracking-tight text-zinc-900 dark:text-white`}>
-            Janebi <span className="text-[#F47C20]">Arena</span>
+            Janebi <span className="text-[#e11d48]">Arena</span>
           </span>
           <span className="text-[8px] sm:text-[9px] text-zinc-400 dark:text-zinc-500 font-bold tracking-wider font-mono">
             OFFICIAL STORE
@@ -102,7 +102,7 @@ export default function Logo({ className = "", variant = 'full', size = 'md' }: 
           <span className={`${textSizes[size]} font-black tracking-tight text-[#0B1536] dark:text-white group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors`}>
             جانبی
           </span>
-          <span className={`${textSizes[size]} font-black tracking-tight text-[#F47C20]`}>
+          <span className={`${textSizes[size]} font-black tracking-tight text-[#e11d48]`}>
             آرنا
           </span>
         </div>

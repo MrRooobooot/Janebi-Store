@@ -29,23 +29,23 @@
 @theme {
   --font-sans: "Vazirmatn", system-ui, -apple-system, sans-serif;
   
-  /* ── Core Brand Palette (Kinetic Commerce — DESIGN.md Harmony) ──
-     CTA fills = --color-cta #c2410c (white text 4.68:1, WCAG AA)
-     #F47C20 = secondary emphasis fills / decorative gradients only
-     tertiary #EA580C = price text / active states (3.56:1 on white, AA large)
-     action-hover #D94E06 = hover shifts (4.16:1)
-     primary #994700 = focus rings / small emphasis (6.12:1)                */
-  --color-primary-50: #fff3e8;
-  --color-primary-100: #ffdbc8;
-  --color-primary-200: #ffb68b;
-  --color-primary-300: #f47c20;
-  --color-primary-400: #ea580c;
-  --color-primary-500: #d94e06;
-  --color-primary-600: #c2410c;
-  --color-primary-700: #994700;
-  --color-primary-800: #743400;
-  --color-primary-900: #582600;
-  --color-primary-950: #321300;
+  /* ── Core Brand Palette (Rose / Magenta Redesign — Approved) ──
+     CTA fills = --color-cta #e11d48 (white text 4.70:1, WCAG AA)
+     #fb7185 / #f43f5e = secondary emphasis fills / decorative gradients
+     hover #be123c = hover shifts (6.29:1)
+     active #9f1239 = active states (8.02:1)
+     primary #be123c = focus rings / small emphasis (6.29:1)                */
+  --color-primary-50: #fff1f2;
+  --color-primary-100: #ffe4e6;
+  --color-primary-200: #fecdd3;
+  --color-primary-300: #fda4af;
+  --color-primary-400: #fb7185;
+  --color-primary-500: #f43f5e;
+  --color-primary-600: #e11d48;
+  --color-primary-700: #be123c;
+  --color-primary-800: #9f1239;
+  --color-primary-900: #881337;
+  --color-primary-950: #4c0519;
 
   /* ── Secondary & Accent Tokens (Emerald, Indigo, Rose, Gold) ── */
   --color-accent-gold: #f59e0b;
@@ -71,8 +71,8 @@
   --color-border-dark: rgba(255, 255, 255, 0.08);
   --color-border-subtle-light: rgba(15, 23, 42, 0.04);
   --color-border-subtle-dark: rgba(255, 255, 255, 0.04);
-  --color-border-dark-hover: rgba(255, 106, 0, 0.40);
-  --color-border-light-hover: rgba(240, 84, 0, 0.35);
+  --color-border-dark-hover: rgba(244, 63, 94, 0.40);
+  --color-border-light-hover: rgba(225, 29, 72, 0.35);
 
   /* ── High-Luminance Typography Tokens ── */
   --color-text-main-light: #0f172a;
@@ -86,17 +86,17 @@
   --shadow-elevation-1: 0 4px 20px rgba(11, 21, 54, 0.04);
   --shadow-elevation-2: 0 4px 20px rgba(11, 21, 54, 0.07), 0 2px 6px -2px rgba(11, 21, 54, 0.05);
   --shadow-elevation-3: 0 10px 15px -3px rgba(11, 21, 54, 0.08), 0 4px 6px -4px rgba(11, 21, 54, 0.04);
-  --shadow-glow-orange: 0 8px 24px -4px rgba(244, 124, 32, 0.35);
+  --shadow-glow-orange: 0 8px 24px -4px rgba(225, 29, 72, 0.35);
   --shadow-glow-amber: 0 8px 24px -4px rgba(244, 124, 32, 0.30);
   --shadow-glow-emerald: 0 8px 24px -4px rgba(16, 185, 129, 0.30);
 
-  /* ── CTA Fill Tokens (Copper Titanium — white text 4.63:1 AA ✅) ── */
-  --color-cta: #c2410c;
-  --color-cta-hover: #9a3412;
-  --color-cta-active: #7c2d12;
-  --color-emphasis-text: #c2410c;
-  --color-accent-surface: #f47c20;
-  --shadow-glow-cta: 0 8px 24px -4px rgba(179, 83, 10, 0.35);
+  /* ── CTA Fill Tokens (Rose Magenta — white text 4.70:1 AA ✅) ── */
+  --color-cta: #e11d48;
+  --color-cta-hover: #be123c;
+  --color-cta-active: #9f1239;
+  --color-emphasis-text: #e11d48;
+  --color-accent-surface: #fb7185;
+  --shadow-glow-cta: 0 8px 24px -4px rgba(225, 29, 72, 0.35);
 }
 
 :root {
@@ -171,19 +171,19 @@ body {
 /* ── DESIGN.md Elevation: Ambient Shadow on Deep Space ── */
 .dark .linear-card:hover {
   background-color: rgba(255, 255, 255, 0.035);
-  border-color: rgba(244, 124, 32, 0.30);
+  border-color: rgba(225, 29, 72, 0.30);
   box-shadow: 0 4px 20px rgba(10, 17, 40, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-/* ── Focus Ring System (DESIGN.md primary #994700 — WCAG AA Compliant) ── */
+/* ── Focus Ring System (Rose #be123c — WCAG AA Compliant) ── */
 :focus-visible {
-  outline: 2px solid #9a3412 !important;
+  outline: 2px solid #be123c !important;
   outline-offset: 2px !important;
   border-radius: 8px;
 }
 
 .dark :focus-visible {
-  outline-color: #ffb68b !important;
+  outline-color: #fda4af !important;
 }
 
 /* ── Accessible Contrast Helpers ────────────────────────────────── */
@@ -258,11 +258,11 @@ body {
 }
 
 .brand-gradient {
-  background: linear-gradient(135deg, #c2410c 0%, #9a3412 100%);
+  background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
 }
 
 .brand-gradient-text {
-  background: linear-gradient(135deg, #c2410c 0%, #9a3412 100%);
+  background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

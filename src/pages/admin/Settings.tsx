@@ -56,7 +56,7 @@ interface StoreSettingsData {
 }
 
 const FIELD =
-  'w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500';
+  'w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary-500';
 const FIELD_SM =
   'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs';
 const SECTION_CARD =
@@ -147,7 +147,7 @@ export default function AdminSettings() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
       </div>
     );
   }
@@ -178,7 +178,7 @@ export default function AdminSettings() {
                 type="text"
                 value={settings.storeName}
                 onChange={e => setSettings({ ...settings, storeName: e.target.value })}
-                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500"
+                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary-500"
                 required
               />
             </div>
@@ -189,7 +189,7 @@ export default function AdminSettings() {
                 type="text"
                 value={settings.phone}
                 onChange={e => setSettings({ ...settings, phone: e.target.value })}
-                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500"
+                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary-500"
                 required
               />
             </div>
@@ -200,7 +200,7 @@ export default function AdminSettings() {
                 type="email"
                 value={settings.email}
                 onChange={e => setSettings({ ...settings, email: e.target.value })}
-                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500 text-left dir-ltr"
+                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary-500 text-left dir-ltr"
                 required
               />
             </div>
@@ -211,7 +211,7 @@ export default function AdminSettings() {
                 type="text"
                 value={settings.supportHours}
                 onChange={e => setSettings({ ...settings, supportHours: e.target.value })}
-                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500"
+                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary-500"
                 required
               />
             </div>
@@ -222,7 +222,7 @@ export default function AdminSettings() {
                 type="text"
                 value={settings.address}
                 onChange={e => setSettings({ ...settings, address: e.target.value })}
-                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500"
+                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary-500"
                 required
               />
             </div>
@@ -243,7 +243,7 @@ export default function AdminSettings() {
                 type="text"
                 value={settings.announcement}
                 onChange={e => setSettings({ ...settings, announcement: e.target.value })}
-                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500"
+                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary-500"
               />
             </div>
 
@@ -252,7 +252,7 @@ export default function AdminSettings() {
                 type="checkbox"
                 checked={settings.announcementBarEnabled !== 'false'}
                 onChange={e => setSettings({ ...settings, announcementBarEnabled: e.target.checked ? 'true' : 'false' })}
-                className="h-5 w-5 rounded border-gray-300 text-[var(--color-emphasis-text)] focus:ring-orange-500 cursor-pointer"
+                className="h-5 w-5 rounded border-gray-300 text-[var(--color-emphasis-text)] focus:ring-primary-500 cursor-pointer"
               />
               <span className="text-xs font-bold text-gray-700 dark:text-gray-300">
                 نمایش نوار اعلان بالای سایت {settings.announcementBarEnabled !== 'false' ? '(فعال)' : '(غیرفعال)'}
@@ -266,7 +266,7 @@ export default function AdminSettings() {
                 inputMode="numeric"
                 value={settings.freeShippingThreshold}
                 onChange={e => setSettings({ ...settings, freeShippingThreshold: parseInt(toEnglishDigits(e.target.value).replace(/[^0-9]/g, ''), 10) || 0 })}
-                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500 text-left dir-ltr"
+                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary-500 text-left dir-ltr"
                 required
               />
               <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1">

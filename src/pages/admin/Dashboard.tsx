@@ -68,7 +68,7 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="flex justify-center p-12">
-        <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -95,7 +95,7 @@ export default function Dashboard() {
     { title: "درآمد کل", value: `${metrics.totalRevenue.toLocaleString()} تومان`, icon: DollarSign, color: "text-emerald-500", bg: "bg-emerald-100 dark:bg-emerald-500/20" },
     { title: "سفارشات", value: metrics.totalOrders, icon: ShoppingCart, color: "text-blue-500", bg: "bg-blue-100 dark:bg-blue-500/20" },
     { title: "محصولات", value: metrics.totalProducts, icon: Package, color: "text-purple-500", bg: "bg-purple-100 dark:bg-purple-500/20" },
-    { title: "کاربران", value: metrics.totalUsers, icon: Users, color: "text-[var(--color-emphasis-text)]", bg: "bg-orange-100 dark:bg-orange-500/20" },
+    { title: "کاربران", value: metrics.totalUsers, icon: Users, color: "text-[var(--color-emphasis-text)]", bg: "bg-primary-100 dark:bg-primary-500/20" },
     { title: "پیام‌های خوانده‌نشده", value: toPersianDigits(metrics.unreadMessages || 0), icon: Mail, color: "text-rose-500", bg: "bg-rose-100 dark:bg-rose-500/20" },
     { title: "نظرات در انتظار بررسی", value: toPersianDigits(metrics.pendingReviews || 0), icon: MessageSquare, color: "text-sky-500", bg: "bg-sky-100 dark:bg-sky-500/20" },
   ];
@@ -136,9 +136,9 @@ export default function Dashboard() {
 
       {/* Onboarding Empty-State Card */}
       {emptyState && (
-        <div className="rounded-2xl p-6 border border-orange-200 dark:border-orange-900/40 bg-orange-50/70 dark:bg-orange-950/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="rounded-2xl p-6 border border-primary-200 dark:border-primary-900/40 bg-primary-50/70 dark:bg-primary-950/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-start gap-3">
-            <div className="p-3 rounded-xl bg-orange-100 dark:bg-orange-900/40 text-[var(--color-emphasis-text)] shrink-0">
+            <div className="p-3 rounded-xl bg-primary-100 dark:bg-primary-900/40 text-[var(--color-emphasis-text)] shrink-0">
               <Rocket className="h-6 w-6" />
             </div>
             <div className="space-y-1">
@@ -305,7 +305,7 @@ export default function Dashboard() {
                       order.status === "delivered" ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400" :
                       order.status === "processing" ? "bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400" :
                       order.status === "shipped" ? "bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400" :
-                      order.status === "pending_payment" ? "bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-400" :
+                      order.status === "pending_payment" ? "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400" :
                       "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400"
                     }`}>
                       {order.statusText}

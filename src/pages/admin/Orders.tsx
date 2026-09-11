@@ -166,13 +166,13 @@ export default function AdminOrders() {
         <title>فاکتور فروش - سفارش ${order.id}</title>
         <style>
           body { font-family: Tahoma, 'Vazirmatn', sans-serif; padding: 24px; color: #1f2937; direction: rtl; }
-          .header { display: flex; justify-content: space-between; border-bottom: 2px solid #ea580c; padding-bottom: 12px; margin-bottom: 20px; }
-          .title { font-size: 20px; font-weight: bold; color: #ea580c; }
-          .box { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: 12px; line-height: 1.8; }
-          table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 12px; }
-          th, td { border: 1px solid #e5e7eb; padding: 8px 12px; text-align: right; }
-          th { background: #f3f4f6; }
-          .total { text-align: left; font-size: 14px; font-weight: bold; color: #ea580c; margin-top: 16px; }
+          .header { display: flex; justify-content: space-between; border-bottom: 2px solid #e11d48; padding-bottom: 12px; margin-bottom: 20px; }
+          .title { font-size: 20px; font-weight: bold; color: #e11d48; }
+          .meta { font-size: 11px; color: #666; }
+          .table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; }
+          .table th, .table td { border: 1px solid #ddd; padding: 8px; text-align: right; }
+          .table th { background: #fff1f2; }
+          .total { text-align: left; font-size: 14px; font-weight: bold; color: #e11d48; margin-top: 16px; }
           @media print { button { display: none; } }
         </style>
       </head>
@@ -365,7 +365,7 @@ export default function AdminOrders() {
             placeholder="جستجو (شماره سفارش، نام، موبایل، کد رهگیری)..." 
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[var(--color-surface-dark)] focus:outline-none focus:border-orange-500 text-xs font-bold"
+            className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[var(--color-surface-dark)] focus:outline-none focus:border-primary-500 text-xs font-bold"
           />
           <Search className="w-4 h-4 text-gray-500 absolute left-3 top-3" />
         </div>
@@ -386,7 +386,7 @@ export default function AdminOrders() {
                         setSelectedIds(prev => new Set(Array.from(prev).filter(id => !pagedOrders.some(o => o.id === id))));
                       }
                     }}
-                    className="w-4 h-4 cursor-pointer accent-orange-600"
+                    className="w-4 h-4 cursor-pointer accent-primary-600"
                   />
                 </th>
                 <th className="p-3.5 font-bold">شماره سفارش</th>
@@ -411,7 +411,7 @@ export default function AdminOrders() {
                       aria-label={`انتخاب سفارش ${order.id}`}
                       checked={selectedIds.has(order.id)}
                       onChange={() => toggleSelected(order.id)}
-                      className="w-4 h-4 cursor-pointer accent-orange-600"
+                      className="w-4 h-4 cursor-pointer accent-primary-600"
                     />
                   </td>
                   <td className="p-3.5 font-bold text-[var(--color-text-main-light)] dark:text-white font-mono dir-ltr text-left">{order.id}</td>
@@ -435,7 +435,7 @@ export default function AdminOrders() {
                       order.status === 'delivered' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300' :
                       order.status === 'processing' ? 'bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300' :
                       order.status === 'shipped' ? 'bg-purple-100 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300' :
-                      order.status === 'pending_payment' ? 'bg-orange-100 text-orange-700 dark:bg-orange-950/40 dark:text-orange-300' :
+                      order.status === 'pending_payment' ? 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300' :
                       'bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300'
                     }`}>
                       {order.statusText}
@@ -457,7 +457,7 @@ export default function AdminOrders() {
                       <div className="relative group">
                         <button 
                           disabled={updatingId === order.id}
-                          className="flex items-center gap-1 bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/30 text-[var(--color-emphasis-text)] px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-colors"
+                          className="flex items-center gap-1 bg-primary-50 hover:bg-primary-100 dark:bg-primary-950/30 text-primary-700 dark:text-primary-300 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-colors"
                         >
                           {updatingId === order.id ? '...' : 'تغییر وضعیت'}
                           <ChevronDown className="w-3 h-3" />
@@ -553,7 +553,7 @@ export default function AdminOrders() {
             </div>
 
             {/* Recipient Information */}
-            <div className="p-4 rounded-2xl bg-orange-50/40 dark:bg-orange-950/20 border border-orange-100 dark:border-orange-900/30 text-xs space-y-2">
+            <div className="p-4 rounded-2xl bg-primary-50/40 dark:bg-primary-950/20 border border-primary-100 dark:border-primary-900/30 text-xs space-y-2">
               <div className="font-bold text-[var(--color-text-main-light)] dark:text-white flex items-center gap-1.5">
                 <User className="w-4 h-4 text-[var(--color-emphasis-text)]" />
                 <span>مشخصات تحویل‌گیرنده:</span>
@@ -597,7 +597,7 @@ export default function AdminOrders() {
                   onClick={() => handlePrintInvoice(selectedOrder)}
                   className="px-4 py-2.5 rounded-xl bg-gray-900 hover:bg-black dark:bg-gray-700 dark:hover:bg-gray-600 text-white text-xs font-bold transition-colors flex items-center gap-2 shadow-sm cursor-pointer"
                 >
-                  <Printer className="h-4 w-4 text-orange-400" />
+                  <Printer className="h-4 w-4 text-primary-400" />
                   <span>چاپ فاکتور فروش</span>
                 </button>
 

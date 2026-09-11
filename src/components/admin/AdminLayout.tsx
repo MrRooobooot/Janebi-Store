@@ -176,7 +176,7 @@ export default function AdminLayout() {
           width="40"
           height="40"
           decoding="async"
-          className="w-10 h-10 rounded-xl border border-orange-500/30 object-cover shrink-0"
+          className="w-10 h-10 rounded-xl border border-primary-500/30 object-cover shrink-0"
         />
         <div className="overflow-hidden grow">
           <div className="font-bold text-[var(--color-text-main-light)] dark:text-white text-xs truncate">{user.name}</div>
@@ -292,7 +292,7 @@ export default function AdminLayout() {
             <span className="text-xs font-black text-[var(--color-text-main-light)] dark:text-white">
               جانبی <span className="text-[var(--color-emphasis-text)]">آرنا</span>
             </span>
-            <span className="text-[9px] bg-orange-100 dark:bg-orange-950/60 text-[var(--color-emphasis-text)] font-black px-2 py-0.5 rounded-md border border-orange-200 dark:border-orange-900/50">مدیریت</span>
+            <span className="text-[9px] bg-primary-100 dark:bg-primary-950/60 text-primary-700 dark:text-primary-300 font-black px-2 py-0.5 rounded-md border border-primary-200 dark:border-primary-900/50">مدیریت</span>
           </div>
           <button
             onClick={toggleTheme}

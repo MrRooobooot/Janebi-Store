@@ -262,8 +262,8 @@ export default function ProductDetail() {
                         aria-pressed={isActive}
                         className={`w-20 h-20 sm:w-[72px] sm:h-[72px] min-w-[44px] min-h-[44px] bg-[var(--color-surface-card-light)] dark:bg-white/[0.04] backdrop-blur-md rounded-2xl border-2 p-2 shrink-0 transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700 ${
                           isActive
-                            ? 'border-primary-300 ring-2 ring-primary-300/60 shadow-[var(--shadow-glow-orange)] scale-105 opacity-100'
-                            : 'border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] opacity-60 hover:opacity-100 hover:border-primary-200 dark:hover:border-primary-300/50'
+                            ? 'border-primary-500 ring-2 ring-primary-400/60 shadow-[var(--shadow-glow-orange)] scale-105 opacity-100'
+                            : 'border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] opacity-60 hover:opacity-100 hover:border-primary-300 dark:hover:border-primary-400/50'
                         }`}
                       >
                         <img src={img} alt={`تصویر ${toPersianDigits(idx + 1)} ${product.title}`} width="96" height="96" loading="lazy" decoding="async" className="w-full h-full object-contain" />

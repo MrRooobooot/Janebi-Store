@@ -38,7 +38,7 @@ export default function EmptyState({
       {actionLink && actionText && (
         <Link
           to={actionLink}
-          className="bg-primary-400 hover:bg-primary-500 dark:bg-primary-400 dark:hover:bg-primary-500 text-white font-bold py-3 px-8 rounded-xl transition-colors inline-flex items-center justify-center min-touch-target shadow-md shadow-[var(--color-cta)]/25 active:scale-95 raycast-btn"
+          className="bg-primary-600 hover:bg-primary-700 dark:bg-primary-600 dark:hover:bg-primary-500 text-white font-bold py-3 px-8 rounded-xl transition-colors inline-flex items-center justify-center min-touch-target shadow-md shadow-[var(--color-cta)]/25 active:scale-95 raycast-btn"
         >
           {actionText}
         </Link>
@@ -47,7 +47,7 @@ export default function EmptyState({
       {onActionClick && actionText && !actionLink && (
         <button
           onClick={onActionClick}
-          className="bg-primary-400 hover:bg-primary-500 dark:bg-primary-400 dark:hover:bg-primary-500 text-white font-bold py-3 px-8 rounded-xl transition-colors inline-flex items-center justify-center min-touch-target shadow-md shadow-[var(--color-cta)]/25 active:scale-95 raycast-btn"
+          className="bg-primary-600 hover:bg-primary-700 dark:bg-primary-600 dark:hover:bg-primary-500 text-white font-bold py-3 px-8 rounded-xl transition-colors inline-flex items-center justify-center min-touch-target shadow-md shadow-[var(--color-cta)]/25 active:scale-95 raycast-btn"
         >
           {actionText}
         </button>

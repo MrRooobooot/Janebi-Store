@@ -66,8 +66,8 @@ export default function CartSummaryCard({
               aria-describedby={couponError ? 'coupon-error-message' : appliedDiscount > 0 ? 'coupon-success-message' : undefined}
               className={`w-full bg-gray-50/90 dark:bg-gray-800/80 border rounded-2xl py-3 px-3.5 text-left font-mono text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none uppercase tracking-wider transition-colors ${
                 couponError
-                  ? 'border-rose-400 dark:border-rose-600 focus:border-rose-500'
-                  : 'border-gray-200/80 dark:border-gray-700 focus:border-primary-400 dark:focus:border-primary-300'
+                  ? 'border-red-400 dark:border-red-600 focus:border-red-500'
+                  : 'border-gray-200/80 dark:border-gray-700 focus:border-primary-600 dark:focus:border-primary-400'
               }`}
             />
             <Tag className="h-4 w-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -76,7 +76,7 @@ export default function CartSummaryCard({
             type="submit"
             disabled={couponLoading || !couponInput.trim()}
             aria-label="اعمال کد تخفیف"
-            className="min-touch-target bg-primary-300 hover:bg-primary-500 dark:bg-primary-400 dark:hover:bg-primary-500 text-white font-extrabold px-5 py-3 rounded-2xl text-xs transition-all disabled:opacity-40 active:scale-95 shadow-sm shrink-0"
+            className="min-touch-target bg-primary-600 hover:bg-primary-700 dark:bg-primary-600 dark:hover:bg-primary-500 text-white font-extrabold px-5 py-3 rounded-2xl text-xs transition-all disabled:opacity-40 active:scale-95 shadow-sm shrink-0"
           >
             {couponLoading ? 'بررسی...' : 'اعمال'}
           </button>
@@ -159,11 +159,11 @@ export default function CartSummaryCard({
         </div>
       </div>
 
-      {/* Checkout Action Button — kinetic CTA #F47C20 (large/bold text per DESIGN.md contrast) */}
+      {/* Checkout Action Button — Rose CTA #e11d48 */}
       <Link
         to="/checkout"
         aria-label="ادامه فرایند خرید و تکمیل اطلاعات پرداخت"
-        className="w-full bg-primary-300 hover:bg-primary-500 dark:bg-primary-400 dark:hover:bg-primary-500 text-white font-black py-4 px-6 rounded-2xl shadow-lg shadow-[var(--color-cta)]/25 flex items-center justify-center gap-2.5 transition-all active:scale-98 text-sm sm:text-base group"
+        className="w-full bg-primary-600 hover:bg-primary-700 dark:bg-primary-600 dark:hover:bg-primary-500 text-white font-black py-4 px-6 rounded-2xl shadow-lg shadow-[var(--color-cta)]/25 flex items-center justify-center gap-2.5 transition-all active:scale-98 text-sm sm:text-base group"
       >
         <span>تکمیل اطلاعات و پرداخت</span>
         <ArrowLeft className="h-5 w-5 group-hover:translate-x-[-3px] transition-transform" />

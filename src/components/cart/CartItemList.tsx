@@ -102,7 +102,7 @@ export default function CartItemList({
                   onClick={() => updateQuantity(item.id, item.quantity + 1)}
                   disabled={item.quantity >= MAX_CART_QUANTITY}
                   aria-label={`افزایش تعداد ${item.title}`}
-                  className="min-touch-target w-11 h-11 sm:w-10 sm:h-10 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center justify-center font-bold shadow-xs hover:bg-primary-400 hover:text-white transition-all disabled:opacity-30 active:scale-95"
+                  className="min-touch-target w-11 h-11 sm:w-10 sm:h-10 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center justify-center font-bold shadow-xs hover:bg-primary-600 hover:text-white transition-all disabled:opacity-30 active:scale-95"
                 >
                   <Plus className="h-4 w-4" />
                 </button>
@@ -113,7 +113,7 @@ export default function CartItemList({
                   onClick={() => updateQuantity(item.id, item.quantity - 1)}
                   disabled={item.quantity <= 1}
                   aria-label={`کاهش تعداد ${item.title}`}
-                  className="min-touch-target w-11 h-11 sm:w-10 sm:h-10 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center justify-center font-bold shadow-xs hover:bg-primary-400 hover:text-white transition-all disabled:opacity-30 active:scale-95"
+                  className="min-touch-target w-11 h-11 sm:w-10 sm:h-10 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center justify-center font-bold shadow-xs hover:bg-primary-600 hover:text-white transition-all disabled:opacity-30 active:scale-95"
                 >
                   <Minus className="h-4 w-4" />
                 </button>

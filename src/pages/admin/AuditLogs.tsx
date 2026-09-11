@@ -101,7 +101,7 @@ export default function AuditLogs() {
             placeholder="جستجو در عملیات، شناسه کاربر یا شناسه رکورد (صفحه جاری)..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl pr-10 pl-4 py-2.5 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500"
+            className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl pr-10 pl-4 py-2.5 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500"
           />
           <Search className="h-4 w-4 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2" />
         </div>
@@ -137,7 +137,7 @@ export default function AuditLogs() {
                       <td className="p-3.5 whitespace-nowrap text-gray-600 dark:text-gray-300">{faTime(log.createdAt)}</td>
                       <td className="p-3.5 font-bold text-[var(--color-text-main-light)] dark:text-white">
                         <span className="inline-flex items-center gap-1.5">
-                          <ScrollText className="h-3.5 w-3.5 text-orange-500" />
+                          <ScrollText className="h-3.5 w-3.5 text-primary-500" />
                           {actionLabel(log.action)}
                         </span>
                       </td>

@@ -107,7 +107,7 @@ export default function AdminReviews() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-[var(--color-text-main-light)] dark:text-white flex items-center gap-2">
-            <MessageSquare className="h-6 w-6 text-orange-500" />
+            <MessageSquare className="h-6 w-6 text-primary-500" />
             مدیریت نظرات کاربران
           </h1>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -127,7 +127,7 @@ export default function AdminReviews() {
             placeholder="جستجو در نظرات، نام کاربر یا کالا..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl py-2 px-3.5 pr-9 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500"
+            className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl py-2 px-3.5 pr-9 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500"
           />
           <Search className="h-4 w-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
         </div>
@@ -137,7 +137,7 @@ export default function AdminReviews() {
           <select
             value={ratingFilter}
             onChange={(e) => setRatingFilter(e.target.value)}
-            className="bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl py-2 px-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500"
+            className="bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl py-2 px-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500"
           >
             <option value="all">همه امتیازها</option>
             <option value="5">۵ ستاره (عالی)</option>

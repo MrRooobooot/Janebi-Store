@@ -385,7 +385,7 @@ export default function AdminProducts() {
         </div>
         <button
           onClick={() => openModal()}
-          className="flex items-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-extrabold px-5 py-3 rounded-2xl text-xs shadow-lg shadow-orange-500/25 transition-all cursor-pointer self-start sm:self-auto hover:scale-105 active:scale-95"
+          className="flex items-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-extrabold px-5 py-3 rounded-2xl text-xs shadow-lg shadow-primary-500/25 transition-all cursor-pointer self-start sm:self-auto hover:scale-105 active:scale-95"
         >
           <Plus className="h-4 w-4" />
           <span>افزودن محصول جدید</span>
@@ -400,7 +400,7 @@ export default function AdminProducts() {
             placeholder="جستجوی نام کالا، برند یا کد SKU..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl pr-10 pl-4 py-2.5 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500"
+            className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl pr-10 pl-4 py-2.5 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500"
           />
           <Search className="h-4 w-4 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2" />
         </div>
@@ -409,7 +409,7 @@ export default function AdminProducts() {
         <select
           value={categoryFilter}
           onChange={(e) => setCategoryFilter(e.target.value)}
-          className="w-full md:w-44 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl px-3 py-2.5 text-xs font-bold text-gray-700 dark:text-gray-300 focus:outline-none focus:border-orange-500 cursor-pointer"
+          className="w-full md:w-44 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl px-3 py-2.5 text-xs font-bold text-gray-700 dark:text-gray-300 focus:outline-none focus:border-primary-500 cursor-pointer"
         >
           <option value="all">همه دسته‌بندی‌ها</option>
           {categoriesList.map(cat => (
@@ -421,7 +421,7 @@ export default function AdminProducts() {
         <select
           value={stockFilter}
           onChange={(e) => setStockFilter(e.target.value)}
-          className="w-full md:w-44 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl px-3 py-2.5 text-xs font-bold text-gray-700 dark:text-gray-300 focus:outline-none focus:border-orange-500 cursor-pointer"
+          className="w-full md:w-44 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl px-3 py-2.5 text-xs font-bold text-gray-700 dark:text-gray-300 focus:outline-none focus:border-primary-500 cursor-pointer"
         >
           <option value="all">همه وضعیت‌های انبار</option>
           <option value="in_stock">موجود در انبار</option>
@@ -449,7 +449,7 @@ export default function AdminProducts() {
               {loading ? (
                 <tr>
                   <td colSpan={7} className="p-12 text-center text-gray-500">
-                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-orange-500 border-t-transparent mb-2" />
+                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary-600 border-t-transparent mb-2" />
                     <p className="font-bold">در حال بارگذاری لیست محصولات...</p>
                   </td>
                 </tr>
@@ -480,7 +480,7 @@ export default function AdminProducts() {
                           <div className="min-w-0">
                             <h4 className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] line-clamp-1 leading-snug">{p.title}</h4>
                             <div className="flex items-center gap-2 mt-1">
-                              <span className="inline-block px-2 py-0.5 rounded-md text-[10px] font-bold bg-orange-50 dark:bg-orange-950/40 text-[var(--color-emphasis-text)] border border-orange-200/50 dark:border-orange-800/40">
+                              <span className="inline-block px-2 py-0.5 rounded-md text-[10px] font-bold bg-primary-50 dark:bg-primary-950/40 text-primary-700 dark:text-primary-300 border border-primary-200/50 dark:border-primary-800/40">
                                 {p.category}
                               </span>
                               {(p as any).sku && (
@@ -525,7 +525,7 @@ export default function AdminProducts() {
                               if (e.key === 'Escape') setStockEditId(null);
                             }}
                             aria-label={`موجودی جدید برای ${p.title}`}
-                            className="w-20 bg-white dark:bg-gray-700 border-2 border-orange-500 rounded-xl px-2 py-1 text-xs font-mono font-black text-gray-800 dark:text-gray-100 focus:outline-none text-center"
+                            className="w-20 bg-white dark:bg-gray-700 border-2 border-primary-500 rounded-xl px-2 py-1 text-xs font-mono font-black text-gray-800 dark:text-gray-100 focus:outline-none text-center"
                           />
                         ) : (
                           <button
@@ -582,7 +582,7 @@ export default function AdminProducts() {
             {/* Modal Sticky Header */}
             <div className="p-5 border-b border-[var(--color-border-light)] dark:border-gray-700 flex items-center justify-between bg-[var(--color-surface-light)]/80 dark:bg-gray-800/80 backdrop-blur-md shrink-0">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-orange-100 dark:bg-orange-950/60 text-[var(--color-emphasis-text)]">
+                <div className="p-2 rounded-xl bg-primary-100 dark:bg-primary-950/60 text-primary-700 dark:text-primary-300">
                   <Package className="h-5 w-5" />
                 </div>
                 <div>
@@ -614,7 +614,7 @@ export default function AdminProducts() {
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   placeholder="مثال: هندزفری بی‌سیم سامسونگ Galaxy Buds2 Pro"
-                  className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                  className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20"
                 />
               </div>
 
@@ -630,7 +630,7 @@ export default function AdminProducts() {
                   <select
                     value={formData.category}
                     onChange={(e) => handleCategoryChange(e.target.value)}
-                    className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500 cursor-pointer"
+                    className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500 cursor-pointer"
                   >
                     <option value="هولدر و پایه">هولدر و پایه</option>
                     <option value="قاب و کاور">قاب و کاور</option>
@@ -653,14 +653,14 @@ export default function AdminProducts() {
                     value={formData.brand}
                     onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
                     placeholder="مثال: Samsung, Apple, Anker, Xiaomi"
-                    className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500"
+                    className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500"
                   />
                 </div>
               </div>
 
               {/* Price Calculation Hub */}
-              <div className="bg-orange-50/50 dark:bg-orange-950/20 p-4 rounded-2xl border border-orange-200/60 dark:border-orange-800/40 space-y-4">
-                <div className="flex items-center gap-2 text-orange-800 dark:text-orange-300 font-black">
+              <div className="bg-primary-50/50 dark:bg-primary-950/20 p-4 rounded-2xl border border-primary-200/60 dark:border-primary-800/40 space-y-4">
+                <div className="flex items-center gap-2 text-primary-800 dark:text-primary-300 font-black">
                   <Calculator className="h-4 w-4 text-[var(--color-emphasis-text)]" />
                   <span>محاسبه هوشمند قیمت و تخفیف کالا</span>
                 </div>
@@ -673,7 +673,7 @@ export default function AdminProducts() {
                       value={formData.originalPrice ? formatPrice(parseInt(toEnglishDigits(formData.originalPrice), 10) || 0) : ''}
                       onChange={(e) => handleOriginalPriceChange(e.target.value)}
                       placeholder="مثال: ۱,۲۰۰,۰۰۰"
-                      className="w-full bg-[var(--color-surface-light)] dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl p-2.5 text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-white focus:outline-none focus:border-orange-500"
+                      className="w-full bg-[var(--color-surface-light)] dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl p-2.5 text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-white focus:outline-none focus:border-primary-500"
                     />
                   </div>
 
@@ -685,7 +685,7 @@ export default function AdminProducts() {
                       value={formData.discount}
                       onChange={(e) => handleDiscountChange(e.target.value)}
                       placeholder="۰"
-                      className="w-full bg-[var(--color-surface-light)] dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl p-2.5 text-xs font-mono font-bold text-rose-600 dark:text-rose-400 focus:outline-none focus:border-orange-500"
+                      className="w-full bg-[var(--color-surface-light)] dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl p-2.5 text-xs font-mono font-bold text-rose-600 dark:text-rose-400 focus:outline-none focus:border-primary-500"
                     />
                   </div>
 
@@ -697,7 +697,7 @@ export default function AdminProducts() {
                       value={formData.price ? formatPrice(parseInt(toEnglishDigits(formData.price), 10) || 0) : ''}
                       onChange={(e) => handlePriceChange(e.target.value)}
                       placeholder="مثال: ۹۸۰,۰۰۰"
-                      className="w-full bg-[var(--color-surface-light)] dark:bg-gray-800 border border-orange-300 dark:border-orange-500 rounded-xl p-2.5 text-xs font-mono font-black text-[var(--color-emphasis-text)] focus:outline-none focus:border-orange-500"
+                      className="w-full bg-[var(--color-surface-light)] dark:bg-gray-800 border border-primary-300 dark:border-primary-500 rounded-xl p-2.5 text-xs font-mono font-black text-[var(--color-emphasis-text)] focus:outline-none focus:border-primary-500"
                     />
                   </div>
                 </div>
@@ -715,7 +715,7 @@ export default function AdminProducts() {
                     required
                     value={formData.stockQuantity}
                     onChange={(e) => setFormData({ ...formData, stockQuantity: toEnglishDigits(e.target.value).replace(/[^0-9]/g, '') })}
-                    className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500"
+                    className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500"
                   />
                 </div>
                 <div>
@@ -725,7 +725,7 @@ export default function AdminProducts() {
                     value={formData.warranty}
                     onChange={(e) => setFormData({ ...formData, warranty: e.target.value })}
                     placeholder="مثال: ۱۸ ماهه ایستا / ۷ روز مهلت تست"
-                    className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500"
+                    className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500"
                   />
                 </div>
               </div>
@@ -789,16 +789,16 @@ export default function AdminProducts() {
                         onClick={() => setFormData({ ...formData, image: item.url })}
                         className={`flex w-full items-center gap-2.5 p-2 rounded-xl cursor-pointer transition-all border text-right ${
                           isSelected 
-                            ? 'bg-[var(--color-cta)] text-white border-orange-600 shadow-md scale-102' 
+                            ? 'bg-[var(--color-cta)] text-white border-primary-600 shadow-md scale-102' 
                             : isCategoryMatch
-                              ? 'bg-orange-50/70 dark:bg-orange-950/20 text-gray-800 dark:text-[var(--color-text-main-dark)] border-orange-200 dark:border-orange-800 hover:border-orange-400'
+                              ? 'bg-primary-50/70 dark:bg-primary-950/20 text-gray-800 dark:text-[var(--color-text-main-dark)] border-primary-200 dark:border-primary-800 hover:border-primary-400'
                               : 'bg-[var(--color-surface-light)] dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-gray-200 dark:border-gray-700 hover:border-gray-400'
                         }`}
                       >
                         <img src={item.url} alt={item.label} width="36" height="36" loading="lazy" decoding="async" className="w-9 h-9 rounded-lg object-contain bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] p-0.5 shrink-0 shadow-xs" />
                         <div className="min-w-0">
                           <span className="text-[11px] font-black truncate block leading-tight">{item.label}</span>
-                          <span className={`text-[9px] block ${isSelected ? 'text-orange-100' : 'text-gray-400'}`}>{item.category}</span>
+                          <span className={`text-[9px] block ${isSelected ? 'text-primary-100' : 'text-gray-400'}`}>{item.category}</span>
                         </div>
                       </button>
                     );
@@ -814,7 +814,7 @@ export default function AdminProducts() {
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder="توضیحات تکمیلی محصول..."
-                  className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500 leading-relaxed"
+                  className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500 leading-relaxed"
                 />
               </div>
             </form>
@@ -831,7 +831,7 @@ export default function AdminProducts() {
               <button
                 type="submit"
                 form="product-form"
-                className="px-6 py-2.5 rounded-2xl text-xs font-black bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white shadow-md shadow-orange-500/25 transition-all cursor-pointer hover:scale-102 active:scale-95"
+                className="px-6 py-2.5 rounded-2xl text-xs font-black bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white shadow-md shadow-primary-500/25 transition-all cursor-pointer hover:scale-102 active:scale-95"
               >
                 {editingProduct ? 'ذخیره تغییرات محصول' : 'ثبت و انتشار محصول'}
               </button>

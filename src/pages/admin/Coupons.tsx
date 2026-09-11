@@ -193,7 +193,7 @@ export default function AdminCoupons() {
 
         <button
           onClick={() => openCreateModal()}
-          className="flex items-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-extrabold px-5 py-3 rounded-2xl text-xs shadow-lg shadow-orange-500/25 transition-all cursor-pointer self-start sm:self-auto hover:scale-105 active:scale-95"
+          className="flex items-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-extrabold px-5 py-3 rounded-2xl text-xs shadow-lg shadow-primary-500/25 transition-all cursor-pointer self-start sm:self-auto hover:scale-105 active:scale-95"
         >
           <Plus className="h-4 w-4" />
           <span>افزودن کد تخفیف جدید</span>
@@ -248,7 +248,7 @@ export default function AdminCoupons() {
                 <button
                   type="button"
                   onClick={() => handleCopyCode(coupon.code)}
-                  className="p-3.5 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-800 hover:bg-orange-50 text-gray-600 hover:text-[var(--color-emphasis-text)] border border-gray-200 dark:border-gray-700 transition-all cursor-pointer shadow-xs"
+                  className="p-3.5 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-800 hover:bg-primary-50 text-gray-600 hover:text-[var(--color-emphasis-text)] border border-gray-200 dark:border-gray-700 transition-all cursor-pointer shadow-xs"
                   title="کپی کردن کد"
                   aria-label={`کپی کد تخفیف ${coupon.code}`}
                 >
@@ -321,7 +321,7 @@ export default function AdminCoupons() {
           <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-[var(--color-border-light)] dark:border-gray-700 text-right animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-gray-700 mb-5">
               <h3 className="font-black text-[var(--color-text-main-light)] dark:text-white text-base flex items-center gap-2">
-                <Tag className="h-5 w-5 text-orange-500" />
+                <Tag className="h-5 w-5 text-primary-500" />
                 <span>{editingCode ? `ویرایش کد ${editingCode}` : 'تعریف کد تخفیف جدید'}</span>
               </h3>
               <button onClick={() => setIsModalOpen(false)} aria-label="بستن پنجره کد تخفیف" className="p-3 -m-1 flex items-center justify-center rounded-xl text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
@@ -341,7 +341,7 @@ export default function AdminCoupons() {
                   value={formData.code}
                   onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
                   placeholder="مثال: OFF20 یا JANEBI100"
-                  className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 font-mono font-black text-sm text-[var(--color-emphasis-text)] focus:outline-none focus:border-orange-500 text-left dir-ltr"
+                  className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 font-mono font-black text-sm text-[var(--color-emphasis-text)] focus:outline-none focus:border-primary-500 text-left dir-ltr"
                 />
               </div>
 
@@ -351,7 +351,7 @@ export default function AdminCoupons() {
                   <select
                     value={formData.type}
                     onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                    className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500 cursor-pointer"
+                    className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500 cursor-pointer"
                   >
                     <option value="percent">درصدی (٪)</option>
                     <option value="amount">مبلغ ثابت (تومان)</option>
@@ -369,7 +369,7 @@ export default function AdminCoupons() {
                     value={formData.value}
                     onChange={(e) => setFormData({ ...formData, value: toEnglishDigits(e.target.value).replace(/[^0-9]/g, '') })}
                     placeholder={formData.type === 'percent' ? '20' : '100000'}
-                    className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs font-mono font-bold text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500 text-left dir-ltr"
+                    className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs font-mono font-bold text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500 text-left dir-ltr"
                   />
                 </div>
               </div>
@@ -381,7 +381,7 @@ export default function AdminCoupons() {
                   value={formData.minTotal}
                   onChange={(e) => setFormData({ ...formData, minTotal: e.target.value })}
                   placeholder="500000 (اختیاری)"
-                  className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs font-mono text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500 text-left dir-ltr"
+                  className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs font-mono text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500 text-left dir-ltr"
                 />
                 {formData.minTotal ? (
                   <span className="text-[10px] text-gray-500 dark:text-gray-400 mt-1 block">
@@ -397,7 +397,7 @@ export default function AdminCoupons() {
                   value={formData.label}
                   onChange={(e) => setFormData({ ...formData, label: e.target.value })}
                   placeholder="مثال: ۲۰٪ تخفیف ویژه خرید بالای ۵۰۰ هزار تومان"
-                  className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500"
+                  className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500"
                 />
               </div>
 
@@ -408,7 +408,7 @@ export default function AdminCoupons() {
                     type="date"
                     value={formData.expiresAt}
                     onChange={(e) => setFormData({ ...formData, expiresAt: e.target.value })}
-                    className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500"
+                    className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500"
                   />
                   <span className="text-[10px] text-gray-500 dark:text-gray-400 mt-1 block">خالی = بدون انقضا</span>
                 </div>
@@ -419,7 +419,7 @@ export default function AdminCoupons() {
                     value={formData.usageLimit}
                     onChange={(e) => setFormData({ ...formData, usageLimit: toEnglishDigits(e.target.value).replace(/[^0-9]/g, '') })}
                     placeholder="مثال: 100"
-                    className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs font-mono text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500 text-left dir-ltr"
+                    className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs font-mono text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500 text-left dir-ltr"
                   />
                   <span className="text-[10px] text-gray-500 dark:text-gray-400 mt-1 block">خالی = نامحدود</span>
                 </div>
@@ -435,7 +435,7 @@ export default function AdminCoupons() {
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-extrabold shadow-md shadow-orange-500/20"
+                  className="px-6 py-2.5 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-extrabold shadow-md shadow-primary-500/20"
                 >
                   {editingCode ? 'ذخیره تغییرات' : 'ایجاد کد تخفیف'}
                 </button>

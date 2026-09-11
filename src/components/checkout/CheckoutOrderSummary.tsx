@@ -98,7 +98,7 @@ export default function CheckoutOrderSummary({
 
         <div className="border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pt-4 flex justify-between items-center text-sm">
           <span className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">مبلغ نهایی فاکتور:</span>
-          <div className="font-black text-2xl text-primary-400 dark:text-primary-300 tracking-tight">
+          <div className="font-black text-2xl text-primary-600 dark:text-primary-400 tracking-tight">
             {formatPrice(finalPayable)}
           </div>
         </div>
@@ -109,7 +109,7 @@ export default function CheckoutOrderSummary({
         type="submit"
         disabled={submitting}
         aria-label="ثبت نهایی سفارش و انتقال به درگاه پرداخت امن"
-        className="w-full bg-primary-300 hover:bg-primary-500 dark:bg-primary-400 dark:hover:bg-primary-500 text-white font-black py-4 px-6 rounded-2xl shadow-lg shadow-[var(--color-cta)]/25 flex items-center justify-center gap-2.5 transition-all active:scale-98 text-sm sm:text-base disabled:opacity-50 group"
+        className="w-full bg-primary-600 hover:bg-primary-700 dark:bg-primary-600 dark:hover:bg-primary-500 text-white font-black py-4 px-6 rounded-2xl shadow-lg shadow-[var(--color-cta)]/25 flex items-center justify-center gap-2.5 transition-all active:scale-98 text-sm sm:text-base disabled:opacity-50 group"
       >
         {submitting ? (
           <div className="flex items-center gap-2">
