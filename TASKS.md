@@ -2,6 +2,16 @@
 
 ## Status: Completed (Aug 28, 2026)
 
+### Round 2026-09-14a — Blog/Offers Hand-Audit (design-guardian cron, SHIPPED, live)
+
+- [x] `design-audit.mjs` 8/8 FAIL با ورود: `err:4` در هر ۸ کمبو = ۴×404 `/images/test.jpg`. ریشه: residue تستی DB (کالای «کالای تست اینواریانت موجودی» id=23568، برند تستی، عکس ناموجود) — هم‌کلاس پاک‌سازی 23535 قبلی. حذف FK-safe (cart/wishlist/reviews/order_items) با `VACUUM INTO` بکاپ اول (`/tmp/janebi-pre-purge-23568.db`). پس از پاک‌سازی: **8/8 PASS**.
+- [x] چرخش hand-audit این راند: `/blog` + `/offers` (لایت+دارک، هر دو موتور). ۲ یافته واقعی:
+  1. **تیتر کارت مقاله بریده**: `h-10 sm:h-11` (40/44px) < `leading-7`×2 خط = 56px → خط دوم فارسی نصفه. فیکس: `h-14` (56px). ProductCard هم‌کلاس: `sm:h-11`(44px) < text-sm leading-relaxed×2 (45.5px) → `sm:h-12`.
+  2. **پیل hero کم‌کنتراست (ریشه‌ای, ۸ سایت)**: `bg-[var(--color-surface-light)]/20` (سفید 20%) روی گرادیان رز، متن سفید ~3.2:1 (فیل AA در 12px bold). فیکس ریشه‌ای با الگوی اثبات‌شده همان بنر (چیپ شمارشمعکوس `bg-black/30` = 9/10): همه ۸ سایت → `bg-black/25` (≥7:1). سایت‌ها: Blog, Offers, NewProducts, FAQPage, About, VipClubBanner (پیل+کارت موفقیت), VipClubTab, OrderHistoryTab (شمارنده تب فعال).
+- [x] گیت: tsc پاک، `design-audit` **8/8 PASS**، `npm run verify` ALL PASS، jsxDEV=0، `/Users/`=0. دیپلوی OK (health ok). بایت‌پریتی: `index-E30dQEMe.js` + chunk `Blog-DBnaOagz.js` sha256==محلی، `h-14` و `bg-black/25` در باندل سرو‌شده تأیید. DB پرود هم residue-free (purge found:[] = پاک).
+- [x] بهداشت ریپو: commit 9c7d131 با `add -A` سه فایل سرگردان را کش رفته بود (migration-assets/، .hermes/team/، probe scripts) → untrack در 5370044 + gitignore.
+- Next: چرخش بعدی → /brands + /cart.
+
 ### Round 2026-09-11d — Dark/Light Contrast Root-Fix (GOAL-09013, SHIPPED, live)
 
 - [x] ریشه تضاد رنگ روز/شم (۴ اسکرین‌شات دیباگ شد): شیم‌های GOAL-09012 فقط سمت LIGHT را میت داشتند — در `.dark` کلاس‌های slate/gray خام به پالت تیلویند می‌رفتند و عناصر «جاافتاده در تم روشن» می‌ساختند: متن سرمه‌ای روی کارت سرمه‌ای، tile های سفید خالص، پیل برند سفید، متن hero/بنر عمده/کارت‌های value-prop.
