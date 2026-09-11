@@ -15,6 +15,19 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const { cart, removeFromCart, updateQuantity, cartTotal, cartCount } = useCart();
   const navigate = useNavigate();
   const drawerRef = useRef<HTMLDivElement>(null);
+  // R2-11: focus management — focus the dialog on open, restore focus on close.
+  const previouslyFocused = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      previouslyFocused.current = document.activeElement as HTMLElement | null;
+      // Defer one frame so the drawer panel exists before receiving focus.
+      requestAnimationFrame(() => drawerRef.current?.focus());
+      return () => {
+        previouslyFocused.current?.focus?.();
+      };
+    }
+  }, [isOpen]);
 
   // Keyboard accessibility: Close on Escape key
   useEffect(() => {
@@ -62,11 +75,12 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
           <div className="fixed inset-y-0 left-0 max-w-full flex pl-0 sm:pl-10">
             <motion.div
               ref={drawerRef}
+              tabIndex={-1}
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-              className="w-screen max-w-md bg-[var(--color-surface-light)] dark:bg-[#0c1017] text-zinc-900 dark:text-zinc-100 shadow-2xl border-r border-zinc-200/80 dark:border-zinc-800 flex flex-col justify-between"
+              className="w-screen max-w-md bg-[var(--color-surface-light)] dark:bg-[#0c1017] text-zinc-900 dark:text-zinc-100 shadow-2xl border-r border-zinc-200/80 dark:border-zinc-800 flex flex-col justify-between outline-none"
             >
               {/* Drawer Header */}
               <div className="p-4 sm:p-5 border-b border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between">

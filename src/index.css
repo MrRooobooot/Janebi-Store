@@ -30,7 +30,8 @@
   --font-sans: "Vazirmatn", system-ui, -apple-system, sans-serif;
   
   /* ── Core Brand Palette (Kinetic Commerce — DESIGN.md Harmony) ──
-     primary-container #F47C20 = CTA fills (white text 2.7:1, large/bold only)
+     CTA fills = --color-cta #c2410c (white text 4.68:1, WCAG AA)
+     #F47C20 = secondary emphasis fills / decorative gradients only
      tertiary #EA580C = price text / active states (3.56:1 on white, AA large)
      action-hover #D94E06 = hover shifts (4.16:1)
      primary #994700 = focus rings / small emphasis (6.12:1)                */
