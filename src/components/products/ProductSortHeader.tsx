@@ -65,7 +65,11 @@ export default function ProductSortHeader({
         </button>
 
         <div className="text-xs font-bold text-gray-600 dark:text-gray-400">
-          نمایش <span className="text-[var(--color-emphasis-text)] font-black">{toPersianDigits(filteredCount)}</span> محصول از {toPersianDigits(totalCount)}
+          {filteredCount === totalCount ? (
+            <span>مجموعاً <span className="text-[var(--color-emphasis-text)] font-black">{toPersianDigits(totalCount)}</span> کالا</span>
+          ) : (
+            <span>نمایش <span className="text-[var(--color-emphasis-text)] font-black">{toPersianDigits(filteredCount)}</span> از {toPersianDigits(totalCount)} کالا</span>
+          )}
         </div>
       </div>
 

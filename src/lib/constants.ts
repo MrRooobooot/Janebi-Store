@@ -32,7 +32,7 @@ export const STORE_SETTINGS_DEFAULTS: Record<string, string> = {
   storeName: 'جانبی آرنا',
   phone: '۰۲۱-۸۸۸۸۹۹۹۹',
   email: 'info@janebi-arena.ir',
-  supportHours: 'همه‌روزه از ساعت ۹:۰۰ الی ۲۱:۰۰',
+  supportHours: 'همه روزه از ساعت ۹:۰۰ الی ۲۱:۰۰',
   address: 'تهران، خیابان ولیعصر، تقاطع طالقانی، مجتمع نور، طبقه ۲، واحد ۱۰۴',
   freeShippingThreshold: '2000000',
   announcement: 'ارسال رایگان برای تمامی سفارش‌های بالای ۲ میلیون تومان | کد تخفیف: WELCOME10',

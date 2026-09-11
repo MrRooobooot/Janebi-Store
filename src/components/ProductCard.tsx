@@ -43,18 +43,18 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
       
       {/* 1. Header Badges & Quick Action Floating Buttons */}
       <div>
-        <div className="flex items-center justify-between gap-2 mb-3 relative z-10">
-          <div>
+        <div className="flex items-start justify-between gap-2 mb-3 relative z-10">
+          <div className="min-w-0 max-w-[60%]">
             {outOfStock ? (
-              <span className="bg-zinc-100 dark:bg-zinc-800/80 text-zinc-500 dark:text-zinc-400 text-[10px] font-black px-2.5 py-1 rounded-full border border-zinc-200 dark:border-zinc-700">
+              <span className="bg-zinc-100 dark:bg-zinc-800/80 text-zinc-500 dark:text-zinc-400 text-[10px] font-black px-2.5 py-1 rounded-full border border-zinc-200 dark:border-zinc-700 inline-block">
                 ناموجود
               </span>
             ) : product.discount && product.discount > 0 ? (
-              <span className="bg-primary-600 text-white text-[11px] font-black px-2.5 py-0.5 rounded-full shadow-xs">
+              <span className="bg-primary-600 text-white text-[11px] font-black px-2.5 py-0.5 rounded-full shadow-xs inline-block">
                 {toPersianDigits(product.discount)}٪ تخفیف
               </span>
             ) : (
-              <span className="text-[10px] font-bold text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-white/[0.04] px-2.5 py-0.5 rounded-lg border border-zinc-200/60 dark:border-white/[0.06]">
+              <span className="text-[10px] font-bold text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-white/[0.04] px-2.5 py-0.5 rounded-lg border border-zinc-200/60 dark:border-white/[0.06] inline-block whitespace-nowrap overflow-hidden text-ellipsis max-w-full align-top">
                 {product.brand || 'اورجینال'}
               </span>
             )}
@@ -114,10 +114,16 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
             )}
           </div>
 
-          {/* 3. Category & Rating Strip — value-colored stars per Digikala DDS convention
-                 (low rating ۰–۲ amber #f9bc00 → high ۴–۵ green #00a049) */}
-          <div className="flex items-center justify-between text-[11px] text-zinc-400 mb-1.5 px-0.5">
-            <span className="font-semibold text-[var(--color-emphasis-text)]/90">{product.category}</span>
+          {/* Header Badge */}
+          <div className="flex items-center justify-between gap-2 mb-1.5 px-0.5">
+            <span className="font-bold text-[11px] text-[var(--color-emphasis-text)] truncate max-w-[70%]">
+              {product.category}
+            </span>
+            {!product.rating && (
+              <span className="text-[10px] font-bold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/40 px-1.5 py-0.5 rounded-md">
+                جدید
+              </span>
+            )}
             {product.rating ? (
               <div
                 className={`flex items-center gap-1 font-bold ${
@@ -142,9 +148,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
                   {product.reviewsCount ? ` (${toPersianDigits(product.reviewsCount)})` : ''}
                 </span>
               </div>
-            ) : (
-              <span>جدید</span>
-            )}
+            ) : null}
           </div>
 
           {/* 4. Product Title */}
@@ -159,13 +163,13 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
         <div className="flex items-end justify-between gap-2">
           
           {/* Price Stack */}
-          <div className="flex flex-col text-right">
+          <div className="flex flex-col text-right shrink-0 min-w-0">
             {product.originalPrice && product.originalPrice > product.price && (
-              <span className="text-[11px] text-zinc-400 dark:text-zinc-500 line-through">
+              <span className="text-[11px] text-zinc-400 dark:text-zinc-500 line-through truncate">
                 {formatPrice(product.originalPrice)}
               </span>
             )}
-            <div className="text-sm sm:text-base font-black text-[var(--color-emphasis-text)] font-mono tracking-tight">
+            <div className="text-xs sm:text-sm font-black text-[var(--color-emphasis-text)] font-mono tracking-tight whitespace-nowrap">
               {formatPrice(product.price)}
             </div>
           </div>

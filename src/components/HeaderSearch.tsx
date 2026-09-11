@@ -234,7 +234,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
             }}
             onFocus={() => setIsOpen(true)}
             onKeyDown={handleKeyDown}
-            placeholder="جست‌وجوی محصول، برند یا مدل گوشی..."
+            placeholder="جست‌وجوی محصول، برند یا مدل..."
             className="w-full bg-gray-100 dark:bg-gray-800/80 border border-gray-200/80 dark:border-gray-700/60 text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-xs sm:text-sm rounded-2xl pl-16 pr-11 py-3 focus:outline-none focus:bg-[var(--color-surface-light)] dark:focus:bg-gray-900 focus:border-[var(--color-cta)]/30 focus:ring-4 focus:ring-[var(--color-cta)]/10 transition-all duration-200 shadow-inner dark:shadow-none placeholder-gray-400 dark:placeholder-gray-500"
           />
 

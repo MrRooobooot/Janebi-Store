@@ -74,7 +74,7 @@ export default function Header() {
     { label: 'تمام محصولات', to: '/products' },
     // DB-driven: top-6 categories with real product counts (admin-manageable via /api/categories)
     ...navCategories.map((c) => ({ label: c.title, to: `/products?category=${encodeURIComponent(c.title)}` })),
-    { label: 'خرید عمده و همکاران', to: '/contact?type=wholesale', highlight: true },
+    { label: 'خرید عمده و همکاران', to: '/contact?type=wholesale' },
   ];
 
   return (
