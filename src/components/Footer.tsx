@@ -135,7 +135,7 @@ export default function Footer() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="آدرس ایمیل شما..." 
-                className="grow bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-r-2xl px-4 py-3 focus:outline-none focus:border-[var(--color-cta)] text-left dir-ltr text-xs text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
+                className="grow min-w-0 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-r-2xl px-4 py-3 focus:outline-none focus:border-[var(--color-cta)] text-left dir-ltr text-xs text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
                 required
               />
               <button 

@@ -319,6 +319,15 @@ const emailSchema = z.preprocess(
   z.string().email('لطفا یک آدرس ایمیل معتبر وارد کنید')
 );
 
+// Contact email field accepts EITHER a real email OR an Iranian mobile number:
+// the storefront «شماره تماس یا ایمیل» field sends the same value in both
+// `email` and `phone` (src/pages/static/Contact.tsx). A bare mobile must not
+// fail Zod's email format check — normalize it into `phone` before validation.
+// Iranian mobile pattern — a mobile may be supplied in the contact `email`
+// field (UI sends «شماره تماس یا ایمیل» in both email and phone).
+const MOBILE_RE = /^(?:\+98|0098|98|0)?9\d{9}$/;
+export const isIranianMobile = (v: string) => MOBILE_RE.test(toEnglishDigits(v).trim());
+
 // Required-field presence (name/email/message) is checked in the handler so the
 // response keeps the legacy flat shape `{ error: "…الزامی است" }` that the
 // storefront client renders directly. Zod here enforces shape/format (email
@@ -326,7 +335,10 @@ const emailSchema = z.preprocess(
 export const contactSchema = z.object({
   body: z.object({
     name: z.string().max(200).optional(),
-    email: emailSchema.optional(),
+    // Mobile supplied in the email field is stripped here (passes validation)
+    // and recovered by the handler from the raw body — contact info still lands
+    // in the `phone` column.
+    email: z.preprocess((v) => (typeof v === 'string' && isIranianMobile(v) ? undefined : v), emailSchema.optional()),
     phone: z.string().max(20).optional().or(z.literal('')),
     subject: z.string().max(300).optional().or(z.literal('')),
     message: z.string().max(5000).optional(),

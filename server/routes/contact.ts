@@ -6,7 +6,7 @@ import { toEnglishDigits } from "../../src/lib/utils.js";
 import { ARCHIVE_AFTER_DAYS } from "../../src/lib/constants.js";
 import { storeEvents } from "../services/events.js";
 import { validate } from "../middleware/validate.js";
-import { contactSchema, newsletterSchema } from "../validators/index.js";
+import { contactSchema, newsletterSchema, isIranianMobile } from "../validators/index.js";
 
 const router = Router();
 
@@ -36,10 +36,18 @@ setInterval(async () => {
 
 
 router.post("/", validate(contactSchema), async (req, res) => {
-  const { name, email, phone, subject, message } = req.body;
+  const { name, phone, subject, message } = req.body;
+
+  // The UI field «شماره تماس یا ایمیل» may carry a mobile in `email`; the Zod
+  // layer strips a mobile-shaped value, so recover it from the raw body and
+  // file it under phone — the stored row stays truthful.
+  const rawEmail = typeof (req.body as Record<string, unknown>).email === "string" ? String((req.body as Record<string, unknown>).email) : "";
+  const emailStr = isIranianMobile(rawEmail) ? "" : rawEmail;
+  const phoneStr = (phone && String(phone)) || (isIranianMobile(rawEmail) ? rawEmail : "");
 
   // Legacy flat error shape (string) — the storefront client renders it directly.
-  if (!name || !email || !message) {
+  // A mobile in the `email` field counts as provided contact info (moved to phone).
+  if (!name || !message || (!emailStr && !phoneStr)) {
     return res.status(400).json({ error: "نام، ایمیل و پیام الزامی است" });
   }
 
@@ -48,8 +56,8 @@ router.post("/", validate(contactSchema), async (req, res) => {
     await db.insert(contactMessages).values({
       id: msgId,
       name: String(name).slice(0, 200),
-      email: String(email).slice(0, 320),
-      phone: phone ? String(phone).slice(0, 20) : null,
+      email: String(emailStr).slice(0, 320),
+      phone: phoneStr ? String(phoneStr).slice(0, 20) : null,
       subject: subject ? String(subject).slice(0, 300) : null,
       message: String(message).slice(0, 5000),
       status: "unread",
@@ -59,8 +67,8 @@ router.post("/", validate(contactSchema), async (req, res) => {
     storeEvents.emit('contact:created', {
       messageId: msgId,
       name: String(name).slice(0, 200),
-      phone: phone ? String(phone).slice(0, 20) : null,
-      email: String(email).slice(0, 320),
+      phone: phoneStr ? String(phoneStr).slice(0, 20) : null,
+      email: String(emailStr).slice(0, 320),
       subject: subject ? String(subject).slice(0, 300) : null,
       message: String(message).slice(0, 5000),
     });
@@ -71,7 +79,7 @@ router.post("/", validate(contactSchema), async (req, res) => {
   }
 
   // Mask sensitive PII in server logs
-  const maskedEmail = typeof email === "string" ? email.replace(/^(.{2})(.*)(@.*)$/, "$1***$3") : "";
+  const maskedEmail = emailStr.replace(/^(.{2})(.*)(@.*)$/, "$1***$3");
   const maskedPhone = typeof phone === "string" && phone.length > 4 ? phone.slice(0, 4) + "****" + phone.slice(-2) : "";
 
   console.log("Received contact message from:", { email: maskedEmail, phone: maskedPhone, subject });

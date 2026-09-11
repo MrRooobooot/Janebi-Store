@@ -475,7 +475,7 @@ test.describe('Checkout — end to end', () => {
 
     await expect(page.getByText(/با موفقیت ثبت شد/)).toBeVisible({ timeout: 20000 });
     await expect(page).toHaveURL(/profile/, { timeout: 12000 });
-    await expect(page.locator('main').getByText(/سفارش/).first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main').getByText(/سفارش/).locator('visible=true').first()).toBeVisible({ timeout: 10000 });
     await assertNoErrors(errors);
   });
 
@@ -540,12 +540,12 @@ test.describe('Profile — tabs & orders', () => {
     await page.goto('/profile');
     await expect(page.getByText(/پروفایل تست/).first()).toBeVisible({ timeout: 10000 });
 
-    const ordersTab = page.locator('a,button').filter({ hasText: /سفارش/ }).first();
+    const ordersTab = page.locator('a,button').filter({ hasText: /سفارش/ }).locator('visible=true').first();
     await expect(ordersTab).toBeVisible();
     await ordersTab.click();
     await page.waitForTimeout(800);
 
-    const addrTab = page.locator('a,button').filter({ hasText: /آدرس/ }).first();
+    const addrTab = page.locator('a,button').filter({ hasText: /آدرس/ }).locator('visible=true').first();
     if (await addrTab.count()) {
       await addrTab.click();
       await page.waitForTimeout(600);
