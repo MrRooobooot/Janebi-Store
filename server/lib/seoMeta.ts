@@ -135,7 +135,14 @@ export async function routeMetaForRequest(pathname: string, query: URLSearchPara
   if (pathname === "/products" || pathname === "/products/") {
     const cat = query.get("category");
     if (cat) return routeMetaForCategory(cat);
-    return null;
+    // SEO: the /products hub must not inherit the homepage shell canonical (r47 gap).
+    return {
+      title: "خرید لوازم جانبی موبایل | جانبی آرنا",
+      description:
+        "لیست کامل محصولات جانبی آرنا: شارژر، پاوربانک، هندزفری، کابل و لوازم جانبی موبایل با قیمت روز و ارسال سریع.",
+      ogType: "website",
+      ogUrl: "https://janebiarena.ir/products",
+    };
   }
   return routeMetaFor(pathname);
 }
