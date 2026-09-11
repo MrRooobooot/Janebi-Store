@@ -53,7 +53,7 @@ export default function ProductSortHeader({
       <div className="flex items-center justify-between sm:justify-start gap-4">
         <button
           onClick={() => setMobileFilterOpen(true)}
-          className="lg:hidden flex items-center gap-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 px-4 py-2.5 rounded-2xl text-xs font-bold text-gray-800 dark:text-gray-200 transition-colors"
+          className="lg:hidden flex items-center gap-2 bg-slate-100 dark:bg-white/[0.06] hover:bg-slate-200 dark:hover:bg-white/[0.1] px-4 py-2.5 rounded-xl text-xs font-bold text-slate-800 dark:text-slate-200 transition-colors cursor-pointer"
         >
           <SlidersHorizontal className="h-4 w-4 text-[var(--color-emphasis-text)]" />
           <span>فیلترها</span>
@@ -64,7 +64,7 @@ export default function ProductSortHeader({
           )}
         </button>
 
-        <div className="text-xs font-bold text-gray-600 dark:text-gray-400">
+        <div className="text-xs font-bold text-slate-600 dark:text-slate-400">
           {filteredCount === totalCount ? (
             <span>مجموعاً <span className="text-[var(--color-emphasis-text)] font-black">{toPersianDigits(totalCount)}</span> کالا</span>
           ) : (
@@ -75,14 +75,14 @@ export default function ProductSortHeader({
 
       {/* Sorting Dropdown */}
       <div className="flex items-center gap-2 self-end sm:self-auto w-full sm:w-auto">
-        <span className="text-xs font-bold text-gray-600 dark:text-gray-400 whitespace-nowrap hidden sm:inline">
+        <span className="text-xs font-bold text-slate-600 dark:text-slate-400 whitespace-nowrap hidden sm:inline">
           مرتب‌سازی:
         </span>
         <div className="relative w-full sm:w-48">
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="w-full appearance-none bg-gray-50 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700/80 rounded-2xl py-2.5 px-4 pr-3 pl-9 text-xs font-bold text-gray-800 dark:text-gray-200 focus:outline-none focus:border-[var(--color-cta)]/30 transition-all cursor-pointer"
+            className="w-full appearance-none bg-white dark:bg-[#0e1629] border border-slate-200/90 dark:border-white/[0.08] rounded-xl py-2.5 px-4 pr-3 pl-9 text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-cta)]/50 transition-all cursor-pointer shadow-xs"
           >
             <option value="default">پیش‌فرض (محبوب‌ترین)</option>
             <option value="price-asc">ارزان‌ترین</option>
@@ -91,7 +91,7 @@ export default function ProductSortHeader({
             <option value="rating-desc">بالاترین امتیاز</option>
             <option value="reviews-desc">بیشترین نظرات</option>
           </select>
-          <ChevronDown className="h-4 w-4 text-gray-500 dark:text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <ChevronDown className="h-4 w-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
         </div>
       </div>
     </div>

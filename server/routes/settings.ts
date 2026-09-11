@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { db } from '../db/index.js';
 import { storeSettings } from '../db/schema.js';
-import { STORE_SETTINGS_DEFAULTS } from '../../src/lib/constants.js';
+import { STORE_SETTINGS_DEFAULTS, STORE_THEME_TOKENS } from '../../src/lib/constants.js';
 
 const router = Router();
 
@@ -31,12 +31,14 @@ router.get('/', async (_req, res) => {
     res.json({
       ...merged,
       freeShippingThreshold: parseInt(merged.freeShippingThreshold) || 0,
+      theme: STORE_THEME_TOKENS,
     });
   } catch (error) {
     console.error('Public settings error:', error);
     res.json({
       ...DEFAULTS,
       freeShippingThreshold: parseInt(DEFAULTS.freeShippingThreshold) || 0,
+      theme: STORE_THEME_TOKENS,
     });
   }
 });

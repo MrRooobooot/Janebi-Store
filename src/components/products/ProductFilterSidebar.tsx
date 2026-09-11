@@ -80,13 +80,13 @@ export default function ProductFilterSidebar({
             value={inPageQuery}
             onChange={(e) => setInPageQuery(e.target.value)}
             placeholder="نام، مدل یا برند..."
-            className="w-full bg-[var(--color-surface-light)] dark:bg-gray-800/80 border-2 border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl py-3 px-4 pr-10 text-xs font-medium text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/50 focus:ring-4 focus:ring-[var(--color-cta)]/10 dark:focus:ring-[var(--color-cta)]/5 transition-all shadow-xs group-hover:border-gray-200 dark:group-hover:border-gray-700"
+            className="w-full bg-white dark:bg-[#0e1629] border border-slate-200/80 dark:border-white/[0.08] rounded-xl py-2.5 px-4 pr-10 text-xs font-medium text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-[var(--color-cta)]/60 focus:ring-2 focus:ring-[var(--color-cta)]/10 transition-all shadow-xs"
           />
-          <Search className="h-4 w-4 text-gray-500 absolute right-3.5 top-1/2 -translate-y-1/2 transition-colors group-hover:text-[var(--color-emphasis-text)]" />
+          <Search className="h-4 w-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 transition-colors group-hover:text-[var(--color-emphasis-text)]" />
           {inPageQuery && (
             <button
               onClick={() => setInPageQuery('')}
-              className="absolute left-2.5 top-1/2 -translate-y-1/2 p-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full text-gray-600 dark:text-gray-400 transition-colors"
+              className="absolute left-2.5 top-1/2 -translate-y-1/2 p-1 bg-slate-100 dark:bg-white/[0.08] hover:bg-slate-200 dark:hover:bg-white/[0.14] rounded-full text-slate-600 dark:text-slate-400 transition-colors"
             >
               <X className="h-3 w-3" />
             </button>
@@ -95,8 +95,8 @@ export default function ProductFilterSidebar({
       </div>
 
       {/* Category Filter */}
-      <div className="border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pt-6">
-        <h4 className="font-bold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] mb-4 flex items-center gap-2">
+      <div className="border-t border-slate-200/80 dark:border-white/[0.08] pt-6">
+        <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-2">
           <div className="p-1.5 rounded-lg bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)]">
             <Tag className="h-4 w-4" />
           </div>
@@ -110,8 +110,8 @@ export default function ProductFilterSidebar({
             }}
             className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all duration-200 ${
               selectedCategory === 'همه'
-                ? 'bg-gradient-to-l from-[var(--color-cta)]/10 to-transparent dark:from-[var(--color-cta)]/10 dark:to-transparent border-r-2 border-[var(--color-cta)]/30 text-[var(--color-emphasis-text)] font-bold shadow-xs shadow-[var(--color-cta)]/40 dark:shadow-none'
-                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/80 border-r-2 border-transparent'
+                ? 'bg-gradient-to-l from-[var(--color-cta)]/10 to-transparent dark:from-[var(--color-cta)]/10 dark:to-transparent border-r-2 border-[var(--color-cta)]/40 text-[var(--color-emphasis-text)] font-bold shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/[0.04] border-r-2 border-transparent'
             }`}
           >
             <span>همه دسته‌ها</span>
@@ -119,7 +119,7 @@ export default function ProductFilterSidebar({
               className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition-colors ${
                 selectedCategory === 'همه'
                   ? 'bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)]'
-                  : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
+                  : 'bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-slate-400'
               }`}
             >
               {productsCount}

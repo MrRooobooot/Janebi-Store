@@ -46,7 +46,7 @@ export default function CartSummaryCard({
       <form onSubmit={handleApplyCoupon} className="space-y-3">
         <label
           htmlFor="coupon-code-input"
-          className="block text-xs font-black text-gray-700 dark:text-gray-300"
+          className="block text-xs font-black text-slate-700 dark:text-slate-300"
         >
           کد تخفیف یا کوپن هدیه دارید؟
         </label>
@@ -64,10 +64,10 @@ export default function CartSummaryCard({
               placeholder="مثلا: OFF20"
               aria-invalid={Boolean(couponError)}
               aria-describedby={couponError ? 'coupon-error-message' : appliedDiscount > 0 ? 'coupon-success-message' : undefined}
-              className={`w-full bg-gray-50/90 dark:bg-gray-800/80 border rounded-2xl py-3 px-3.5 text-left font-mono text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none uppercase tracking-wider transition-colors ${
+              className={`w-full bg-white dark:bg-[#0e1629] border rounded-xl py-2.5 px-3.5 text-left font-mono text-xs font-bold text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none uppercase tracking-wider transition-colors ${
                 couponError
                   ? 'border-red-400 dark:border-red-600 focus:border-red-500'
-                  : 'border-gray-200/80 dark:border-gray-700 focus:border-primary-600 dark:focus:border-primary-400'
+                  : 'border-slate-200/90 dark:border-white/[0.08] focus:border-[var(--color-cta)]'
               }`}
             />
             <Tag className="h-4 w-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />

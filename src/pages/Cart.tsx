@@ -59,12 +59,12 @@ export default function Cart() {
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-3">
+        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white flex items-center gap-3">
           <span className="relative">
             سبد خرید
             <span className="absolute bottom-1 left-0 right-0 h-3 bg-[var(--color-cta)]/50 dark:bg-[var(--color-cta)]/20 -z-10 rounded-sm"></span>
           </span>
-          <span className="text-xs font-bold bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 px-3 py-1 rounded-full">
+          <span className="text-xs font-bold bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-slate-300 px-3 py-1 rounded-full border border-slate-200/80 dark:border-white/[0.08]">
             {toPersianDigits(cart.length)} کالا
           </span>
         </h1>

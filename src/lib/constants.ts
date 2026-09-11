@@ -76,3 +76,18 @@ export const STORE_SETTINGS_DEFAULTS: Record<string, string> = {
   heroSlide2ButtonText: 'انتخاب قاب و محافظ صفحه',
   heroSlide3ButtonText: 'مشاهده کابل‌ها و محافظ‌ها',
 };
+
+/**
+ * Canonical Design System theme parameters synchronized between server and client.
+ * Server sends these in /api/settings so client or admin panels can dynamically inspect theme state.
+ */
+export const STORE_THEME_TOKENS = {
+  primaryCta: '#e11d48',
+  canvasLight: '#f1f5f9',
+  canvasDark: '#090d16',
+  surfaceCardLight: '#ffffff',
+  surfaceCardDark: '#0e1629',
+  fontFamily: 'Vazirmatn',
+  designSystem: 'DDS-Titanium-v1',
+} as const;
+

@@ -77,27 +77,27 @@ export default function Products() {
       <div className="mb-6 text-right bg-gradient-to-r from-[var(--color-cta)]/10 via-transparent to-transparent dark:from-white/[0.04] dark:via-white/[0.02] dark:to-transparent p-5 sm:p-6 rounded-3xl border border-[var(--color-cta)]/15 dark:border-white/[0.08]">
           {isCategoryFiltered ? (
             <>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/70 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] text-xs font-bold mb-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--color-cta)]/10 text-[var(--color-emphasis-text)] text-xs font-bold mb-2">
                 <Sparkles className="h-3.5 w-3.5 text-[var(--color-emphasis-text)]" />
                 <span>دسته‌بندی انتخاب‌شده</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-[#f7f8f8] mb-2">
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mb-2">
                 خرید {selectedCategory}
               </h1>
-              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
                 {toPersianDigits(realCount)} محصول اورجینال در دسته «{selectedCategory}» با ضمانت اصالت، گارانتی تعویض فیزیکی و ارسال سریع
               </p>
             </>
           ) : (
             <>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/70 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] text-xs font-bold mb-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--color-cta)]/10 text-[var(--color-emphasis-text)] text-xs font-bold mb-2">
                 <Sparkles className="h-3.5 w-3.5 text-[var(--color-emphasis-text)]" />
                 <span>کاتالوگ کامل جانبی آرنا</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-[#f7f8f8] mb-2">
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mb-2">
                 فروشگاه تجهیزات و لوازم جانبی اورجینال
               </h1>
-              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
                 بررسی، مقایسه تخصصی و خرید مستقیم انواع قاب، گلس، شارژر فست، کابل و پاوربانک با گارانتی تعویض فیزیکی
               </p>
             </>
