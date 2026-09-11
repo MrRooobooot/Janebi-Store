@@ -102,7 +102,7 @@ export default function PersonalInfoTab() {
                 onClick={() => setSelectedAvatar(av)}
                 className={`relative rounded-2xl overflow-hidden border-2 transition-all ${
                   selectedAvatar === av
-                    ? 'border-orange-500 scale-105 shadow-md shadow-orange-500/20'
+                    ? 'border-[var(--color-cta)]/30 scale-105 shadow-md shadow-[var(--color-cta)]/25'
                     : 'border-transparent opacity-70 hover:opacity-100'
                 }`}
               >
@@ -123,7 +123,7 @@ export default function PersonalInfoTab() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl py-3 px-4 pr-10 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
+                  className="w-full bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl py-3 px-4 pr-10 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30"
                   required
                 />
                 <User className="h-4 w-4 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2" />
@@ -140,7 +140,7 @@ export default function PersonalInfoTab() {
                   dir="ltr"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl py-3 px-4 pl-10 text-left font-mono text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
+                  className="w-full bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl py-3 px-4 pl-10 text-left font-mono text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30"
                   required
                 />
                 <Phone className="h-4 w-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -158,7 +158,7 @@ export default function PersonalInfoTab() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="example@mail.com"
-                className="w-full bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl py-3 px-4 pr-10 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
+                className="w-full bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl py-3 px-4 pr-10 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30"
               />
               <Mail className="h-4 w-4 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2" />
             </div>
@@ -166,7 +166,7 @@ export default function PersonalInfoTab() {
 
           <button
             type="submit"
-            className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold text-xs px-6 py-3 rounded-2xl flex items-center gap-2 transition-all shadow-md shadow-orange-500/20 active:scale-95 cursor-pointer"
+            className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold text-xs px-6 py-3 rounded-2xl flex items-center gap-2 transition-all shadow-md shadow-[var(--color-cta)]/25 active:scale-95 cursor-pointer"
           >
             <Save className="h-4 w-4" />
             ذخیره تغییرات حساب
@@ -194,7 +194,7 @@ export default function PersonalInfoTab() {
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl py-3 px-4 pl-10 text-left font-mono text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
+                  className="w-full bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl py-3 px-4 pl-10 text-left font-mono text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30"
                 />
                 <Lock className="h-4 w-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
@@ -211,7 +211,7 @@ export default function PersonalInfoTab() {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl py-3 px-4 pl-10 text-left font-mono text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
+                  className="w-full bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl py-3 px-4 pl-10 text-left font-mono text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30"
                 />
                 <Lock className="h-4 w-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>

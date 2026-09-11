@@ -59,7 +59,7 @@ export default function Home() {
       buttonLink: settings.heroSlide1Link || STORE_SETTINGS_DEFAULTS.heroSlide1Link,
       badge: settings.heroSlide1Badge || STORE_SETTINGS_DEFAULTS.heroSlide1Badge,
       image: settings.heroSlide1Image || '/products/hld-13.svg',
-      borderColor: 'border-orange-500/40 dark:border-orange-500/30',
+      borderColor: 'border-[var(--color-cta)]/40 dark:border-[var(--color-cta)]/30',
     },
     {
       id: 2,
@@ -181,7 +181,7 @@ export default function Home() {
       <Link
         key={`${cat.slug}-${idx}`}
         to={`/products?category=${encodeURIComponent(cat.title)}`}
-        className="relative flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-[var(--color-surface-light)] dark:bg-[#0d121c] border border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 transition-colors group text-center shadow-xs"
+        className="relative flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-[var(--color-surface-light)] dark:bg-[#0d121c] border border-zinc-200 dark:border-zinc-800 hover:border-[var(--color-cta)]/30 dark:hover:border-[var(--color-cta)]/30 transition-colors group text-center shadow-xs"
       >
         <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800/80 flex items-center justify-center text-zinc-700 dark:text-zinc-200 group-hover:bg-[var(--color-cta)] group-hover:text-white transition-all mb-2">
           <Icon className="h-5 w-5 sm:h-6 sm:w-6 stroke-[1.8]" />
@@ -201,7 +201,7 @@ export default function Home() {
       
       {/* 1. Hero Showcase Section */}
       <section className="w-full box-border">
-        <div className={`relative rounded-3xl overflow-hidden bg-gradient-to-b from-orange-50/70 via-white to-zinc-50 dark:from-[var(--color-surface-elevated-dark)] dark:via-[var(--color-surface-dark)] dark:to-[var(--color-canvas-dark)] border ${currentSlide.borderColor} shadow-xl dark:shadow-2xl p-6 sm:p-8 lg:p-10 transition-colors duration-500 min-h-[360px] sm:min-h-[420px] flex flex-col justify-between`}>
+        <div className={`relative rounded-3xl overflow-hidden bg-gradient-to-b from-[var(--color-cta)]/70 via-white to-zinc-50 dark:from-[var(--color-surface-elevated-dark)] dark:via-[var(--color-surface-dark)] dark:to-[var(--color-canvas-dark)] border ${currentSlide.borderColor} shadow-xl dark:shadow-2xl p-6 sm:p-8 lg:p-10 transition-colors duration-500 min-h-[360px] sm:min-h-[420px] flex flex-col justify-between`}>
           
           {/* Ambient Dot Grid (dual-theme, non-hardcoded) */}
           <div className="absolute inset-0 bg-[radial-gradient(var(--color-border-light)_1px,transparent_1px)] dark:bg-[radial-gradient(var(--color-border-dark)_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" />
@@ -211,8 +211,8 @@ export default function Home() {
             
             {/* Text & Actions */}
             <div className="md:col-span-7 space-y-4 text-right">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 dark:bg-zinc-800/90 border border-orange-200 dark:border-zinc-700 text-orange-700 dark:text-amber-400 text-xs font-black shadow-xs">
-                <Sparkles className="h-3.5 w-3.5 animate-pulse text-[var(--color-emphasis-text)] dark:text-amber-400 shrink-0" />
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--color-cta)]/10 dark:bg-zinc-800/90 border border-[var(--color-cta)]/30 dark:border-zinc-700 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] text-xs font-black shadow-xs">
+                <Sparkles className="h-3.5 w-3.5 animate-pulse text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] shrink-0" />
                 <span>{normalizePersianTypography(currentSlide.tag)}</span>
               </div>
 
@@ -233,7 +233,7 @@ export default function Home() {
                   <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
                 </Link>
 
-                <div className={`text-xs font-black px-4 py-2.5 rounded-2xl border bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-500/20 dark:text-orange-300 dark:border-orange-500/40 flex items-center gap-2`}>
+                <div className={`text-xs font-black px-4 py-2.5 rounded-2xl border bg-[var(--color-cta)]/10 text-[var(--color-emphasis-text)] border-[var(--color-cta)]/30 dark:bg-[var(--color-cta)]/20 dark:text-[var(--color-emphasis-text)] dark:border-[var(--color-cta)]/40 flex items-center gap-2`}>
                   <Award className="h-4 w-4 shrink-0 text-[var(--color-emphasis-text)] dark:text-inherit" />
                   <span>{normalizePersianTypography(currentSlide.badge)}</span>
                 </div>
@@ -277,9 +277,9 @@ export default function Home() {
 
       {/* 2. Wholesale / B2B Banner Strip */}
       <section className="w-full">
-        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/15 to-amber-500/10 dark:from-amber-600/20 dark:via-orange-600/20 dark:to-amber-600/20 border border-amber-500/30 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[var(--color-cta)]/10 via-[var(--color-accent-surface)]/15 to-[var(--color-cta)]/10 dark:from-[var(--color-cta)]/20 dark:via-[var(--color-accent-surface)]/15 dark:to-[var(--color-cta)]/20 border border-[var(--color-cta)]/30 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
           <div className="flex items-center gap-3 text-right">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-[var(--color-cta)]/20 border border-[var(--color-cta)]/40 flex items-center justify-center text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] shrink-0">
               <PackageCheck className="h-5 w-5" />
             </div>
             <div>
@@ -289,7 +289,7 @@ export default function Home() {
           </div>
           <Link
             to={settings.b2bLink || STORE_SETTINGS_DEFAULTS.b2bLink}
-            className="px-4 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-black text-xs transition-all shadow-md shadow-orange-600/25 shrink-0 cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-black text-xs transition-all shadow-md shadow-[var(--color-cta)]/25 shrink-0 cursor-pointer"
           >
             {normalizePersianTypography(settings.b2bButtonText || STORE_SETTINGS_DEFAULTS.b2bButtonText)}
           </Link>
@@ -304,7 +304,7 @@ export default function Home() {
             return (
               <div 
                 key={i} 
-                className="flex items-center gap-3.5 p-4 rounded-2xl bg-[var(--color-surface-light)] dark:bg-[#0d121c] border border-zinc-200/80 dark:border-zinc-800/80 shadow-xs hover:border-orange-500/40 transition-colors"
+                className="flex items-center gap-3.5 p-4 rounded-2xl bg-[var(--color-surface-light)] dark:bg-[#0d121c] border border-zinc-200/80 dark:border-zinc-800/80 shadow-xs hover:border-[var(--color-cta)]/40 transition-colors"
               >
                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border ${item.color}`}>
                   <Icon className="h-6 w-6 stroke-[2]" />
@@ -321,12 +321,12 @@ export default function Home() {
 
       {/* 4. Amazing Deals Section */}
       <section className="w-full">
-        <div className="bg-gradient-to-br from-orange-50 via-white to-amber-50/40 dark:from-[#121827] dark:via-[#0b0f19] dark:to-[#06080e] rounded-3xl p-5 sm:p-8 text-zinc-900 dark:text-white border border-orange-200/80 dark:border-orange-500/30 shadow-xl dark:shadow-2xl relative overflow-hidden transition-colors">
+        <div className="bg-gradient-to-br from-[var(--color-cta)]/10 via-white to-[var(--color-cta)]/5 dark:from-[#121827] dark:via-[#0b0f19] dark:to-[#06080e] rounded-3xl p-5 sm:p-8 text-zinc-900 dark:text-white border border-[var(--color-cta)]/80 dark:border-[var(--color-cta)]/30 shadow-xl dark:shadow-2xl relative overflow-hidden transition-colors">
           
           {/* Section Header */}
-          <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-orange-100 dark:border-zinc-800">
+          <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-[var(--color-cta)]/30 dark:border-zinc-800">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-orange-500/10 dark:bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-[var(--color-emphasis-text)]">
+              <div className="w-10 h-10 rounded-xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 border border-[var(--color-cta)]/30 flex items-center justify-center text-[var(--color-emphasis-text)]">
                 <Flame className="h-5 w-5 animate-bounce" />
               </div>
               <div>
@@ -336,16 +336,16 @@ export default function Home() {
             </div>
 
             {/* Countdown Clock */}
-            <div className="bg-[var(--color-cta)]/10 border border-orange-200/80 dark:border-zinc-700/80 px-3.5 py-1.5 rounded-2xl text-xs font-bold shadow-xs">
+            <div className="bg-[var(--color-cta)]/10 border border-[var(--color-cta)]/80 dark:border-zinc-700/80 px-3.5 py-1.5 rounded-2xl text-xs font-bold shadow-xs">
               <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-[var(--color-emphasis-text)] shrink-0" />
               <span className="text-zinc-700 dark:text-zinc-200">فرصت باقی‌مانده:</span>
               <div className="flex items-center gap-1 text-sm font-black text-[var(--color-emphasis-text)]">
-                <span className="tabular-nums bg-white/70 dark:bg-zinc-900 px-1.5 py-0.5 rounded-lg border border-orange-200 dark:border-zinc-700 text-[var(--color-cta)] dark:text-orange-300">{toPersianDigits(timeLeft.hours.toString().padStart(2, '0'))}</span>
+                <span className="tabular-nums bg-white/70 dark:bg-zinc-900 px-1.5 py-0.5 rounded-lg border border-[var(--color-cta)]/30 dark:border-zinc-700 text-[var(--color-cta)] dark:text-[var(--color-emphasis-text)]">{toPersianDigits(timeLeft.hours.toString().padStart(2, '0'))}</span>
                 <span>:</span>
-                <span className="tabular-nums bg-white/70 dark:bg-zinc-900 px-1.5 py-0.5 rounded-lg border border-orange-200 dark:border-zinc-700 text-[var(--color-cta)] dark:text-orange-300">{toPersianDigits(timeLeft.minutes.toString().padStart(2, '0'))}</span>
+                <span className="tabular-nums bg-white/70 dark:bg-zinc-900 px-1.5 py-0.5 rounded-lg border border-[var(--color-cta)]/30 dark:border-zinc-700 text-[var(--color-cta)] dark:text-[var(--color-emphasis-text)]">{toPersianDigits(timeLeft.minutes.toString().padStart(2, '0'))}</span>
                 <span>:</span>
-                <span className="tabular-nums bg-white/70 dark:bg-zinc-900 px-1.5 py-0.5 rounded-lg border border-orange-200 dark:border-zinc-700 text-[var(--color-cta)] dark:text-orange-300">{toPersianDigits(timeLeft.seconds.toString().padStart(2, '0'))}</span>
+                <span className="tabular-nums bg-white/70 dark:bg-zinc-900 px-1.5 py-0.5 rounded-lg border border-[var(--color-cta)]/30 dark:border-zinc-700 text-[var(--color-cta)] dark:text-[var(--color-emphasis-text)]">{toPersianDigits(timeLeft.seconds.toString().padStart(2, '0'))}</span>
               </div>
               </div>
               {/* Thin seconds bar */}
@@ -373,7 +373,7 @@ export default function Home() {
                 <Link
                   key={p.id}
                   to={`/product/${p.id}`}
-                  className="bg-white/90 hover:bg-white dark:bg-zinc-800/70 dark:hover:bg-zinc-800 border border-zinc-200/80 hover:border-orange-500/50 dark:border-zinc-700/60 dark:hover:border-orange-500/40 rounded-2xl p-3.5 text-zinc-900 dark:text-white flex flex-col justify-between transition-all duration-200 shadow-sm hover:shadow-md group"
+                  className="bg-white/90 hover:bg-white dark:bg-zinc-800/70 dark:hover:bg-zinc-800 border border-zinc-200/80 hover:border-[var(--color-cta)]/50 dark:border-zinc-700/60 dark:hover:border-[var(--color-cta)]/40 rounded-2xl p-3.5 text-zinc-900 dark:text-white flex flex-col justify-between transition-all duration-200 shadow-sm hover:shadow-md group"
                 >
                   <div className="relative aspect-square rounded-xl bg-zinc-50 dark:bg-zinc-900/80 p-3 mb-3 flex items-center justify-center overflow-hidden border border-zinc-100 dark:border-transparent">
                     <PictureImage 

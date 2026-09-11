@@ -23,21 +23,21 @@ export default function DashboardOverviewTab({
   return (
     <div className="space-y-6 text-right">
       {/* Welcome Hero Banner */}
-      <div className="rounded-3xl p-6 sm:p-8 text-white [background:linear-gradient(135deg,#b3500a,#994700)] relative overflow-hidden shadow-lg shadow-orange-500/20">
+      <div className="rounded-3xl p-6 sm:p-8 text-white [background:linear-gradient(135deg,#c2410c,#9a3412)] relative overflow-hidden shadow-lg shadow-[var(--color-cta)]/25">
         <div className="absolute top-0 left-0 w-64 h-64 bg-[var(--color-surface-light)]/10 rounded-full blur-2xl pointer-events-none" />
         <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div>
             <h2 className="text-xl sm:text-2xl font-black mb-2 flex items-center gap-2">
               <span>سلام {user.name} عزیز، خوش آمدید!</span>
-              <Sparkles className="h-5 w-5 text-amber-300 animate-pulse" />
+              <Sparkles className="h-5 w-5 text-white/80 animate-pulse" />
             </h2>
-            <p className="text-xs sm:text-sm text-orange-100 font-medium max-w-xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-white/90 font-medium max-w-xl leading-relaxed">
               از این بخش می‌توانید سفارش‌ها، آدرس‌های ارسال و تنظیمات حساب خود را به راحتی مدیریت کنید.
             </p>
           </div>
 
           <div className="bg-[var(--color-surface-light)]/15 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/20 text-center shrink-0">
-            <span className="text-[10px] font-bold text-orange-100 block">امتیاز باشگاه VIP</span>
+            <span className="text-[10px] font-bold text-white/90 block">امتیاز باشگاه VIP</span>
             <span className="text-xl font-black text-white">{toPersianDigits(user.vipPoints || 0)}</span>
           </div>
         </div>
@@ -48,11 +48,11 @@ export default function DashboardOverviewTab({
         <button
           type="button"
           onClick={() => setActiveTab('orders')}
-          className="w-full text-right bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-5 shadow-xs cursor-pointer hover:border-orange-500/30 transition-all group"
+          className="w-full text-right bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-5 shadow-xs cursor-pointer hover:border-[var(--color-cta)]/30 transition-all group"
         >
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-bold text-gray-500 dark:text-gray-400">سفارش‌های در حال پردازش</span>
-            <div className="p-2.5 rounded-2xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400">
+            <div className="p-2.5 rounded-2xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)]">
               <Clock className="h-5 w-5" />
             </div>
           </div>
@@ -64,7 +64,7 @@ export default function DashboardOverviewTab({
         <button
           type="button"
           onClick={() => setActiveTab('orders')}
-          className="w-full text-right bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-5 shadow-xs cursor-pointer hover:border-orange-500/30 transition-all group"
+          className="w-full text-right bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-5 shadow-xs cursor-pointer hover:border-[var(--color-cta)]/30 transition-all group"
         >
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-bold text-gray-500 dark:text-gray-400">تحویل داده شده</span>
@@ -94,7 +94,7 @@ export default function DashboardOverviewTab({
       <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 shadow-xs space-y-4">
         <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
           <h3 className="font-extrabold text-base text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
-            <Package className="h-5 w-5 text-orange-500" />
+            <Package className="h-5 w-5 text-[var(--color-emphasis-text)]" />
             <span>آخرین سفارش ثبت‌شده</span>
           </h3>
 
@@ -114,7 +114,7 @@ export default function DashboardOverviewTab({
                   orders[0].status === 'delivered' ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300'
                   : orders[0].status === 'cancelled' ? 'bg-rose-100 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300'
                   : orders[0].status === 'processing' ? 'bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300'
-                  : 'bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300'
+                  : 'bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)]'
                 }`}>
                 {orders[0].statusText}
               </span>

@@ -49,7 +49,7 @@ export default function Compare() {
       >
         <EmptyState
           icon={
-            <div className="w-16 h-16 rounded-2xl bg-orange-50 dark:bg-orange-950/40 text-[var(--color-emphasis-text)] flex items-center justify-center mx-auto mb-4 border border-orange-100 dark:border-orange-800/60 shadow-inner">
+            <div className="w-16 h-16 rounded-2xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/40 text-[var(--color-emphasis-text)] flex items-center justify-center mx-auto mb-4 border border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/60 shadow-inner">
               <Scale className="h-8 w-8" />
             </div>
           }
@@ -77,9 +77,9 @@ export default function Compare() {
         <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-3">
           <span className="relative">
             مقایسه محصولات
-            <span className="absolute bottom-1 left-0 right-0 h-3 bg-orange-200/50 dark:bg-orange-500/20 -z-10 rounded-sm"></span>
+            <span className="absolute bottom-1 left-0 right-0 h-3 bg-[var(--color-cta)]/50 dark:bg-[var(--color-cta)]/20 -z-10 rounded-sm"></span>
           </span>
-          <span className="text-xs font-extrabold bg-orange-100 dark:bg-orange-950/60 text-[var(--color-emphasis-text)] px-3 py-1 rounded-full border border-orange-200 dark:border-orange-900/50">
+          <span className="text-xs font-extrabold bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/60 text-[var(--color-emphasis-text)] px-3 py-1 rounded-full border border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/50">
             {toPersianDigits(compareItems.length)} کالا
           </span>
         </h1>
@@ -126,7 +126,7 @@ export default function Compare() {
                       <div className="flex flex-col items-center text-center">
                         <Link
                           to={`/products/${item.id}`}
-                          className="w-32 h-32 mb-4 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-2 flex items-center justify-center border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] group-hover:border-orange-200 dark:group-hover:border-orange-800/50 transition-colors"
+                          className="w-32 h-32 mb-4 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-2 flex items-center justify-center border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] group-hover:border-[var(--color-cta)]/30 dark:group-hover:border-[var(--color-cta)]/50 transition-colors"
                         >
                           <img
                             src={item.image}
@@ -146,7 +146,7 @@ export default function Compare() {
                           {item.title}
                         </Link>
 
-                        <div className="text-[var(--color-emphasis-text)] font-black text-base mb-4 bg-orange-50 dark:bg-orange-500/10 px-3 py-1 rounded-xl">
+                        <div className="text-[var(--color-emphasis-text)] font-black text-base mb-4 bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/10 px-3 py-1 rounded-xl">
                           {formatPrice(item.price)}
                         </div>
 
@@ -267,7 +267,7 @@ export default function Compare() {
                 >
                   <td className="p-4 font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] bg-[var(--color-canvas-light)]/50 dark:bg-[var(--color-canvas-dark)]/30 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-xs sm:text-sm">
                     <div className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-orange-400 shrink-0"></div> {feature}
+                      <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent-surface)] shrink-0"></div> {feature}
                     </div>
                   </td>
                   {compareItems.map((item) => (

@@ -81,7 +81,7 @@ export default function ProfileSidebar({
             width="56"
             height="56"
             decoding="async"
-            className="w-14 h-14 rounded-2xl object-cover border-2 border-orange-500 shadow-md"
+            className="w-14 h-14 rounded-2xl object-cover border-2 border-[var(--color-cta)]/30 shadow-md"
           />
           <span className="absolute -bottom-1 -right-1 bg-emerald-500 w-4 h-4 rounded-full border-2 border-white dark:border-gray-900" title="آنلاین" />
         </div>
@@ -91,7 +91,7 @@ export default function ProfileSidebar({
             <h3 className="font-extrabold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] truncate">
               {user.name}
             </h3>
-            <span className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full flex items-center gap-1 shrink-0">
+            <span className="bg-gradient-to-r from-[var(--color-cta)] to-[var(--color-accent-surface)] text-white text-[9px] font-black px-2 py-0.5 rounded-full flex items-center gap-1 shrink-0">
               <Award className="h-3 w-3" /> VIP
             </span>
           </div>

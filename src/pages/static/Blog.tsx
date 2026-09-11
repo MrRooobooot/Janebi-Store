@@ -214,13 +214,13 @@ export default function Blog() {
       transition={{ duration: prefersReducedMotion ? 0 : 0.4 }}
       className="space-y-8"
     >
-      <div className="text-white rounded-3xl [background:linear-gradient(135deg,#b3500a,#994700)] p-8 sm:p-10 relative overflow-hidden shadow-lg shadow-orange-500/20">
+      <div className="text-white rounded-3xl [background:linear-gradient(135deg,#c2410c,#9a3412)] p-8 sm:p-10 relative overflow-hidden shadow-lg shadow-[var(--color-cta)]/25">
         <div className="relative z-10 max-w-xl">
           <span className="inline-flex items-center gap-1.5 bg-[var(--color-surface-light)]/20 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full mb-3">
             <BookOpen className="h-3.5 w-3.5" /> مجله تخصصی جانبی آرنا
           </span>
           <h1 className="text-3xl font-black mb-3 tracking-tight">آخرین اخبار و راهنماهای کاربردی</h1>
-          <p className="text-orange-100 text-sm leading-relaxed">
+          <p className="text-white/90 text-sm leading-relaxed">
             بررسی جدیدترین گجت‌ها، تکنولوژی‌های شارژ و مقالات آموزشی برای نگهداری بهتر از لوازم جانبی.
           </p>
           {/* r36 freshness stamp (SEO/AEO 20260913a): derived from the real latest
@@ -300,7 +300,7 @@ export default function Blog() {
                 className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-bold border transition-colors motion-reduce:transition-none min-h-[36px] ${
                   active
                     ? 'bg-[var(--color-cta)] border-[var(--color-cta)] text-white'
-                    : 'bg-zinc-50 dark:bg-zinc-900/60 border-zinc-200/80 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300 hover:border-orange-300 dark:hover:border-zinc-700'
+                    : 'bg-zinc-50 dark:bg-zinc-900/60 border-zinc-200/80 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300 hover:border-[var(--color-cta)]/30 dark:hover:border-zinc-700'
                 }`}
               >
                 {isAll ? 'همه مقالات' : cat}
@@ -332,9 +332,9 @@ export default function Blog() {
                 tabIndex={0}
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpenArticle(art); } }}
                 aria-label={`خواندن مقاله: ${art.title}`}
-                className="bg-zinc-50 dark:bg-zinc-900/60 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 overflow-hidden hover:shadow-lg dark:hover:shadow-black/30 hover:border-orange-300 dark:hover:border-zinc-700 hover:-translate-y-1 motion-reduce:hover:translate-y-0 transition-all duration-300 motion-reduce:transition-none flex flex-col group h-full cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 will-change-transform"
+                className="bg-zinc-50 dark:bg-zinc-900/60 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 overflow-hidden hover:shadow-lg dark:hover:shadow-black/30 hover:border-[var(--color-cta)]/30 dark:hover:border-zinc-700 hover:-translate-y-1 motion-reduce:hover:translate-y-0 transition-all duration-300 motion-reduce:transition-none flex flex-col group h-full cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-cta)]/40 will-change-transform"
               >
-                <div className="aspect-[16/9] w-full relative rounded-2xl overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50 dark:from-zinc-800 dark:to-zinc-900 flex items-center justify-center">
+                <div className="aspect-[16/9] w-full relative rounded-2xl overflow-hidden bg-gradient-to-br from-[var(--color-cta)]/10 to-[var(--color-cta)]/5 dark:from-zinc-800 dark:to-zinc-900 flex items-center justify-center">
                   <img src={art.image || FALLBACK_IMAGE} alt={art.title} loading="lazy" decoding="async" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 motion-reduce:transition-none motion-reduce:group-hover:scale-100" />
                   <span className="absolute top-3 right-3 bg-zinc-100 dark:bg-zinc-800 text-[var(--color-text-main-light)] dark:text-zinc-200 text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
                     {art.category}
@@ -412,12 +412,12 @@ export default function Blog() {
                 aria-valuenow={readProgress}
               >
                 <div
-                  className="h-full bg-gradient-to-l from-orange-600 to-amber-500 rounded-l-full motion-reduce:transition-none transition-[width] duration-150"
+                  className="h-full bg-gradient-to-l from-[var(--color-cta)]/10 to-[var(--color-accent-surface)] rounded-l-full motion-reduce:transition-none transition-[width] duration-150"
                   style={{ width: `${readProgress}%` }}
                 />
               </div>
 
-              <div className="relative aspect-video w-full overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50 dark:from-zinc-800 dark:to-zinc-900">
+              <div className="relative aspect-video w-full overflow-hidden bg-gradient-to-br from-[var(--color-cta)]/10 to-[var(--color-cta)]/5 dark:from-zinc-800 dark:to-zinc-900">
                 <img src={openArticle.image || FALLBACK_IMAGE} alt={openArticle.title} decoding="async" loading="lazy" className="object-cover w-full h-full" />
                 <button
                   onClick={() => setOpenArticle(null)}
@@ -440,7 +440,7 @@ export default function Blog() {
                     }
                   }}
                   aria-label={copied ? 'لینک مقاله کپی شد' : 'کپی لینک مقاله'}
-                  className="absolute top-16 left-4 w-11 h-11 bg-black/50 hover:bg-black/70 backdrop-blur-md text-white rounded-full flex items-center justify-center transition-colors motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+                  className="absolute top-16 left-4 w-11 h-11 bg-black/50 hover:bg-black/70 backdrop-blur-md text-white rounded-full flex items-center justify-center transition-colors motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-cta)]/40"
                 >
                   {copied ? <Check className="h-5 w-5" /> : <Link2 className="h-5 w-5" />}
                 </button>
@@ -478,7 +478,7 @@ export default function Blog() {
                       .map((tag) => (
                         <span
                           key={tag}
-                          className="inline-flex items-center gap-1 rounded-full bg-orange-50 dark:bg-zinc-800/90 border border-orange-200/80 dark:border-zinc-700 px-3 py-1 text-[11px] font-bold text-orange-700 dark:text-orange-400"
+                          className="inline-flex items-center gap-1 rounded-full bg-[var(--color-cta)]/10 dark:bg-zinc-800/90 border border-[var(--color-cta)]/80 dark:border-zinc-700 px-3 py-1 text-[11px] font-bold text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)]"
                         >
                           <Tag className="h-3 w-3" aria-hidden="true" /> {tag}
                         </span>
@@ -497,14 +497,14 @@ export default function Blog() {
                         <button
                           key={rel.id}
                           onClick={() => setOpenArticle(rel)}
-                          className="flex min-h-[44px] items-center gap-3 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60 p-3 text-right hover:border-orange-300 dark:hover:border-zinc-700 hover:shadow-md dark:hover:shadow-black/30 transition-all motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+                          className="flex min-h-[44px] items-center gap-3 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60 p-3 text-right hover:border-[var(--color-cta)]/30 dark:hover:border-zinc-700 hover:shadow-md dark:hover:shadow-black/30 transition-all motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-cta)]/40"
                         >
                           <img
                             src={rel.image || FALLBACK_IMAGE}
                             alt=""
                             loading="lazy"
                             decoding="async"
-                            className="h-14 w-20 shrink-0 rounded-xl object-cover bg-gradient-to-br from-orange-50 to-amber-50 dark:from-zinc-800 dark:to-zinc-900"
+                            className="h-14 w-20 shrink-0 rounded-xl object-cover bg-gradient-to-br from-[var(--color-cta)]/10 to-[var(--color-cta)]/5 dark:from-zinc-800 dark:to-zinc-900"
                           />
                           <span className="min-w-0">
                             <span className="block text-xs font-bold text-[var(--color-text-main-light)] dark:text-zinc-200 line-clamp-2 mb-1">{rel.title}</span>

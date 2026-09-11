@@ -79,8 +79,8 @@ export default function Products() {
         <div className="mb-8 text-right bg-gradient-to-r from-[var(--color-cta)]/10 via-transparent to-transparent dark:from-white/[0.04] dark:via-white/[0.02] dark:to-transparent p-6 rounded-3xl border border-[var(--color-cta)]/15 dark:border-white/[0.08]">
           {isCategoryFiltered ? (
             <>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 dark:bg-orange-950/70 text-orange-700 dark:text-orange-300 text-xs font-bold mb-2">
-                <Sparkles className="h-3.5 w-3.5 text-orange-500" />
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/70 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] text-xs font-bold mb-2">
+                <Sparkles className="h-3.5 w-3.5 text-[var(--color-emphasis-text)]" />
                 <span>دسته‌بندی انتخاب‌شده</span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-[#f7f8f8] mb-2">
@@ -92,8 +92,8 @@ export default function Products() {
             </>
           ) : (
             <>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 dark:bg-orange-950/70 text-orange-700 dark:text-orange-300 text-xs font-bold mb-2">
-                <Sparkles className="h-3.5 w-3.5 text-orange-500" />
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/70 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] text-xs font-bold mb-2">
+                <Sparkles className="h-3.5 w-3.5 text-[var(--color-emphasis-text)]" />
                 <span>کاتالوگ کامل جانبی آرنا</span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-[#f7f8f8] mb-2">
@@ -243,7 +243,7 @@ export default function Products() {
                 <button
                   onClick={() => setPage(Math.max(1, page - 1))}
                   disabled={page === 1}
-                  className="px-4 py-2.5 rounded-xl border border-gray-200 dark:border-[var(--color-border-dark)] disabled:opacity-40 hover:bg-orange-50 dark:hover:bg-gray-800 text-xs font-bold flex items-center gap-1 transition-all cursor-pointer disabled:cursor-not-allowed text-gray-700 dark:text-gray-300"
+                  className="px-4 py-2.5 rounded-xl border border-gray-200 dark:border-[var(--color-border-dark)] disabled:opacity-40 hover:bg-[var(--color-cta)]/10 dark:hover:bg-gray-800 text-xs font-bold flex items-center gap-1 transition-all cursor-pointer disabled:cursor-not-allowed text-gray-700 dark:text-gray-300"
                 >
                   <ChevronRight className="h-4 w-4" />
                   <span>صفحه قبلی</span>
@@ -257,7 +257,7 @@ export default function Products() {
                       className={`w-10 h-10 rounded-xl flex items-center justify-center text-xs font-extrabold transition-all cursor-pointer ${
                         page === i + 1
                           ? 'bg-[var(--color-cta)] text-white ring-2 ring-[var(--color-cta)]/30'
-                          : 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-[var(--color-border-dark)] hover:border-orange-500/50 text-gray-700 dark:text-gray-300'
+                          : 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-[var(--color-border-dark)] hover:border-[var(--color-cta)]/50 text-gray-700 dark:text-gray-300'
                       }`}
                     >
                       {toPersianDigits(i + 1)}
@@ -268,7 +268,7 @@ export default function Products() {
                 <button
                   onClick={() => setPage(Math.min(totalPages, page + 1))}
                   disabled={page === totalPages}
-                  className="px-4 py-2.5 rounded-xl border border-gray-200 dark:border-[var(--color-border-dark)] disabled:opacity-40 hover:bg-orange-50 dark:hover:bg-gray-800 text-xs font-bold flex items-center gap-1 transition-all cursor-pointer disabled:cursor-not-allowed text-gray-700 dark:text-gray-300"
+                  className="px-4 py-2.5 rounded-xl border border-gray-200 dark:border-[var(--color-border-dark)] disabled:opacity-40 hover:bg-[var(--color-cta)]/10 dark:hover:bg-gray-800 text-xs font-bold flex items-center gap-1 transition-all cursor-pointer disabled:cursor-not-allowed text-gray-700 dark:text-gray-300"
                 >
                   <span>صفحه بعدی</span>
                   <ChevronLeft className="h-4 w-4" />

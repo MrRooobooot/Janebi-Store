@@ -59,7 +59,7 @@ export default function Contact() {
       {/* Title */}
       <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 dark:from-gray-900 dark:via-gray-850 dark:to-gray-900 text-white rounded-3xl p-8 sm:p-10 relative overflow-hidden">
         <div className="relative z-10">
-          <span className="inline-flex items-center gap-1.5 bg-orange-500/20 text-orange-400 border border-orange-500/30 text-xs font-bold px-3 py-1 rounded-full mb-3">
+          <span className="inline-flex items-center gap-1.5 bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] border border-[var(--color-cta)]/30 text-xs font-bold px-3 py-1 rounded-full mb-3">
             <Sparkles className="h-3.5 w-3.5" /> پشتیبانی همه‌روزه
           </span>
           <h1 className="text-3xl font-black mb-2 tracking-tight">تماس با جانبی آرنا</h1>
@@ -73,7 +73,7 @@ export default function Contact() {
         {/* Contact Info Cards */}
         <div className="space-y-4 lg:col-span-1">
           <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs flex items-start gap-4">
-            <div className="p-3 bg-orange-100 dark:bg-orange-950/50 text-[var(--color-emphasis-text)] rounded-xl shrink-0">
+            <div className="p-3 bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/50 text-[var(--color-emphasis-text)] rounded-xl shrink-0">
               <MapPin className="h-6 w-6" />
             </div>
             <div>
@@ -110,7 +110,7 @@ export default function Contact() {
           </div>
 
           <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs flex items-start gap-4">
-            <div className="p-3 bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 rounded-xl shrink-0">
+            <div className="p-3 bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] rounded-xl shrink-0">
               <Clock className="h-6 w-6" />
             </div>
             <div>
@@ -138,7 +138,7 @@ export default function Contact() {
                   value={formData.name} 
                   onChange={e => setFormData({...formData, name: e.target.value})} 
                   placeholder="مثلاً: علی محمدی"
-                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500 dark:focus:border-orange-400 transition-colors" 
+                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30 dark:focus:border-[var(--color-cta)]/30 transition-colors" 
                   required 
                 />
               </div>
@@ -150,7 +150,7 @@ export default function Contact() {
                   value={formData.contactInfo} 
                   onChange={e => setFormData({...formData, contactInfo: e.target.value})} 
                   placeholder="09123456789"
-                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm font-mono text-left text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500 dark:focus:border-orange-400 transition-colors" 
+                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm font-mono text-left text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30 dark:focus:border-[var(--color-cta)]/30 transition-colors" 
                   required 
                 />
               </div>
@@ -163,7 +163,7 @@ export default function Contact() {
                 value={formData.subject} 
                 onChange={e => setFormData({...formData, subject: e.target.value})} 
                 placeholder="مثلاً: پیگیری سفارش، مشاوره خرید..."
-                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500 dark:focus:border-orange-400 transition-colors" 
+                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30 dark:focus:border-[var(--color-cta)]/30 transition-colors" 
               />
             </div>
 
@@ -174,7 +174,7 @@ export default function Contact() {
                 value={formData.message} 
                 onChange={e => setFormData({...formData, message: e.target.value})} 
                 placeholder="توضیحات خود را بنویسید..."
-                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500 dark:focus:border-orange-400 transition-colors" 
+                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30 dark:focus:border-[var(--color-cta)]/30 transition-colors" 
                 required
               ></textarea>
             </div>
@@ -182,7 +182,7 @@ export default function Contact() {
             <button 
               type="submit" 
               disabled={isSubmitting}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold py-3 px-8 rounded-xl shadow-md shadow-orange-500/20 transition-all duration-300 active:scale-98 disabled:opacity-50"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold py-3 px-8 rounded-xl shadow-md shadow-[var(--color-cta)]/25 transition-all duration-300 active:scale-98 disabled:opacity-50"
             >
               <Send className="h-4 w-4" /> {isSubmitting ? 'در حال ارسال...' : 'ارسال پیام'}
             </button>

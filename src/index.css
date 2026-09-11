@@ -90,9 +90,9 @@
   --shadow-glow-emerald: 0 8px 24px -4px rgba(16, 185, 129, 0.30);
 
   /* ── CTA Fill Tokens (Copper Titanium — white text 4.63:1 AA ✅) ── */
-  --color-cta: #b3500a;
-  --color-cta-hover: #994700;
-  --color-cta-active: #743400;
+  --color-cta: #c2410c;
+  --color-cta-hover: #9a3412;
+  --color-cta-active: #7c2d12;
   --color-emphasis-text: #c2410c;
   --color-accent-surface: #f47c20;
   --shadow-glow-cta: 0 8px 24px -4px rgba(179, 83, 10, 0.35);
@@ -176,7 +176,7 @@ body {
 
 /* ── Focus Ring System (DESIGN.md primary #994700 — WCAG AA Compliant) ── */
 :focus-visible {
-  outline: 2px solid #994700 !important;
+  outline: 2px solid #9a3412 !important;
   outline-offset: 2px !important;
   border-radius: 8px;
 }
@@ -257,11 +257,11 @@ body {
 }
 
 .brand-gradient {
-  background: linear-gradient(135deg, #b3500a 0%, #994700 100%);
+  background: linear-gradient(135deg, #c2410c 0%, #9a3412 100%);
 }
 
 .brand-gradient-text {
-  background: linear-gradient(135deg, #b3500a 0%, #994700 100%);
+  background: linear-gradient(135deg, #c2410c 0%, #9a3412 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

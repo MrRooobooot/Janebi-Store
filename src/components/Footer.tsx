@@ -46,8 +46,8 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Value Propositions */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-12 border-b border-zinc-200/80 dark:border-zinc-800 pb-12">
-          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/80 dark:border-zinc-800 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:bg-white dark:hover:bg-zinc-800/70 focus-within:ring-2 focus-within:ring-orange-500/40">
-            <div className="p-2.5 rounded-xl bg-orange-100/80 dark:bg-orange-950/40 text-[var(--color-emphasis-text)] shrink-0">
+          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/80 dark:border-zinc-800 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:bg-white dark:hover:bg-zinc-800/70 focus-within:ring-2 focus-within:ring-[var(--color-cta)]/40">
+            <div className="p-2.5 rounded-xl bg-[var(--color-cta)]/80 dark:bg-[var(--color-cta)]/40 text-[var(--color-emphasis-text)] shrink-0">
               <Truck className="h-6 w-6" strokeWidth={2} />
             </div>
             <div>
@@ -56,7 +56,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/80 dark:border-zinc-800 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:bg-white dark:hover:bg-zinc-800/70 focus-within:ring-2 focus-within:ring-orange-500/40">
+          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/80 dark:border-zinc-800 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:bg-white dark:hover:bg-zinc-800/70 focus-within:ring-2 focus-within:ring-[var(--color-cta)]/40">
             <div className="p-2.5 rounded-xl bg-blue-100/80 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 shrink-0">
               <HeadphonesIcon className="h-6 w-6" strokeWidth={2} />
             </div>
@@ -66,7 +66,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/80 dark:border-zinc-800 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:bg-white dark:hover:bg-zinc-800/70 focus-within:ring-2 focus-within:ring-orange-500/40">
+          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/80 dark:border-zinc-800 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:bg-white dark:hover:bg-zinc-800/70 focus-within:ring-2 focus-within:ring-[var(--color-cta)]/40">
             <div className="p-2.5 rounded-xl bg-emerald-100/80 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 shrink-0">
               <Shield className="h-6 w-6" strokeWidth={2} />
             </div>
@@ -76,8 +76,8 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/80 dark:border-zinc-800 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:bg-white dark:hover:bg-zinc-800/70 focus-within:ring-2 focus-within:ring-orange-500/40">
-            <div className="p-2.5 rounded-xl bg-amber-100/80 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 shrink-0">
+          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/80 dark:border-zinc-800 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:bg-white dark:hover:bg-zinc-800/70 focus-within:ring-2 focus-within:ring-[var(--color-cta)]/40">
+            <div className="p-2.5 rounded-xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] shrink-0">
               <CheckCircle className="h-6 w-6" strokeWidth={2} />
             </div>
             <div>
@@ -124,7 +124,7 @@ export default function Footer() {
           </div>
 
           {/* Newsletter Section */}
-          <div className="lg:col-span-2 flex flex-col justify-between bg-gradient-to-r from-orange-50 to-amber-50 dark:from-zinc-900 dark:to-zinc-800/60 p-6 rounded-3xl border border-orange-200/60 dark:border-zinc-800 text-right">
+          <div className="lg:col-span-2 flex flex-col justify-between bg-gradient-to-r from-[var(--color-cta)]/10 to-[var(--color-cta)]/5 dark:from-zinc-900 dark:to-zinc-800/60 p-6 rounded-3xl border border-[var(--color-cta)]/60 dark:border-zinc-800 text-right">
             <div>
               <h4 className="text-base font-black text-zinc-900 dark:text-zinc-100 mb-1">عضویت در خبرنامه جانبی آرنا</h4>
               <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">از جدیدترین تخفیف‌ها، پکیج‌ها و کدهای تخفیف اختصاصی باخبر شوید.</p>
@@ -135,13 +135,13 @@ export default function Footer() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="آدرس ایمیل شما..." 
-                className="grow bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-r-2xl px-4 py-3 focus:outline-none focus:border-orange-500 dark:focus:border-orange-400 text-left dir-ltr text-xs text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
+                className="grow bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-r-2xl px-4 py-3 focus:outline-none focus:border-[var(--color-cta)] text-left dir-ltr text-xs text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
                 required
               />
               <button 
                 type="submit" 
                 aria-label="ارسال عضویت در خبرنامه"
-                className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] dark:bg-[var(--color-cta)] dark:hover:bg-[var(--color-cta-hover)] text-white px-5 rounded-l-2xl flex items-center justify-center transition-colors font-medium cursor-pointer"
+                className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] text-white px-4 rounded-l-2xl flex items-center justify-center transition-colors cursor-pointer shrink-0"
               >
                 <Send className="h-4 w-4" />
               </button>

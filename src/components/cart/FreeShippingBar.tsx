@@ -23,7 +23,7 @@ export default function FreeShippingBar({
       className={`mb-10 p-5 md:p-6 rounded-3xl border transition-all shadow-xs ${
         isFreeShipping
           ? 'bg-emerald-50/80 dark:bg-emerald-950/30 border-emerald-200/60 dark:border-emerald-800/40 backdrop-blur-md'
-          : 'bg-orange-50/80 dark:bg-orange-950/30 border-orange-200/60 dark:border-orange-900/40 backdrop-blur-md'
+          : 'bg-[var(--color-cta)]/80 dark:bg-[var(--color-cta)]/30 border-[var(--color-cta)]/60 dark:border-[var(--color-cta)]/40 backdrop-blur-md'
       }`}
     >
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
@@ -32,7 +32,7 @@ export default function FreeShippingBar({
             className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-md ${
               isFreeShipping
                 ? 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-500'
-                : 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-orange-200 dark:border-orange-800 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)]'
+                : 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/40 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)]'
             }`}
           >
             {isFreeShipping ? (
@@ -69,7 +69,7 @@ export default function FreeShippingBar({
           className={`text-xs font-black px-3 py-1.5 rounded-full border self-start md:self-center font-mono ${
             isFreeShipping
               ? 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700'
-              : 'bg-orange-100 dark:bg-orange-900/60 text-orange-800 dark:text-orange-300 border-orange-300 dark:border-orange-700'
+              : 'bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/60 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/40'
           }`}
         >
           {toPersianDigits(progressPercentage)}٪
@@ -85,7 +85,7 @@ export default function FreeShippingBar({
           className={`h-full rounded-full transition-all relative ${
             isFreeShipping
               ? 'bg-emerald-500 shadow-md shadow-emerald-500/20'
-              : 'bg-orange-500 shadow-md shadow-orange-500/20'
+              : 'bg-[var(--color-cta)] shadow-md shadow-[var(--color-cta)]/25'
           }`}
         />
       </div>

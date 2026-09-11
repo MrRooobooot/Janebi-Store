@@ -75,10 +75,10 @@ export default function Brands() {
     >
       {/* Hero Header */}
       <div className="relative rounded-3xl bg-gradient-to-r from-gray-950 via-slate-900 to-gray-900 text-white p-6 sm:p-10 overflow-hidden shadow-xl border border-gray-800">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--color-cta)]/10 rounded-full blur-3xl pointer-events-none" />
         
         <div className="relative z-10 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30 text-xs font-bold mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] border border-[var(--color-cta)]/30 text-xs font-bold mb-4">
             <Award className="h-4 w-4" />
             <span>۱۰۰٪ محصولات اصلی با هولوگرام اصالت</span>
           </div>
@@ -100,7 +100,7 @@ export default function Brands() {
             placeholder="جستجوی برند (مثلاً: انکر، اپل، بیسوس)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl py-2 px-3.5 pr-9 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500"
+            className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl py-2 px-3.5 pr-9 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-[var(--color-cta)]/30"
           />
           <Search className="h-4 w-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
         </div>
@@ -160,7 +160,7 @@ export default function Brands() {
             >
               <Link 
                 to={`/products?brand=${encodeURIComponent(b.name)}`}
-                className="bg-[var(--color-surface-light)] dark:bg-gray-800/90 rounded-3xl border border-[var(--color-border-light)] dark:border-gray-700/60 p-5 flex flex-col justify-between hover:shadow-xl hover:border-orange-500/40 dark:hover:border-orange-500/40 hover:-translate-y-1.5 transition-all duration-300 group h-full relative overflow-hidden"
+                className="bg-[var(--color-surface-light)] dark:bg-gray-800/90 rounded-3xl border border-[var(--color-border-light)] dark:border-gray-700/60 p-5 flex flex-col justify-between hover:shadow-xl hover:border-[var(--color-cta)]/40 dark:hover:border-[var(--color-cta)]/40 hover:-translate-y-1.5 transition-all duration-300 group h-full relative overflow-hidden"
               >
                 <div>
                   {/* Cover Banner */}

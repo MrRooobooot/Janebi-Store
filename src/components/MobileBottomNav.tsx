@@ -72,7 +72,7 @@ export default function MobileBottomNav() {
               {isActive && (
                 <motion.div
                   layoutId="bottomNavBackground"
-                  className="absolute inset-0 bg-orange-50/50 dark:bg-orange-950/20 rounded-xl"
+                  className="absolute inset-0 bg-[var(--color-cta)]/50 dark:bg-[var(--color-cta)]/20 rounded-xl"
                   transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                 />
               )}
@@ -97,7 +97,7 @@ export default function MobileBottomNav() {
               {isActive && (
                 <motion.div
                   layoutId="bottomNavIndicator"
-                  className="absolute bottom-0 w-6 h-0.5 bg-orange-600 dark:bg-orange-400 rounded-full shadow-[0_0_8px_rgba(234,88,12,0.8)] dark:shadow-[0_0_8px_rgba(251,146,60,0.8)]"
+                  className="absolute bottom-0 w-6 h-0.5 bg-[var(--color-cta)] dark:bg-[var(--color-accent-surface)] rounded-full shadow-[0_0_8px_rgba(194,65,12,0.8)] dark:shadow-[0_0_8px_rgba(244,124,32,0.8)]"
                   transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                 />
               )}

@@ -163,7 +163,7 @@ export default function CartSummaryCard({
       <Link
         to="/checkout"
         aria-label="ادامه فرایند خرید و تکمیل اطلاعات پرداخت"
-        className="w-full bg-primary-300 hover:bg-primary-500 dark:bg-primary-400 dark:hover:bg-primary-500 text-white font-black py-4 px-6 rounded-2xl shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2.5 transition-all active:scale-98 text-sm sm:text-base group"
+        className="w-full bg-primary-300 hover:bg-primary-500 dark:bg-primary-400 dark:hover:bg-primary-500 text-white font-black py-4 px-6 rounded-2xl shadow-lg shadow-[var(--color-cta)]/25 flex items-center justify-center gap-2.5 transition-all active:scale-98 text-sm sm:text-base group"
       >
         <span>تکمیل اطلاعات و پرداخت</span>
         <ArrowLeft className="h-5 w-5 group-hover:translate-x-[-3px] transition-transform" />

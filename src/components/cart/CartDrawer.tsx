@@ -71,7 +71,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               {/* Drawer Header */}
               <div className="p-4 sm:p-5 border-b border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-orange-50 dark:bg-orange-950/50 text-[var(--color-emphasis-text)] flex items-center justify-center">
+                  <div className="w-9 h-9 rounded-xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/50 text-[var(--color-emphasis-text)] flex items-center justify-center">
                     <ShoppingBag className="h-5 w-5" />
                   </div>
                   <div>
@@ -232,7 +232,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     </button>
                     <button
                       onClick={() => { onClose(); navigate('/checkout'); }}
-                      className="w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-black py-3 rounded-xl text-xs shadow-md shadow-orange-600/20 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                      className="w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-black py-3 rounded-xl text-xs shadow-md shadow-[var(--color-cta)]/25 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       <span>تکمیل و پرداخت</span>
                       <ArrowLeft className="h-4 w-4" />

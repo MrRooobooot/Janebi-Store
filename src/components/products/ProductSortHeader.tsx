@@ -78,7 +78,7 @@ export default function ProductSortHeader({
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="w-full appearance-none bg-gray-50 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700/80 rounded-2xl py-2.5 px-4 pr-3 pl-9 text-xs font-bold text-gray-800 dark:text-gray-200 focus:outline-none focus:border-orange-500 transition-all cursor-pointer"
+            className="w-full appearance-none bg-gray-50 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700/80 rounded-2xl py-2.5 px-4 pr-3 pl-9 text-xs font-bold text-gray-800 dark:text-gray-200 focus:outline-none focus:border-[var(--color-cta)]/30 transition-all cursor-pointer"
           >
             <option value="default">پیش‌فرض (محبوب‌ترین)</option>
             <option value="price-asc">ارزان‌ترین</option>

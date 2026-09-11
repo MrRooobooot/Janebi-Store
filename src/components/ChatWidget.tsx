@@ -122,7 +122,7 @@ export default function ChatWidget() {
             {/* Header */}
             <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border-b border-gray-200 dark:border-[var(--color-border-dark)] text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] p-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-orange-50 dark:bg-orange-500/10 flex items-center justify-center">
+                <div className="w-9 h-9 rounded-full bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/10 flex items-center justify-center">
                   <Bot className="h-5 w-5 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)]" />
                 </div>
                 <div>
@@ -154,7 +154,7 @@ export default function ChatWidget() {
                   }`}
                 >
                   <div>{msg.text}</div>
-                  <div className={`text-[9px] mt-1 text-left ${msg.isUser ? 'text-orange-200' : 'text-gray-400'}`}>
+                  <div className={`text-[9px] mt-1 text-left ${msg.isUser ? 'text-white/80' : 'text-gray-400'}`}>
                     {msg.time}
                   </div>
                 </div>
@@ -162,9 +162,9 @@ export default function ChatWidget() {
 
               {isTyping && (
                 <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 p-3 rounded-2xl self-start rounded-bl-none flex items-center gap-1.5 text-xs">
-                  <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse"></span>
-                  <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse [animation-delay:0.2s]"></span>
-                  <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse [animation-delay:0.4s]"></span>
+                  <span className="w-1.5 h-1.5 bg-[var(--color-cta)] rounded-full animate-pulse"></span>
+                  <span className="w-1.5 h-1.5 bg-[var(--color-cta)] rounded-full animate-pulse [animation-delay:0.2s]"></span>
+                  <span className="w-1.5 h-1.5 bg-[var(--color-cta)] rounded-full animate-pulse [animation-delay:0.4s]"></span>
                 </div>
               )}
               <div ref={messagesEndRef} />
@@ -190,7 +190,7 @@ export default function ChatWidget() {
                 value={input} 
                 onChange={(e) => setInput(e.target.value)} 
                 placeholder="سوال خود را بنویسید..." 
-                className="flex-1 bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] border border-transparent focus:border-orange-500 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none transition-colors"
+                className="flex-1 bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] border border-transparent focus:border-[var(--color-cta)]/30 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none transition-colors"
               />
               <button 
                 type="submit" 
@@ -210,7 +210,7 @@ export default function ChatWidget() {
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(true)}
           aria-label="باز کردن راهنمای خرید"
-          className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-[var(--color-border-dark)] text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all relative group cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-900/20"
+          className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] text-white border border-transparent shadow-lg shadow-[var(--color-cta)]/25 w-14 h-14 rounded-full flex items-center justify-center transition-all relative group cursor-pointer"
         >
           <MessageCircle className="h-6 w-6" />
           <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-500 border-2 border-white dark:border-gray-900 rounded-full"></span>

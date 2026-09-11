@@ -76,7 +76,7 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="جستجو کد سفارش یا عنوان کالا..."
-            className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-4 pr-10 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
+            className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-4 pr-10 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30"
           />
           <Search className="h-4 w-4 text-gray-500 absolute right-3.5 top-1/2 -translate-y-1/2" />
         </div>
@@ -96,7 +96,7 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
             onClick={() => setActiveTab(tab.id as any)}
             className={`px-4 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2 ${
               activeTab === tab.id
-                ? 'bg-[var(--color-cta)] text-white shadow-md shadow-orange-500/20'
+                ? 'bg-[var(--color-cta)] text-white shadow-md shadow-[var(--color-cta)]/25'
                 : 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'
             }`}
           >
@@ -140,7 +140,7 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
                         ? 'bg-rose-100 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300'
                         : order.status === 'processing'
                         ? 'bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300'
-                        : 'bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300'
+                        : 'bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)]'
                     }`}
                   >
                     {order.statusText}

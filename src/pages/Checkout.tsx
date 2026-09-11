@@ -55,7 +55,7 @@ export default function Checkout() {
         <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-3">
           <span className="relative">
             اطلاعات ارسال
-            <span className="absolute bottom-1 left-0 right-0 h-3 bg-orange-200/50 dark:bg-orange-500/20 -z-10 rounded-sm"></span>
+            <span className="absolute bottom-1 left-0 right-0 h-3 bg-[var(--color-cta)]/50 dark:bg-[var(--color-cta)]/20 -z-10 rounded-sm"></span>
           </span>
         </h1>
       </div>

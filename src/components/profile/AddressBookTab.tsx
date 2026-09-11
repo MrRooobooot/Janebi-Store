@@ -132,7 +132,7 @@ export default function AddressBookTab() {
 
         <button
           onClick={handleOpenAddModal}
-          className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold text-xs px-5 py-3 rounded-2xl flex items-center gap-2 transition-all shadow-md shadow-orange-500/20 active:scale-95 shrink-0"
+          className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold text-xs px-5 py-3 rounded-2xl flex items-center gap-2 transition-all shadow-md shadow-[var(--color-cta)]/25 active:scale-95 shrink-0"
         >
           <Plus className="h-4 w-4" />
           افزودن آدرس جدید
@@ -160,7 +160,7 @@ export default function AddressBookTab() {
               key={addr.id}
               className={`bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border-2 rounded-3xl p-6 shadow-xs relative flex flex-col justify-between transition-all ${
                 addr.isDefault
-                  ? 'border-orange-500 shadow-md shadow-orange-500/10'
+                  ? 'border-[var(--color-cta)]/30 shadow-md shadow-[var(--color-cta)]/10'
                   : 'border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] hover:border-gray-300 dark:hover:border-gray-700'
               }`}
             >
@@ -172,8 +172,8 @@ export default function AddressBookTab() {
                       {addr.title}
                     </span>
                     {addr.isDefault && (
-                      <span className="bg-orange-100 dark:bg-orange-500/20 text-[var(--color-emphasis-text)] text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                        <Star className="h-3 w-3 fill-orange-500" /> پیش‌فرض
+                      <span className="bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                        <Star className="h-3 w-3 fill-[var(--color-emphasis-text)]" /> پیش‌فرض
                       </span>
                     )}
                   </div>
@@ -277,7 +277,7 @@ export default function AddressBookTab() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="خانه، شرکت..."
-                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-3 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
+                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-3 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30"
                     required
                   />
                 </div>
@@ -291,7 +291,7 @@ export default function AddressBookTab() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="علی رضایی"
-                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-3 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
+                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-3 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30"
                     required
                   />
                 </div>
@@ -308,7 +308,7 @@ export default function AddressBookTab() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="09123456789"
-                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-3 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
+                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-3 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30"
                     required
                   />
                 </div>
@@ -320,7 +320,7 @@ export default function AddressBookTab() {
                   <select
                     value={province}
                     onChange={(e) => setProvince(e.target.value)}
-                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-3 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500 cursor-pointer"
+                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-3 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30 cursor-pointer"
                   >
                     {PROVINCES.map((p) => (
                       <option key={p} value={p}>
@@ -341,7 +341,7 @@ export default function AddressBookTab() {
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                     placeholder="تهران"
-                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-3 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
+                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-3 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30"
                     required
                   />
                 </div>
@@ -356,7 +356,7 @@ export default function AddressBookTab() {
                     value={postalCode}
                     onChange={(e) => setPostalCode(e.target.value)}
                     placeholder="1234567890"
-                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-3 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
+                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-2.5 px-3 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30"
                   />
                 </div>
               </div>
@@ -370,7 +370,7 @@ export default function AddressBookTab() {
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="خیابان اصلی، کوچه، پلاک، واحد..."
-                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-3 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500 resize-none"
+                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-3 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30 resize-none"
                   required
                 />
               </div>
@@ -387,7 +387,7 @@ export default function AddressBookTab() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-6 py-2.5 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white rounded-2xl text-xs font-bold shadow-md shadow-orange-500/20 active:scale-95 disabled:opacity-50"
+                  className="px-6 py-2.5 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white rounded-2xl text-xs font-bold shadow-md shadow-[var(--color-cta)]/25 active:scale-95 disabled:opacity-50"
                 >
                   {submitting ? 'در حال ثبت...' : editingId ? 'ویرایش آدرس' : 'ذخیره آدرس'}
                 </button>

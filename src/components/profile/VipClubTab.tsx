@@ -45,15 +45,15 @@ export default function VipClubTab() {
   return (
     <div className="space-y-6 text-right">
       {/* Tier Progress Card */}
-      <div className="bg-gradient-to-br from-amber-500 via-orange-500 to-amber-600 rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-lg shadow-orange-500/20 space-y-4">
+      <div className="bg-gradient-to-br from-[var(--color-cta)] via-[var(--color-accent-surface)] to-[var(--color-cta-hover)] rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-lg shadow-[var(--color-cta)]/25 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-2xl bg-[var(--color-surface-light)]/20 backdrop-blur-md flex items-center justify-center">
-              <Award className="h-6 w-6 text-amber-200" />
+              <Award className="h-6 w-6 text-white/80" />
             </div>
             <div>
               <h2 className="text-xl font-black">سطح اشتراک: طلایی (VIP)</h2>
-              <p className="text-xs text-amber-100 font-medium">
+              <p className="text-xs text-white/90 font-medium">
                 شما {toPersianDigits(points)} امتیاز فعال دارید
               </p>
             </div>
@@ -65,7 +65,7 @@ export default function VipClubTab() {
 
         {/* Progress bar */}
         <div className="space-y-1.5 pt-2">
-          <div className="flex justify-between text-xs font-bold text-amber-100">
+          <div className="flex justify-between text-xs font-bold text-white/90">
             <span>پیشرفت تا سطح بعدی</span>
             <span>{toPersianDigits(points)} / {toPersianDigits(targetPoints)} امتیاز</span>
           </div>
@@ -87,7 +87,7 @@ export default function VipClubTab() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {loadingCoupons && [...Array(2)].map((_, i) => (
-            <div key={i} className="p-4 rounded-2xl bg-orange-50/50 dark:bg-orange-500/10 border-2 border-dashed border-orange-200 dark:border-orange-500/20 animate-pulse h-28" />
+            <div key={i} className="p-4 rounded-2xl bg-[var(--color-cta)]/50 dark:bg-[var(--color-cta)]/10 border-2 border-dashed border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/20 animate-pulse h-28" />
           ))}
           {!loadingCoupons && coupons.length === 0 && (
             <p className="text-xs text-gray-500 dark:text-gray-400 font-medium col-span-full">
@@ -97,7 +97,7 @@ export default function VipClubTab() {
           {coupons.map((cp) => (
             <div
               key={cp.code}
-              className="p-4 rounded-2xl bg-orange-50/50 dark:bg-orange-500/10 border-2 border-dashed border-orange-200 dark:border-orange-500/20 flex flex-col justify-between gap-4"
+              className="p-4 rounded-2xl bg-[var(--color-cta)]/50 dark:bg-[var(--color-cta)]/10 border-2 border-dashed border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/20 flex flex-col justify-between gap-4"
             >
               <div>
                 <div className="flex items-center justify-between mb-2">
@@ -113,7 +113,7 @@ export default function VipClubTab() {
 
               <button
                 onClick={() => handleCopy(cp.code)}
-                className="w-full py-2 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] hover:bg-[var(--color-cta)] hover:text-white text-[var(--color-emphasis-text)] dark:text-orange-400 border border-orange-200 dark:border-orange-500/30 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-xs"
+                className="w-full py-2 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] hover:bg-[var(--color-cta)] hover:text-white text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] border border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/30 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-xs"
               >
                 {copiedCode === cp.code ? (
                   <>

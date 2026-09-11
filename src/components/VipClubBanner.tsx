@@ -79,7 +79,7 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
-      className="relative rounded-3xl text-white [background:linear-gradient(135deg,#b3500a,#994700)] p-6 sm:p-10 md:p-12 overflow-hidden shadow-xl"
+      className="relative rounded-3xl text-white [background:linear-gradient(135deg,#c2410c,#9a3412)] p-6 sm:p-10 md:p-12 overflow-hidden shadow-xl"
     >
       {/* Background Decorative Blur circles */}
       <div className="absolute -top-24 -right-24 w-72 h-72 bg-[var(--color-surface-light)]/10 rounded-full blur-3xl pointer-events-none" />
@@ -93,7 +93,7 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-black mb-3 leading-tight tracking-tight">
             {title}
           </h2>
-          <p className="text-orange-100 text-sm sm:text-base font-medium leading-relaxed">
+          <p className="text-white/90 text-sm sm:text-base font-medium leading-relaxed">
             {subtitle}
           </p>
         </div>
@@ -107,7 +107,7 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
             >
               <CheckCircle2 className="h-12 w-12 text-green-300 mx-auto mb-3" />
               <h3 className="font-extrabold text-lg mb-1">عضویت با موفقیت انجام شد!</h3>
-              <p className="text-xs text-orange-100 font-medium mb-3">از تخفیف‌های اختصاصی باشگاه مشتریان باخبر خواهید شد.</p>
+              <p className="text-xs text-white/90 font-medium mb-3">از تخفیف‌های اختصاصی باشگاه مشتریان باخبر خواهید شد.</p>
               {couponCode && (
                 <button
                   type="button"
@@ -137,7 +137,7 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
                 disabled={submitting}
                 className="bg-zinc-900 hover:bg-black dark:bg-[var(--color-cta)] dark:hover:bg-[var(--color-cta-hover)] disabled:opacity-60 text-white px-6 py-3.5 rounded-xl font-extrabold text-xs sm:text-sm transition-all duration-300 flex items-center justify-center gap-2 shrink-0 shadow-lg active:scale-95 cursor-pointer"
               >
-                <Gift className="h-4 w-4 text-orange-400" />
+                <Gift className="h-4 w-4 text-[var(--color-emphasis-text)]" />
                 {submitting ? 'در حال ثبت...' : 'دریافت هدیه'}
               </button>
             </form>

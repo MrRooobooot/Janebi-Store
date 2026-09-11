@@ -11,7 +11,7 @@ export default function NotFound() {
       transition={{ duration: 0.4 }}
       className="min-h-[60vh] flex flex-col items-center justify-center py-16 px-4 text-center"
     >
-      <div className="bg-orange-100 dark:bg-orange-900/30 p-6 rounded-full mb-6">
+      <div className="bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/30 p-6 rounded-full mb-6">
         <AlertTriangle className="h-16 w-16 text-[var(--color-emphasis-text)]" />
       </div>
       
@@ -30,7 +30,7 @@ export default function NotFound() {
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-sm">
         <Link 
           to="/"
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-md shadow-orange-500/20"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-md shadow-[var(--color-cta)]/25"
         >
           <Home className="h-5 w-5" />
           <span>بازگشت به خانه</span>

@@ -28,7 +28,7 @@ export default function EmptyState({
         initial={shouldReduceMotion ? false : { scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={shouldReduceMotion ? { duration: 0 } : { type: 'spring', stiffness: 200, damping: 15 }}
-        className="w-20 h-20 sm:w-24 sm:h-24 bg-orange-50 dark:bg-orange-950/30 text-[var(--color-emphasis-text)] rounded-2xl sm:rounded-3xl flex items-center justify-center mb-6 border border-orange-100/80 dark:border-orange-900/40 shadow-inner"
+        className="w-20 h-20 sm:w-24 sm:h-24 bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/30 text-[var(--color-emphasis-text)] rounded-2xl sm:rounded-3xl flex items-center justify-center mb-6 border border-[var(--color-cta)]/80 dark:border-[var(--color-cta)]/40 shadow-inner"
       >
         {icon}
       </motion.div>
@@ -38,7 +38,7 @@ export default function EmptyState({
       {actionLink && actionText && (
         <Link
           to={actionLink}
-          className="bg-primary-400 hover:bg-primary-500 dark:bg-primary-400 dark:hover:bg-primary-500 text-white font-bold py-3 px-8 rounded-xl transition-colors inline-flex items-center justify-center min-touch-target shadow-md shadow-orange-500/20 active:scale-95 raycast-btn"
+          className="bg-primary-400 hover:bg-primary-500 dark:bg-primary-400 dark:hover:bg-primary-500 text-white font-bold py-3 px-8 rounded-xl transition-colors inline-flex items-center justify-center min-touch-target shadow-md shadow-[var(--color-cta)]/25 active:scale-95 raycast-btn"
         >
           {actionText}
         </Link>
@@ -47,7 +47,7 @@ export default function EmptyState({
       {onActionClick && actionText && !actionLink && (
         <button
           onClick={onActionClick}
-          className="bg-primary-400 hover:bg-primary-500 dark:bg-primary-400 dark:hover:bg-primary-500 text-white font-bold py-3 px-8 rounded-xl transition-colors inline-flex items-center justify-center min-touch-target shadow-md shadow-orange-500/20 active:scale-95 raycast-btn"
+          className="bg-primary-400 hover:bg-primary-500 dark:bg-primary-400 dark:hover:bg-primary-500 text-white font-bold py-3 px-8 rounded-xl transition-colors inline-flex items-center justify-center min-touch-target shadow-md shadow-[var(--color-cta)]/25 active:scale-95 raycast-btn"
         >
           {actionText}
         </button>

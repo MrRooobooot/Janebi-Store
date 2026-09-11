@@ -26,7 +26,7 @@ export default function CartItemList({
       <div className="flex items-center justify-between px-2 mb-2">
         <h2 className="text-lg font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
           <span>اقلام سبد خرید</span>
-          <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-orange-100 dark:bg-orange-950/60 text-[var(--color-emphasis-text)]">
+          <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/60 text-[var(--color-emphasis-text)]">
             {toPersianDigits(cart.length)} قلم کالا
           </span>
         </h2>
@@ -49,7 +49,7 @@ export default function CartItemList({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: -60, scale: 0.95 }}
             transition={{ duration: 0.3 }}
-            className="bg-[var(--color-surface-light)]/90 dark:bg-[var(--color-surface-dark)]/90 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/80 rounded-3xl p-5 sm:p-6 shadow-sm hover:border-orange-200 dark:hover:border-gray-700 transition-all flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-6 group"
+            className="bg-[var(--color-surface-light)]/90 dark:bg-[var(--color-surface-dark)]/90 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/80 rounded-3xl p-5 sm:p-6 shadow-sm hover:border-[var(--color-cta)]/30 dark:hover:border-gray-700 transition-all flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-6 group"
           >
             {/* Product Info */}
             <div className="flex items-center gap-4 sm:gap-5 flex-1 min-w-0">
@@ -73,7 +73,7 @@ export default function CartItemList({
                     {item.brand}
                   </span>
                   {item.category && (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-orange-50 dark:bg-orange-950/40 text-[var(--color-emphasis-text)]">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/40 text-[var(--color-emphasis-text)]">
                       {item.category}
                     </span>
                   )}

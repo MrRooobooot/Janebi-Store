@@ -78,7 +78,7 @@ export default function LatestReviews() {
           return (
             <article
               key={review.id ?? `${author}-${dateLabel}`}
-              className="flex flex-col gap-3 p-4 sm:p-5 rounded-2xl bg-[var(--color-surface-light)] dark:bg-[#0d121c] border border-zinc-200/80 dark:border-zinc-800/80 shadow-xs hover:border-orange-500/40 transition-colors"
+              className="flex flex-col gap-3 p-4 sm:p-5 rounded-2xl bg-[var(--color-surface-light)] dark:bg-[#0d121c] border border-zinc-200/80 dark:border-zinc-800/80 shadow-xs hover:border-[var(--color-cta)]/40 transition-colors"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 min-w-0">
@@ -99,7 +99,7 @@ export default function LatestReviews() {
                         key={i}
                         className={`h-3.5 w-3.5 ${
                           i < rating
-                            ? 'text-amber-500 fill-amber-500'
+                            ? 'text-[var(--color-emphasis-text)] fill-[var(--color-emphasis-text)]'
                             : 'text-zinc-300 dark:text-zinc-600'
                         }`}
                       />

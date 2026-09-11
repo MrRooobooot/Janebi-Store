@@ -80,8 +80,8 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
               aria-label={inCompare ? "حذف از مقایسه" : "افزودن به مقایسه"}
               className={`w-11 h-11 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition-all ${
                 inCompare 
-                  ? 'bg-orange-50 dark:bg-orange-950/60 text-[var(--color-emphasis-text)] border border-orange-200 dark:border-orange-800' 
-                  : 'bg-zinc-50 dark:bg-[var(--color-surface-light)]/[0.03] text-zinc-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-950/30 border border-zinc-200/40 dark:border-white/[0.05]'
+                  ? 'bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/60 text-[var(--color-emphasis-text)] border border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/40' 
+                  : 'bg-zinc-50 dark:bg-[var(--color-surface-light)]/[0.03] text-zinc-400 hover:text-[var(--color-emphasis-text)] hover:bg-[var(--color-cta)]/10 dark:hover:bg-[var(--color-cta)]/30 border border-zinc-200/40 dark:border-white/[0.05]'
               }`}
               title="مقایسه مشخصات"
             >
@@ -92,10 +92,10 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
 
         {/* 2. Visual Product Image Container */}
         <Link to={`/product/${product.id}`} className="block group-hover:opacity-95 transition-opacity">
-          <div className="relative aspect-square w-full rounded-2xl bg-gradient-to-b from-zinc-50 to-zinc-100/60 dark:from-white/[0.03] dark:to-white/[0.01] border border-zinc-100 dark:border-white/[0.06] p-4 flex items-center justify-center overflow-hidden mb-3.5 group-hover:border-orange-500/30 transition-colors">
+          <div className="relative aspect-square w-full rounded-2xl bg-gradient-to-b from-zinc-50 to-zinc-100/60 dark:from-white/[0.03] dark:to-white/[0.01] border border-zinc-100 dark:border-white/[0.06] p-4 flex items-center justify-center overflow-hidden mb-3.5 group-hover:border-[var(--color-cta)]/30 transition-colors">
             
             {/* Ambient Radial Accent */}
-            <div className="absolute inset-0 bg-radial from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="absolute inset-0 bg-radial from-[var(--color-cta)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             
             <PictureImage
               src={product.image}
@@ -108,7 +108,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
 
             {/* Low stock badge */}
             {typeof product.stockQuantity === 'number' && product.stockQuantity > 0 && product.stockQuantity <= 3 && (
-              <span className="absolute bottom-2 right-2 bg-amber-500/90 backdrop-blur-xs text-white text-[9px] font-black px-2 py-0.5 rounded-md shadow-xs">
+              <span className="absolute bottom-2 right-2 bg-[var(--color-accent-surface)]/90 backdrop-blur-xs text-white text-[9px] font-black px-2 py-0.5 rounded-md shadow-xs">
                 تنها {toPersianDigits(product.stockQuantity)} عدد
               </span>
             )}
@@ -124,7 +124,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
                   product.rating >= 4
                     ? 'text-emerald-600 dark:text-emerald-400'
                     : product.rating < 2
-                    ? 'text-amber-600 dark:text-amber-400'
+                    ? 'text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)]'
                     : 'text-zinc-600 dark:text-zinc-300'
                 }`}
               >
@@ -133,7 +133,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
                     product.rating >= 4
                       ? 'text-emerald-500'
                       : product.rating < 2
-                      ? 'text-amber-400'
+                      ? 'text-[var(--color-emphasis-text)]'
                       : 'text-zinc-400'
                   }`}
                 />

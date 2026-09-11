@@ -54,17 +54,17 @@ export default function Offers() {
       transition={{ duration: 0.4 }}
       className="space-y-8"
     >
-      <div className="bg-gradient-to-r from-rose-600 via-orange-600 to-amber-600 text-white rounded-3xl p-8 sm:p-10 relative overflow-hidden shadow-lg shadow-rose-600/20">
+      <div className="bg-gradient-to-r from-rose-600 via-[var(--color-accent-surface)] to-[var(--color-cta-hover)] text-white rounded-3xl p-8 sm:p-10 relative overflow-hidden shadow-lg shadow-rose-600/20">
         <div className="relative z-10 max-w-xl">
           <div className="inline-flex items-center gap-2 bg-[var(--color-surface-light)]/20 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold mb-3">
-            <Flame className="h-4 w-4 text-amber-300 animate-pulse" /> جشنواره تخفیف‌های شگفت‌انگیز
+            <Flame className="h-4 w-4 text-white/80 animate-pulse" /> جشنواره تخفیف‌های شگفت‌انگیز
           </div>
           <h1 className="text-3xl font-black mb-3 tracking-tight">پیشنهادهای ویژه و محدود</h1>
           <p className="text-rose-100 text-sm leading-relaxed mb-4">
             بهترین لوازم جانبی موبایل با بالاترین میزان تخفیف و تضمین اصالت کالا. فرصت را از دست ندهید!
           </p>
           <div className="inline-flex items-center gap-3 bg-black/30 backdrop-blur-md px-4 py-2 rounded-xl text-xs font-bold">
-            <Clock className="h-4 w-4 text-amber-400" />
+            <Clock className="h-4 w-4 text-white/80" />
             <span>زمان باقی‌مانده پیشنهاد هفته: {remaining}</span>
           </div>
         </div>

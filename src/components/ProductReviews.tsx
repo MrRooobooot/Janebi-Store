@@ -221,7 +221,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
   return (
     <div className="space-y-8 text-right">
       {/* Top Overview & Ratings Summary Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-gradient-to-br from-zinc-50 to-orange-50/30 dark:from-zinc-800/60 dark:to-zinc-900/60 rounded-3xl p-6 sm:p-8 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-gradient-to-br from-zinc-50 to-[var(--color-cta)]/30 dark:from-zinc-800/60 dark:to-zinc-900/60 rounded-3xl p-6 sm:p-8 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
         
         {/* Rating Score Card */}
         <div className="lg:col-span-4 flex flex-col items-center justify-center p-6 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/80 shadow-xs text-center">
@@ -231,7 +231,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
             </div>
           ) : (
             <span
-              className="inline-block bg-orange-100 dark:bg-orange-950/60 text-[var(--color-emphasis-text)] text-sm font-black px-4 py-2 rounded-full mb-2"
+              className="inline-block bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/60 text-[var(--color-emphasis-text)] text-sm font-black px-4 py-2 rounded-full mb-2"
               aria-label="این محصول هنوز امتیازی ثبت نشده است"
             >
               جدید
@@ -284,7 +284,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
               aria-pressed={ratingFilter === star}
               onClick={() => setRatingFilter(ratingFilter === star ? 'all' : star)}
               className={`flex w-full items-center gap-3 text-xs cursor-pointer group p-1 rounded-lg transition-colors ${
-                ratingFilter === star ? 'bg-orange-50 dark:bg-orange-950/40 font-bold' : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/40'
+                ratingFilter === star ? 'bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/40 font-bold' : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/40'
               }`}
             >
               <div className="flex items-center gap-1 w-14 shrink-0 font-bold text-zinc-700 dark:text-zinc-300">
@@ -313,7 +313,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
         <div>
           <h3 className="text-lg font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
             نظرات و بازخورد خریداران
-            <span className="text-xs font-bold bg-orange-100 dark:bg-orange-950/60 text-[var(--color-emphasis-text)] px-2.5 py-0.5 rounded-full">
+            <span className="text-xs font-bold bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/60 text-[var(--color-emphasis-text)] px-2.5 py-0.5 rounded-full">
               {filteredReviews.length.toLocaleString('fa-IR')}
             </span>
           </h3>
@@ -346,7 +346,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
             exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, height: 0 }}
             transition={{ duration: prefersReducedMotion ? 0 : 0.3 }}
             onSubmit={handleSubmitReview}
-            className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 sm:p-8 border-2 border-orange-500/30 dark:border-orange-500/20 shadow-xl space-y-6 overflow-hidden"
+            className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 sm:p-8 border-2 border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/20 shadow-xl space-y-6 overflow-hidden"
           >
             <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
               <h4 className="font-black text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
@@ -367,7 +367,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
                   value={userName}
                   onChange={(e) => setUserName(e.target.value)}
                   placeholder="مثلاً: علی محمدی"
-                  className="w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl p-3 text-xs text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
+                  className="w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl p-3 text-xs text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30"
                   required
                 />
               </div>
@@ -382,7 +382,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
                   value={reviewTitle}
                   onChange={(e) => setReviewTitle(e.target.value)}
                   placeholder="مثلاً: کیفیـت ساخت عالی و شارژدهی فوق‌العاده"
-                  className="w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl p-3 text-xs text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500"
+                  className="w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl p-3 text-xs text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30"
                   required
                 />
               </div>
@@ -404,7 +404,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
                       onMouseLeave={() => setHoverRating(0)}
                       aria-label={`ثبت امتیاز ${toPersianDigits(star)} از ۵`}
                       aria-pressed={star === userRating}
-                      className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center transition-transform hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 rounded-lg motion-reduce:transition-none motion-reduce:hover:scale-100"
+                      className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center transition-transform hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-cta)]/40 rounded-lg motion-reduce:transition-none motion-reduce:hover:scale-100"
                     >
                       <Star
                         aria-hidden="true"
@@ -418,7 +418,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
                   ))}
                 </div>
 
-                <span className="text-xs font-bold text-[var(--color-emphasis-text)] bg-orange-50 dark:bg-orange-950/60 px-3 py-1 rounded-xl">
+                <span className="text-xs font-bold text-[var(--color-emphasis-text)] bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/60 px-3 py-1 rounded-xl">
                   {RATING_LABELS[hoverRating || userRating]}
                 </span>
               </div>
@@ -434,7 +434,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
                 value={reviewComment}
                 onChange={(e) => setReviewComment(e.target.value)}
                 placeholder="نقاط قوت، نقاط ضعف و نحوه عملکرد محصول در استفاده روزمره را توضیح دهید..."
-                className="w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl p-3.5 text-xs text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-orange-500 transition-colors resize-none"
+                className="w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl p-3.5 text-xs text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30 transition-colors resize-none"
                 required
               />
             </div>
@@ -572,7 +572,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   {/* User Avatar */}
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-orange-500 to-amber-500 text-white font-black text-sm flex items-center justify-center shadow-xs shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[var(--color-cta)]/10 to-[var(--color-accent-surface)] text-white font-black text-sm flex items-center justify-center shadow-xs shrink-0">
                     {review.userName.charAt(0)}
                   </div>
 
@@ -593,7 +593,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
                 </div>
 
                 {/* Star Badge */}
-                <div className="flex items-center gap-1 bg-amber-50 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-800/40 text-amber-700 dark:text-amber-400 px-2.5 py-1 rounded-xl text-xs font-black">
+                <div className="flex items-center gap-1 bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 border border-[var(--color-cta)]/40 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] px-2.5 py-1 rounded-xl text-xs font-black">
                   <span>{toPersianDigits(review.rating.toFixed(1))}</span>
                   <Star className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
                 </div>
@@ -678,7 +678,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
             onClick={() => loadReviews(page - 1)}
             disabled={page <= 1}
             aria-label="صفحه قبل"
-            className="flex items-center justify-center gap-1.5 min-h-[44px] min-w-[44px] px-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-xs font-bold text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+            className="flex items-center justify-center gap-1.5 min-h-[44px] min-w-[44px] px-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-xs font-bold text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-cta)]/40"
           >
             قبلی
           </button>
@@ -695,7 +695,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
             onClick={() => loadReviews(page + 1)}
             disabled={page >= pages}
             aria-label="صفحه بعد"
-            className="flex items-center justify-center gap-1.5 min-h-[44px] min-w-[44px] px-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-xs font-bold text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+            className="flex items-center justify-center gap-1.5 min-h-[44px] min-w-[44px] px-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-xs font-bold text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-cta)]/40"
           >
             بعدی
           </button>

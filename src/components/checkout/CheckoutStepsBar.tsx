@@ -70,7 +70,7 @@ export default function CheckoutStepsBar({ currentStep = 2 }: CheckoutStepsBarPr
                 <span
                   className={`w-10 h-10 rounded-full flex items-center justify-center text-base transition-colors ${
                     isCurrent
-                      ? 'bg-[var(--color-cta)] text-white font-black shadow-md shadow-orange-500/30 ring-2 ring-[var(--color-cta)]/30'
+                      ? 'bg-[var(--color-cta)] text-white font-black shadow-md shadow-[var(--color-cta)]/40 ring-2 ring-[var(--color-cta)]/30'
                       : 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border-2 border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-zinc-400 dark:text-zinc-500 font-bold'
                   }`}
                 >

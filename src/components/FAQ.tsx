@@ -76,7 +76,7 @@ export default function FAQ() {
               key={index}
               className={`bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border rounded-2xl overflow-hidden transition-colors duration-200 ${
                 isOpen
-                  ? 'border-orange-300/90 dark:border-orange-500/40 shadow-sm'
+                  ? 'border-[var(--color-cta)]/90 dark:border-[var(--color-cta)]/40 shadow-sm'
                   : 'border-zinc-200/80 dark:border-[var(--color-border-dark)]'
               }`}
             >
@@ -93,7 +93,7 @@ export default function FAQ() {
                     className={`flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg text-xs sm:text-sm font-black transition-colors ${
                       isOpen
                         ? 'bg-[var(--color-cta)] text-white dark:bg-[var(--color-cta)]'
-                        : 'bg-orange-50 text-orange-700 dark:bg-zinc-800/90 dark:text-orange-400'
+                        : 'bg-[var(--color-cta)]/10 text-[var(--color-emphasis-text)] dark:bg-zinc-800/90 dark:text-[var(--color-emphasis-text)]'
                     }`}
                   >
                     {toPersianDigits(String(index + 1))}
@@ -101,7 +101,7 @@ export default function FAQ() {
                   <span
                     className={`font-bold pr-0 text-sm sm:text-base transition-colors ${
                       isOpen
-                        ? 'text-orange-700 dark:text-orange-400'
+                        ? 'text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)]'
                         : 'text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)]'
                     }`}
                   >

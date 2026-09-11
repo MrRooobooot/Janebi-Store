@@ -20,7 +20,7 @@ export default function CheckoutShippingPaymentForm({
       {/* Shipping Method Selection */}
       <div className="bg-[var(--color-surface-light)]/90 dark:bg-[var(--color-surface-dark)]/90 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
         <h3 className="font-black text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2 pb-3 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
-          <Truck className="h-5 w-5 text-orange-500" />
+          <Truck className="h-5 w-5 text-[var(--color-emphasis-text)]" />
           <span>شیوه ارسال سفارش</span>
         </h3>
 
@@ -29,11 +29,11 @@ export default function CheckoutShippingPaymentForm({
             onClick={() => updateField('shippingMethod', 'express')}
             className={`p-4 sm:p-5 rounded-2xl border-2 cursor-pointer transition-all flex items-start gap-4 ${
               formData.shippingMethod === 'express'
-                ? 'border-orange-500 bg-orange-50/60 dark:bg-orange-950/30 shadow-xs'
+                ? 'border-[var(--color-cta)]/30 bg-[var(--color-cta)]/60 dark:bg-[var(--color-cta)]/30 shadow-xs'
                 : 'border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] hover:border-gray-200 dark:hover:border-gray-700 bg-gray-50/50 dark:bg-gray-800/20'
             }`}
           >
-            <div className="p-3 bg-orange-100 dark:bg-orange-950/80 text-[var(--color-emphasis-text)] rounded-2xl shrink-0">
+            <div className="p-3 bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/80 text-[var(--color-emphasis-text)] rounded-2xl shrink-0">
               <Zap className="h-6 w-6" />
             </div>
             <div className="flex-1 min-w-0">
@@ -53,7 +53,7 @@ export default function CheckoutShippingPaymentForm({
             onClick={() => updateField('shippingMethod', 'standard')}
             className={`p-4 sm:p-5 rounded-2xl border-2 cursor-pointer transition-all flex items-start gap-4 ${
               formData.shippingMethod === 'standard'
-                ? 'border-orange-500 bg-orange-50/60 dark:bg-orange-950/30 shadow-xs'
+                ? 'border-[var(--color-cta)]/30 bg-[var(--color-cta)]/60 dark:bg-[var(--color-cta)]/30 shadow-xs'
                 : 'border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] hover:border-gray-200 dark:hover:border-gray-700 bg-gray-50/50 dark:bg-gray-800/20'
             }`}
           >
@@ -78,7 +78,7 @@ export default function CheckoutShippingPaymentForm({
       {/* Payment Method Selection */}
       <div className="bg-[var(--color-surface-light)]/90 dark:bg-[var(--color-surface-dark)]/90 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
         <h3 className="font-black text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2 pb-3 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
-          <CreditCard className="h-5 w-5 text-orange-500" />
+          <CreditCard className="h-5 w-5 text-[var(--color-emphasis-text)]" />
           <span>شیوه پرداخت وجه</span>
         </h3>
 
@@ -87,7 +87,7 @@ export default function CheckoutShippingPaymentForm({
             onClick={() => updateField('paymentMethod', 'online')}
             className={`p-4 sm:p-5 rounded-2xl border-2 cursor-pointer transition-all flex items-start gap-4 ${
               formData.paymentMethod === 'online'
-                ? 'border-orange-500 bg-orange-50/60 dark:bg-orange-950/30 shadow-xs'
+                ? 'border-[var(--color-cta)]/30 bg-[var(--color-cta)]/60 dark:bg-[var(--color-cta)]/30 shadow-xs'
                 : 'border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] hover:border-gray-200 dark:hover:border-gray-700 bg-gray-50/50 dark:bg-gray-800/20'
             }`}
           >
@@ -111,11 +111,11 @@ export default function CheckoutShippingPaymentForm({
             onClick={() => updateField('paymentMethod', 'cod')}
             className={`p-4 sm:p-5 rounded-2xl border-2 cursor-pointer transition-all flex items-start gap-4 ${
               formData.paymentMethod === 'cod'
-                ? 'border-orange-500 bg-orange-50/60 dark:bg-orange-950/30 shadow-xs'
+                ? 'border-[var(--color-cta)]/30 bg-[var(--color-cta)]/60 dark:bg-[var(--color-cta)]/30 shadow-xs'
                 : 'border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] hover:border-gray-200 dark:hover:border-gray-700 bg-gray-50/50 dark:bg-gray-800/20'
             }`}
           >
-            <div className="p-3 bg-amber-100 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 rounded-2xl shrink-0">
+            <div className="p-3 bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] rounded-2xl shrink-0">
               <Wallet className="h-6 w-6" />
             </div>
             <div className="flex-1 min-w-0">

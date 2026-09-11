@@ -176,7 +176,7 @@ export default function Header() {
             <button
               onClick={openCartDrawer}
               aria-label="مشاهده سبد خرید"
-              className="flex items-center gap-1 bg-orange-50 dark:bg-orange-950/40 text-[var(--color-emphasis-text)] hover:bg-[var(--color-cta-hover)] hover:text-white border border-orange-200 dark:border-orange-900/50 px-1.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl transition-all duration-200 shadow-xs cursor-pointer"
+              className="flex items-center gap-1 bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/40 text-[var(--color-emphasis-text)] hover:bg-[var(--color-cta-hover)] hover:text-white border border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/50 px-1.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl transition-all duration-200 shadow-xs cursor-pointer"
             >
               <div className="relative">
                 <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -216,7 +216,7 @@ export default function Header() {
                     <Link
                       to="/profile"
                       onClick={() => setUserDropdownOpen(false)}
-                      className="flex items-center gap-2 px-4 py-2.5 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-orange-50 dark:hover:bg-orange-950/30 hover:text-[var(--color-emphasis-text)]"
+                      className="flex items-center gap-2 px-4 py-2.5 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-[var(--color-cta)]/10 dark:hover:bg-[var(--color-cta)]/30 hover:text-[var(--color-emphasis-text)]"
                     >
                       <Package className="h-4 w-4" />
                       داشبورد و سفارش‌ها
@@ -226,7 +226,7 @@ export default function Header() {
                       <Link
                         to="/admin"
                         onClick={() => setUserDropdownOpen(false)}
-                        className="flex items-center gap-2 px-4 py-2.5 text-xs text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/30 font-bold"
+                        className="flex items-center gap-2 px-4 py-2.5 text-xs text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] hover:bg-[var(--color-cta)]/10 dark:hover:bg-[var(--color-cta)]/20 font-bold"
                       >
                         <Sparkles className="h-4 w-4" />
                         پنل مدیریت ادمین
@@ -251,7 +251,7 @@ export default function Header() {
               <button
                 onClick={() => setAuthModalOpen(true)}
                 aria-label="ورود یا ثبت نام در سایت"
-                className="flex items-center gap-1 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-black transition-all shadow-sm shadow-orange-600/25 cursor-pointer active:scale-95 shrink-0"
+                className="flex items-center gap-1 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-black transition-all shadow-sm shadow-[var(--color-cta)]/25 cursor-pointer active:scale-95 shrink-0"
               >
                 <LogIn className="h-4 w-4" />
                 <span className="hidden sm:inline">ورود / عضویت</span>
@@ -299,7 +299,7 @@ export default function Header() {
                 key={link.to}
                 to={link.to}
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 hover:bg-orange-50 dark:hover:bg-orange-950/30 hover:text-[var(--color-emphasis-text)] text-zinc-800 dark:text-zinc-200 text-center"
+                className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 hover:bg-[var(--color-cta)]/10 dark:hover:bg-[var(--color-cta)]/30 hover:text-[var(--color-emphasis-text)] text-zinc-800 dark:text-zinc-200 text-center"
               >
                 {link.label}
               </Link>
