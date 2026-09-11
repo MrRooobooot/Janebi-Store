@@ -13,6 +13,12 @@
 - [x] ۱ ردیف تستی DB دیگر (23535) حذف شد (نویز test.avif). گیت: 406/411، دیپلوی OK، باندل `index-By0vun71.js` sha256==محلی، شیم دارک در CSS سرو‌شده (`329e2bd`).
 - Next: Home hero اسلاید عکس‌ها (دارک)، Footer عمق، Checkout — با همان ابزار audit.
 
+### Standing Automation — janebi-design-guardian (cron `7e0cad4fea09`)
+- Created 2026-09-11 night at user request («تا فردا بهت میگم قطعش کنی»): every 3h (`0 */3 * * *`), workdir Janebi-Store, skills janebi-arena-production-readiness + surgical-refactor-playbook, deliver origin.
+- Mission per run: boot local prod (DISABLE_CSP_UPGRADE_INSECURE=1) → `node scripts/design-audit.mjs` (8 combos) → rotate hand-audit over /, /products, /blog, /offers, /brands, /cart, /login (2/run) → fix TOP 1–3 root-causes (index.css shims / dark: pairs) → gate (tsc, 8/8, verify) → commit+push+deploy (lock-respecting) → TASKS.md round entry.
+- No-findings runs: db:backup + VPS backup check, report clean, no invented work. Deploy double-fail → git revert + BLOCKED tag.
+- **USER MUST ASK TO PAUSE/REMOVE** (`cronjob_manage action=pause/remove job_id=7e0cad4fea09`) — not self-terminating.
+
 ### Round 2026-09-11c — Sitewide Design-System Polish (GOAL-09012, SHIPPED, live)
 
 - [x] ریشه‌یابی «هر بار ادیت، یه جای دیگه می‌مونه»: کامپوننت‌ها neutral ها را از ۳ خانواده (slate/gray/zinc) + hex دستی می‌گرفتند — دور بعدی هم همیشه جایی جا می‌ماند. حل ریشه‌ای: alias tokens تو `@theme` (`--color-canvas/surface/border/text-main/text-muted` + `--color-band-tint` + `--color-tile`) + شیم‌های global در index.css که کلاس‌های drift شده را به token های نقشی می‌برند (light+dark).
