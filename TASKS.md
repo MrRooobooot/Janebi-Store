@@ -2,6 +2,17 @@
 
 ## Status: Completed (Aug 28, 2026)
 
+### Round 2026-09-11d — Dark/Light Contrast Root-Fix (GOAL-09013, SHIPPED, live)
+
+- [x] ریشه تضاد رنگ روز/شم (۴ اسکرین‌شات دیباگ شد): شیم‌های GOAL-09012 فقط سمت LIGHT را میت داشتند — در `.dark` کلاس‌های slate/gray خام به پالت تیلویند می‌رفتند و عناصر «جاافتاده در تم روشن» می‌ساختند: متن سرمه‌ای روی کارت سرمه‌ای، tile های سفید خالص، پیل برند سفید، متن hero/بنر عمده/کارت‌های value-prop.
+- [x] حل ریشه‌ای در CSS (نه کامپوننت‌به‌کامپوننت): بلوک `.dark` شیم — نگاشت کامل bg/text/border های neutral به توکن‌های نقشی تاریک (`--color-text-main-dark`، `--color-surface-dark`، tile-dark و…) + `bg-white/90|80` → surface-elevated-dark + edge-fade های `from-white` فقط-لایت → canvas-dark.
+- [x] استثنای قاعده‌مند: tile اینماد عمداً سفید می‌ماند (asset رسمی خط-تیره روی شفاف — سفید = کنتراست الزامی).
+- [x] فیکس‌های نقطه‌ای: `text-zinc-400` های فقط-لایت در Home (خطا/خط‌خورده قیمت) → dark: pair.
+- [x] ابزار: design-audit حالا **۸ ترکیب** (webkit/chromium × light/dark × 390/1280) + اسکن stuck-text (نمونه‌برداری ۴۰۰ نود، کنتراست مؤثر <2.0 = fail). نتیجه: **8/8 PASS** — hero contrast در دارک 18.57:1، صفر stuck-text، صفر console err same-host.
+- [x] باگ خودِ audit هم رفع شد: ThemeContext بعد از mount کلاس دستی را برمی‌گرداند → theme از localStorage + reload؛ effectiveBg روی rgba آلفا<0.1 pass-through.
+- [x] ۱ ردیف تستی DB دیگر (23535) حذف شد (نویز test.avif). گیت: 406/411، دیپلوی OK، باندل `index-By0vun71.js` sha256==محلی، شیم دارک در CSS سرو‌شده (`329e2bd`).
+- Next: Home hero اسلاید عکس‌ها (دارک)، Footer عمق، Checkout — با همان ابزار audit.
+
 ### Round 2026-09-11c — Sitewide Design-System Polish (GOAL-09012, SHIPPED, live)
 
 - [x] ریشه‌یابی «هر بار ادیت، یه جای دیگه می‌مونه»: کامپوننت‌ها neutral ها را از ۳ خانواده (slate/gray/zinc) + hex دستی می‌گرفتند — دور بعدی هم همیشه جایی جا می‌ماند. حل ریشه‌ای: alias tokens تو `@theme` (`--color-canvas/surface/border/text-main/text-muted` + `--color-band-tint` + `--color-tile`) + شیم‌های global در index.css که کلاس‌های drift شده را به token های نقشی می‌برند (light+dark).
