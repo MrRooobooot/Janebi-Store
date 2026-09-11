@@ -97,6 +97,12 @@ app.use(
             // stays active regardless.
             ...(process.env.CSP_REPORT_URI ? { reportUri: [process.env.CSP_REPORT_URI] } : {}),
             reportTo: ["csp-endpoint"],
+            // Local smoke boots (http://127.0.0.1) MUST NOT emit
+            // upgrade-insecure-requests: WebKit then rewrites every local
+            // asset fetch to https://127.0.0.1 and fails them with TLS errors
+            // (the whole sweep looks broken while prod is fine). Prod keeps it.
+            // helmet: only `null` removes the directive ([]/false throw).
+            ...(process.env.DISABLE_CSP_UPGRADE_INSECURE === "1" ? { upgradeInsecureRequests: null } : {}),
           },
         }
       : false,

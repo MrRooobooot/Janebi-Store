@@ -293,25 +293,19 @@ export default function AdminProducts() {
         : '/api/admin/products';
       const method = editingProduct ? 'PUT' : 'POST';
 
-      const res = await fetch(url, {
+      await jsonFetch(url, {
         method,
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(payload)
       });
 
-      if (res.ok) {
-        addToast(editingProduct ? 'محصول با موفقیت بروزرسانی شد' : 'محصول با موفقیت ایجاد شد', 'success');
-        setIsModalOpen(false);
-        fetchProducts();
-      } else {
-        const data = await res.json();
-        addToast(data.error || 'خطا در ثبت محصول', 'error');
-      }
+      addToast(editingProduct ? 'محصول با موفقیت بروزرسانی شد' : 'محصول با موفقیت ایجاد شد', 'success');
+      setIsModalOpen(false);
+      fetchProducts();
     } catch (err) {
-      addToast('خطا در ارتباط با سرور', 'error');
+      addToast(err instanceof Error ? err.message : 'خطا در ثبت محصول', 'error');
     }
   };
 
