@@ -90,6 +90,14 @@ export default function Header() {
             <span className="text-zinc-800 dark:text-zinc-200 truncate font-semibold">{settings.announcement}</span>
           </div>
           <div className="hidden md:flex items-center gap-4 text-[11px] text-zinc-600 dark:text-zinc-400 font-medium shrink-0">
+            <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              </span>
+              پشتیبانی آنلاین — پاسخ‌گوییم
+            </span>
+            <span className="h-3 w-px bg-zinc-300 dark:bg-zinc-700" />
             <span>تلفن پشتیبانی: <span dir="ltr" className="font-mono font-bold text-zinc-700 dark:text-zinc-300">{toPersianDigits(settings.phone)}</span></span>
             <span className="h-3 w-px bg-zinc-300 dark:bg-zinc-700" />
             <span>ساعت کاری: {toPersianDigits(settings.supportHours)}</span>

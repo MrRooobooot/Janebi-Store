@@ -431,7 +431,8 @@ export default function ProductDetail() {
               </div>
 
               {/* Action Buttons */}
-              <div ref={actionsRef} className="pt-6 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex items-center gap-3">
+              <div ref={actionsRef} className="pt-6 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
+                <div className="flex items-center gap-3">
                 <button
                   onClick={handleAddToCart}
                   disabled={outOfStock}
@@ -481,6 +482,21 @@ export default function ProductDetail() {
                 >
                   <ArrowLeftRight className="h-5 w-5" />
                 </button>
+                </div>
+
+                {/* Inline Trust Strip — right under the buy button (new-customer reassurance) */}
+                <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 mt-4">
+                  {[
+                    { icon: Award, label: 'ضمانت اصالت کالا' },
+                    { icon: PackageCheck, label: '۷ روز مرجوعی' },
+                    { icon: Truck, label: 'ارسال سریع' },
+                  ].map(({ icon: Icon, label }) => (
+                    <span key={label} className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 dark:text-emerald-400">
+                      <Icon className="h-3.5 w-3.5 shrink-0" />
+                      {label}
+                    </span>
+                  ))}
+                </div>
               </div>
 
               {/* Trust Badges Row — Digikala-style (D1) */}
