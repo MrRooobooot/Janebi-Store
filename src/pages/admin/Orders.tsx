@@ -10,14 +10,44 @@ import {
 import { toPersianDigits, formatPrice } from '../../lib/utils';
 import PageControls, { unwrapList } from '../../components/admin/PageControls';
 
+// GOAL item 2 — real admin order row shape (mirrors schema.ts orders +
+// order_items as the admin API returns flat rows; replaces the 4 `any`s).
+// src/types additions are out of scope here — colocated with its only consumer.
+interface AdminOrder {
+  id: string;
+  date: string;
+  status: string;
+  statusText: string;
+  total: number;
+  subtotal?: number;
+  shippingFee?: number;
+  discountAmount?: number;
+  paymentMethod?: string;
+  shippingMethod?: string;
+  recipientName: string;
+  recipientPhone: string;
+  recipientAddress: string;
+  recipientPostalCode?: string | null;
+  refId?: string | null;
+  items?: Array<{
+    id: number;
+    productId: number;
+    price: number;
+    qty: number;
+    title: string;
+    image: string;
+    brand: string;
+  }>;
+}
+
 export default function AdminOrders() {
   const token = localStorage.getItem('token');
   const { addToast } = useToast();
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [updatingId, setUpdatingId] = useState<string | null>(null);
-  const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<AdminOrder | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [page, setPage] = useState(1);
   const [bulkBusy, setBulkBusy] = useState(false);
@@ -126,7 +156,7 @@ export default function AdminOrders() {
     const headers = ['شناسه سفارش', 'مشتری', 'موبایل', 'آدرس', 'کد پستی', 'مبلغ (تومان)', 'روش پرداخت', 'وضعیت', 'کد رهگیری پستی', 'تاریخ'];
     const rows = orders.map(o => [
       o.id,
-      `"${o.recipientName || o.userName || '-'}"`,
+      `"${o.recipientName || '-'}"`,
       `"${o.recipientPhone || '-'}"`,
       `"${o.recipientAddress || '-'}"`,
       `"${o.recipientPostalCode || '-'}"`,
@@ -148,13 +178,13 @@ export default function AdminOrders() {
     addToast('گزارش اکسل/CSV سفارشات با موفقیت دانلود شد', 'success');
   };
 
-  const handleCopySMS = (order: any) => {
+  const handleCopySMS = (order: AdminOrder) => {
     const text = `مشتری گرامی ${order.recipientName || 'عزیز'}،\nسفارش شما در جانبی آرنا با شماره پیگیری ${order.id} تحویل شرکت پست گردید.\nکد رهگیری مرسوله پستی: ${order.refId || '-'}\nرهگیری در: tracking.post.ir\nبا تشکر، جانبی آرنا`;
     navigator.clipboard.writeText(text);
     addToast('متن پیامک آماده با موفقیت در کلیپ‌بورد کپی شد', 'success');
   };
 
-  const handlePrintInvoice = (order: any) => {
+  const handlePrintInvoice = (order: AdminOrder) => {
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
 
@@ -207,14 +237,14 @@ export default function AdminOrders() {
             </tr>
           </thead>
           <tbody>
-            ${(order.items || []).map((it: any, i: number) => `
+            ${(order.items || []).map((it, i: number) => `
               <tr>
                 <td>${i + 1}</td>
                 <td>${it.title}</td>
                 <td>${it.brand || '-'}</td>
-                <td>${it.qty || it.quantity}</td>
+                <td>${it.qty}</td>
                 <td>${Number(it.price).toLocaleString()} تومان</td>
-                <td>${(Number(it.price) * Number(it.qty || it.quantity)).toLocaleString()} تومان</td>
+                <td>${(Number(it.price) * Number(it.qty)).toLocaleString()} تومان</td>
               </tr>
             `).join('')}
           </tbody>
@@ -572,7 +602,7 @@ export default function AdminOrders() {
             <div className="space-y-3">
               <h4 className="font-bold text-xs text-gray-700 dark:text-gray-300">اقلام سفارش:</h4>
               <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
-                {selectedOrder.items?.map((item: any, idx: number) => (
+                {selectedOrder.items?.map((item, idx: number) => (
                   <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-[var(--color-surface-dark)]/60 border border-[var(--color-border-light)] dark:border-gray-700 text-xs">
                     <div className="flex items-center gap-3">
                       <img src={item.image} alt={item.title} width="40" height="40" loading="lazy" decoding="async" className="w-10 h-10 rounded-lg object-contain bg-[var(--color-surface-light)] dark:bg-gray-800 p-1 border border-gray-200 dark:border-gray-700" />
@@ -582,7 +612,7 @@ export default function AdminOrders() {
                       </div>
                     </div>
                     <div className="text-left font-bold text-gray-700 dark:text-gray-300">
-                      <div>{toPersianDigits(item.qty || item.quantity)} عدد</div>
+                      <div>{toPersianDigits(item.qty)} عدد</div>
                       <div className="text-[var(--color-emphasis-text)] text-[11px]">{formatPrice(item.price)}</div>
                     </div>
                   </div>
