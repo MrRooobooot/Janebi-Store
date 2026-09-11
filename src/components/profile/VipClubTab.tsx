@@ -48,7 +48,7 @@ export default function VipClubTab() {
       <div className="bg-gradient-to-br from-[var(--color-cta)] via-[var(--color-accent-surface)] to-[var(--color-cta-hover)] rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-lg shadow-[var(--color-cta)]/25 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-[var(--color-surface-light)]/20 backdrop-blur-md flex items-center justify-center">
+            <div className="w-12 h-12 rounded-2xl bg-black/25 backdrop-blur-md flex items-center justify-center">
               <Award className="h-6 w-6 text-white/80" />
             </div>
             <div>

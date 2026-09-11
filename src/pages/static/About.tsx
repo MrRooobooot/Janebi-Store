@@ -14,7 +14,7 @@ export default function About() {
       {/* Hero Section */}
       <div className="rounded-3xl p-8 sm:p-12 text-white [background:linear-gradient(135deg,#e11d48,#be123c)] relative overflow-hidden shadow-lg shadow-[var(--color-cta)]/25">
         <div className="relative z-10 max-w-2xl">
-          <div className="inline-flex items-center gap-2 bg-[var(--color-surface-light)]/20 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold mb-4">
+          <div className="inline-flex items-center gap-2 bg-black/25 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold mb-4">
             <Award className="h-4 w-4" /> درباره فروشگاه جانبی آرنا
           </div>
           <h1 className="text-3xl sm:text-4xl font-black mb-4 tracking-tight leading-tight">

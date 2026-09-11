@@ -213,7 +213,7 @@ export default function Blog() {
     >
       <div className="text-white rounded-3xl [background:linear-gradient(135deg,#e11d48,#be123c)] p-8 sm:p-10 relative overflow-hidden shadow-lg shadow-[var(--color-cta)]/25">
         <div className="relative z-10 max-w-xl">
-          <span className="inline-flex items-center gap-1.5 bg-[var(--color-surface-light)]/20 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full mb-3">
+          <span className="inline-flex items-center gap-1.5 bg-black/25 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full mb-3">
             <BookOpen className="h-3.5 w-3.5" /> مجله تخصصی جانبی آرنا
           </span>
           <h1 className="text-3xl font-black mb-3 tracking-tight">آخرین اخبار و راهنماهای کاربردی</h1>
@@ -346,7 +346,7 @@ export default function Blog() {
                         <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {art.readTime}</span>
                       )}
                     </div>
-                    <h3 className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-base leading-7 mb-3 h-10 sm:h-11 line-clamp-2 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors motion-reduce:transition-none">
+                    <h3 className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-base leading-7 mb-3 h-14 line-clamp-2 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors motion-reduce:transition-none">
                       {art.title}
                     </h3>
                     <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed line-clamp-3 mb-6">

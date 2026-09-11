@@ -1,0 +1,23 @@
+[
+  {
+    "id": "R2-11",
+    "files": [
+      "src/components/cart/CartDrawer.tsx"
+    ],
+    "what": "focus management: dialog container focused on open (requestAnimationFrame defer, tabIndex=-1, outline-none), previous focus restored on close/unmount"
+  },
+  {
+    "id": "R2-06",
+    "files": [
+      "src/contexts/ToastContext.tsx"
+    ],
+    "what": "pending removal timers tracked in useRef Map; provider unmount clears all; addToast stays useCallback([])"
+  },
+  {
+    "id": "R2-15",
+    "files": [
+      "src/index.css"
+    ],
+    "what": "stale comment corrected: CTA = --color-cta #c2410c (4.68:1 AA), #F47C20 secondary emphasis only; no CSS values changed"
+  }
+]

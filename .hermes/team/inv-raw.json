@@ -1,0 +1,1002 @@
+{
+ "src/pages/Products.tsx": {
+  "hex": [
+   [
+    86,
+    "<h1 className=\"text-2xl sm:text-3xl font-black text-zinc-900 dark:text-[#f7f8f8] mb-2\">"
+   ],
+   [
+    99,
+    "<h1 className=\"text-2xl sm:text-3xl font-black text-zinc-900 dark:text-[#f7f8f8] mb-2\">"
+   ]
+  ]
+ },
+ "src/pages/ProductDetail.tsx": {
+  "primary": [
+   [
+    263,
+    "className={`w-20 h-20 sm:w-[72px] sm:h-[72px] min-w-[44px] min-h-[44px] bg-[var(--color-surface-card-light)] dark:bg-white/[0.04] backdrop-blur-md rounded-2xl b"
+   ],
+   [
+    265,
+    "? 'border-primary-300 ring-2 ring-primary-300/60 shadow-[var(--shadow-glow-orange)] scale-105 opacity-100'"
+   ],
+   [
+    266,
+    ": 'border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] opacity-60 hover:opacity-100 hover:border-primary-200 dark:hover:border-primary-300"
+   ]
+  ],
+  "amber": [
+   [
+    318,
+    "<div className={`flex items-center gap-1 ${!hasRating ? 'text-gray-400' : (product.rating ?? 0) >= 4 ? 'text-emerald-500' : (product.rating ?? 0) < 2 ? 'text-am"
+   ]
+  ]
+ },
+ "src/pages/static/About.tsx": {
+  "hex": [
+   [
+    15,
+    "<div className=\"rounded-3xl p-8 sm:p-12 text-white [background:linear-gradient(135deg,#c2410c,#9a3412)] relative overflow-hidden shadow-lg shadow-[var(--color-c"
+   ]
+  ]
+ },
+ "src/pages/static/FAQPage.tsx": {
+  "hex": [
+   [
+    14,
+    "<div className=\"text-white rounded-3xl [background:linear-gradient(135deg,#c2410c,#9a3412)] p-8 sm:p-10 relative overflow-hidden shadow-lg shadow-[var(--color-c"
+   ]
+  ]
+ },
+ "src/pages/static/Blog.tsx": {
+  "hex": [
+   [
+    217,
+    "<div className=\"text-white rounded-3xl [background:linear-gradient(135deg,#c2410c,#9a3412)] p-8 sm:p-10 relative overflow-hidden shadow-lg shadow-[var(--color-c"
+   ]
+  ]
+ },
+ "src/pages/Login.tsx": {
+  "amber": [
+   [
+    247,
+    "<div className=\"rounded-2xl border border-amber-200 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-500/10 p-4 text-xs font-bold leading-6 text-amber-800 dar"
+   ]
+  ]
+ },
+ "src/pages/Home.tsx": {
+  "hex": [
+   [
+    184,
+    "className=\"relative flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-[var(--color-surface-light)] dark:bg-[#0d121c] border border-zinc-200 "
+   ],
+   [
+    307,
+    "className=\"flex items-center gap-3.5 p-4 rounded-2xl bg-[var(--color-surface-light)] dark:bg-[#0d121c] border border-zinc-200/80 dark:border-zinc-800/80 shadow-"
+   ],
+   [
+    324,
+    "<div className=\"bg-gradient-to-br from-[var(--color-cta)]/10 via-white to-[var(--color-cta)]/5 dark:from-[#121827] dark:via-[#0b0f19] dark:to-[#06080e] rounded-"
+   ],
+   [
+    435,
+    "className={`pointer-events-none absolute inset-y-0 left-0 w-10 sm:w-14 z-10 bg-gradient-to-r from-zinc-50 to-transparent dark:from-[#05070c] transition-opacity "
+   ]
+  ],
+  "primary": [
+   [
+    269,
+    "? 'w-8 bg-primary-400 dark:bg-primary-300 shadow-md shadow-primary-500/50'"
+   ]
+  ]
+ },
+ "src/components/EmptyState.tsx": {
+  "primary": [
+   [
+    41,
+    "className=\"bg-primary-400 hover:bg-primary-500 dark:bg-primary-400 dark:hover:bg-primary-500 text-white font-bold py-3 px-8 rounded-xl transition-colors inline-"
+   ],
+   [
+    50,
+    "className=\"bg-primary-400 hover:bg-primary-500 dark:bg-primary-400 dark:hover:bg-primary-500 text-white font-bold py-3 px-8 rounded-xl transition-colors inline-"
+   ]
+  ]
+ },
+ "src/components/ProductCard.tsx": {
+  "hex": [
+   [
+    118,
+    "(low rating ۰–۲ amber #f9bc00 → high ۴–۵ green #00a049) */}"
+   ]
+  ]
+ },
+ "src/contexts/ToastContext.tsx": {
+  "amber": [
+   [
+    55,
+    "? 'bg-amber-600/95 dark:bg-amber-700/95 border-amber-500/30'"
+   ]
+  ]
+ },
+ "src/components/LatestReviews.tsx": {
+  "hex": [
+   [
+    81,
+    "className=\"flex flex-col gap-3 p-4 sm:p-5 rounded-2xl bg-[var(--color-surface-light)] dark:bg-[#0d121c] border border-zinc-200/80 dark:border-zinc-800/80 shadow"
+   ]
+  ]
+ },
+ "src/components/admin/AdminLayout.tsx": {
+  "amber": [
+   [
+    93,
+    "<div className=\"bg-amber-100 dark:bg-amber-900/30 p-6 rounded-full inline-block mb-6\">"
+   ],
+   [
+    94,
+    "<ShieldAlert className=\"h-16 w-16 text-amber-500\" />"
+   ],
+   [
+    102,
+    "className=\"w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3.5 rounded-xl transition-all\""
+   ],
+   [
+    118,
+    "badgeColor: 'bg-amber-500'"
+   ],
+   [
+    159,
+    "{isDarkMode ? <Sun className=\"h-4 w-4 text-amber-400\" /> : <Moon className=\"h-4 w-4 text-indigo-500\" />}"
+   ],
+   [
+    302,
+    "{isDarkMode ? <Sun className=\"h-4 w-4 text-amber-400\" /> : <Moon className=\"h-4 w-4\" />}"
+   ]
+  ],
+  "orange": [
+   [
+    179,
+    "className=\"w-10 h-10 rounded-xl border border-orange-500/30 object-cover shrink-0\""
+   ],
+   [
+    295,
+    "<span className=\"text-[9px] bg-orange-100 dark:bg-orange-950/60 text-[var(--color-emphasis-text)] font-black px-2 py-0.5 rounded-md border border-orange-200 dar"
+   ]
+  ]
+ },
+ "src/components/VipClubBanner.tsx": {
+  "hex": [
+   [
+    82,
+    "className=\"relative rounded-3xl text-white [background:linear-gradient(135deg,#c2410c,#9a3412)] p-6 sm:p-10 md:p-12 overflow-hidden shadow-xl\""
+   ]
+  ]
+ },
+ "src/pages/admin/AuditLogs.tsx": {
+  "orange": [
+   [
+    104,
+    "className=\"w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl pr-10 pl-4 py-2.5 text-xs text-gray-800 dark:text-gray-"
+   ],
+   [
+    140,
+    "<ScrollText className=\"h-3.5 w-3.5 text-orange-500\" />"
+   ]
+  ]
+ },
+ "src/components/Header.tsx": {
+  "hex": [
+   [
+    81,
+    "<header className=\"bg-[var(--color-surface-light)]/95 dark:bg-[#080d15]/90 backdrop-blur-xl border-b border-zinc-200/80 dark:border-zinc-800/80 sticky top-0 z-4"
+   ]
+  ],
+  "amber": [
+   [
+    143,
+    "{isDarkMode ? <Sun className=\"h-5 w-5 text-amber-400\" /> : <Moon className=\"h-5 w-5 text-zinc-600\" />}"
+   ]
+  ]
+ },
+ "src/pages/admin/Orders.tsx": {
+  "hex": [
+   [
+    168,
+    "body { font-family: Tahoma, 'Vazirmatn', sans-serif; padding: 24px; color: #1f2937; direction: rtl; }"
+   ],
+   [
+    169,
+    ".header { display: flex; justify-content: space-between; border-bottom: 2px solid #ea580c; padding-bottom: 12px; margin-bottom: 20px; }"
+   ],
+   [
+    170,
+    ".title { font-size: 20px; font-weight: bold; color: #ea580c; }"
+   ],
+   [
+    171,
+    ".box { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: 12px; line-height: 1.8; }"
+   ],
+   [
+    173,
+    "th, td { border: 1px solid #e5e7eb; padding: 8px 12px; text-align: right; }"
+   ],
+   [
+    174,
+    "th { background: #f3f4f6; }"
+   ],
+   [
+    175,
+    ".total { text-align: left; font-size: 14px; font-weight: bold; color: #ea580c; margin-top: 16px; }"
+   ],
+   [
+    183,
+    "<div style=\"font-size: 12px; color: #6b7280; margin-top: 4px;\">فاکتور رسمی فروش کالا و خدمات</div>"
+   ]
+  ],
+  "orange": [
+   [
+    368,
+    "className=\"w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[var(--color-surface-dark)] focus:outline-none focus"
+   ],
+   [
+    389,
+    "className=\"w-4 h-4 cursor-pointer accent-orange-600\""
+   ],
+   [
+    414,
+    "className=\"w-4 h-4 cursor-pointer accent-orange-600\""
+   ],
+   [
+    438,
+    "order.status === 'pending_payment' ? 'bg-orange-100 text-orange-700 dark:bg-orange-950/40 dark:text-orange-300' :"
+   ],
+   [
+    460,
+    "className=\"flex items-center gap-1 bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/30 text-[var(--color-emphasis-text)] px-2.5 py-1.5 rounded-lg text-[11px]"
+   ],
+   [
+    556,
+    "<div className=\"p-4 rounded-2xl bg-orange-50/40 dark:bg-orange-950/20 border border-orange-100 dark:border-orange-900/30 text-xs space-y-2\">"
+   ],
+   [
+    600,
+    "<Printer className=\"h-4 w-4 text-orange-400\" />"
+   ]
+  ]
+ },
+ "src/index.css": {
+  "hex": [
+   [
+    33,
+    "CTA fills = --color-cta #c2410c (white text 4.68:1, WCAG AA)"
+   ],
+   [
+    34,
+    "#F47C20 = secondary emphasis fills / decorative gradients only"
+   ],
+   [
+    35,
+    "tertiary #EA580C = price text / active states (3.56:1 on white, AA large)"
+   ],
+   [
+    36,
+    "action-hover #D94E06 = hover shifts (4.16:1)"
+   ],
+   [
+    37,
+    "primary #994700 = focus rings / small emphasis (6.12:1)                */"
+   ],
+   [
+    38,
+    "--color-primary-50: #fff3e8;"
+   ],
+   [
+    39,
+    "--color-primary-100: #ffdbc8;"
+   ],
+   [
+    40,
+    "--color-primary-200: #ffb68b;"
+   ],
+   [
+    41,
+    "--color-primary-300: #f47c20;"
+   ],
+   [
+    42,
+    "--color-primary-400: #ea580c;"
+   ],
+   [
+    43,
+    "--color-primary-500: #d94e06;"
+   ],
+   [
+    44,
+    "--color-primary-600: #c2410c;"
+   ],
+   [
+    45,
+    "--color-primary-700: #994700;"
+   ],
+   [
+    46,
+    "--color-primary-800: #743400;"
+   ],
+   [
+    47,
+    "--color-primary-900: #582600;"
+   ],
+   [
+    48,
+    "--color-primary-950: #321300;"
+   ],
+   [
+    51,
+    "--color-accent-gold: #f59e0b;"
+   ],
+   [
+    52,
+    "--color-accent-emerald: #10b981;"
+   ],
+   [
+    53,
+    "--color-accent-cyan: #06b6d4;"
+   ],
+   [
+    54,
+    "--color-accent-rose: #f43f5e;"
+   ],
+   [
+    55,
+    "--color-accent-violet: #8b5cf6;"
+   ],
+   [
+    57,
+    "/* ── Deep Space Secondary (DESIGN.md #0B1536 family) ── */"
+   ],
+   [
+    58,
+    "--color-canvas-light: #f8fafc;"
+   ],
+   [
+    59,
+    "--color-canvas-dark: #0a1128;"
+   ],
+   [
+    60,
+    "--color-surface-light: #ffffff;"
+   ],
+   [
+    61,
+    "--color-surface-dark: #0e1633;"
+   ],
+   [
+    62,
+    "--color-surface-elevated-light: #ffffff;"
+   ],
+   [
+    63,
+    "--color-surface-elevated-dark: #131d3d;"
+   ],
+   [
+    64,
+    "--color-surface-card-light: #ffffff;"
+   ],
+   [
+    65,
+    "--color-surface-card-dark: #101a38;"
+   ],
+   [
+    78,
+    "--color-text-main-light: #0f172a;"
+   ],
+   [
+    79,
+    "--color-text-main-dark: #f7f8f8;"
+   ],
+   [
+    80,
+    "--color-text-muted-light: #64748b;"
+   ],
+   [
+    81,
+    "--color-text-muted-dark: #94a3b8;"
+   ],
+   [
+    82,
+    "--color-text-subtle-light: #94a3b8;"
+   ],
+   [
+    83,
+    "--color-text-subtle-dark: #64748b;"
+   ],
+   [
+    94,
+    "--color-cta: #c2410c;"
+   ],
+   [
+    95,
+    "--color-cta-hover: #9a3412;"
+   ],
+   [
+    96,
+    "--color-cta-active: #7c2d12;"
+   ],
+   [
+    97,
+    "--color-emphasis-text: #c2410c;"
+   ],
+   [
+    98,
+    "--color-accent-surface: #f47c20;"
+   ],
+   [
+    158,
+    "color: #94a3b8 !important;"
+   ],
+   [
+    163,
+    "color: #cbd5e1 !important;"
+   ],
+   [
+    178,
+    "/* ── Focus Ring System (DESIGN.md primary #994700 — WCAG AA Compliant) ── */"
+   ],
+   [
+    180,
+    "outline: 2px solid #9a3412 !important;"
+   ],
+   [
+    186,
+    "outline-color: #ffb68b !important;"
+   ],
+   [
+    261,
+    "background: linear-gradient(135deg, #c2410c 0%, #9a3412 100%);"
+   ],
+   [
+    265,
+    "background: linear-gradient(135deg, #c2410c 0%, #9a3412 100%);"
+   ]
+  ],
+  "primary": [
+   [
+    38,
+    "--color-primary-50: #fff3e8;"
+   ],
+   [
+    39,
+    "--color-primary-100: #ffdbc8;"
+   ],
+   [
+    40,
+    "--color-primary-200: #ffb68b;"
+   ],
+   [
+    41,
+    "--color-primary-300: #f47c20;"
+   ],
+   [
+    42,
+    "--color-primary-400: #ea580c;"
+   ],
+   [
+    43,
+    "--color-primary-500: #d94e06;"
+   ],
+   [
+    44,
+    "--color-primary-600: #c2410c;"
+   ],
+   [
+    45,
+    "--color-primary-700: #994700;"
+   ],
+   [
+    46,
+    "--color-primary-800: #743400;"
+   ],
+   [
+    47,
+    "--color-primary-900: #582600;"
+   ],
+   [
+    48,
+    "--color-primary-950: #321300;"
+   ]
+  ]
+ },
+ "src/pages/admin/Messages.tsx": {
+  "orange": [
+   [
+    215,
+    "className=\"w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl pr-10 pl-4 py-2.5 text-xs text-gray-800 dark:text-gray-"
+   ],
+   [
+    300,
+    "className=\"w-4 h-4 cursor-pointer accent-orange-600\""
+   ],
+   [
+    358,
+    "<div className=\"p-2 rounded-xl bg-orange-100 dark:bg-orange-950/60 text-[var(--color-emphasis-text)]\">"
+   ]
+  ]
+ },
+ "src/pages/admin/Newsletter.tsx": {
+  "orange": [
+   [
+    85,
+    "<MailCheck className=\"h-6 w-6 text-orange-500\" />"
+   ],
+   [
+    109,
+    "className=\"w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl py-2 px-3.5 pr-9 text-xs text-gray-800 dark:text-gray-20"
+   ]
+  ]
+ },
+ "src/pages/admin/Dashboard.tsx": {
+  "orange": [
+   [
+    71,
+    "<div className=\"w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin\"></div>"
+   ],
+   [
+    98,
+    "{ title: \"کاربران\", value: metrics.totalUsers, icon: Users, color: \"text-[var(--color-emphasis-text)]\", bg: \"bg-orange-100 dark:bg-orange-500/20\" },"
+   ],
+   [
+    139,
+    "<div className=\"rounded-2xl p-6 border border-orange-200 dark:border-orange-900/40 bg-orange-50/70 dark:bg-orange-950/20 flex flex-col sm:flex-row sm:items-cent"
+   ],
+   [
+    141,
+    "<div className=\"p-3 rounded-xl bg-orange-100 dark:bg-orange-900/40 text-[var(--color-emphasis-text)] shrink-0\">"
+   ],
+   [
+    308,
+    "order.status === \"pending_payment\" ? \"bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-400\" :"
+   ]
+  ],
+  "amber": [
+   [
+    233,
+    "<div className=\"flex items-center gap-2 text-amber-500\">"
+   ],
+   [
+    244,
+    "<span className=\"font-bold text-amber-600 dark:text-amber-400\">{analytics.loyalty.totalActiveVipPoints.toLocaleString()} امتیاز</span>"
+   ]
+  ]
+ },
+ "src/pages/admin/Products.tsx": {
+  "orange": [
+   [
+    388,
+    "className=\"flex items-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-extrabold px-5 py-3 rounded-2xl text-xs shadow-lg sha"
+   ],
+   [
+    403,
+    "className=\"w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl pr-10 pl-4 py-2.5 text-xs text-gray-800 dark:text-gray-"
+   ],
+   [
+    412,
+    "className=\"w-full md:w-44 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl px-3 py-2.5 text-xs font-bold text-gray-700 dar"
+   ],
+   [
+    424,
+    "className=\"w-full md:w-44 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl px-3 py-2.5 text-xs font-bold text-gray-700 dar"
+   ],
+   [
+    452,
+    "<div className=\"inline-block animate-spin rounded-full h-8 w-8 border-4 border-orange-500 border-t-transparent mb-2\" />"
+   ],
+   [
+    483,
+    "<span className=\"inline-block px-2 py-0.5 rounded-md text-[10px] font-bold bg-orange-50 dark:bg-orange-950/40 text-[var(--color-emphasis-text)] border border-or"
+   ],
+   [
+    528,
+    "className=\"w-20 bg-white dark:bg-gray-700 border-2 border-orange-500 rounded-xl px-2 py-1 text-xs font-mono font-black text-gray-800 dark:text-gray-100 focus:ou"
+   ],
+   [
+    585,
+    "<div className=\"p-2 rounded-xl bg-orange-100 dark:bg-orange-950/60 text-[var(--color-emphasis-text)]\">"
+   ],
+   [
+    617,
+    "className=\"w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outl"
+   ],
+   [
+    633,
+    "className=\"w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outl"
+   ],
+   [
+    656,
+    "className=\"w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outl"
+   ],
+   [
+    662,
+    "<div className=\"bg-orange-50/50 dark:bg-orange-950/20 p-4 rounded-2xl border border-orange-200/60 dark:border-orange-800/40 space-y-4\">"
+   ],
+   [
+    663,
+    "<div className=\"flex items-center gap-2 text-orange-800 dark:text-orange-300 font-black\">"
+   ],
+   [
+    676,
+    "className=\"w-full bg-[var(--color-surface-light)] dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl p-2.5 text-xs font-mono font-bold text"
+   ],
+   [
+    688,
+    "className=\"w-full bg-[var(--color-surface-light)] dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl p-2.5 text-xs font-mono font-bold text"
+   ],
+   [
+    700,
+    "className=\"w-full bg-[var(--color-surface-light)] dark:bg-gray-800 border border-orange-300 dark:border-orange-500 rounded-xl p-2.5 text-xs font-mono font-black"
+   ],
+   [
+    718,
+    "className=\"w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outl"
+   ],
+   [
+    728,
+    "className=\"w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outl"
+   ],
+   [
+    792,
+    "? 'bg-[var(--color-cta)] text-white border-orange-600 shadow-md scale-102'"
+   ],
+   [
+    794,
+    "? 'bg-orange-50/70 dark:bg-orange-950/20 text-gray-800 dark:text-[var(--color-text-main-dark)] border-orange-200 dark:border-orange-800 hover:border-orange-400'"
+   ],
+   [
+    801,
+    "<span className={`text-[9px] block ${isSelected ? 'text-orange-100' : 'text-gray-400'}`}>{item.category}</span>"
+   ],
+   [
+    817,
+    "className=\"w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outl"
+   ],
+   [
+    834,
+    "className=\"px-6 py-2.5 rounded-2xl text-xs font-black bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white shadow-md shadow-orange-500/25 transiti"
+   ]
+  ],
+  "amber": [
+   [
+    537,
+    "stock > 0 ? 'text-amber-600 dark:text-amber-400' :"
+   ],
+   [
+    543,
+    "stock > 0 ? 'bg-amber-500 animate-pulse' :"
+   ]
+  ]
+ },
+ "src/pages/admin/Users.tsx": {
+  "orange": [
+   [
+    166,
+    "className=\"w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl pr-10 pl-4 py-3 text-xs text-gray-800 dark:text-gray-20"
+   ],
+   [
+    309,
+    "className=\"w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outli"
+   ]
+  ],
+  "amber": [
+   [
+    220,
+    "className=\"inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200 dar"
+   ],
+   [
+    341,
+    "<Award className=\"h-5 w-5 text-amber-500\" />"
+   ],
+   [
+    362,
+    "className=\"w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl p-3 text-xs font-bold text-gray-800 dark:text-gray-200 f"
+   ],
+   [
+    378,
+    "className=\"px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-gray-950 text-xs font-black transition-all disabled:opacity-50\""
+   ]
+  ]
+ },
+ "src/pages/admin/Settings.tsx": {
+  "orange": [
+   [
+    59,
+    "'w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500';"
+   ],
+   [
+    150,
+    "<div className=\"animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600\"></div>"
+   ],
+   [
+    181,
+    "className=\"w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-"
+   ],
+   [
+    192,
+    "className=\"w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-"
+   ],
+   [
+    203,
+    "className=\"w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-"
+   ],
+   [
+    214,
+    "className=\"w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-"
+   ],
+   [
+    225,
+    "className=\"w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-"
+   ],
+   [
+    246,
+    "className=\"w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-"
+   ],
+   [
+    255,
+    "className=\"h-5 w-5 rounded border-gray-300 text-[var(--color-emphasis-text)] focus:ring-orange-500 cursor-pointer\""
+   ],
+   [
+    269,
+    "className=\"w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-"
+   ]
+  ],
+  "amber": [
+   [
+    235,
+    "<Megaphone className=\"h-5 w-5 text-amber-500\" />"
+   ],
+   [
+    457,
+    "icon={<Crown className=\"h-5 w-5 text-amber-500\" />}"
+   ]
+  ]
+ },
+ "src/pages/admin/Coupons.tsx": {
+  "orange": [
+   [
+    196,
+    "className=\"flex items-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-extrabold px-5 py-3 rounded-2xl text-xs shadow-lg sha"
+   ],
+   [
+    251,
+    "className=\"p-3.5 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-800 hover:bg-orange-50 text-gray-600 hover:text-[var(--color-emphasis-text)] border bor"
+   ],
+   [
+    324,
+    "<Tag className=\"h-5 w-5 text-orange-500\" />"
+   ],
+   [
+    344,
+    "className=\"w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 font-mono font-black text-sm text-[var(--color-emph"
+   ],
+   [
+    354,
+    "className=\"w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outl"
+   ],
+   [
+    372,
+    "className=\"w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs font-mono font-bold text-gray-800 dark:text"
+   ],
+   [
+    384,
+    "className=\"w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs font-mono text-gray-800 dark:text-gray-200 "
+   ],
+   [
+    400,
+    "className=\"w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outl"
+   ],
+   [
+    411,
+    "className=\"w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outl"
+   ],
+   [
+    422,
+    "className=\"w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs font-mono text-gray-800 dark:text-gray-200 "
+   ],
+   [
+    438,
+    "className=\"px-6 py-2.5 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-extrabold shadow-md shadow-orange-500/20\""
+   ]
+  ]
+ },
+ "src/pages/admin/Reviews.tsx": {
+  "orange": [
+   [
+    110,
+    "<MessageSquare className=\"h-6 w-6 text-orange-500\" />"
+   ],
+   [
+    130,
+    "className=\"w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl py-2 px-3.5 pr-9 text-xs text-gray-800 dark:text-gray-20"
+   ],
+   [
+    140,
+    "className=\"bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl py-2 px-3 text-xs text-gray-800 dark:text-gray-200 focus:outlin"
+   ]
+  ],
+  "amber": [
+   [
+    190,
+    "<span className=\"font-bold text-amber-500 font-mono\">{rev.rating}</span>"
+   ],
+   [
+    191,
+    "<Star className=\"h-3.5 w-3.5 text-amber-400 fill-amber-400\" />"
+   ],
+   [
+    213,
+    "? 'bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 hover:bg-amber-100'"
+   ],
+   [
+    257,
+    "<div className=\"flex items-center gap-1 bg-amber-50 dark:bg-amber-950/40 text-amber-600 px-3 py-1.5 rounded-xl font-bold\">"
+   ],
+   [
+    258,
+    "<Star className=\"h-4 w-4 fill-amber-400 text-amber-400\" />"
+   ]
+  ]
+ },
+ "src/pages/admin/Blog.tsx": {
+  "orange": [
+   [
+    154,
+    "className=\"w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 pr-10 pl-3 text-xs text-gray-800 dark:text-gray-200 fo"
+   ],
+   [
+    247,
+    "className=\"w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 px-3 text-xs font-bold text-gray-900 dark:text-gray-"
+   ],
+   [
+    254,
+    "className=\"w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 px-3 text-xs text-gray-900 dark:text-gray-100 focus:"
+   ],
+   [
+    261,
+    "className=\"w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 px-3 text-xs leading-6 text-gray-900 dark:text-gray-"
+   ],
+   [
+    269,
+    "className=\"w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 px-3 text-xs text-gray-900 dark:text-gray-100 text-l"
+   ],
+   [
+    275,
+    "className=\"w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 px-3 text-xs text-gray-900 dark:text-gray-100 focus:"
+   ],
+   [
+    281,
+    "className=\"w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 px-3 text-xs text-gray-900 dark:text-gray-100 focus:"
+   ],
+   [
+    287,
+    "className=\"w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 px-3 text-xs text-gray-900 dark:text-gray-100 focus:"
+   ],
+   [
+    294,
+    "className=\"w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-2.5 px-3 text-xs text-gray-900 dark:text-gray-100 focus:"
+   ],
+   [
+    301,
+    "className=\"accent-orange-600 w-4 h-4\""
+   ]
+  ]
+ },
+ "src/components/checkout/CheckoutOrderSummary.tsx": {
+  "primary": [
+   [
+    33,
+    "<span className=\"text-xs font-bold text-primary-500 dark:text-primary-300 bg-primary-50 dark:bg-primary-950/40 px-2.5 py-1 rounded-xl\">"
+   ],
+   [
+    101,
+    "<div className=\"font-black text-2xl text-primary-400 dark:text-primary-300 tracking-tight\">"
+   ],
+   [
+    112,
+    "className=\"w-full bg-primary-300 hover:bg-primary-500 dark:bg-primary-400 dark:hover:bg-primary-500 text-white font-black py-4 px-6 rounded-2xl shadow-lg shadow"
+   ]
+  ]
+ },
+ "src/components/cart/CartSummaryCard.tsx": {
+  "primary": [
+   [
+    40,
+    "<span className=\"text-xs font-bold text-primary-500 dark:text-primary-300 bg-primary-50 dark:bg-primary-950/40 px-2.5 py-1 rounded-xl\">"
+   ],
+   [
+    70,
+    ": 'border-gray-200/80 dark:border-gray-700 focus:border-primary-400 dark:focus:border-primary-300'"
+   ],
+   [
+    79,
+    "className=\"min-touch-target bg-primary-300 hover:bg-primary-500 dark:bg-primary-400 dark:hover:bg-primary-500 text-white font-extrabold px-5 py-3 rounded-2xl te"
+   ],
+   [
+    166,
+    "className=\"w-full bg-primary-300 hover:bg-primary-500 dark:bg-primary-400 dark:hover:bg-primary-500 text-white font-black py-4 px-6 rounded-2xl shadow-lg shadow"
+   ]
+  ],
+  "hex": [
+   [
+    162,
+    "{/* Checkout Action Button — kinetic CTA #F47C20 (large/bold text per DESIGN.md contrast) */}"
+   ]
+  ]
+ },
+ "src/components/cart/CartItemList.tsx": {
+  "primary": [
+   [
+    105,
+    "className=\"min-touch-target w-11 h-11 sm:w-10 sm:h-10 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-ce"
+   ],
+   [
+    116,
+    "className=\"min-touch-target w-11 h-11 sm:w-10 sm:h-10 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-ce"
+   ]
+  ]
+ },
+ "src/components/Logo.tsx": {
+  "hex": [
+   [
+    11,
+    "? '#FFFFFF'"
+   ],
+   [
+    13,
+    "? '#0B1536'"
+   ],
+   [
+    29,
+    "stroke=\"#F47C20\""
+   ],
+   [
+    39,
+    "fill=\"#1E70EB\""
+   ],
+   [
+    85,
+    "Janebi <span className=\"text-[#F47C20]\">Arena</span>"
+   ],
+   [
+    102,
+    "<span className={`${textSizes[size]} font-black tracking-tight text-[#0B1536] dark:text-white group-hover:text-[var(--color-emphasis-text)] dark:group-hover:tex"
+   ],
+   [
+    105,
+    "<span className={`${textSizes[size]} font-black tracking-tight text-[#F47C20]`}>"
+   ]
+  ]
+ },
+ "src/components/Layout.tsx": {
+  "hex": [
+   [
+    17,
+    "<div className=\"min-h-screen flex flex-col font-sans text-zinc-900 dark:text-zinc-100 bg-[#f8fafc] dark:bg-[var(--color-canvas-dark)] transition-colors duration"
+   ]
+  ]
+ },
+ "src/components/cart/CartDrawer.tsx": {
+  "hex": [
+   [
+    83,
+    "className=\"w-screen max-w-md bg-[var(--color-surface-light)] dark:bg-[#0c1017] text-zinc-900 dark:text-zinc-100 shadow-2xl border-r border-zinc-200/80 dark:bord"
+   ]
+  ]
+ },
+ "src/components/profile/DashboardOverviewTab.tsx": {
+  "hex": [
+   [
+    26,
+    "<div className=\"rounded-3xl p-6 sm:p-8 text-white [background:linear-gradient(135deg,#c2410c,#9a3412)] relative overflow-hidden shadow-lg shadow-[var(--color-ct"
+   ]
+  ]
+ }
+}

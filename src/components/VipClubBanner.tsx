@@ -82,7 +82,7 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
 
       <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
         <div className="text-right max-w-xl">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[var(--color-surface-light)]/20 backdrop-blur-md text-white text-xs font-black mb-4 border border-white/30">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/25 backdrop-blur-md text-white text-xs font-black mb-4 border border-white/30">
             <Sparkles className="h-4 w-4 text-yellow-300" /> {badge}
           </div>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-black mb-3 leading-tight tracking-tight">
@@ -98,7 +98,7 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
             <motion.div 
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="bg-[var(--color-surface-light)]/20 backdrop-blur-md p-6 rounded-2xl border border-white/30 text-center text-white"
+              className="bg-black/25 backdrop-blur-md p-6 rounded-2xl border border-white/30 text-center text-white"
             >
               <CheckCircle2 className="h-12 w-12 text-green-300 mx-auto mb-3" />
               <h3 className="font-extrabold text-lg mb-1">عضویت با موفقیت انجام شد!</h3>

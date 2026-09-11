@@ -104,7 +104,7 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
             <span
               className={`text-[10px] px-2 py-0.5 rounded-full ${
                 activeTab === tab.id
-                  ? 'bg-[var(--color-surface-light)]/20 text-white'
+                  ? 'bg-black/25 text-white'
                   : 'bg-gray-100 dark:bg-gray-800 text-gray-600'
               }`}
             >
