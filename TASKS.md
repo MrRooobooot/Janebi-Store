@@ -2,6 +2,17 @@
 
 ## Status: Completed (Aug 28, 2026)
 
+### Round 2026-09-11 — API Client Unification (SHIPPED, live)
+
+- [x] verdict تحقیقی: census کمّی (147 فایل TS/TSX ~29.5k LOC، 106 `any`، 18 raw-fetch، churn Home/Header/ProductCard) → ریفکتور فراگیر رد شد؛ فقط دو آیتم جراحی تایید شد (fetch unification + boy-scout).
+- [x] `src/lib/jsonFetch.ts` جدید: `jsonFetch<T>` (POST/PUT JSON، ApiError{status,message}) + `getJson<T>` (GET no-store). exemptions مستند: ProductDetail (AbortController+JSON-LD)، AuthContext/Login/ForcedPasswordChange، useProductFilters (X-Total-Count)، api.ts.
+- [x] ۱۹ call site + آخری (admin product save) مهاجرت — commits `cf2d1cb`, `09a6f37`. tsc تمیز، 406/411 (56 سوییت)، net −36 LOC، ۳ `err:any` حذف.
+- [x] باگ کلاس کشف/حل شد: CSP `upgrade-insecure-requests` × WebKit بوت لوکال = همه fetchها https→TLS-fail. حل: `DISABLE_CSP_UPGRADE_INSECURE=1` (helmet removal shape: `upgradeInsecureRequests: null`؛ `[]`/false throw). prod directive سالم ماند (curl verify=1).
+- [x] ۴ ردیف تستی DB («کالای تست اینواریانت موجودی»، image=/images/test.jpg، ids 23318/23351/23384/23417) پس از FK-census صفر حذف شدند — نویز 404 لوکال.
+- [x] سوییپ دو-موتوره (WebKit+Chromium، ۷ صفحه، بوت prod لوکال): 0 مشکل اپ؛ فقط نویز external enamad 403/408. فلوی واقعی سرچ هدر («قاب» → /products?search=) هر دو موتور PASS.
+- [x] دیپلوی `bash deploy.sh`، health ok، باندل `index-DWJsrLFt.js` sha256 == محلی. docs: PROJECT_GRAPH.md + skill جدید `surgical-refactor-playbook` (census commands + procedure + pitfalls این راند).
+- Next: boy-scout تدریجی ادمین (`as any` در همان فایل‌های باز‌شده)؛ `bale.ts` (2303 خط) جداسازی فقط در صورت فیچر.
+
 ### Round r43 (2026-09-22) — Product JSON-LD Prerender + IRR×10 Bug Fix + Post 17 (SHIPPED, live)
 
 - [x] SEO P0 رفع شد: اسکیمای Product صفحه محصول قبلاً `priceCurrency: IRR` با قیمت ×10 می‌فرستاد (باگ واحد پول). Builder مشترک `src/lib/productJsonLd.ts` ساخته شد — `IRT` با قیمت خام، honesty gate برای aggregateRating (فقط وقتی reviewsCount>0)، بدون default جعلی (desc/brand fabrication حذف شد).
