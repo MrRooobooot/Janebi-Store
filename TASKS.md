@@ -2,6 +2,17 @@
 
 ## Status: Completed (Aug 28, 2026)
 
+### Round 2026-09-11c — Sitewide Design-System Polish (GOAL-09012, SHIPPED, live)
+
+- [x] ریشه‌یابی «هر بار ادیت، یه جای دیگه می‌مونه»: کامپوننت‌ها neutral ها را از ۳ خانواده (slate/gray/zinc) + hex دستی می‌گرفتند — دور بعدی هم همیشه جایی جا می‌ماند. حل ریشه‌ای: alias tokens تو `@theme` (`--color-canvas/surface/border/text-main/text-muted` + `--color-band-tint` + `--color-tile`) + شیم‌های global در index.css که کلاس‌های drift شده را به token های نقشی می‌برند (light+dark).
+- [x] ProductCard: خونریزی دکمه خرید از کپسول (bleed) با `mt-auto` فوتر پین‌شده + `overflow-hidden` ریشه‌ای حل شد؛ tile عکس از slate سرد به `--color-tile` گرم (هم‌خانواده canvas)؛ baseline قیمت/CTA.
+- [x] Products هدر: باند hero از گرادیان محو به باند رز-روشن یکدست (`--color-band-tint`)؛ badge دسته از tint کم‌کنتراست به CTA پر با متن سفید؛ متن توضیح `slate-700`/`slate-300` — کنتراست محاسبه‌شده **9.69:1** (بود ~۳:۱).
+- [x] Sidebar: clearance چیپ FAB چت (`pb-28`) — تداخل «هولدر و نگهدارنده» با FAB رفع؛ count های خاکستری کم‌کنتراست → slate-600/300 (≥4.5:1).
+- [x] ابزار اثرپذیری دائمی: `scripts/design-audit.mjs` — ادعاهای layout را با Playwright می‌سنجد (bleed=0، baselineΔ≤2px، fab-overlap، contrast≥4.5، consoleErr same-host=0) روی ۴ ترکیب موتور×ویوپورت. نتیجه: **4/4 PASS**.
+- [x] ۲ ردیف تستی جدید DB («کالای تست اینواریانت موجودی» با test.jpg — بقا از seed قبلی) پس از FK-census صفر حذف شد (نویز 404 console).
+- [x] گیت: tsc تمیز، 406/411 (56 سوییت)، build OK. دیپلوی: health FAIL گذرا در اسکریپت (بوت ۱۶ثانیه‌ای هنوز warm نبود) — health واقعی 200 ok، باندل `index-CvsBLwkc.js` sha256 == محلی، توکن `band-tint` در CSS سرو‌شده.
+- Next راندهای بعدی: همین الگو روی Home hero/بخش‌ها + Footer/Checkout؛ بعد admin pages.
+
 ### Round 2026-09-11 — API Client Unification (SHIPPED, live)
 
 - [x] verdict تحقیقی: census کمّی (147 فایل TS/TSX ~29.5k LOC، 106 `any`، 18 raw-fetch، churn Home/Header/ProductCard) → ریفکتور فراگیر رد شد؛ فقط دو آیتم جراحی تایید شد (fetch unification + boy-scout).
