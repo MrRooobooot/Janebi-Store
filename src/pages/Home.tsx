@@ -316,7 +316,7 @@ export default function Home() {
 
             {/* Visual 3D Asset Showcase Column (Desktop/Tablet) */}
             <div className="hidden md:flex md:col-span-5 items-center justify-center relative">
-              <div className="relative w-64 h-64 lg:w-80 lg:h-80 rounded-3xl p-6 bg-white/90 dark:bg-[#121c33]/80 border border-slate-200/80 dark:border-white/[0.08] backdrop-blur-md flex items-center justify-center shadow-md dark:shadow-2xl group">
+              <div className="relative w-64 h-64 lg:w-80 lg:h-80 rounded-3xl p-6 bg-white/90 dark:bg-[#121c33]/80 border border-slate-200/80 dark:border-white/[0.08] backdrop-blur-md flex items-center justify-center shadow-md dark:shadow-2xl group hero-visual-tile">
                 <PictureImage
                   src={currentSlide.image}
                   alt={normalizePersianTypography(currentSlide.title)}
@@ -486,7 +486,7 @@ export default function Home() {
 
                   <div className="mt-3 pt-2 border-t border-zinc-100 dark:border-zinc-700/50 flex flex-col items-end">
                     {p.originalPrice && p.originalPrice > p.price && (
-                      <span className="text-[10px] text-zinc-400 line-through">
+                      <span className="text-[10px] text-zinc-400 dark:text-zinc-500 line-through">
                         {formatPrice(p.originalPrice)}
                       </span>
                     )}
@@ -639,7 +639,7 @@ export default function Home() {
           ) : filteredProducts.length > 0 ? (
             filteredProducts.map((p) => <ProductCard key={p.id} product={p} />)
           ) : (
-            <div className="col-span-full py-12 text-center text-sm text-zinc-400">
+            <div className="col-span-full py-12 text-center text-sm text-slate-500 dark:text-slate-300">
               محصولی در این دسته‌بندی موجود نیست.
             </div>
           )}

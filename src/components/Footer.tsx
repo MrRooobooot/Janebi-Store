@@ -156,7 +156,7 @@ export default function Footer() {
               rel="noopener"
               href="https://trustseal.enamad.ir/?id=7152119&Code=m5ul5GVYe8T1P3vUR5nqi0IJeI1JvnPU"
               title="نماد اعتماد الکترونیکی جانبی آرنا"
-              className="w-28 h-28 aspect-square bg-white rounded-2xl border border-slate-200/80 dark:border-white/[0.08] flex items-center justify-center p-2 shadow-xs hover:scale-105 transition-all duration-300 relative group overflow-hidden shrink-0"
+              className="w-28 h-28 aspect-square bg-white dark:bg-white rounded-2xl border border-slate-200/80 dark:border-white/[0.08] flex items-center justify-center p-2 shadow-xs hover:scale-105 transition-all duration-300 relative group overflow-hidden shrink-0 enamad-tile"
             >
               {!imgLoaded && !imgError && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-100 animate-pulse text-[10px] text-zinc-400 font-bold p-1">

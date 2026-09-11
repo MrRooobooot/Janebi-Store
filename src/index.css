@@ -283,6 +283,30 @@ body {
 .text-slate-500, .text-gray-500 { color: var(--color-text-subtle-light); }
 .border-slate-200, .border-gray-200 { border-color: var(--color-border-light); }
 
+/* ── Dark-half Drift Shims (GOAL-09013) ───────────────────────────
+   GOAL-09012 only mapped the LIGHT side. In .dark these raw Tailwind
+   neutral classes kept resolving to their own (too-dark/too-bright)
+   palettes — the "stuck element" class seen in dark screenshots:
+   dark navy text on dark cards, warm-white tiles, unreadable pills.
+   Map them to the dark role tokens so every component inherits the
+   dark theme even where a dark: variant was forgotten. */
+.dark .bg-white:not([class*="dark:bg"]) { background-color: var(--color-surface-dark); }
+.dark .enamad-tile { background-color: #ffffff; }
+.dark .bg-slate-50, .dark .bg-gray-50 { background-color: var(--color-tile-dark); }
+.dark .bg-slate-100, .dark .bg-gray-100 { background-color: rgba(255, 255, 255, 0.05); }
+.dark .text-slate-900, .dark .text-gray-900, .dark .text-zinc-900 { color: var(--color-text-main-dark); }
+.dark .text-slate-800, .dark .text-gray-800, .dark .text-zinc-800 { color: var(--color-text-main-dark); }
+.dark .text-slate-700, .dark .text-gray-700 { color: var(--color-text-main-dark); }
+.dark .text-slate-600, .dark .text-gray-600 { color: var(--color-text-muted-dark); }
+.dark .text-slate-500, .dark .text-gray-500 { color: var(--color-text-muted-dark); }
+.dark .border-slate-200, .dark .border-gray-200 { border-color: var(--color-border-dark); }
+.dark .bg-slate-800, .dark .bg-gray-800 { background-color: rgba(255, 255, 255, 0.06); }
+/* Stuck-light white tiles (hero visual tile, image wells): elevated dark surface */
+.dark .bg-white\/90 { background-color: var(--color-surface-elevated-dark); }
+.dark .bg-white\/80 { background-color: rgba(18, 28, 51, 0.85); }
+/* Light-only edge fades on carousels: use the dark canvas in dark mode */
+.dark .from-white { --tw-gradient-from: var(--color-canvas-dark); }
+
 /* ── Persian Digit Rendering ────────────────────────────────────── */
 .persian-nums {
   font-feature-settings: "ss01" on;
