@@ -108,6 +108,22 @@
   --color-text-subtle-light: #64748b;
   --color-text-subtle-dark: #64748b;
 
+  /* ── Canonical Role Aliases (GOAL-09012: ONE name per role) ──
+     Components kept hand-rolling slate/gray/zinc variants of these roles —
+     the root cause of never-converging polish rounds. Alias them here; map
+     drift classes globally in the utilities section below. */
+  --color-canvas: var(--color-canvas-light);
+  --color-surface: var(--color-surface-light);
+  --color-border: var(--color-border-light);
+  --color-text-main: var(--color-text-main-light);
+  --color-text-muted: var(--color-text-muted-light);
+  /* Warm tinted canvas for hero/filter bands (rose-washed, not pastel-wash) */
+  --color-band-tint-light: #fff5f6;
+  --color-band-tint-dark: rgba(225, 29, 72, 0.06);
+  /* Image placeholder tile — warm, from the canvas family (was cool slate) */
+  --color-tile-light: #f8f6f4;
+  --color-tile-dark: rgba(255, 255, 255, 0.03);
+
   /* ── Elevation Shadows (token: shadow.*) ── */
   --shadow-elevation-1: 0 4px 20px rgba(11, 21, 54, 0.04);
   --shadow-elevation-2: 0 4px 20px rgba(11, 21, 54, 0.07), 0 2px 6px -2px rgba(11, 21, 54, 0.05);
@@ -253,6 +269,19 @@ body {
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.15);
 }
+
+/* ── Canonical Role Alias Utilities (GOAL-09012) ──────────────────
+   Global drift-shims: neutral families (slate/gray/zinc) used ad-hoc in
+   components get mapped to the canonical role tokens, light AND dark.
+   Light-mode mapping keeps hues (differences invisible) while guaranteeing
+   one source of truth; new code should use the role tokens directly. */
+.bg-slate-50, .bg-gray-50 { background-color: var(--color-tile-light); }
+.bg-slate-100, .bg-gray-100 { background-color: var(--color-canvas-light); }
+.text-slate-900, .text-gray-900 { color: var(--color-text-main-light); }
+.text-slate-700, .text-gray-700 { color: #334155; }
+.text-slate-600, .text-gray-600 { color: var(--color-text-muted-light); }
+.text-slate-500, .text-gray-500 { color: var(--color-text-subtle-light); }
+.border-slate-200, .border-gray-200 { border-color: var(--color-border-light); }
 
 /* ── Persian Digit Rendering ────────────────────────────────────── */
 .persian-nums {

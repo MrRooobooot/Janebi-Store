@@ -39,7 +39,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
   };
 
   return (
-    <div className="linear-card bg-white dark:bg-[#0e1629] rounded-2xl border border-slate-200/80 dark:border-white/[0.08] p-3 sm:p-4 transition-all duration-300 relative flex flex-col justify-between h-full group select-none hover:-translate-y-0.5 hover:shadow-[var(--shadow-elevation-2)]">
+    <div className="linear-card bg-white dark:bg-[#0e1629] rounded-2xl border border-slate-200/80 dark:border-white/[0.08] p-3 sm:p-4 pb-3.5 sm:pb-4 transition-all duration-300 relative flex flex-col h-full group select-none hover:-translate-y-0.5 hover:shadow-[var(--shadow-elevation-2)] overflow-hidden">
       
       {/* 1. Header Badges & Quick Action Floating Buttons */}
       <div>
@@ -92,7 +92,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
 
         {/* 2. Visual Product Image Container */}
         <Link to={`/product/${product.id}`} className="block group-hover:opacity-95 transition-opacity">
-          <div className="relative aspect-square w-full rounded-2xl bg-slate-50/80 dark:bg-white/[0.02] border border-slate-100 dark:border-white/[0.05] p-3 sm:p-4 flex items-center justify-center overflow-hidden mb-2.5 group-hover:border-slate-300 dark:group-hover:border-white/[0.12] transition-colors">
+          <div className="relative aspect-square w-full rounded-2xl bg-[var(--color-tile-light)] dark:bg-[var(--color-tile-dark)] border border-slate-100 dark:border-white/[0.05] p-3 sm:p-4 flex items-center justify-center overflow-hidden mb-2.5 group-hover:border-[var(--color-border-light-hover)] dark:group-hover:border-white/[0.12] transition-colors">
             
             {/* Ambient Radial Accent */}
             <div className="absolute inset-0 bg-radial from-[var(--color-cta)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -173,8 +173,8 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
         </Link>
       </div>
 
-      {/* 5. Footer: Price & Add-To-Cart CTA — Always Bottom-Aligned */}
-      <div className="mt-2.5 pt-2.5 border-t border-slate-100 dark:border-white/[0.06]">
+      {/* 5. Footer: Price & Add-To-Cart CTA — pinned to card bottom (never bleeds out) */}
+      <div className="mt-auto pt-2.5 border-t border-slate-100 dark:border-white/[0.06]">
         <div className="flex items-end justify-between gap-2">
           
           {/* Price Stack — guaranteed uniform 2-line baseline across cards */}

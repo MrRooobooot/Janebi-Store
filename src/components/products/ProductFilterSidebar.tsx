@@ -119,7 +119,7 @@ export default function ProductFilterSidebar({
               className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition-colors ${
                 selectedCategory === 'همه'
                   ? 'bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)]'
-                  : 'bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-slate-400'
+                  : 'bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-slate-300'
               }`}
             >
               {productsCount}
@@ -144,7 +144,7 @@ export default function ProductFilterSidebar({
                 className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition-colors ${
                   selectedCategory === cat.name
                     ? 'bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)]'
-                    : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
+                    : 'bg-gray-100 dark:bg-gray-800 text-slate-600 dark:text-slate-300'
                 }`}
               >
                 {cat.count}
@@ -199,7 +199,7 @@ export default function ProductFilterSidebar({
                 </div>
                 <span
                   className={`text-[10px] font-bold ${
-                    isChecked ? 'text-[var(--color-emphasis-text)]' : 'text-gray-500 dark:text-gray-400'
+                    isChecked ? 'text-[var(--color-emphasis-text)]' : 'text-slate-500 dark:text-slate-300'
                   }`}
                 >
                   {b.count}
@@ -359,7 +359,7 @@ export default function ProductFilterSidebar({
   return (
     <>
       {/* Desktop Filter Sidebar */}
-      <aside className="hidden lg:block lg:col-span-3 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 shadow-xs h-fit sticky top-28">
+      <aside className="hidden lg:block lg:col-span-3 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 pb-28 shadow-xs h-fit sticky top-28">
         <div className="flex items-center justify-between mb-6 pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
           <h3 className="font-extrabold text-base text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
             <span>فیلترهای پیشرفته</span>
