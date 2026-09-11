@@ -9,7 +9,8 @@ import VipClubBanner from '../components/VipClubBanner';
 import {
   Sparkles, ArrowLeft, Smartphone, Shield, Zap, Cable, Headphones,
   BatteryCharging, Truck, ShieldCheck, RefreshCw, Headset, Flame, Star,
-  Clock, TrendingUp, Award, CheckCircle2, Navigation, Layers, ShieldAlert, PackageCheck, ChevronLeft, ChevronRight
+  Clock, TrendingUp, Award, CheckCircle2, Navigation, Layers, ShieldAlert, PackageCheck, ChevronLeft, ChevronRight,
+  Watch, Gamepad2, Radio
 } from 'lucide-react';
 import { Product } from '../types';
 import { toPersianDigits, formatPrice, getAssetUrl, normalizePersianTypography } from '../lib/utils';
@@ -148,15 +149,23 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [heroSlides.length]);
 
-  const categoryIconMap: Record<string, any> = {
-    'هولدر و پایه': Navigation,
-    'قاب و کاور': Smartphone,
-    'گلس': Shield,
-    'کابل': Cable,
-    'محافظ کابل': Layers,
-    'شارژر': Zap,
-    'هندزفری': Headphones,
-    'پاوربانک': BatteryCharging,
+  const getCategoryIcon = (title: string) => {
+    if (!title) return Smartphone;
+    const t = title.toLowerCase();
+    if (t.includes('محافظ کابل') || t.includes('روکش')) return Layers;
+    if (t.includes('شارژ') || t.includes('آداپتور')) return Zap;
+    if (t.includes('کابل') || t.includes('سیم')) return Cable;
+    if (t.includes('گلس') || t.includes('محافظ صفحه')) return Shield;
+    if (t.includes('هندزفری') || t.includes('ایرباد') || t.includes('هدفون') || t.includes('هدست')) return Headphones;
+    if (t.includes('پاوربانک') || t.includes('باتری')) return BatteryCharging;
+    if (t.includes('هولدر') || t.includes('پایه') || t.includes('نگهدارنده')) return Navigation;
+    if (t.includes('ساعت')) return Watch;
+    if (t.includes('گیم') || t.includes('بازی')) return Gamepad2;
+    if (t.includes('دانگل') || t.includes('اتصال') || t.includes('مودم')) return Radio;
+    if (t.includes('تبدیل') || t.includes('مبدل')) return RefreshCw;
+    if (t.includes('قاب') || t.includes('کاور')) return Smartphone;
+    if (t.includes('لوازم جانبی') || t.includes('accessories')) return Sparkles;
+    return Smartphone;
   };
 
   useEffect(() => {
@@ -172,7 +181,8 @@ export default function Home() {
       if (Array.isArray(cats)) {
         setCategories(cats.map((c: any) => ({
           ...c,
-          icon: categoryIconMap[c.title] || Smartphone,
+          title: c.title === 'accessories' ? 'لوازم جانبی' : c.title,
+          icon: getCategoryIcon(c.title),
         })));
       }
     }).catch(() => {
@@ -503,8 +513,8 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Desktop / Tablet Prev/Next Arrow Buttons (Interactive with mouse click) */}
-            <div className="flex items-center gap-1.5" role="group" aria-label="کنترل‌های ناوبری دسته‌بندی">
+            {/* Prev/Next Arrow Buttons for Mobile/Tablet Carousel */}
+            <div className="flex lg:hidden items-center gap-1.5" role="group" aria-label="کنترل‌های ناوبری دسته‌بندی">
               <button
                 type="button"
                 onClick={() => scrollCats('prev')}
@@ -533,34 +543,17 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Unified Category Carousel for Mobile & PC with Mouse Drag + Touch Swipe + Floating Arrows */}
-        <div className="relative group/cat">
-          {/* Floating Left Navigation Button (Mouse click for PC) */}
-          <button
-            type="button"
-            onClick={() => scrollCats('next')}
-            disabled={!canScrollNext}
-            aria-label="رفتن به دسته‌های بعد"
-            className={`hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/90 dark:bg-zinc-900/90 text-zinc-800 dark:text-zinc-100 hover:bg-[var(--color-cta)] hover:text-white border border-zinc-200 dark:border-zinc-700 shadow-lg items-center justify-center transition-all active:scale-90 cursor-pointer backdrop-blur-md ${
-              canScrollNext ? 'opacity-80 hover:opacity-100' : 'opacity-0 pointer-events-none'
-            }`}
-          >
-            <ChevronLeft className="h-5 w-5" />
-          </button>
+        {/* 1. Desktop View (>= 1024px): Balanced 8-Column Grid — Zero Cutoff, Zero Overlap */}
+        <div className="hidden lg:grid lg:grid-cols-8 gap-3 sm:gap-4">
+          {categories.slice(0, 8).map((cat, idx) => (
+            <div key={`desktop-${cat.slug}-${idx}`} className="w-full">
+              {renderCategoryCard(cat, idx)}
+            </div>
+          ))}
+        </div>
 
-          {/* Floating Right Navigation Button (Mouse click for PC) */}
-          <button
-            type="button"
-            onClick={() => scrollCats('prev')}
-            disabled={!canScrollPrev}
-            aria-label="رفتن به دسته‌های قبل"
-            className={`hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/90 dark:bg-zinc-900/90 text-zinc-800 dark:text-zinc-100 hover:bg-[var(--color-cta)] hover:text-white border border-zinc-200 dark:border-zinc-700 shadow-lg items-center justify-center transition-all active:scale-90 cursor-pointer backdrop-blur-md ${
-              canScrollPrev ? 'opacity-80 hover:opacity-100' : 'opacity-0 pointer-events-none'
-            }`}
-          >
-            <ChevronRight className="h-5 w-5" />
-          </button>
-
+        {/* 2. Mobile & Tablet View (< 1024px): Smooth Touch Carousel with Mouse-Drag + Header Nav */}
+        <div className="relative lg:hidden">
           {/* Edge fade gradients */}
           <div
             aria-hidden="true"
@@ -584,11 +577,11 @@ export default function Home() {
             onMouseMove={handleCatMouseMove}
             onMouseUp={handleCatMouseUp}
             onMouseLeave={handleCatMouseUp}
-            className="flex gap-3 sm:gap-4 overflow-x-auto pb-3 -mx-4 px-4 sm:mx-0 sm:px-0 scroll-smooth hide-scrollbar select-none cursor-grab active:cursor-grabbing"
+            className="flex gap-3 sm:gap-4 overflow-x-auto pb-3 -mx-4 px-4 sm:mx-0 sm:px-0 scroll-smooth hide-scrollbar select-none cursor-grab active:cursor-grabbing snap-x"
             style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
           >
             {categories.map((cat, idx) => (
-              <div key={`${cat.slug}-${idx}`} className="shrink-0 w-28 sm:w-36 lg:w-[140px]">
+              <div key={`mobile-${cat.slug}-${idx}`} className="shrink-0 w-28 sm:w-36 snap-start">
                 {renderCategoryCard(cat, idx)}
               </div>
             ))}
