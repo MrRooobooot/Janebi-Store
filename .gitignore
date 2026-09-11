@@ -86,3 +86,7 @@ bale-worker/.wrangler/
 # Generated verify snapshots
 .hermes/verify-result.json
 .hermes/verify-*.json
+
+migration-assets/
+scripts/probe-*.mjs
+.hermes/team/
