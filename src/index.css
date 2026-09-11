@@ -54,32 +54,32 @@
   --color-accent-rose: #f43f5e;
   --color-accent-violet: #8b5cf6;
 
-  /* ── Deep Space Secondary (DESIGN.md #0B1536 family) ── */
-  --color-canvas-light: #f8fafc;
-  --color-canvas-dark: #0a1128;
+  /* ── Luxury Titanium Palette (Unified Dark & Light Canvas Architecture) ── */
+  --color-canvas-light: #f1f5f9;
+  --color-canvas-dark: #090d16;
   --color-surface-light: #ffffff;
-  --color-surface-dark: #0e1633;
+  --color-surface-dark: #0e1629;
   --color-surface-elevated-light: #ffffff;
-  --color-surface-elevated-dark: #131d3d;
+  --color-surface-elevated-dark: #121c33;
   --color-surface-card-light: #ffffff;
-  --color-surface-card-dark: #101a38;
-  --color-surface-glass-light: rgba(255, 255, 255, 0.82);
-  --color-surface-glass-dark: rgba(14, 22, 51, 0.82);
+  --color-surface-card-dark: #0e1629;
+  --color-surface-glass-light: rgba(255, 255, 255, 0.88);
+  --color-surface-glass-dark: rgba(14, 22, 41, 0.85);
 
   /* ── Precision Border & Divider Tokens ── */
-  --color-border-light: rgba(15, 23, 42, 0.08);
+  --color-border-light: rgba(15, 23, 42, 0.09);
   --color-border-dark: rgba(255, 255, 255, 0.08);
-  --color-border-subtle-light: rgba(15, 23, 42, 0.04);
+  --color-border-subtle-light: rgba(15, 23, 42, 0.05);
   --color-border-subtle-dark: rgba(255, 255, 255, 0.04);
-  --color-border-dark-hover: rgba(244, 63, 94, 0.40);
+  --color-border-dark-hover: rgba(225, 29, 72, 0.45);
   --color-border-light-hover: rgba(225, 29, 72, 0.35);
 
   /* ── High-Luminance Typography Tokens ── */
   --color-text-main-light: #0f172a;
-  --color-text-main-dark: #f7f8f8;
-  --color-text-muted-light: #64748b;
+  --color-text-main-dark: #f8fafc;
+  --color-text-muted-light: #475569;
   --color-text-muted-dark: #94a3b8;
-  --color-text-subtle-light: #94a3b8;
+  --color-text-subtle-light: #64748b;
   --color-text-subtle-dark: #64748b;
 
 /* ── Elevation Box Shadows (DESIGN.md: 0 4px 20px rgba(11,21,54,0.04)) ── */

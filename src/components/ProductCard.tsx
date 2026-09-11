@@ -39,14 +39,14 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
   };
 
   return (
-    <div className="linear-card bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-light)]/[0.025] rounded-2xl border border-zinc-200/80 dark:border-white/[0.08] p-4 transition-all duration-300 relative flex flex-col justify-between h-full group select-none hover:-translate-y-0.5 hover:shadow-[var(--shadow-elevation-2)]">
+    <div className="linear-card bg-white dark:bg-[#0e1629] rounded-2xl border border-slate-200/80 dark:border-white/[0.08] p-4 transition-all duration-300 relative flex flex-col justify-between h-full group select-none hover:-translate-y-0.5 hover:shadow-[var(--shadow-elevation-2)]">
       
       {/* 1. Header Badges & Quick Action Floating Buttons */}
       <div>
         <div className="flex items-start justify-between gap-2 mb-3 relative z-10">
           <div className="min-w-0 max-w-[60%]">
             {outOfStock ? (
-              <span className="bg-zinc-100 dark:bg-zinc-800/80 text-zinc-500 dark:text-zinc-400 text-[10px] font-black px-2.5 py-1 rounded-full border border-zinc-200 dark:border-zinc-700 inline-block">
+              <span className="bg-slate-100 dark:bg-white/[0.06] text-slate-500 dark:text-slate-400 text-[10px] font-black px-2.5 py-1 rounded-full border border-slate-200 dark:border-white/[0.08] inline-block">
                 ناموجود
               </span>
             ) : product.discount && product.discount > 0 ? (
@@ -54,7 +54,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
                 {toPersianDigits(product.discount)}٪ تخفیف
               </span>
             ) : (
-              <span className="text-[10px] font-bold text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-white/[0.04] px-2.5 py-0.5 rounded-lg border border-zinc-200/60 dark:border-white/[0.06] inline-block whitespace-nowrap overflow-hidden text-ellipsis max-w-full align-top">
+              <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-white/[0.04] px-2.5 py-0.5 rounded-lg border border-slate-200/60 dark:border-white/[0.06] inline-block whitespace-nowrap overflow-hidden text-ellipsis max-w-full align-top">
                 {product.brand || 'اورجینال'}
               </span>
             )}
@@ -92,7 +92,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
 
         {/* 2. Visual Product Image Container */}
         <Link to={`/product/${product.id}`} className="block group-hover:opacity-95 transition-opacity">
-          <div className="relative aspect-square w-full rounded-2xl bg-gradient-to-b from-zinc-50 to-zinc-100/60 dark:from-white/[0.03] dark:to-white/[0.01] border border-zinc-100 dark:border-white/[0.06] p-4 flex items-center justify-center overflow-hidden mb-3.5 group-hover:border-[var(--color-cta)]/30 transition-colors">
+          <div className="relative aspect-square w-full rounded-2xl bg-slate-50/80 dark:bg-white/[0.02] border border-slate-100 dark:border-white/[0.05] p-4 flex items-center justify-center overflow-hidden mb-3.5 group-hover:border-slate-300 dark:group-hover:border-white/[0.12] transition-colors">
             
             {/* Ambient Radial Accent */}
             <div className="absolute inset-0 bg-radial from-[var(--color-cta)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

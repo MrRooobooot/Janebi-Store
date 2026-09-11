@@ -218,25 +218,25 @@ export default function Home() {
       title: settings.valueProp1Title || STORE_SETTINGS_DEFAULTS.valueProp1Title,
       desc: settings.valueProp1Desc || STORE_SETTINGS_DEFAULTS.valueProp1Desc,
       icon: PackageCheck,
-      color: 'text-[var(--color-cta)] bg-[var(--color-cta)]/10 border-[var(--color-cta)]/20',
+      color: 'text-blue-600 bg-blue-50 border-blue-200/80 dark:text-blue-400 dark:bg-blue-950/40 dark:border-blue-900/40',
     },
     {
       title: settings.valueProp2Title || STORE_SETTINGS_DEFAULTS.valueProp2Title,
       desc: settings.valueProp2Desc || STORE_SETTINGS_DEFAULTS.valueProp2Desc,
       icon: Truck,
-      color: 'text-[var(--color-cta)] bg-[var(--color-cta)]/10 border-[var(--color-cta)]/20',
+      color: 'text-[var(--color-cta)] bg-primary-50 border-primary-200/80 dark:text-primary-400 dark:bg-primary-950/40 dark:border-primary-900/40',
     },
     {
       title: settings.valueProp3Title || STORE_SETTINGS_DEFAULTS.valueProp3Title,
       desc: settings.valueProp3Desc || STORE_SETTINGS_DEFAULTS.valueProp3Desc,
       icon: ShieldCheck,
-      color: 'text-[var(--color-cta)] bg-[var(--color-cta)]/10 border-[var(--color-cta)]/20',
+      color: 'text-emerald-600 bg-emerald-50 border-emerald-200/80 dark:text-emerald-400 dark:bg-emerald-950/40 dark:border-emerald-900/40',
     },
     {
       title: settings.valueProp4Title || STORE_SETTINGS_DEFAULTS.valueProp4Title,
       desc: settings.valueProp4Desc || STORE_SETTINGS_DEFAULTS.valueProp4Desc,
       icon: Headset,
-      color: 'text-[var(--color-cta)] bg-[var(--color-cta)]/10 border-[var(--color-cta)]/20',
+      color: 'text-amber-600 bg-amber-50 border-amber-200/80 dark:text-amber-400 dark:bg-amber-950/40 dark:border-amber-900/40',
     },
   ], [settings]);
 
@@ -254,15 +254,15 @@ export default function Home() {
             e.stopPropagation();
           }
         }}
-        className="w-full h-full min-h-[128px] sm:min-h-[140px] relative flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl bg-[var(--color-surface-light)] dark:bg-[#0d121c] border border-zinc-200/90 dark:border-zinc-800 hover:border-[var(--color-cta)]/40 dark:hover:border-[var(--color-cta)]/40 hover:shadow-md transition-all duration-200 group text-center shadow-xs select-none min-touch-target"
+        className="w-full h-full min-h-[128px] sm:min-h-[140px] relative flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl bg-white dark:bg-[#0e1629] border border-slate-200/90 dark:border-white/[0.08] hover:border-primary-300 dark:hover:border-primary-500/40 hover:shadow-md transition-all duration-200 group text-center shadow-xs select-none min-touch-target"
       >
-        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800/80 flex items-center justify-center text-zinc-700 dark:text-zinc-200 group-hover:bg-[var(--color-cta)] group-hover:text-white transition-all duration-200 mb-2.5 group-hover:scale-105 shadow-xs shrink-0">
+        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-100 dark:bg-white/[0.04] flex items-center justify-center text-slate-700 dark:text-slate-200 group-hover:bg-[var(--color-cta)] group-hover:text-white transition-all duration-200 mb-2.5 group-hover:scale-105 shadow-xs shrink-0">
           <Icon className="h-5 w-5 sm:h-6 sm:w-6 stroke-[1.8]" />
         </div>
-        <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors truncate w-full px-1 block">
+        <span className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors truncate w-full px-1 block">
           {cat.title}
         </span>
-        <span className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-1 block">
+        <span className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 block">
           {toPersianDigits(cat.count || 0)} کالا
         </span>
       </Link>
@@ -274,26 +274,26 @@ export default function Home() {
       
       {/* 1. Hero Showcase Section */}
       <section className="w-full box-border">
-        <div className={`relative rounded-3xl overflow-hidden bg-gradient-to-b from-[var(--color-cta)]/70 via-white to-zinc-50 dark:from-[var(--color-surface-elevated-dark)] dark:via-[var(--color-surface-dark)] dark:to-[var(--color-canvas-dark)] border ${currentSlide.borderColor} shadow-xl dark:shadow-2xl p-6 sm:p-8 lg:p-10 transition-colors duration-500 min-h-[360px] sm:min-h-[420px] flex flex-col justify-between`}>
+        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-white via-slate-50 to-rose-50/30 dark:from-[#0e1629] dark:via-[#0c1220] dark:to-[#070b14] border border-slate-200/90 dark:border-white/[0.08] shadow-lg dark:shadow-2xl p-6 sm:p-8 lg:p-10 transition-colors duration-500 min-h-[360px] sm:min-h-[420px] flex flex-col justify-between">
           
           {/* Ambient Dot Grid (dual-theme, non-hardcoded) */}
-          <div className="absolute inset-0 bg-[radial-gradient(var(--color-border-light)_1px,transparent_1px)] dark:bg-[radial-gradient(var(--color-border-dark)_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(var(--color-border-light)_1px,transparent_1px)] dark:bg-[radial-gradient(var(--color-border-dark)_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none opacity-60" />
 
           {/* Grid: Text Column & Graphic Column */}
           <div key={activeSlide} className="hero-slide-content relative z-10 w-full grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
             
             {/* Text & Actions */}
             <div className="md:col-span-7 space-y-4 text-right">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--color-cta)]/10 dark:bg-zinc-800/90 border border-[var(--color-cta)]/30 dark:border-zinc-700 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] text-xs font-black shadow-xs">
-                <Sparkles className="h-3.5 w-3.5 animate-pulse text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] shrink-0" />
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-50 dark:bg-primary-950/40 border border-primary-200/60 dark:border-primary-900/50 text-[var(--color-emphasis-text)] dark:text-primary-300 text-xs font-black shadow-xs">
+                <Sparkles className="h-3.5 w-3.5 animate-pulse text-[var(--color-emphasis-text)] dark:text-primary-400 shrink-0" />
                 <span>{normalizePersianTypography(currentSlide.tag)}</span>
               </div>
 
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-zinc-900 dark:text-white leading-[1.15] tracking-tight">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white leading-[1.15] tracking-tight">
                 {normalizePersianTypography(currentSlide.title)}
               </h1>
 
-              <p className="text-sm sm:text-base text-[var(--color-text-muted-light)] dark:text-[var(--color-text-muted-dark)] leading-relaxed font-normal">
+              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
                 {normalizePersianTypography(currentSlide.subtitle)}
               </p>
 
@@ -306,7 +306,7 @@ export default function Home() {
                   <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
                 </Link>
 
-                <div className={`text-xs font-black px-4 py-2.5 rounded-2xl border bg-[var(--color-cta)]/10 text-[var(--color-emphasis-text)] border-[var(--color-cta)]/30 dark:bg-[var(--color-cta)]/20 dark:text-[var(--color-emphasis-text)] dark:border-[var(--color-cta)]/40 flex items-center gap-2`}>
+                <div className="text-xs font-black px-4 py-2.5 rounded-2xl border bg-slate-100/80 text-slate-700 border-slate-200 dark:bg-white/[0.04] dark:text-slate-300 dark:border-white/[0.08] flex items-center gap-2">
                   <Award className="h-4 w-4 shrink-0 text-[var(--color-emphasis-text)] dark:text-inherit" />
                   <span>{normalizePersianTypography(currentSlide.badge)}</span>
                 </div>
@@ -315,14 +315,14 @@ export default function Home() {
 
             {/* Visual 3D Asset Showcase Column (Desktop/Tablet) */}
             <div className="hidden md:flex md:col-span-5 items-center justify-center relative">
-              <div className="relative w-64 h-64 lg:w-80 lg:h-80 rounded-3xl p-6 bg-white/80 dark:bg-zinc-800/60 border border-zinc-200/80 dark:border-zinc-700/60 backdrop-blur-md flex items-center justify-center shadow-lg dark:shadow-2xl group">
+              <div className="relative w-64 h-64 lg:w-80 lg:h-80 rounded-3xl p-6 bg-white/90 dark:bg-[#121c33]/80 border border-slate-200/80 dark:border-white/[0.08] backdrop-blur-md flex items-center justify-center shadow-md dark:shadow-2xl group">
                 <PictureImage
                   src={currentSlide.image}
                   alt={normalizePersianTypography(currentSlide.title)}
                   width="320"
                   height="320"
                   priority={true}
-                  className="w-full h-full object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.15)] dark:drop-shadow-[0_20px_30px_rgba(0,0,0,0.6)] group-hover:scale-105 transition-transform duration-500 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                  className="w-full h-full object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.08)] dark:drop-shadow-[0_20px_30px_rgba(0,0,0,0.6)] group-hover:scale-105 transition-transform duration-500 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                 />
               </div>
             </div>
@@ -368,19 +368,19 @@ export default function Home() {
 
       {/* 2. Wholesale / B2B Banner Strip */}
       <section className="w-full">
-        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[var(--color-cta)]/10 via-[var(--color-accent-surface)]/15 to-[var(--color-cta)]/10 dark:from-[var(--color-cta)]/20 dark:via-[var(--color-accent-surface)]/15 dark:to-[var(--color-cta)]/20 border border-[var(--color-cta)]/30 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+        <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0e1629] border border-slate-200/90 dark:border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
           <div className="flex items-center gap-3 text-right">
-            <div className="w-10 h-10 rounded-xl bg-[var(--color-cta)]/20 border border-[var(--color-cta)]/40 flex items-center justify-center text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-primary-50 dark:bg-primary-950/40 border border-primary-200/60 dark:border-primary-900/50 flex items-center justify-center text-[var(--color-emphasis-text)] shrink-0">
               <PackageCheck className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-xs sm:text-sm font-black text-zinc-900 dark:text-white">{normalizePersianTypography(settings.b2bTitle || STORE_SETTINGS_DEFAULTS.b2bTitle)}</h3>
-              <p className="text-[11px] text-zinc-600 dark:text-zinc-300 mt-0.5">{normalizePersianTypography(settings.b2bDesc || STORE_SETTINGS_DEFAULTS.b2bDesc)}</p>
+              <h3 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white">{normalizePersianTypography(settings.b2bTitle || STORE_SETTINGS_DEFAULTS.b2bTitle)}</h3>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{normalizePersianTypography(settings.b2bDesc || STORE_SETTINGS_DEFAULTS.b2bDesc)}</p>
             </div>
           </div>
           <Link
             to={settings.b2bLink || STORE_SETTINGS_DEFAULTS.b2bLink}
-            className="px-4 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-black text-xs transition-all shadow-md shadow-[var(--color-cta)]/25 shrink-0 cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-black text-xs transition-all shadow-sm shadow-[var(--color-cta)]/25 shrink-0 cursor-pointer"
           >
             {normalizePersianTypography(settings.b2bButtonText || STORE_SETTINGS_DEFAULTS.b2bButtonText)}
           </Link>
@@ -395,14 +395,14 @@ export default function Home() {
             return (
               <div 
                 key={i} 
-                className="flex items-center gap-3.5 p-4 rounded-2xl bg-[var(--color-surface-light)] dark:bg-[#0d121c] border border-zinc-200/80 dark:border-zinc-800/80 shadow-xs hover:border-[var(--color-cta)]/40 transition-colors"
+                className="flex items-center gap-3.5 p-4 rounded-2xl bg-white dark:bg-[#0e1629] border border-slate-200/80 dark:border-white/[0.07] shadow-xs hover:border-slate-300 dark:hover:border-white/[0.15] transition-all"
               >
                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border ${item.color}`}>
                   <Icon className="h-6 w-6 stroke-[2]" />
                 </div>
                 <div className="min-w-0">
-                  <h4 className="text-xs sm:text-sm font-black text-zinc-900 dark:text-zinc-100">{item.title}</h4>
-                  <p className="text-xs text-zinc-600 dark:text-zinc-300 mt-0.5 leading-snug">{item.desc}</p>
+                  <h4 className="text-xs sm:text-sm font-black text-slate-900 dark:text-slate-100">{item.title}</h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">{item.desc}</p>
                 </div>
               </div>
             );
@@ -412,31 +412,31 @@ export default function Home() {
 
       {/* 4. Amazing Deals Section */}
       <section className="w-full">
-        <div className="bg-gradient-to-br from-[var(--color-cta)]/10 via-white to-[var(--color-cta)]/5 dark:from-[#121827] dark:via-[#0b0f19] dark:to-[#06080e] rounded-3xl p-5 sm:p-8 text-zinc-900 dark:text-white border border-[var(--color-cta)]/80 dark:border-[var(--color-cta)]/30 shadow-xl dark:shadow-2xl relative overflow-hidden transition-colors">
+        <div className="bg-gradient-to-br from-rose-50/40 via-white to-slate-50 dark:from-[#0e1629] dark:via-[#0c1220] dark:to-[#070b14] rounded-3xl p-5 sm:p-8 text-slate-900 dark:text-white border border-rose-200/70 dark:border-white/[0.08] shadow-lg dark:shadow-2xl relative overflow-hidden transition-colors">
           
           {/* Section Header */}
-          <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-[var(--color-cta)]/30 dark:border-zinc-800">
+          <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-rose-100 dark:border-white/[0.06]">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 border border-[var(--color-cta)]/30 flex items-center justify-center text-[var(--color-emphasis-text)]">
+              <div className="w-10 h-10 rounded-xl bg-primary-50 dark:bg-primary-950/40 border border-primary-200/60 dark:border-primary-900/50 flex items-center justify-center text-[var(--color-emphasis-text)]">
                 <Flame className="h-5 w-5 animate-bounce" />
               </div>
               <div>
-                <h2 className="text-lg sm:text-2xl font-black text-zinc-900 dark:text-white">{normalizePersianTypography(settings.dealsTitle || STORE_SETTINGS_DEFAULTS.dealsTitle)}</h2>
-                <p className="text-xs text-zinc-600 dark:text-zinc-300 mt-0.5">{normalizePersianTypography(settings.dealsSubtitle || STORE_SETTINGS_DEFAULTS.dealsSubtitle)}</p>
+                <h2 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white">{normalizePersianTypography(settings.dealsTitle || STORE_SETTINGS_DEFAULTS.dealsTitle)}</h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{normalizePersianTypography(settings.dealsSubtitle || STORE_SETTINGS_DEFAULTS.dealsSubtitle)}</p>
               </div>
             </div>
 
             {/* Countdown Clock */}
-            <div className="bg-[var(--color-cta)]/10 border border-[var(--color-cta)]/80 dark:border-zinc-700/80 px-3.5 py-1.5 rounded-2xl text-xs font-bold shadow-xs">
+            <div className="bg-white/80 dark:bg-[#121c33] border border-slate-200/80 dark:border-white/[0.08] px-3.5 py-1.5 rounded-2xl text-xs font-bold shadow-xs">
               <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-[var(--color-emphasis-text)] shrink-0" />
-              <span className="text-zinc-700 dark:text-zinc-200">فرصت باقی‌مانده:</span>
+              <span className="text-slate-700 dark:text-slate-300">فرصت باقی‌مانده:</span>
               <div className="flex items-center gap-1 text-sm font-black text-[var(--color-emphasis-text)]">
-                <span className="tabular-nums bg-white/70 dark:bg-zinc-900 px-1.5 py-0.5 rounded-lg border border-[var(--color-cta)]/30 dark:border-zinc-700 text-[var(--color-cta)] dark:text-[var(--color-emphasis-text)]">{toPersianDigits(timeLeft.hours.toString().padStart(2, '0'))}</span>
+                <span className="tabular-nums bg-slate-50 dark:bg-black/40 px-1.5 py-0.5 rounded-lg border border-slate-200/80 dark:border-white/[0.08] text-[var(--color-cta)] dark:text-[var(--color-emphasis-text)]">{toPersianDigits(timeLeft.hours.toString().padStart(2, '0'))}</span>
                 <span>:</span>
-                <span className="tabular-nums bg-white/70 dark:bg-zinc-900 px-1.5 py-0.5 rounded-lg border border-[var(--color-cta)]/30 dark:border-zinc-700 text-[var(--color-cta)] dark:text-[var(--color-emphasis-text)]">{toPersianDigits(timeLeft.minutes.toString().padStart(2, '0'))}</span>
+                <span className="tabular-nums bg-slate-50 dark:bg-black/40 px-1.5 py-0.5 rounded-lg border border-slate-200/80 dark:border-white/[0.08] text-[var(--color-cta)] dark:text-[var(--color-emphasis-text)]">{toPersianDigits(timeLeft.minutes.toString().padStart(2, '0'))}</span>
                 <span>:</span>
-                <span className="tabular-nums bg-white/70 dark:bg-zinc-900 px-1.5 py-0.5 rounded-lg border border-[var(--color-cta)]/30 dark:border-zinc-700 text-[var(--color-cta)] dark:text-[var(--color-emphasis-text)]">{toPersianDigits(timeLeft.seconds.toString().padStart(2, '0'))}</span>
+                <span className="tabular-nums bg-slate-50 dark:bg-black/40 px-1.5 py-0.5 rounded-lg border border-slate-200/80 dark:border-white/[0.08] text-[var(--color-cta)] dark:text-[var(--color-emphasis-text)]">{toPersianDigits(timeLeft.seconds.toString().padStart(2, '0'))}</span>
               </div>
               </div>
               {/* Thin seconds bar */}
@@ -446,9 +446,9 @@ export default function Home() {
                 aria-valuenow={59 - timeLeft.seconds}
                 aria-valuemin={0}
                 aria-valuemax={59}
-                className="mt-1.5 h-1 rounded-full bg-white/60 dark:bg-zinc-900/60 overflow-hidden"
+                className="mt-1.5 h-1 rounded-full bg-slate-100 dark:bg-white/[0.06] overflow-hidden"
               >
-                <div className="h-1 bg-[var(--color-cta)]/40 rounded-full transition-all duration-1000 ease-linear" style={{ width: `${((59 - timeLeft.seconds) / 59) * 100}%` }} />
+                <div className="h-1 bg-[var(--color-cta)]/50 rounded-full transition-all duration-1000 ease-linear" style={{ width: `${((59 - timeLeft.seconds) / 59) * 100}%` }} />
               </div>
             </div>
           </div>
@@ -457,16 +457,16 @@ export default function Home() {
           <div className="relative z-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
             {loading ? (
               Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="h-64 bg-zinc-200/50 dark:bg-zinc-800/50 rounded-2xl animate-pulse" />
+                <div key={i} className="h-64 bg-slate-100 dark:bg-white/[0.03] rounded-2xl animate-pulse" />
               ))
             ) : dealProducts.length > 0 ? (
               dealProducts.map((p) => (
                 <Link
                   key={p.id}
                   to={`/product/${p.id}`}
-                  className="bg-white/90 hover:bg-white dark:bg-zinc-800/70 dark:hover:bg-zinc-800 border border-zinc-200/80 hover:border-[var(--color-cta)]/50 dark:border-zinc-700/60 dark:hover:border-[var(--color-cta)]/40 rounded-2xl p-3.5 text-zinc-900 dark:text-white flex flex-col justify-between transition-all duration-200 shadow-sm hover:shadow-md group"
+                  className="bg-white hover:bg-white dark:bg-[#121c33] dark:hover:bg-[#162340] border border-slate-200/80 hover:border-primary-300 dark:border-white/[0.07] dark:hover:border-primary-500/40 rounded-2xl p-3.5 text-slate-900 dark:text-white flex flex-col justify-between transition-all duration-200 shadow-xs hover:shadow-md group"
                 >
-                  <div className="relative aspect-square rounded-xl bg-zinc-50 dark:bg-zinc-900/80 p-3 mb-3 flex items-center justify-center overflow-hidden border border-zinc-100 dark:border-transparent">
+                  <div className="relative aspect-square rounded-xl bg-slate-50 dark:bg-white/[0.02] p-3 mb-3 flex items-center justify-center overflow-hidden border border-slate-100 dark:border-white/[0.05]">
                     <PictureImage 
                       src={p.image} 
                       alt={p.title} 

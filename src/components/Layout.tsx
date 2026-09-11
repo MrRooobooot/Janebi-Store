@@ -14,7 +14,7 @@ export default function Layout() {
   const { isCartDrawerOpen, closeCartDrawer } = useCart();
 
   return (
-    <div className="min-h-screen flex flex-col font-sans text-zinc-900 dark:text-zinc-100 bg-[#f8fafc] dark:bg-[var(--color-canvas-dark)] transition-colors duration-200 pb-20 lg:pb-0 relative w-full max-w-full overflow-x-hidden selection:bg-[var(--color-cta)] selection:text-white">
+    <div className="min-h-screen flex flex-col font-sans text-slate-900 dark:text-slate-100 bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] transition-colors duration-200 pb-20 lg:pb-0 relative w-full max-w-full overflow-x-hidden selection:bg-[var(--color-cta)] selection:text-white">
       <Header />
       <main className="grow w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 relative box-border overflow-x-hidden">
         <DynamicBreadcrumbs />

@@ -78,12 +78,12 @@ export default function Header() {
   ];
 
   return (
-    <header className="bg-[var(--color-surface-light)]/95 dark:bg-[#080d15]/90 backdrop-blur-xl border-b border-zinc-200/80 dark:border-zinc-800/80 sticky top-0 z-40 transition-colors duration-200 w-full">
+    <header className="bg-white/90 dark:bg-[#0c1220]/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-white/[0.08] sticky top-0 z-40 transition-colors duration-200 w-full">
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
       
       {/* Top Announcement Bar — Strict Overflow Control (hidden when admin/bot disables it) */}
       {settings.announcementBarEnabled !== 'false' && (
-      <div className="bg-zinc-100 dark:bg-black/60 text-zinc-700 dark:text-zinc-200 text-xs py-1.5 px-3 sm:px-4 border-b border-zinc-200/80 dark:border-white/5 w-full overflow-hidden transition-colors">
+      <div className="bg-slate-100/90 dark:bg-[#060910]/95 text-slate-700 dark:text-slate-300 text-xs py-1.5 px-3 sm:px-4 border-b border-slate-200/70 dark:border-white/[0.06] w-full overflow-hidden transition-colors">
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 text-[11px] font-medium text-[var(--color-cta)] min-w-0">
             <Sparkles className="h-3.5 w-3.5 animate-none shrink-0" />
@@ -276,7 +276,7 @@ export default function Header() {
         )}
 
         {/* Secondary Category Navigation (Desktop) */}
-        <nav className="hidden lg:flex items-center gap-6 py-2.5 border-t border-zinc-100 dark:border-zinc-800/80 text-xs font-medium text-zinc-600 dark:text-zinc-300 relative z-20">
+        <nav className="hidden lg:flex items-center gap-6 py-2.5 border-t border-slate-100 dark:border-white/[0.06] text-xs font-medium text-slate-600 dark:text-slate-300 relative z-20">
           {navLinks.map((link) => {
             const isActive = location.pathname === link.to || (link.to.includes('?') && location.search === link.to.split('?')[1]);
             return (
