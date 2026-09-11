@@ -254,15 +254,15 @@ export default function Home() {
             e.stopPropagation();
           }
         }}
-        className="relative flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-[var(--color-surface-light)] dark:bg-[#0d121c] border border-zinc-200 dark:border-zinc-800 hover:border-[var(--color-cta)]/40 dark:hover:border-[var(--color-cta)]/40 transition-all group text-center shadow-xs select-none min-touch-target"
+        className="w-full h-full min-h-[128px] sm:min-h-[140px] relative flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl bg-[var(--color-surface-light)] dark:bg-[#0d121c] border border-zinc-200/90 dark:border-zinc-800 hover:border-[var(--color-cta)]/40 dark:hover:border-[var(--color-cta)]/40 hover:shadow-md transition-all duration-200 group text-center shadow-xs select-none min-touch-target"
       >
-        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800/80 flex items-center justify-center text-zinc-700 dark:text-zinc-200 group-hover:bg-[var(--color-cta)] group-hover:text-white transition-all mb-2 group-hover:scale-105 shadow-xs">
+        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800/80 flex items-center justify-center text-zinc-700 dark:text-zinc-200 group-hover:bg-[var(--color-cta)] group-hover:text-white transition-all duration-200 mb-2.5 group-hover:scale-105 shadow-xs shrink-0">
           <Icon className="h-5 w-5 sm:h-6 sm:w-6 stroke-[1.8]" />
         </div>
-        <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors whitespace-nowrap">
+        <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors truncate w-full px-1 block">
           {cat.title}
         </span>
-        <span className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">
+        <span className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-1 block">
           {toPersianDigits(cat.count || 0)} کالا
         </span>
       </Link>
