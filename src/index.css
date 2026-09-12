@@ -217,6 +217,19 @@ body {
   color: #cbd5e1 !important;
 }
 
+/* ── Placeholder floor (0912): browser-default zinc-400 was ~2.6:1 on
+   gray-100 inputs (contact/login) — AA fail. Role token: 7.5:1 light,
+   ~4.6:1 on dark inputs. Unlayered rule beats Tailwind utility layers,
+   so per-component placeholder:text-* classes can never regress below it. */
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-text-muted-light);
+}
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: var(--color-text-muted-dark);
+}
+
 /* ── Raycast macOS-Native Inset Button Shadow (DESIGN.md tactile) ── */
 /* Glow tinted to the CTA rose (was hard-coded orange rgba(217,78,6) —
    visible as a mismatched halo under rose buttons on white cards). */
