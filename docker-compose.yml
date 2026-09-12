@@ -17,6 +17,7 @@ services:
       - ./dist:/app/dist
       - ./data:/app/data
       - ./public/products:/app/public/products
+      - ./public/images:/app/public/images
 
   postgres:
     image: postgres:15-alpine
