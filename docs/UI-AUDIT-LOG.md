@@ -29,5 +29,5 @@ Pixel probe (`scripts/probes/probe-pixel.mjs`) is the ONLY contrast authority �
 | 0912 | dashboard metric grid asymmetry (vision: row2 2-of-4 cols) | 1280 | dark | flagged | 6 metric cards / 4-col grid = data-count artifact, not CSS break | — | none | wontfix |
 
 ## Next rotations (standing goal)
-- B: admin panel pages (isolated staging DB)
 - C: forms/micro-interactions (auth modal, coupon apply, quantity steppers live behavior)
+- D: admin mobile 390px (sidebar/drawer behavior) — follow-up of B
