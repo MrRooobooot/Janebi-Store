@@ -5,6 +5,7 @@ import {
   Mail, CheckCircle2, Clock, Search, Eye, Filter, Phone, User,
   MessageSquare, ArrowLeft, X, Check, Trash2, Send, Archive, ArchiveRestore, CheckCheck
 } from 'lucide-react';
+import PageHeader from '../../components/admin/PageHeader';
 import { useToast } from '../../contexts/ToastContext';
 import { toPersianDigits } from '../../lib/utils';
 import PageControls, { unwrapList } from '../../components/admin/PageControls';
@@ -199,8 +200,7 @@ export default function AdminMessages() {
     <div className="space-y-6 text-right">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-white mb-1">پیام‌های تماس و پشتیبانی</h1>
-        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">بررسی سوالات کاربران، پیگیری نظرات و ارتباط مستقیم با مشتریان</p>
+        <PageHeader icon={ Mail } title="پیام‌های تماس و پشتیبانی" subtitle="بررسی سوالات کاربران، پیگیری نظرات و ارتباط مستقیم با مشتریان" />
       </div>
 
       {/* Filter Tabs & Search */}

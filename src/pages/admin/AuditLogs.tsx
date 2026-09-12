@@ -1,6 +1,7 @@
 import { authFetch } from '../../lib/api';
 import React, { useEffect, useState } from 'react';
 import { ScrollText, Search, ShieldAlert } from 'lucide-react';
+import PageHeader from '../../components/admin/PageHeader';
 import { toPersianDigits } from '../../lib/utils';
 import PageControls from '../../components/admin/PageControls';
 
@@ -85,8 +86,7 @@ export default function AuditLogs() {
     <div className="space-y-6 text-right">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-white mb-1">لاگ فعالیت مدیران</h1>
-          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">ثبت خودکار تمام تغییرات حساس: محصولات، سفارشات، کدهای تخفیف، کاربران و تنظیمات</p>
+          <PageHeader icon={ ScrollText } title="لاگ فعالیت مدیران" subtitle="ثبت خودکار تمام تغییرات حساس: محصولات، سفارشات، کدهای تخفیف، کاربران و تنظیمات" />
         </div>
         <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400 bg-[var(--color-surface-light)] dark:bg-gray-800 border border-[var(--color-border-light)] dark:border-gray-700 rounded-xl px-3 py-2">
           مجموع رکوردها: {toPersianDigits(total.toLocaleString('fa-IR'))}

@@ -1,6 +1,7 @@
 import { authFetch } from '../../lib/api';
 import React, { useState, useEffect } from 'react';
 import { Settings, Save, Phone, Mail, MapPin, Clock, Truck, Megaphone, Check, Loader2, Database, Download, Sparkles, Layers, Zap, Building2, Crown, Star } from 'lucide-react';
+import PageHeader from '../../components/admin/PageHeader';
 import { useToast } from '../../contexts/ToastContext';
 import { STORE_SETTINGS_DEFAULTS } from '../../lib/constants';
 import { toEnglishDigits } from '../../lib/utils';
@@ -155,11 +156,7 @@ export default function AdminSettings() {
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-12">
       <div>
-        <h1 className="text-2xl font-black text-[var(--color-text-main-light)] dark:text-white flex items-center gap-2">
-          <Settings className="h-6 w-6 text-[var(--color-emphasis-text)]" />
-          تنظیمات عمومی و محتوای فروشگاه
-        </h1>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">مدیریت اطلاعات تماس، آستانه ارسال رایگان، بنرها و اسلایدرهای صفحه اصلی</p>
+<PageHeader icon={ Settings } title="تنظیمات عمومی و محتوای فروشگاه" subtitle="مدیریت اطلاعات تماس، آستانه ارسال رایگان، بنرها و اسلایدرهای صفحه اصلی" />
       </div>
 
       <form onSubmit={handleSave} className="space-y-6">

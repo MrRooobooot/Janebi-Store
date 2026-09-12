@@ -1,6 +1,7 @@
 import { authFetch } from '../../lib/api';
 import React, { useEffect, useState } from "react";
 import { Users, Package, ShoppingCart, DollarSign, Award, TrendingUp, Sparkles, Tag, Rocket, BarChart3, Mail, MessageSquare } from "lucide-react";
+import PageHeader from '../../components/admin/PageHeader';
 import { Link } from "react-router-dom";
 import { toPersianDigits, formatPrice } from "../../lib/utils";
 
@@ -104,8 +105,7 @@ export default function Dashboard() {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-white mb-1">داشبورد مدیریت و تحلیل</h1>
-          <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm">نمای کلی از عملکرد فروشگاه، کاتالوگ انبار و باشگاه وفاداری کاربران</p>
+          <PageHeader icon={ TrendingUp } title="داشبورد مدیریت و تحلیل" subtitle="نمای کلی از عملکرد فروشگاه، کاتالوگ انبار و باشگاه وفاداری کاربران" />
         </div>
         
         {/* Quick Shortcut Buttons */}

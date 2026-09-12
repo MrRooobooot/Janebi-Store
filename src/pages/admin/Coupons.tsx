@@ -6,6 +6,7 @@ import {
   Plus, Trash2, Tag, Percent, DollarSign, Copy, CheckCircle2, 
   X, Calendar, Sparkles, AlertCircle, ToggleLeft, ToggleRight, Pencil
 } from 'lucide-react';
+import PageHeader from '../../components/admin/PageHeader';
 import { toEnglishDigits, toPersianDigits, formatPrice } from '../../lib/utils';
 
 export default function AdminCoupons() {
@@ -187,8 +188,7 @@ export default function AdminCoupons() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-white mb-1">مدیریت کدهای تخفیف و پروموشن</h1>
-          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">تعریف کوپن‌های درصدی و نقدی با حداقل خرید و مدیریت فعال/غیرفعال‌سازی</p>
+          <PageHeader icon={ Tag } title="مدیریت کدهای تخفیف و پروموشن" subtitle="تعریف کوپن‌های درصدی و نقدی با حداقل خرید و مدیریت فعال/غیرفعال‌سازی" />
         </div>
 
         <button

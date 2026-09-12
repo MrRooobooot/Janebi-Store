@@ -7,6 +7,7 @@ import {
   Search, ChevronDown, CheckCircle, Package, Truck, XCircle, Eye, X,
   MapPin, Phone, User, Calendar, CreditCard, Printer, Download, Share2, Copy, Trash2
 } from 'lucide-react';
+import PageHeader from '../../components/admin/PageHeader';
 import { toPersianDigits, formatPrice } from '../../lib/utils';
 import PageControls, { unwrapList } from '../../components/admin/PageControls';
 
@@ -329,8 +330,7 @@ export default function AdminOrders() {
     <div className="space-y-6 text-right">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-white mb-1">مدیریت سفارشات مشتریان</h1>
-          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">بررسی، چاپ فاکتور، انتساب کد رهگیری پستی و تغییر وضعیت سفارشات</p>
+          <PageHeader icon={ Package } title="مدیریت سفارشات مشتریان" subtitle="بررسی، چاپ فاکتور، انتساب کد رهگیری پستی و تغییر وضعیت سفارشات" />
         </div>
 
         <button

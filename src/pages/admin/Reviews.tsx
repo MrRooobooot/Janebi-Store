@@ -1,6 +1,7 @@
 import { authFetch } from '../../lib/api';
 import React, { useState, useEffect } from 'react';
 import { MessageSquare, Star, Trash2, Search, Filter, ThumbsUp, ThumbsDown, CheckCircle, AlertCircle } from 'lucide-react';
+import PageHeader from '../../components/admin/PageHeader';
 import { useToast } from '../../contexts/ToastContext';
 
 interface ReviewItem {
@@ -106,13 +107,7 @@ export default function AdminReviews() {
     <div className="space-y-6 text-right">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-[var(--color-text-main-light)] dark:text-white flex items-center gap-2">
-            <MessageSquare className="h-6 w-6 text-primary-500" />
-            مدیریت نظرات کاربران
-          </h1>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            بررسی، پالایش و حذف نظرات ثبت‌شده روی محصولات
-          </p>
+<PageHeader icon={ MessageSquare } title="مدیریت نظرات کاربران" subtitle="بررسی، پالایش و حذف نظرات ثبت‌شده روی محصولات" />
         </div>
         <div className="text-xs font-bold text-gray-500 bg-[var(--color-surface-light)] dark:bg-gray-800 px-3.5 py-2 rounded-xl border border-[var(--color-border-light)] dark:border-gray-700">
           تعداد کل نظرات: <span className="text-[var(--color-emphasis-text)] font-mono font-bold">{reviews.length}</span>

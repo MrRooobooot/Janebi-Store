@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
 import { Search, Shield, User as UserIcon, KeyRound, Award, Plus, Minus, X, CheckCircle } from 'lucide-react';
+import PageHeader from '../../components/admin/PageHeader';
 import { toPersianDigits, toEnglishDigits } from '../../lib/utils';
 import PageControls, { unwrapList } from '../../components/admin/PageControls';
 
@@ -150,8 +151,7 @@ export default function AdminUsers() {
     <div className="space-y-6 text-right">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-white mb-1">مدیریت کاربران و باشگاه وفاداری</h1>
-          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">مشاهده لیست اعضا، تغییر نقش، بازنشانی رمز عبور و اعطای امتیازات VIP</p>
+          <PageHeader icon={ UserIcon } title="مدیریت کاربران و باشگاه وفاداری" subtitle="مشاهده لیست اعضا، تغییر نقش، بازنشانی رمز عبور و اعطای امتیازات VIP" />
         </div>
       </div>
 

@@ -9,6 +9,7 @@ import {
   CheckCircle, AlertTriangle, Package, Sparkles, Tag, DollarSign, Calculator, Upload,
   Smartphone, Shield, Zap, Cable, Headphones, BatteryCharging, Wand2
 } from 'lucide-react';
+import PageHeader from '../../components/admin/PageHeader';
 import { Product } from '../../types';
 import { toEnglishDigits, toPersianDigits, formatPrice } from '../../lib/utils';
 
@@ -364,8 +365,7 @@ export default function AdminProducts() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-white mb-1">مدیریت محصولات و موجودی انبار</h1>
-          <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm">افزودن کالا، تنظیم هوشمند قیمت و تخفیف، تخصیص خودکار وکتور کالا و کنترل موجودی</p>
+          <PageHeader icon={ Package } title="مدیریت محصولات و موجودی انبار" subtitle="افزودن کالا، تنظیم هوشمند قیمت و تخفیف، تخصیص خودکار وکتور کالا و کنترل موجودی" />
         </div>
         <button
           onClick={() => openModal()}

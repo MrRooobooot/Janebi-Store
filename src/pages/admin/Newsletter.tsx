@@ -1,6 +1,7 @@
 import { authFetch } from '../../lib/api';
 import React, { useState, useEffect } from 'react';
 import { Send, Download, Trash2, Search, MailCheck, Calendar } from 'lucide-react';
+import PageHeader from '../../components/admin/PageHeader';
 import { useToast } from '../../contexts/ToastContext';
 
 interface Subscriber {
@@ -81,13 +82,7 @@ export default function AdminNewsletter() {
     <div className="space-y-6 text-right">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-[var(--color-text-main-light)] dark:text-white flex items-center gap-2">
-            <MailCheck className="h-6 w-6 text-primary-500" />
-            اعضای خبرنامه ایمیلی
-          </h1>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            مشاهده، جستجو و خروجی اکسل از ایمیل‌های عضو خبرنامه
-          </p>
+<PageHeader icon={ MailCheck } title="اعضای خبرنامه ایمیلی" subtitle="مشاهده، جستجو و خروجی اکسل از ایمیل‌های عضو خبرنامه" />
         </div>
         <button
           onClick={handleExportCSV}

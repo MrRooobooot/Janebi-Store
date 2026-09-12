@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Newspaper, Plus, Pencil, Trash2, X, Eye, EyeOff, Loader2, Search } from 'lucide-react';
+import PageHeader from '../../components/admin/PageHeader';
 import { authFetch } from '../../lib/api';
 import { useToast } from '../../contexts/ToastContext';
 
@@ -130,12 +131,7 @@ export default function AdminBlog() {
     <div className="space-y-6 text-right">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
-            <Newspaper className="h-5 w-5 text-[var(--color-emphasis-text)]" /> مدیریت مجله (بلاگ)
-          </h1>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            {posts.length} مقاله — انتشار، ویرایش و حذف مقالات مجله جانبی آرنا
-          </p>
+<PageHeader icon={ Newspaper } title="مدیریت مجله (بلاگ)" subtitle={`${posts.length} مقاله — انتشار، ویرایش و حذف مقالات مجله جانبی آرنا`} />
         </div>
         <button
           onClick={openCreate}
