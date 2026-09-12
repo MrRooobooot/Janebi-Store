@@ -170,20 +170,21 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
       <div className="mt-auto pt-2.5 border-t border-slate-100 dark:border-white/[0.06]">
         <div className="flex items-end justify-between gap-2">
           
-          {/* Price Stack — shrinks/truncates so the CTA never overflows the card edge */}
-          <div className="flex flex-col justify-end text-right min-w-0 min-h-[36px]">
+          {/* Price Stack — unit on its own line: money NEVER truncates at any card width */}
+          <div className="flex flex-col justify-end text-right min-w-0 min-h-[44px]">
             {product.originalPrice && product.originalPrice > product.price ? (
-              <span className="text-[11px] text-slate-400 dark:text-slate-500 line-through truncate leading-tight">
-                {formatPrice(product.originalPrice)}
+              <span className="text-[11px] text-slate-400 dark:text-slate-500 line-through leading-tight tabular-nums">
+                {formatPrice(product.originalPrice).replace(' تومان', '')}
               </span>
             ) : (
               <span className="text-[11px] text-transparent select-none leading-tight" aria-hidden="true">
                 -
               </span>
             )}
-            <div className="text-xs sm:text-sm font-black text-[var(--color-emphasis-text)] font-mono tracking-tight leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
-              {formatPrice(product.price)}
+            <div className="text-xs sm:text-sm font-black text-[var(--color-emphasis-text)] font-mono tracking-tight leading-tight whitespace-nowrap">
+              {formatPrice(product.price).replace(' تومان', '')}
             </div>
+            <span className="text-[9px] font-bold text-slate-500 dark:text-slate-400 leading-tight">تومان</span>
           </div>
 
           {/* Primary Action Button */}

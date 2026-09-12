@@ -79,7 +79,9 @@ async function audit(browser, engine, viewport, isDesktop, theme) {
         const br = btn.getBoundingClientRect();
         if (br.bottom > cr.bottom + 0.5) out.ctaBleed = Math.max(out.ctaBleed, br.bottom - cr.bottom);
         const price = card.querySelector('.font-mono');
-        if (price) out.baselineDelta = Math.max(out.baselineDelta, Math.abs(price.getBoundingClientRect().bottom - br.bottom));
+        // measure the whole price column (number + تومان unit line) vs button bottom
+        const priceCol = price?.parentElement ?? price;
+        if (priceCol) out.baselineDelta = Math.max(out.baselineDelta, Math.abs(priceCol.getBoundingClientRect().bottom - br.bottom));
       }
     }
 

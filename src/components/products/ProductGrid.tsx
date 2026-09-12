@@ -16,7 +16,7 @@ interface ProductGridProps {
 export default function ProductGrid({ products, loading, resetAllFilters }: ProductGridProps) {
   if (loading) {
     return (
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:gap-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 lg:gap-4">
         {Array.from({ length: 8 }).map((_, idx) => (
           <ProductCardSkeleton key={idx} />
         ))}
@@ -39,7 +39,7 @@ export default function ProductGrid({ products, loading, resetAllFilters }: Prod
   return (
     <motion.div
       layout
-      className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:gap-4"
+      className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 lg:gap-4"
     >
       <AnimatePresence>
         {products.map((product) => (
