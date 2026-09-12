@@ -30,6 +30,10 @@ if [ "$1" != "--skip-build" ] && [ "$2" != "--skip-build" ]; then
   fi
 fi
 
+# Step 1.5: Provenance stamp — prod must be traceable to a commit (stats-drift root-cause)
+GIT_SHA=$(git rev-parse --short HEAD 2>/dev/null || echo unknown)
+echo "$GIT_SHA $(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$DIST_DIR/BUILD_INFO"
+
 # Step 2: Sync dist
 echo "📤 Syncing dist/..."
 rsync -avz -e "ssh $SSH_OPTS" --delete "$DIST_DIR/" "$REMOTE:$APP_DIR/dist/" 2>&1 | tail -3
