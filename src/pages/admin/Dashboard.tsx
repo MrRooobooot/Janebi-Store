@@ -218,7 +218,7 @@ export default function Dashboard() {
                       <div className="absolute bottom-full mb-1 hidden group-hover:block z-10 px-2 py-1 rounded-lg bg-zinc-900 dark:bg-zinc-700 text-white text-[10px] whitespace-nowrap pointer-events-none shadow-lg">
                         {dayLabel} — {formatPrice(day.revenue)} · {toPersianDigits(day.orders)} سفارش
                       </div>
-                      <span className="text-[9px] sm:text-[10px] text-gray-400 dark:text-gray-500 mt-1 rotate-45 origin-top-right translate-x-1 whitespace-nowrap hidden sm:block">
+                      <span className="text-[9px] sm:text-[10px] text-gray-500 dark:text-gray-400 mt-1 rotate-45 origin-top-right translate-x-1 whitespace-nowrap hidden sm:block">
                         {dayLabel}
                       </span>
                     </div>

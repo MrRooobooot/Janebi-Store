@@ -106,7 +106,9 @@
   --color-text-muted-light: #475569;
   --color-text-muted-dark: #94a3b8;
   --color-text-subtle-light: #64748b;
-  --color-text-subtle-dark: #64748b;
+  /* was #64748b (identical to light) = 3.56:1 on dark surfaces — AA fail for
+     strikethrough prices/captions. slate-400 → 6.6:1, still clearly secondary. */
+  --color-text-subtle-dark: #94a3b8;
 
   /* ── Canonical Role Aliases (GOAL-09012: ONE name per role) ──
      Components kept hand-rolling slate/gray/zinc variants of these roles —

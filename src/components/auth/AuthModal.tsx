@@ -292,7 +292,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
           </form>
 
           {/* Footer note */}
-          <div className="mt-4 pt-3 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-center text-[11px] text-gray-400 dark:text-gray-500 space-y-2">
+          <div className="mt-4 pt-3 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-center text-[11px] text-gray-500 dark:text-gray-400 space-y-2">
             {mode === 'login' ? (
               <>
                 <div>

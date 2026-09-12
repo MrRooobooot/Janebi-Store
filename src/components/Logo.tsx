@@ -84,7 +84,7 @@ export default function Logo({ className = "", variant = 'full', size = 'md' }: 
           <span className={`${textSizes[size]} font-black tracking-tight text-zinc-900 dark:text-white`}>
             Janebi <span className="text-[#e11d48]">Arena</span>
           </span>
-          <span className="text-[8px] sm:text-[9px] text-zinc-400 dark:text-zinc-500 font-bold tracking-wider font-mono">
+          <span className="text-[8px] sm:text-[9px] text-zinc-500 dark:text-zinc-400 font-bold tracking-wider font-mono">
             OFFICIAL STORE
           </span>
         </div>
@@ -106,7 +106,7 @@ export default function Logo({ className = "", variant = 'full', size = 'md' }: 
             آرنا
           </span>
         </div>
-        <span className={`${size === 'md' ? 'hidden sm:block ' : ''}text-[8px] sm:text-[9px] text-zinc-400 dark:text-zinc-500 -mt-0.5 font-black tracking-[0.18em] uppercase font-mono`}>
+        <span className={`${size === 'md' ? 'hidden sm:block ' : ''}text-[8px] sm:text-[9px] text-zinc-500 dark:text-zinc-400 -mt-0.5 font-black tracking-[0.18em] uppercase font-mono`}>
           JANEBI ARENA
         </span>
       </div>

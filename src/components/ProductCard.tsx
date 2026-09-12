@@ -158,7 +158,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
                 <span className="truncate">{product.warranty}</span>
               </div>
             ) : (
-              <div className="flex items-center gap-1 truncate text-slate-400 dark:text-slate-500">
+              <div className="flex items-center gap-1 truncate text-slate-500 dark:text-slate-400">
                 <Sparkles className="h-3 w-3 text-amber-500/80 shrink-0" />
                 <span className="truncate">تضمین سلامت فیزیکی</span>
               </div>
@@ -173,7 +173,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
           {/* Price Stack — unit on its own line: money NEVER truncates at any card width */}
           <div className="flex flex-col justify-end text-right min-w-0 min-h-[44px]">
             {product.originalPrice && product.originalPrice > product.price ? (
-              <span className="text-[11px] text-slate-400 dark:text-slate-500 line-through leading-tight tabular-nums">
+              <span className="text-[11px] text-slate-500 dark:text-slate-400 line-through leading-tight tabular-nums">
                 {formatPrice(product.originalPrice).replace(' تومان', '')}
               </span>
             ) : (
@@ -195,7 +195,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
             aria-label={outOfStock ? 'کالای ناموجود' : `افزودن ${product.title} به سبد خرید`}
             className={`raycast-btn h-9 sm:h-9 px-3 sm:px-3.5 rounded-xl flex items-center justify-center gap-1 text-xs font-black transition-all duration-200 cursor-pointer shrink-0 ${
               outOfStock 
-                ? 'bg-slate-100 dark:bg-white/[0.05] text-slate-400 dark:text-slate-500 border border-slate-200/60 dark:border-white/[0.06] cursor-not-allowed shadow-none'
+                ? 'bg-slate-100 dark:bg-white/[0.05] text-slate-500 dark:text-slate-400 border border-slate-200/60 dark:border-white/[0.06] cursor-not-allowed shadow-none'
                 : added 
                   ? 'bg-emerald-600 text-white shadow-emerald-600/30'
                   : 'bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] active:scale-95 text-white'

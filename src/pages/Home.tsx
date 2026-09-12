@@ -486,7 +486,7 @@ export default function Home() {
 
                   <div className="mt-3 pt-2 border-t border-zinc-100 dark:border-zinc-700/50 flex flex-col items-end">
                     {p.originalPrice && p.originalPrice > p.price && (
-                      <span className="text-[10px] text-zinc-400 dark:text-zinc-500 line-through">
+                      <span className="text-[10px] text-zinc-500 dark:text-zinc-400 line-through">
                         {formatPrice(p.originalPrice)}
                       </span>
                     )}

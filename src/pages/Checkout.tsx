@@ -33,7 +33,7 @@ export default function Checkout() {
         transition={{ duration: 0.5 }}
       >
         <EmptyState
-          icon={<ShoppingCart className="h-16 w-16 text-gray-300 dark:text-gray-600 drop-shadow-xs" />}
+          icon={<ShoppingCart className="h-16 w-16 drop-shadow-xs" />}
           title="سبد خرید شما خالی است!"
           description="برای ثبت سفارش ابتدا باید محصولاتی را به سبد خرید اضافه کنید."
           actionText="مشاهده محصولات"

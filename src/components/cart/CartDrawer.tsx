@@ -174,7 +174,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                               {formatPrice(item.price * item.quantity)}
                             </span>
                             {hasDiscount && (
-                              <span className="text-[11px] text-zinc-400 dark:text-zinc-500 line-through">
+                              <span className="text-[11px] text-zinc-500 dark:text-zinc-400 line-through">
                                 {formatPrice((item.originalPrice as number) * item.quantity)}
                               </span>
                             )}

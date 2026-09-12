@@ -337,7 +337,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
                                 <Tag className="h-3 w-3 text-[var(--color-emphasis-text)]" />
                                 {product.category}
                               </span>
-                              <span className="text-gray-400 dark:text-gray-500">|</span>
+                              <span className="text-gray-500 dark:text-gray-400">|</span>
                               <span className="text-gray-500 dark:text-gray-400 font-medium">
                                 برند: {product.brand}
                               </span>

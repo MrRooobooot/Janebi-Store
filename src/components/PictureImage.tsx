@@ -102,7 +102,7 @@ export default function PictureImage({
         ) : (
           <DefaultGlyph />
         )}
-        <span className="text-[10px] text-zinc-400 dark:text-zinc-500 px-2 text-center leading-relaxed line-clamp-2">
+        <span className="text-[10px] text-zinc-500 dark:text-zinc-400 px-2 text-center leading-relaxed line-clamp-2">
           {alt}
         </span>
       </div>

@@ -187,7 +187,7 @@ export default function DynamicBreadcrumbs() {
               )}
 
               {!isLast && (
-                <ChevronLeft className="h-3.5 w-3.5 text-gray-400 dark:text-gray-600 shrink-0 mx-0.5" />
+                <ChevronLeft className="h-3.5 w-3.5 text-gray-500 dark:text-gray-400 shrink-0 mx-0.5" />
               )}
             </React.Fragment>
           );

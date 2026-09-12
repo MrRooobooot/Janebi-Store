@@ -119,7 +119,7 @@ async function audit(browser, engine, viewport, isDesktop, theme) {
       if (l1 === null || l2 === null) continue;
       const ratio = (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
       sampled++;
-      if (ratio < 2.0) {
+      if (ratio < 3.0) {
         const key = `${node.tagName}.${String(node.className).slice(0, 60)}`;
         if (!bad.has(key)) bad.set(key, { ratio: +ratio.toFixed(2), text: node.textContent.trim().slice(0, 30) });
       }
