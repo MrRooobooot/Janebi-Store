@@ -183,6 +183,16 @@ body {
   color: var(--color-text-main-dark);
 }
 
+/* ── Dark-theme emphasis token (r0914c root-cause) ──────────────
+   #e11d48 on dark surfaces measured 2.2:1 (login password-tab pill on
+   gray-700) and 3.7:1 (header cart button on primary-950/40) — AA fails
+   for 12px bold across ~175 text-[var(--color-emphasis-text)] sites.
+   Rose-300 ≥5.4:1 on every dark surface and matches the dark focus-ring
+   color already in use. Light mode keeps the canonical value untouched. */
+.dark {
+  --color-emphasis-text: #fda4af;
+}
+
 /* ── Glassmorphic Luminance Stepping ────────────────────────────── */
 .linear-card {
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1);

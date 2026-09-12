@@ -90,3 +90,7 @@ bale-worker/.wrangler/
 migration-assets/
 scripts/probe-*.mjs
 .hermes/team/
+
+# agent/session scratch — never track
+.agents/
+.hermes/
