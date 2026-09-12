@@ -35,7 +35,8 @@ Pixel probe (`scripts/probes/probe-pixel.mjs`) is the ONLY contrast authority �
 | 0912 | Products 138 sub-40px targets | 390 | both | "tiny targets" flag | they are the quick-stock pill (36px h × 49px w, pointer+input swap on tap); 44px rule = recommended not blocker | — | none | wontfix |
 | 0912 | drawer | 390 | both | hamburger menu functionality | 18 links visible after tap, backdrop OK | — | none | wontfix (healthy) |
 
-## Rotation E — admin panel re-layout (user request «پنل بچین»)
+## Rotation E — admin panel re-layout (user request «پنل بچین») — incl. E2 unification
+| 0912 | all 11 admin pages | 1280+390 | both | 3 drifted h1 variants (no-icon 2xl→3xl / text-primary-500 icon / text-xl Blog) | grep code scan | copy-paste drift over time | `PageHeader` component (icon-[var(--color-emphasis-text)] + truncate + subtitle); migrated 11/11; probe sweep clean; blog dark screenshot verified (no raw JSX, Persian digits) | fixed |
 | 0912 | sidebar | 1280+390 | both | flat 11-item nav, verbose labels | vision+code | no workflow grouping | 3 sections: فروش و کالاها / مشتریان / محتوا و سیستم; shorter labels; 11 links + 3 headers, no nav overflow desktop+drawer | fixed |
 | 0912 | dashboard stats | 1280 | both | 6 cards on 4-col grid = broken 2nd row | vision flag earlier reclassified: real defect now | grid lg:grid-cols-4 with 6 items | lg:grid-cols-3 (symmetric 2×3) | fixed |
 | 0912 | dashboard VIP card | 1280 | both | stretched to 731px row height = dead whitespace | DOM: vipH 731→208 post-fix | grid default `stretch` | `self-start` | fixed |
