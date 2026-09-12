@@ -1,16 +1,26 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterAll } from 'vitest';
 import { db } from '../../server/db/index.js';
 import { users, products, orders, orderItems } from '../../server/db/schema.js';
-import { eq } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 import { toEnglishDigits, toPersianDigits, normalizeIranianMobile, isValidIranianMobile } from '../../src/lib/utils.js';
 
 describe('Adversarial Invariants & Concurrency Guard Suite', () => {
+  const createdProductIds: number[] = [];
   beforeEach(async () => {
     // Clean up test data safely
     try {
       await db.delete(orderItems).run();
       await db.delete(orders).run();
     } catch {}
+  });
+  afterAll(async () => {
+    // ponytail: these suites run against the persistent local sqlite DB (vitest
+    // config does not set DATABASE_URL=:memory:), so any inserted product leaks
+    // into data/janebi.db and shows up as a broken-image storefront card. Always
+    // delete what we inserted.
+    if (createdProductIds.length > 0) {
+      await db.delete(products).where(inArray(products.id, createdProductIds));
+    }
   });
 
   describe('1. Persian Unicode & Input Invariants', () => {
@@ -49,6 +59,7 @@ describe('Adversarial Invariants & Concurrency Guard Suite', () => {
       }).returning();
 
       expect(prod).toBeDefined();
+      createdProductIds.push(prod.id);
       expect(prod.stockQuantity).toBe(2);
 
       // 2. Simulate multi-item order that requests more than available

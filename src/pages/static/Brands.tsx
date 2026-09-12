@@ -186,7 +186,8 @@ export default function Brands() {
 
                   {/* Brand Logo & Name Header */}
                   <div className="flex items-center gap-3.5 mb-3">
-                    <div className="w-16 h-12 rounded-2xl bg-gray-50 dark:bg-gray-700/60 border border-[var(--color-border-light)] dark:border-gray-700/60 flex items-center justify-center p-2 group-hover:scale-105 transition-transform shrink-0">
+                    {/* Official brand vectors are dark-fill (#000 apple, #1428A0 samsung) — white tile in dark mode via .logo-tile exception, same sanctioned pattern as the Enamad seal. */}
+                    <div className="logo-tile w-16 h-12 rounded-2xl bg-gray-50 border border-[var(--color-border-light)] flex items-center justify-center p-2 group-hover:scale-105 transition-transform shrink-0">
                       <BrandLogo name={b.name} size="md" />
                     </div>
                     <div>

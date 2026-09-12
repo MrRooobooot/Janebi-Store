@@ -2,6 +2,13 @@
 
 ## Status: Completed (Aug 28, 2026)
 
+### Round 2026-09-14b — Brands/PDP dark-fill logo vectors (design-guardian cron, SHIPPED)
+
+- [x] چرخش hand-audit: `/brands` + `/products/:id` (دارک، Chromium+vision). یافته: بردورهای رسمی برند (`apple/sony/bose/sennheiser.svg` با `fill=#000`) روی tile دارک `dark:bg-gray-700/60` نامرئی (کنتراست ~1.2:1). ریشه-کلاس: همان استثنای sanctioned تایل Enamad — وایت‌تایل اجباری برای دارک‌فیل SVG.
+- [x] فیکس ریشه‌ای: shim جدید `.dark .logo-tile { background:#fff }` در `src/index.css` (بعد از shim `bg-gray-50` تا در cascade ببرد) + کاربرد در Brands.tsx (تایل هدر کارت) و ProductDetail.tsx ردیف برند جدول مشخصات (قبلاً بدون tile، روی `dark:bg-white/[0.035]` ناپدید).
+- [x] هم‌راند: test-residue class — `tests/unit/concurrency-invariants.test.ts` کالای ساخته‌شده را در DB ماندگار ول میکرد (vitest روی sqlite persistent) → `afterAll` با `inArray` delete. همان کلاس 23568.
+- [x] اثبات: served-CSS `index-DDfHAl6Z.css` حاوی `logo-tile` (1 hit)؛ probe: هر ۶ تایل /brands + ردیف برند PDP id=9 → `rgb(255,255,255)` با لوگو visible؛ vision_analyze هر دو اسکرین‌شات: کنتراست بالا، بدون stuck-light. `design-audit.mjs` 8/8 PASS، `tsc` پاک، `npm run verify` ALL PASS.
+
 ### Round 2026-09-14a — Blog/Offers Hand-Audit (design-guardian cron, SHIPPED, live)
 
 - [x] `design-audit.mjs` 8/8 FAIL با ورود: `err:4` در هر ۸ کمبو = ۴×404 `/images/test.jpg`. ریشه: residue تستی DB (کالای «کالای تست اینواریانت موجودی» id=23568، برند تستی، عکس ناموجود) — هم‌کلاس پاک‌سازی 23535 قبلی. حذف FK-safe (cart/wishlist/reviews/order_items) با `VACUUM INTO` بکاپ اول (`/tmp/janebi-pre-purge-23568.db`). پس از پاک‌سازی: **8/8 PASS**.

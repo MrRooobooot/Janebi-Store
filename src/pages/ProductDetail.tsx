@@ -587,7 +587,10 @@ export default function ProductDetail() {
                     <dt className="font-bold text-gray-500 dark:text-gray-400">نام تجاری / برند</dt>
                     <dd className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] sm:col-span-2 flex items-center gap-2">
                       <span>{product.brand}</span>
-                      <BrandLogo name={product.brand} size="sm" />
+                      {/* dark-fill brand vectors (#000 apple/sony/bose) vanish on the dark spec row — white .logo-tile, same sanctioned exception as Enamad */}
+                      <span className="logo-tile rounded-lg border border-[var(--color-border-light)] px-1.5 py-1 shrink-0">
+                        <BrandLogo name={product.brand} size="sm" />
+                      </span>
                     </dd>
                   </div>
                   <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex justify-between even:bg-[var(--color-canvas-light)]/60 dark:even:bg-white/[0.035] transition-colors">
