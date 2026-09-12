@@ -157,9 +157,9 @@ export default function AdminBlog() {
 
       <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700/60 shadow-xs overflow-hidden">
         {loading ? (
-          <div className="p-12 text-center text-gray-400 text-xs">در حال بارگذاری مقاله‌ها...</div>
+          <div className="p-12 text-center text-gray-600 dark:text-gray-400 text-xs">در حال بارگذاری مقاله‌ها...</div>
         ) : filtered.length === 0 ? (
-          <div className="p-12 text-center text-gray-400 text-xs">مقاله ای یافت نشد.</div>
+          <div className="p-12 text-center text-gray-600 dark:text-gray-400 text-xs">مقاله ای یافت نشد.</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-xs text-right">

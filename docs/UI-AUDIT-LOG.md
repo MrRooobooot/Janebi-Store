@@ -14,11 +14,19 @@ Pixel probe (`scripts/probes/probe-pixel.mjs`) is the ONLY contrast authority �
 | 0912 | all products | all | all | 124 product images hotlinked to digikala CDN (fragile, WAF 408) | `/api/products` scan + 408 in console | seed imported remote URLs | phase-2 migration: 124 self-hosted `/images/products/dk-*.jpg` + 124 `.avif` variants (-82% bytes), compose mount added, APPLIED 124/124, 0 broken imgs on prod | fixed |
 | 0912 | reviews | all | all | 0 reviews in DB across 138 products | `/api/products/*/reviews` = [] | no real reviews imported | honest empty-state (no fake data) | open |
 
-## Coverage ledger (stateful guest rotation A)
+## Coverage ledger (stateful guest rotation A) — DONE
 - products grid, PDP + tabs: swept light+dark 1280+390 — PASS (vision + DOM)
 - cart with real items: swept — PASS (disabled-step flag = wontfix)
 - checkout gate, wishlist, compare, search, statics (about/contact): swept light+dark — no new defects
 - external-host noise (enamad 403/408, digikala 408 pre-fix): classified NOT app bugs
+
+## Rotation B — admin panel (isolated snapshot DB, :3978) — this round
+| 0912 | /admin/audit-logs | 1280 | both | meta cell raw JSON truncated (267>224px) | DOM probe sw>cw | `truncate` on JSON blob | `<details>` expand → pretty-printed pre; re-probe trunc:0, expand verified | fixed |
+| 0912 | SKU/dash/loader/labels (Products, Blog, Newsletter, Reviews, Settings, Coupons) | 1280 | light | text-gray-400 ≈2.8:1 on white | DOM computed oklch .707 | un-flipped subtle text | flipped to gray-600 dark:gray-400 (18 sites) | fixed |
+| 0912 | admin empty-state icon (Products) | 1280 | both | "weak contrast icon" vision flag | decorative ≥48px, WCAG exempt | — | none | wontfix |
+| 0912 | /admin/blog/new 404 | — | — | vision/probe flag | Blog uses inline form; no `/new` link exists in code | probe artifact | removed from probe list | wontfix |
+| 0912 | dashboard bottom-clip / missing pagination (vision) | 1280 | — | "سطر آخر بریده" | screenshot viewport edge; Products loads ALL by design (code comment L124) | — | none | wontfix |
+| 0912 | dashboard metric grid asymmetry (vision: row2 2-of-4 cols) | 1280 | dark | flagged | 6 metric cards / 4-col grid = data-count artifact, not CSS break | — | none | wontfix |
 
 ## Next rotations (standing goal)
 - B: admin panel pages (isolated staging DB)

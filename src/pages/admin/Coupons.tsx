@@ -283,7 +283,7 @@ export default function AdminCoupons() {
 
               {/* Action Buttons */}
               <div className="pt-3 border-t border-[var(--color-border-light)] dark:border-gray-700 flex items-center justify-between">
-                <div className="flex flex-col items-start text-[10px] text-gray-400 dark:text-gray-500 font-bold gap-0.5">
+                <div className="flex flex-col items-start text-[10px] text-gray-600 dark:text-gray-400 font-bold gap-0.5">
                   {coupon.expiresAt ? (
                     <span>انقضا: {toPersianDigits(new Date(coupon.expiresAt).toLocaleDateString('fa-IR'))}</span>
                   ) : (

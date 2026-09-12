@@ -152,9 +152,9 @@ export default function AdminReviews() {
       {/* Reviews Table */}
       <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700/60 shadow-xs overflow-hidden">
         {loading ? (
-          <div className="p-12 text-center text-gray-400 text-xs">در حال بارگذاری نظرات...</div>
+          <div className="p-12 text-center text-gray-600 dark:text-gray-400 text-xs">در حال بارگذاری نظرات...</div>
         ) : filteredReviews.length === 0 ? (
-          <div className="p-12 text-center text-gray-400 text-xs">نظری یافت نشد.</div>
+          <div className="p-12 text-center text-gray-600 dark:text-gray-400 text-xs">نظری یافت نشد.</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-xs text-right">
@@ -245,14 +245,14 @@ export default function AdminReviews() {
           <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative">
             <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] mb-4">
               <h3 className="text-base font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">جزئیات کامل نظر</h3>
-              <button onClick={() => setSelectedReview(null)} className="text-gray-400 hover:text-gray-600 text-xs font-bold">بستن</button>
+              <button onClick={() => setSelectedReview(null)} className="text-gray-600 dark:text-gray-400 hover:text-gray-800 text-xs font-bold">بستن</button>
             </div>
 
             <div className="space-y-4 text-xs">
               <div className="p-3.5 rounded-2xl bg-gray-50 dark:bg-gray-800/60 flex items-center justify-between">
                 <div>
                   <div className="font-bold text-[var(--color-text-main-light)] dark:text-white text-sm">{selectedReview.userName}</div>
-                  <div className="text-[11px] text-gray-400 mt-0.5">تاریخ ثبت: {selectedReview.date}</div>
+                  <div className="text-[11px] text-gray-600 dark:text-gray-400 mt-0.5">تاریخ ثبت: {selectedReview.date}</div>
                 </div>
                 <div className="flex items-center gap-1 bg-amber-50 dark:bg-amber-950/40 text-amber-600 px-3 py-1.5 rounded-xl font-bold">
                   <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
@@ -261,19 +261,19 @@ export default function AdminReviews() {
               </div>
 
               <div>
-                <span className="text-gray-400 block mb-1">کالای مربوطه:</span>
+                <span className="text-gray-600 dark:text-gray-400 block mb-1">کالای مربوطه:</span>
                 <div className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] p-2.5 rounded-xl bg-gray-50 dark:bg-gray-800/40">
                   {selectedReview.product?.title || `محصول کد ${selectedReview.productId}`}
                 </div>
               </div>
 
               <div>
-                <span className="text-gray-400 block mb-1">عنوان نظر:</span>
+                <span className="text-gray-600 dark:text-gray-400 block mb-1">عنوان نظر:</span>
                 <div className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">{selectedReview.title}</div>
               </div>
 
               <div>
-                <span className="text-gray-400 block mb-1">متن دیدگاه:</span>
+                <span className="text-gray-600 dark:text-gray-400 block mb-1">متن دیدگاه:</span>
                 <div className="p-3.5 rounded-xl bg-gray-50 dark:bg-gray-800/40 text-gray-800 dark:text-gray-200 leading-relaxed max-h-48 overflow-y-auto whitespace-pre-wrap">
                   {selectedReview.comment}
                 </div>

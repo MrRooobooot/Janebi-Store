@@ -468,7 +468,7 @@ export default function AdminProducts() {
                                 {p.category}
                               </span>
                               {(p as any).sku && (
-                                <span className="text-[10px] text-gray-400 font-mono">
+                                <span className="text-[10px] text-gray-600 dark:text-gray-400 font-mono">
                                   SKU: {(p as any).sku}
                                 </span>
                               )}
@@ -488,7 +488,7 @@ export default function AdminProducts() {
                             {toPersianDigits(p.discount || 0)}٪
                           </span>
                         ) : (
-                          <span className="text-gray-400 text-[11px]">-</span>
+                          <span className="text-gray-600 dark:text-gray-400 text-[11px]">-</span>
                         )}
                       </td>
                       <td className="p-4 font-bold text-[var(--color-emphasis-text)] font-mono">
@@ -782,7 +782,7 @@ export default function AdminProducts() {
                         <img src={item.url} alt={item.label} width="36" height="36" loading="lazy" decoding="async" className="w-9 h-9 rounded-lg object-contain bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] p-0.5 shrink-0 shadow-xs" />
                         <div className="min-w-0">
                           <span className="text-[11px] font-black truncate block leading-tight">{item.label}</span>
-                          <span className={`text-[9px] block ${isSelected ? 'text-primary-100' : 'text-gray-400'}`}>{item.category}</span>
+                          <span className={`text-[9px] block ${isSelected ? 'text-primary-100' : 'text-gray-600 dark:text-gray-400'}`}>{item.category}</span>
                         </div>
                       </button>
                     );

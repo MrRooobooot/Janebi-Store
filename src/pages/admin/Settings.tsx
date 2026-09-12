@@ -79,8 +79,8 @@ function CollapsibleSection({
       <summary className="text-base font-bold text-[var(--color-text-main-light)] dark:text-white border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pb-3 flex items-center gap-2 cursor-pointer list-none select-none">
         {icon}
         {title}
-        <span className="ms-auto text-[10px] font-normal text-gray-400 group-open:hidden">نمایش ▾</span>
-        <span className="ms-auto text-[10px] font-normal text-gray-400 hidden group-open:inline">بستن ▴</span>
+        <span className="ms-auto text-[10px] font-normal text-gray-600 dark:text-gray-400 group-open:hidden">نمایش ▾</span>
+        <span className="ms-auto text-[10px] font-normal text-gray-600 dark:text-gray-400 hidden group-open:inline">بستن ▴</span>
       </summary>
       <div className="pt-4 space-y-4">{children}</div>
     </details>

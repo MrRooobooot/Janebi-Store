@@ -144,8 +144,15 @@ export default function AuditLogs() {
                       <td className="p-3.5 text-gray-600 dark:text-gray-300">{log.entity}</td>
                       <td className="p-3.5 font-mono text-[11px] text-gray-500 dark:text-gray-400" dir="ltr">{log.entityId ?? '—'}</td>
                       <td className="p-3.5 font-mono text-[11px] text-gray-500 dark:text-gray-400" dir="ltr">{log.adminUserId ?? '—'}</td>
-                      <td className="p-3.5 text-[11px] text-gray-500 dark:text-gray-400 max-w-[220px] truncate" dir="ltr">
-                        {log.meta ? JSON.stringify(log.meta) : '—'}
+                      <td className="p-3.5 text-[11px] text-gray-500 dark:text-gray-400 max-w-[220px]" dir="ltr">
+                        {log.meta ? (
+                          <details className="group">
+                            <summary className="truncate cursor-pointer list-none text-gray-600 dark:text-gray-300 hover:text-primary-500 transition-colors">
+                              {JSON.stringify(log.meta)}
+                            </summary>
+                            <pre className="mt-1 max-h-40 overflow-auto rounded-lg bg-gray-100 dark:bg-slate-800 p-2 text-[10px] leading-relaxed whitespace-pre-wrap break-all">{JSON.stringify(log.meta, null, 2)}</pre>
+                          </details>
+                        ) : '—'}
                       </td>
                     </tr>
                   ))

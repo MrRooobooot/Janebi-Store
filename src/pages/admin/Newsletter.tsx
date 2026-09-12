@@ -119,9 +119,9 @@ export default function AdminNewsletter() {
       {/* Subscribers Table */}
       <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700/60 shadow-xs overflow-hidden">
         {loading ? (
-          <div className="p-12 text-center text-gray-400 text-xs">در حال بارگذاری اعضا...</div>
+          <div className="p-12 text-center text-gray-600 dark:text-gray-400 text-xs">در حال بارگذاری اعضا...</div>
         ) : filteredSubscribers.length === 0 ? (
-          <div className="p-12 text-center text-gray-400 text-xs">عضوی یافت نشد.</div>
+          <div className="p-12 text-center text-gray-600 dark:text-gray-400 text-xs">عضوی یافت نشد.</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-xs text-right">
@@ -136,7 +136,7 @@ export default function AdminNewsletter() {
               <tbody className="divide-y divide-gray-100 dark:divide-gray-700/40">
                 {filteredSubscribers.map((sub, idx) => (
                   <tr key={sub.email} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/20 transition-colors">
-                    <td className="p-3.5 font-mono text-gray-400 w-12">{idx + 1}</td>
+                    <td className="p-3.5 font-mono text-gray-600 dark:text-gray-400 w-12">{idx + 1}</td>
                     <td className="p-3.5 font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-left dir-ltr">
                       {sub.email}
                     </td>
