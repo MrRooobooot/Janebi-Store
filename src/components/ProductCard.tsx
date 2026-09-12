@@ -42,9 +42,8 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
     <div className="linear-card bg-white dark:bg-[#0e1629] rounded-2xl border border-slate-200/80 dark:border-white/[0.08] p-3 sm:p-4 pb-3.5 sm:pb-4 transition-all duration-300 relative flex flex-col h-full group select-none hover:-translate-y-0.5 hover:shadow-[var(--shadow-elevation-2)] overflow-hidden">
       
       {/* 1. Header Badges & Quick Action Floating Buttons */}
-      <div>
-        <div className="flex items-center justify-between gap-2 mb-2.5 relative z-10">
-          <div className="min-w-0 max-w-[60%]">
+      <div className="flex items-center justify-between gap-2 mb-2.5 relative z-10">
+          <div className="min-w-0 flex-1">
             {outOfStock ? (
               <span className="bg-slate-100 dark:bg-white/[0.06] text-slate-500 dark:text-slate-400 text-[10px] font-black px-2 py-0.5 rounded-full border border-slate-200 dark:border-white/[0.08] inline-block">
                 ناموجود
@@ -54,13 +53,13 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
                 {toPersianDigits(product.discount)}٪ تخفیف
               </span>
             ) : (
-              <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-white/[0.04] px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-white/[0.06] inline-block whitespace-nowrap overflow-hidden text-ellipsis max-w-full align-top">
+              <span className="block font-bold text-[10px] text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-white/[0.04] px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-white/[0.06] whitespace-nowrap overflow-hidden text-ellipsis">
                 {product.brand || 'اورجینال'}
               </span>
             )}
           </div>
 
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 shrink-0">
             <button
               type="button"
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist(product); }}
@@ -114,16 +113,11 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
             )}
           </div>
 
-          {/* Header Badge */}
+          {/* Category + rating row (flex — no % caps, no fake «جدید» from missing rating) */}
           <div className="flex items-center justify-between gap-2 mb-1 px-0.5">
-            <span className="font-bold text-[11px] text-[var(--color-emphasis-text)] truncate max-w-[70%]">
+            <span className="font-bold text-[11px] text-[var(--color-emphasis-text)] truncate min-w-0">
               {product.category}
             </span>
-            {!product.rating && (
-              <span className="text-[10px] font-bold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/40 px-1.5 py-0.5 rounded-md">
-                جدید
-              </span>
-            )}
             {product.rating ? (
               <div
                 className={`flex items-center gap-1 font-bold ${
@@ -171,14 +165,13 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
             )}
           </div>
         </Link>
-      </div>
 
       {/* 5. Footer: Price & Add-To-Cart CTA — pinned to card bottom (never bleeds out) */}
       <div className="mt-auto pt-2.5 border-t border-slate-100 dark:border-white/[0.06]">
         <div className="flex items-end justify-between gap-2">
           
-          {/* Price Stack — guaranteed uniform 2-line baseline across cards */}
-          <div className="flex flex-col justify-end text-right shrink-0 min-w-0 min-h-[36px]">
+          {/* Price Stack — shrinks/truncates so the CTA never overflows the card edge */}
+          <div className="flex flex-col justify-end text-right min-w-0 min-h-[36px]">
             {product.originalPrice && product.originalPrice > product.price ? (
               <span className="text-[11px] text-slate-400 dark:text-slate-500 line-through truncate leading-tight">
                 {formatPrice(product.originalPrice)}
@@ -188,7 +181,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
                 -
               </span>
             )}
-            <div className="text-xs sm:text-sm font-black text-[var(--color-emphasis-text)] font-mono tracking-tight whitespace-nowrap leading-tight">
+            <div className="text-xs sm:text-sm font-black text-[var(--color-emphasis-text)] font-mono tracking-tight leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
               {formatPrice(product.price)}
             </div>
           </div>
