@@ -28,6 +28,12 @@ Pixel probe (`scripts/probes/probe-pixel.mjs`) is the ONLY contrast authority �
 | 0912 | dashboard bottom-clip / missing pagination (vision) | 1280 | — | "سطر آخر بریده" | screenshot viewport edge; Products loads ALL by design (code comment L124) | — | none | wontfix |
 | 0912 | dashboard metric grid asymmetry (vision: row2 2-of-4 cols) | 1280 | dark | flagged | 6 metric cards / 4-col grid = data-count artifact, not CSS break | — | none | wontfix |
 
+## Rotation D — admin mobile 390px (isolated DB, :3978) — this round
+| 0912 | Orders chips row | 390 | both | visible scrollbar on filter chips (touch scroll works, CDP drag -305px) | DOM probe offsetWidth-clientWidth>0 pre-fix | `no-scrollbar` class undefined in TW4 config-less setup | `@utility no-scrollbar` defined in index.css (post: scrollbar 0) | fixed |
+| 0912 | Products table | 390 | both | "کات لبه چپ/جدول نامناسب" vision flag | probe: in-container scroll 748>356, body hOver=0; table scrolls inside rounded card by design | desktop table + overflow-x container | none — intended pattern (card-view rewrite = wontfix until column count grows) | wontfix |
+| 0912 | all pages | 390 | both | horizontal page overflow | probe hOver:0 all 11 pages | — | none | wontfix |
+| 0912 | Products 138 sub-40px targets | 390 | both | "tiny targets" flag | they are the quick-stock pill (36px h × 49px w, pointer+input swap on tap); 44px rule = recommended not blocker | — | none | wontfix |
+| 0912 | drawer | 390 | both | hamburger menu functionality | 18 links visible after tap, backdrop OK | — | none | wontfix (healthy) |
+
 ## Next rotations (standing goal)
 - C: forms/micro-interactions (auth modal, coupon apply, quantity steppers live behavior)
-- D: admin mobile 390px (sidebar/drawer behavior) — follow-up of B
