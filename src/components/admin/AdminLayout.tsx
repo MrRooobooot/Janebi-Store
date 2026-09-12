@@ -108,30 +108,38 @@ export default function AdminLayout() {
     );
   }
 
-  const navItems = [
-    { to: "/admin", icon: LayoutDashboard, label: "داشبورد و آمار کلان", exact: true },
-    { 
-      to: "/admin/products", 
-      icon: Package, 
-      label: "مدیریت محصولات و انبار", 
-      badge: counts.lowStock > 0 ? `${counts.lowStock} کم‌موجود` : null,
-      badgeColor: 'bg-amber-500'
+  // Grouped by operator workflow (0912 چینش): sales → customers → content/system
+  const navSections = [
+    {
+      title: 'فروش و کالاها',
+      items: [
+        { to: "/admin", icon: LayoutDashboard, label: "داشبورد و آمار کلان", exact: true },
+        { to: "/admin/products", icon: Package, label: "محصولات و انبار",
+          badge: counts.lowStock > 0 ? `${counts.lowStock} کم‌موجود` : null, badgeColor: 'bg-amber-500' },
+        { to: "/admin/orders", icon: ShoppingCart, label: "سفارشات مشتریان",
+          badge: counts.pendingOrders > 0 ? `${counts.pendingOrders} در انتظار` : null, badgeColor: 'bg-rose-500' },
+        { to: "/admin/coupons", icon: Tag, label: "کدهای تخفیف" },
+      ],
     },
-    { 
-      to: "/admin/orders", 
-      icon: ShoppingCart, 
-      label: "سفارشات مشتریان", 
-      badge: counts.pendingOrders > 0 ? `${counts.pendingOrders} در انتظار` : null,
-      badgeColor: 'bg-rose-500'
+    {
+      title: 'مشتریان',
+      items: [
+        { to: "/admin/reviews", icon: MessageSquare, label: "نظرات کاربران",
+          badge: counts.pendingReviews > 0 ? `${counts.pendingReviews} در انتظار` : null, badgeColor: 'bg-sky-500' },
+        { to: "/admin/messages", icon: Mail, label: "پیام‌های پشتیبانی",
+          badge: counts.unreadMessages > 0 ? `${counts.unreadMessages} خوانده‌نشده` : null, badgeColor: 'bg-rose-500' },
+        { to: "/admin/newsletter", icon: MailCheck, label: "اعضای خبرنامه" },
+        { to: "/admin/users", icon: Users, label: "کاربران و VIP" },
+      ],
     },
-    { to: "/admin/reviews", icon: MessageSquare, label: "نظرات کاربران", badge: counts.pendingReviews > 0 ? `${counts.pendingReviews} در انتظار تأیید` : null, badgeColor: 'bg-sky-500' },
-    { to: "/admin/users", icon: Users, label: "کاربران و مشتریان VIP" },
-    { to: "/admin/coupons", icon: Tag, label: "کدهای تخفیف و پروموشن" },
-    { to: "/admin/messages", icon: Mail, label: "پیام‌های تماس و پشتیبانی", badge: counts.unreadMessages > 0 ? `${counts.unreadMessages} خوانده‌نشده` : null, badgeColor: 'bg-rose-500' },
-    { to: "/admin/newsletter", icon: MailCheck, label: "لیست اعضای خبرنامه" },
-    { to: "/admin/audit-logs", icon: ScrollText, label: "لاگ فعالیت مدیران" },
-    { to: "/admin/blog", icon: Newspaper, label: "مدیریت مجله (بلاگ)" },
-    { to: "/admin/settings", icon: Settings, label: "تنظیمات فروشگاه" },
+    {
+      title: 'محتوا و سیستم',
+      items: [
+        { to: "/admin/blog", icon: Newspaper, label: "مجله (بلاگ)" },
+        { to: "/admin/audit-logs", icon: ScrollText, label: "لاگ فعالیت مدیران" },
+        { to: "/admin/settings", icon: Settings, label: "تنظیمات فروشگاه" },
+      ],
+    },
   ];
 
   const sidebarContent = (
@@ -188,8 +196,12 @@ export default function AdminLayout() {
       </div>
 
       {/* Navigation Links */}
-      <nav className="flex-1 px-3 py-2 space-y-1 overflow-y-auto">
-        {navItems.map((item) => {
+      <nav className="flex-1 px-3 py-2 space-y-4 overflow-y-auto">
+        {navSections.map((section) => (
+          <div key={section.title}>
+            <div className="px-3.5 pb-1.5 text-[10px] font-bold text-zinc-400 dark:text-zinc-500 tracking-wider">{section.title}</div>
+            <div className="space-y-1">
+        {section.items.map((item) => {
           const Icon = item.icon;
           return (
             <NavLink
@@ -217,6 +229,9 @@ export default function AdminLayout() {
             </NavLink>
           );
         })}
+            </div>
+          </div>
+        ))}
       </nav>
 
       {/* Footer Utility Actions */}

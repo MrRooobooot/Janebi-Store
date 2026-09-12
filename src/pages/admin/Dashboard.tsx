@@ -171,7 +171,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {statCards.map((stat, i) => (
           <div key={i} className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-gray-700 flex items-center gap-4 shadow-xs">
             <div className={`p-4 rounded-xl ${stat.bg}`}>
@@ -228,8 +228,8 @@ export default function Dashboard() {
             )}
           </div>
 
-          {/* Loyalty / VIP Points Card */}
-          <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs space-y-4">
+          {/* Loyalty / VIP Points Card — self-start: don't stretch to the tall category list's row height (0912 dead-whitespace fix) */}
+          <div className="self-start bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs space-y-4">
             <div className="flex items-center gap-2 text-amber-500">
               <Award className="h-5 w-5" />
               <h2 className="font-bold text-[var(--color-text-main-light)] dark:text-white text-sm">باشگاه مشتریان و امتیازات VIP</h2>
