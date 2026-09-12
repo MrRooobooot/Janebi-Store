@@ -13,6 +13,10 @@ export default defineConfig({
       SMS_API_KEY: '',
       SMS_PROVIDER: '',
       SMS_TEMPLATE_ID: '',
+      // CI has no .env — server/env.ts hard-exits without JWT secrets (min 10).
+      // Test-only values; the INSECURE_DEFAULT guard stays on for production.
+      JWT_ACCESS_SECRET: 'vitest-access-secret-0001',
+      JWT_REFRESH_SECRET: 'vitest-refresh-secret-0001',
     },
   },
 });
