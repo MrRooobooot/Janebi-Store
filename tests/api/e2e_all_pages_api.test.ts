@@ -1,9 +1,9 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from '../setup/request.js';
 import { app } from '../../server/app.js';
 import { db } from '../../server/db/index.js';
-import { users, cartItems, wishlistItems, addresses, orders, orderItems } from '../../server/db/schema.js';
-import { eq } from 'drizzle-orm';
+import { users, cartItems, wishlistItems, addresses, products } from '../../server/db/schema.js';
+import { eq, inArray } from 'drizzle-orm';
 import jwt from 'jsonwebtoken';
 import { env } from '../../server/env.js';
 
@@ -13,6 +13,29 @@ describe('Comprehensive End-to-End Route, API & Page Health Audit', () => {
   const adminId = `admin-e2e-${timestamp}`;
   let adminToken: string;
   let userToken: string;
+  // Self-contained seed: CI has an empty migrated DB — no reliance on local dev rows.
+  let seedProductId: number;
+  const seedProductIds: number[] = [];
+
+  beforeAll(async () => {
+    const [p] = await db.insert(products).values({
+      title: `محصول آزمون مسیرها ${timestamp}`,
+      category: 'accessories',
+      price: 120000,
+      image: '/p-e2e.jpg',
+      brand: 'تست',
+      stockQuantity: 30,
+      sku: `SKU-E2E-${timestamp}`,
+    }).returning();
+    seedProductId = p.id;
+    seedProductIds.push(p.id);
+  });
+
+  afterAll(async () => {
+    if (seedProductIds.length > 0) {
+      await db.delete(products).where(inArray(products.id, seedProductIds));
+    }
+  });
 
   it('1. Verifies all public catalog, brands, categories & product detail APIs', async () => {
     // Products catalog
@@ -21,7 +44,7 @@ describe('Comprehensive End-to-End Route, API & Page Health Audit', () => {
     expect(Array.isArray(prodRes.body)).toBe(true);
     expect(prodRes.body.length).toBeGreaterThan(0);
 
-    const firstProduct = prodRes.body[0];
+    const firstProduct = prodRes.body.find((x: { id: number }) => x.id === seedProductId) ?? prodRes.body[0];
 
     // Single product detail
     const detailRes = await request(app).get(`/api/products/${firstProduct.id}`);
@@ -67,7 +90,7 @@ describe('Comprehensive End-to-End Route, API & Page Health Audit', () => {
     const addCartRes = await request(app)
       .post('/api/cart')
       .set('Authorization', `Bearer ${userToken}`)
-      .send({ productId: 1, quantity: 2 });
+      .send({ productId: seedProductId, quantity: 2 });
     expect(addCartRes.status).toBe(200);
 
     const getCartRes = await request(app)
@@ -80,7 +103,7 @@ describe('Comprehensive End-to-End Route, API & Page Health Audit', () => {
     const addWishRes = await request(app)
       .post('/api/wishlist')
       .set('Authorization', `Bearer ${userToken}`)
-      .send({ productId: 1 });
+      .send({ productId: seedProductId });
     expect(addWishRes.status).toBe(200);
 
     const getWishRes = await request(app)
