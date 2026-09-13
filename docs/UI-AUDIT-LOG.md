@@ -81,6 +81,14 @@ Gate: `npm run verify` PASS (406 تست)، `design-audit` **8/8 PASS** (WebKit+C
 Gate: `npm run verify` PASS (412+ تست، شامل تست جدید)، parity `dist/server.cjs` md5 `c55e346…` محلی == داخل کانتینر، prod `BUILD_INFO=d0cc462`، `e2e-prod-0913.mjs` **8/8 PASS**، prod DB `integrity_check=ok` و `3 کاربر / 138 کالا`.
 Purge پس از آخرین گیت (قاعدهٔ جدید): ۳۴ کاربر + ۹ کالا + ۳ نظر → `data/janebi.db` = ۳ کاربر / ۱۴ کالا / ۰ تصویر تستی.
 
+## Homepage first-screen rework (0913, user request: «اندازهبندی و آیتمهای نگاه اول»)
+| 0913 | home fold, 390+1280, both themes | 390/1280 | both | هیچ محصول/قیمتی در نگاه اول نبود: اولین کارت y=1282 (موبایل) / y=1230 (دسکتاپ)؛ عنوان کارت ۱۲px و قیمت ۱۲px (کوچکتر از متن محیطی)؛ CTA هیرو ۴۰px و ۳۹ هدف زیر ۴۴px | DOM probe زنده قبل/بعد + design-audit هر دو موتور | چیدمان بنرمحور: هیرو ۴۰۶/۴۴۹px + نوار عمده + ۴ کارت مزیت (تکستونی) قبل از ردیف محصول؛ مقیاس تایپ بدون قاعده | ردیف «پیشنهادات شگفتانگیز» بلافاصله بعد از هیرو؛ مزیتها ۲×۲ موبایل؛ هیرو فشرده (۲۶px H1، p-4، تایل دسکتاپ ۲۵۶)؛ تایپ: h2 ۲۰/۲۴، عنوان کارت ۱۳/۱۵، قیمت ۱۳/۱۵، بج ۱۱؛ لمس: CTA ۴۸، فلشها/نقطهها/آیکون هدر ۴۴ | fixed |
+
+اثبات زنده روی prod (`BUILD_INFO=e773786`): موبایل — تیتر بخش ۱۱۲۹→**۵۳۵**، اولین کارت ۱۲۸۲→**۶۸۸** (داخل فولد ۸۴۴)، هیرو ۴۰۶→۳۷۴، CTA ۴۰→۴۸، اهداف <۴۴px ۳۹→۳۰؛ دسکتاپ — تیتر ۹۶۸→**۶۵۵**، اولین کارت ۱۲۳۰→**۷۴۶** (فولد ۸۰۰)، هیرو ۴۴۹→۴۰۳، قیمت ۱۲→۱۵. گیت: `npm run verify` PASS، design-audit **8/8 err:0**، `e2e-prod` **8/8**.
+بستهٔ ۴ (مقیاس ریتم عمودی) عمداً ارسال نشد → ارتفاع کل تقریباً بیتغییر (۶۲۱۴→۶۱۴۹ موبایل، ۴۳۳۰→۴۳۰۰ دسکتاپ).
+
+ریشهٔ residue (رفع ریشهای): سوییت `admin-hardening` کالاهای ساختهشده را با تمام ردیفهای وابسته حذف میکند (order_items/cart/wishlist/features/reviews) — دیگر `test-derived.jpg` در DB نمیماند و design-audit با `err:N` رد نمیشود. ترتیب اجرا همچنان مهم است: gate → purge → audit.
+
 ## Real-account E2E on prod (0913, aidin) — COD order + receipt-SMS gap
 | 0913 | `/checkout` hard-load as a guest | 1280 | light | suspicion: صفحهٔ سفید (بدون گیت ورود) | DOM پس از hydration: EmptyState «سبد خرید شما خالی است! … مشاهده محصولات» | خواندن میان‌هیدریشن، نه باگ رندر | — | wontfix |
 | 0913 | ثبت سفارش واقعی COD با حساب aidin | 1280 | light | — | `ORD-MU06VMVR-8MB7`: ۴×۶۵٬۰۰۰ + ۵۰٬۰۰۰ = ۳۱۰٬۰۰۰، `status=processing`، `paymentMethod=پرداخت در محل`، موجودی ۱۵۰→۱۴۶؛ سپس لغو از حساب → `cancelled` و موجودی ۱۵۰ (UI + DB) | — | — | fixed (verified) |
