@@ -75,5 +75,12 @@ Gate: `npm run verify` PASS (406 تست)، `design-audit` **8/8 PASS** (WebKit+C
 
 نکتهٔ ابزاری (دام): `data/janebi.db` محلی و snapshot قدیمی `dk-*` دارند و audit را با `err:80` می‌شکنند؛ snapshot تازه با `better-sqlite3 .backup()` + `docker cp` + کپی `public/images/products/*.avif` (gitignore شده) لازم است.
 
+## Rotation R1×R2 cross-check — admin API (0913, post-review)
+| 0913 | `GET /api/admin/users` (non-owner admin) | — | — | ردیف مالک بعد از `LIMIT/OFFSET` فیلتر می‌شد ولی `X-Total-Count` کل جدول را می‌شمرد → ۱۸ در برابر ۱۷ ردیف قابل‌شمارش؛ هم نشت وجود حساب مخفی، هم هر صفحه یک ردیف کوتاه | تست رگرسیون جدید `RED` روی کد قبلی: `expected 18 to be 17` | پنهان‌سازی مالک در JS و بعد از اسلایس، و count بدون `where` | فیلتر به SQL منتقل شد (`ne(users.id, ownerId)` مشترک بین query و count) | fixed |
+
+Gate: `npm run verify` PASS (412+ تست، شامل تست جدید)، parity `dist/server.cjs` md5 `c55e346…` محلی == داخل کانتینر، prod `BUILD_INFO=d0cc462`، `e2e-prod-0913.mjs` **8/8 PASS**، prod DB `integrity_check=ok` و `3 کاربر / 138 کالا`.
+Purge پس از آخرین گیت (قاعدهٔ جدید): ۳۴ کاربر + ۹ کالا + ۳ نظر → `data/janebi.db` = ۳ کاربر / ۱۴ کالا / ۰ تصویر تستی.
+
 ## Next rotations (standing goal)
 - همهٔ ردیف‌های open لاگ بسته شده‌اند (0913). چرخش بعدی: hand-audit دوره‌ای روی سطوح کشف‌نشده + تثبیت پروب‌های چرخش C/F به‌عنوان رگرسیون روزانه (در صورت خواست کاربر).
+- باقی‌ماندهٔ متن‌باز: خرید واقعی E2E روی prod با حساب واقعی (نیازمند تأیید کاربر).
