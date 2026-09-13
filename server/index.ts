@@ -3,6 +3,8 @@ import { env } from './env.js';
 import { db, dbReady } from './db/index.js';
 import * as schema from './db/schema.js';
 import { startBaleBot } from './bot/bale.js';
+import { storeEvents } from './services/events.js';
+import { sendOrderReceiptSms } from './services/sms.js';
 import { ALL_PRODUCTS, REVIEWS_STORE, VALID_COUPONS } from './data/seed-data.js';
 import { blogPostingJsonLdFor, productJsonLdFor, breadcrumbJsonLdFor, productBreadcrumbJsonLdFor, injectBreadcrumbIntoHtml } from "./lib/breadcrumbs.js";
 import { routeMetaForRequest, injectSeoMetadata, productOgImageFor } from "./lib/seoMeta.js";
@@ -190,6 +192,16 @@ async function startServer() {
       console.error('❌ Bale bot failed to start:', e.message)
     );
   }
+
+  // Order receipt SMS to the buyer. Same event the owner bot listens to, so both
+  // COD and verified online payments get a receipt; failures never touch the order.
+  storeEvents.on('order:paid', (event) => {
+    void sendOrderReceiptSms({
+      orderId: event.orderId,
+      total: event.total,
+      recipientPhone: event.recipientPhone,
+    });
+  });
 }
 
 startServer().catch(console.error);

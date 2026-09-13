@@ -32,6 +32,10 @@ const envSchema = z.object({
   SMS_API_KEY: z.string().optional().or(z.literal("")),
   SMS_PROVIDER: z.string().optional().or(z.literal("")),
   SMS_TEMPLATE_ID: z.string().optional().or(z.literal("")),
+  // Customer-facing order receipt SMS (buyer's own phone). Template path wins;
+  // otherwise a dedicated-line free-text send. Both empty = receipts skipped.
+  SMS_ORDER_TEMPLATE_ID: z.string().optional().or(z.literal("")),
+  SMS_LINE_NUMBER: z.string().optional().or(z.literal("")),
   // Bale (بله) bot — product upload assistant. Empty = bot disabled.
   BALE_BOT_TOKEN: z.string().optional().or(z.literal("")),
   BALE_ADMIN_CHAT_IDS: z.string().default("").transform((val: string) =>
