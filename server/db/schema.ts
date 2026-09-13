@@ -9,6 +9,7 @@ export const users = sqliteTable('users', {
   password: text('password').notNull(),
   avatar: text('avatar'),
   joinedDate: text('joined_date'),
+  createdAt: integer('created_at'),
   vipPoints: integer('vip_points').default(0),
   role: text('role').default('user'),
   mustChangePassword: integer('must_change_password', { mode: 'boolean' }).default(false)

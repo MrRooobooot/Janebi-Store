@@ -319,3 +319,48 @@ describe('Admin owner protection + list pagination', () => {
     expect(Array.isArray(junk.body)).toBe(true);
   });
 });
+
+// R3 — the admin user list must be chronological. joined_date holds Persian *display*
+// text, so ordering on it puts «۱۴۰۵/۱۲/۲۹» before «۱۴۰۵/۱/۱»; created_at (epoch ms)
+// is the chronology, and rows without it sort oldest instead of masquerading as newest.
+describe('Admin users list chronology (R3)', () => {
+  const suffix = 'r3-' + Date.now();
+  const base = Date.now() - 3600_000;
+  const adminId = 'r3-admin-' + suffix;
+  const newestId = 'r3-newest-' + suffix;
+  const middleId = 'r3-middle-' + suffix;
+  const oldestId = 'r3-oldest-' + suffix;
+  const legacyId = 'r3-legacy-' + suffix;
+  const adminToken = jwt.sign({ userId: adminId }, env.JWT_ACCESS_SECRET, { expiresIn: '1h' });
+  const phone = () => '09' + Math.floor(1e8 + Math.random() * 9e8);
+  const today = new Intl.DateTimeFormat('fa-IR').format(new Date());
+
+  beforeAll(async () => {
+    await db.insert(users).values([
+      { id: adminId, name: 'ادمین ترتیب', phone: phone(), password: 'hash', role: 'admin', joinedDate: today },
+      // display dates deliberately scrambled against real chronology
+      { id: newestId, name: 'تازه', phone: phone(), password: 'hash', role: 'user', createdAt: base + 3000, joinedDate: '۱۴۰۴/۱/۱' },
+      { id: middleId, name: 'میانه', phone: phone(), password: 'hash', role: 'user', createdAt: base + 2000, joinedDate: '۱۴۰۵/۹/۹' },
+      { id: oldestId, name: 'قدیمی', phone: phone(), password: 'hash', role: 'user', createdAt: base + 1000, joinedDate: '۱۴۰۵/۱۲/۲۹' },
+      // legacy row: no created_at, and a display date that would sort FIRST under the old query
+      { id: legacyId, name: 'بازمانده', phone: phone(), password: 'hash', role: 'user', joinedDate: '۱۴۰۵/۱۲/۲۹' },
+    ]);
+  });
+
+  it('orders newest-first by created_at even when joined_date text disagrees', async () => {
+    const res = await request(app).get('/api/admin/users').set('Authorization', `Bearer ${adminToken}`);
+    expect(res.status).toBe(200);
+    const ids: string[] = res.body.map((u: { id: string }) => u.id);
+    const at = (id: string) => ids.indexOf(id);
+    expect(at(newestId)).toBeLessThan(at(middleId));
+    expect(at(middleId)).toBeLessThan(at(oldestId));
+    // unresolved chronology must not be presented as the most recent account
+    expect(at(legacyId)).toBeGreaterThan(at(oldestId));
+  });
+
+  it('fills created_at from the epoch embedded in generated ids and exposes it to the panel', async () => {
+    const res = await request(app).get('/api/admin/users').set('Authorization', `Bearer ${adminToken}`);
+    const row = res.body.find((u: { id: string }) => u.id === newestId);
+    expect(row.createdAt).toBe(base + 3000);
+  });
+});

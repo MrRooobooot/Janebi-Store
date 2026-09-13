@@ -49,6 +49,7 @@ router.post("/register", validate(registerSchema), async (req, res) => {
       phone,
       password: hashedPassword,
       joinedDate,
+      createdAt: Date.now(),
       role: "user",
       vipPoints: 0
     });
@@ -388,6 +389,7 @@ router.post("/otp/verify", validate(otpVerifySchema), async (req, res) => {
         phone,
         password: randomPassword,
         joinedDate,
+        createdAt: Date.now(),
         role: "user",
         vipPoints: 100 // Bonus VIP points on first OTP signup!
       });
