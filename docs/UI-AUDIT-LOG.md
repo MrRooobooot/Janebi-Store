@@ -81,6 +81,13 @@ Gate: `npm run verify` PASS (406 تست)، `design-audit` **8/8 PASS** (WebKit+C
 Gate: `npm run verify` PASS (412+ تست، شامل تست جدید)، parity `dist/server.cjs` md5 `c55e346…` محلی == داخل کانتینر، prod `BUILD_INFO=d0cc462`، `e2e-prod-0913.mjs` **8/8 PASS**، prod DB `integrity_check=ok` و `3 کاربر / 138 کالا`.
 Purge پس از آخرین گیت (قاعدهٔ جدید): ۳۴ کاربر + ۹ کالا + ۳ نظر → `data/janebi.db` = ۳ کاربر / ۱۴ کالا / ۰ تصویر تستی.
 
+## Real-account E2E on prod (0913, aidin) — COD order + receipt-SMS gap
+| 0913 | `/checkout` hard-load as a guest | 1280 | light | suspicion: صفحهٔ سفید (بدون گیت ورود) | DOM پس از hydration: EmptyState «سبد خرید شما خالی است! … مشاهده محصولات» | خواندن میان‌هیدریشن، نه باگ رندر | — | wontfix |
+| 0913 | ثبت سفارش واقعی COD با حساب aidin | 1280 | light | — | `ORD-MU06VMVR-8MB7`: ۴×۶۵٬۰۰۰ + ۵۰٬۰۰۰ = ۳۱۰٬۰۰۰، `status=processing`، `paymentMethod=پرداخت در محل`، موجودی ۱۵۰→۱۴۶؛ سپس لغو از حساب → `cancelled` و موجودی ۱۵۰ (UI + DB) | — | — | fixed (verified) |
+| 0913 | پیامک رسید سفارش به خریدار | — | — | **هیچ پیامکی برای مشتری ارسال نمی‌شد** — کل سیم‌کشی SMS فقط در مسیر OTP بود | prod: `docker logs` فاقد هر رکورد SMS + grep: `sendSms` تنها در `server/routes/auth.ts` | نبود فیچر (نه باگ) | `server/services/sms.ts` + listener روی `order:paid` (template verify یا line bulk، اعداد فارسی، بی‌صدا در نبود کانفیگ) — ۵ تست، gate سبز، دیپلوی `0917fa7` | fixed (ارسال واقعی نیازمند `SMS_ORDER_TEMPLATE_ID` یا `SMS_LINE_NUMBER`) |
+
+نکتهٔ ابزار: پروفایل واقعی مرورگر روی این مک کار نمی‌کند (مرورگر پیش‌فرض Chromium نیست) → `browser.use_real_profile=false` و سشن مالک با JWT کوتاه‌عمر (۱۰–۲۵ دقیقه، فقط روی VPS امضا) برای E2E استفاده شد؛ رمز عبور نه خوانده شد نه ذخیره.
+
 ## Next rotations (standing goal)
 - همهٔ ردیف‌های open لاگ بسته شده‌اند (0913). چرخش بعدی: hand-audit دوره‌ای روی سطوح کشف‌نشده + تثبیت پروب‌های چرخش C/F به‌عنوان رگرسیون روزانه (در صورت خواست کاربر).
 - باقی‌ماندهٔ متن‌باز: خرید واقعی E2E روی prod با حساب واقعی (نیازمند تأیید کاربر).
