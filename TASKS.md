@@ -2,6 +2,17 @@
 
 ## Status: Completed (Aug 28, 2026)
 
+### Round 2026-09-13 — Rotation C (forms) + specs backfill + SEO meta + review path (SHIPPED, live 61e93b8)
+
+- [x] **چرخش C فرم‌ها (probe زنده prod، DOM+pixel+vision، لایت/دارک ×1280/390)** — ۴ فیکس ریشه‌ای: `noValidate` روی ۴ فرم (تولتیپ انگلیسی مرورگر، اعتبارسنجی فارسی JS غیرقابل‌دسترس)؛ پیام type zod روی `z.number()` (نشت "Invalid input: expected number, received null" به بنر کوپن) + گارد `Number.isFinite(cartTotal)`؛ توست `bottom-20 lg:bottom-4 z-[60]` (نشت روی MobileBottomNav، overlapPx=0 پسابازرسی)؛ حذف ارائه دوبل خطای کوپن (بنر inline قابل‌بستن = تنها سطح). ۴ wontfix با شاهد پیکسلی (استپر disabled opacity، تب غیرفعال 4.58، CTA 4.73 بزرگ‌متن). Ledger: UI-AUDIT-LOG §Rotation C.
+- [x] **بدهی specs PDP — بستگان ردیف open 0912**: ویژگی `features[]` روی PUT/POST `/api/admin/products` (tx replace، cap 20) + ادیتور «مشخصات فنی» در فرم ادمین؛ بک‌فیلد 138/138 داخل کانتینر prod با JWT ادمین کوتاه‌عمر — **zero-fabrication**: هر feature یک توکن عینِ عنوان خود محصول (مدل/توان/طول/رابط/سازگار با/جنس)؛ خروجی: 122/138 دارای specs. اثبات رندر prod: ردیف‌های تب مشخصات + JSON-LD `additionalProperty` (ویژگی×۳) زنده.
+- [x] ** تمیزسازی فروشگاه (دستور کاربر: «نیازی نیست از دیجی‌کالا چیزی بگیری»)**: حذف سطر «منبع استعلام قیمت…دیجی‌کالا (dkp-)» از 125 توضیح، sku→`JB-<id>`، تصاویر `dk-*`→`p-*` روی host+dist (nginx docroot جدا — trap: فقط public/ رینیم کافی نبود؛ dk-→404, p-→200؛ sweep 138 تصویر: ۰ شکسته). بازاسکن API: provenance 0 / DK- 0 / dk- 0.
+- [x] **SEO/CWV روزانه**: robots/sitemap سالم (192 loc، lastmod ۰۹-۱۳)؛ **یافته واقعی**: ۸ مسیر استاتیک sitemap بدون JS title ژنریک می‌گرفتند → `STATIC_ROUTE_META` در seoMeta.ts (کپی آینه‌ی h1 صفحات)؛ اثبات curl 8/8 distinct + canonical/og منطبق.
+- [x] **مسیر دریافت ریویو (صادقانه، بدون داده ساختگی)**: CTA «ثبت نظر» هر قلمه سفارش `delivered` → `/products/:id?writeReview=1` → تب reviews باز می‌شود (ProductReviews lazy-mount بود — فیکس در initial tab) + باز شدن خودکار فرم برای لاگین‌کاربران، پارامتر replaceState (رفرش‌سیف). پروب prod: تب فعال، کپی empty صادق. ردیف reviews لاگ بسته شد.
+- [x] **E2E real flow prod (mobile 390)**: `scripts/probes/e2e-prod-0913.mjs` — home→PDP(specs)→add-cart→stepper ۱→۲→coupon error فارسی تک‌سطحی→checkout→submit بدون pageerror→JSON-LD 1361B = **8/8 PASS** روی BUILD_INFO `61e93b8`.
+- [x] گیت‌ها: `npm run verify` (406 tests) ×۳ پاس، design-audit 8/8، tsc پاک. زیرساخت Hermes: توکن تلگرام مشترک code-pro/novin-khodro کامنت شد (هشدار share رفع شد؛ backup `.bak-telegram-dedup`) — `hermes gateway restart` عمداً به انتهای سشن موکول (قطع همین session).
+- Next: چرخش F — میکروفلو چک‌اوت/درگاه + تکرار سنج specs باقی ۱۶ محصول بی‌توکن.
+
 ### Round 2026-09-14b — Brands/PDP dark-fill logo vectors (design-guardian cron, SHIPPED)
 
 - [x] چرخش hand-audit: `/brands` + `/products/:id` (دارک، Chromium+vision). یافته: بردورهای رسمی برند (`apple/sony/bose/sennheiser.svg` با `fill=#000`) روی tile دارک `dark:bg-gray-700/60` نامرئی (کنتراست ~1.2:1). ریشه-کلاس: همان استثنای sanctioned تایل Enamad — وایت‌تایل اجباری برای دارک‌فیل SVG.
