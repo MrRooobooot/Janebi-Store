@@ -114,7 +114,7 @@ export default function Header() {
           <div className="shrink-0 flex items-center gap-2 sm:gap-3">
             <button
               aria-label={mobileMenuOpen ? "بستن منو" : "باز کردن منو"}
-              className="lg:hidden p-1.5 sm:p-2 text-slate-700 dark:text-slate-300 hover:text-[var(--color-emphasis-text)] focus:outline-none rounded-xl hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors"
+              className="min-touch-target lg:hidden p-1.5 sm:p-2 text-slate-700 dark:text-slate-300 hover:text-[var(--color-emphasis-text)] focus:outline-none rounded-xl hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? <X className="h-5 w-5 sm:h-6 sm:w-6" /> : <Menu className="h-5 w-5 sm:h-6 sm:w-6" />}
@@ -135,7 +135,7 @@ export default function Header() {
             {/* Mobile Search Button */}
             <button
               aria-label="جستجو"
-              className="md:hidden p-1.5 sm:p-2 text-slate-600 dark:text-slate-400 hover:text-[var(--color-emphasis-text)] rounded-xl hover:bg-slate-100 dark:hover:bg-white/[0.06]"
+              className="min-touch-target md:hidden p-1.5 sm:p-2 text-slate-600 dark:text-slate-400 hover:text-[var(--color-emphasis-text)] rounded-xl hover:bg-slate-100 dark:hover:bg-white/[0.06]"
               onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
             >
               <Search className="h-5 w-5" />
@@ -146,7 +146,7 @@ export default function Header() {
               aria-label={isDarkMode ? "تغییر به حالت روز" : "تغییر به حالت شب"}
               title={isDarkMode ? "حالت روز (روشن)" : "حالت شب (تاریک)"}
               onClick={toggleTheme}
-              className="p-1.5 sm:p-2 text-slate-600 dark:text-slate-300 hover:text-[var(--color-emphasis-text)] rounded-xl hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors"
+              className="min-touch-target p-1.5 sm:p-2 text-slate-600 dark:text-slate-300 hover:text-[var(--color-emphasis-text)] rounded-xl hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors"
             >
               {isDarkMode ? <Sun className="h-5 w-5 text-amber-400" /> : <Moon className="h-5 w-5 text-slate-600" />}
             </button>

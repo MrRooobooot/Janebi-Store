@@ -275,7 +275,7 @@ export default function Home() {
       
       {/* 1. Hero Showcase Section */}
       <section className="w-full box-border">
-        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-white via-slate-50 to-rose-50/30 dark:from-[#0e1629] dark:via-[#0c1220] dark:to-[#070b14] border border-slate-200/90 dark:border-white/[0.08] shadow-lg dark:shadow-2xl p-6 sm:p-8 lg:p-10 transition-colors duration-500 min-h-[360px] sm:min-h-[420px] flex flex-col justify-between">
+        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-white via-slate-50 to-rose-50/30 dark:from-[#0e1629] dark:via-[#0c1220] dark:to-[#070b14] border border-slate-200/90 dark:border-white/[0.08] shadow-lg dark:shadow-2xl p-4 sm:p-7 lg:p-6 transition-colors duration-500 min-h-0 sm:min-h-[400px] lg:min-h-[340px] flex flex-col justify-between">
           
           {/* Ambient Dot Grid (dual-theme, non-hardcoded) */}
           <div className="absolute inset-0 bg-[radial-gradient(var(--color-border-light)_1px,transparent_1px)] dark:bg-[radial-gradient(var(--color-border-dark)_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none opacity-60" />
@@ -284,30 +284,30 @@ export default function Home() {
           <div key={activeSlide} className="hero-slide-content relative z-10 w-full grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
             
             {/* Text & Actions */}
-            <div className="md:col-span-7 space-y-4 text-right">
+            <div className="md:col-span-7 space-y-2.5 sm:space-y-4 text-right">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-50 dark:bg-primary-950/40 border border-primary-200/60 dark:border-primary-900/50 text-[var(--color-emphasis-text)] dark:text-primary-300 text-xs font-black shadow-xs">
                 <Sparkles className="h-3.5 w-3.5 animate-pulse text-[var(--color-emphasis-text)] dark:text-primary-400 shrink-0" />
                 <span>{normalizePersianTypography(currentSlide.tag)}</span>
               </div>
 
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white leading-[1.15] tracking-tight">
+              <h1 className="text-[26px] sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white leading-[1.2] sm:leading-[1.15] tracking-tight">
                 {normalizePersianTypography(currentSlide.title)}
               </h1>
 
-              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+              <p className="text-[13px] sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
                 {normalizePersianTypography(currentSlide.subtitle)}
               </p>
 
-              <div className="pt-2 flex flex-wrap items-center gap-3">
+              <div className="pt-1 sm:pt-2 flex flex-wrap items-center gap-2.5 sm:gap-3">
                 <Link
                   to={currentSlide.buttonLink}
-                  className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] text-white font-black px-6 py-3 rounded-2xl text-xs sm:text-sm transition-colors duration-200 shadow-lg shadow-[var(--color-cta)]/30 flex items-center gap-2 group active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-cta)]"
+                  className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] text-white font-black px-5 sm:px-6 min-h-[48px] rounded-2xl text-[13px] sm:text-sm transition-colors duration-200 shadow-lg shadow-[var(--color-cta)]/30 flex items-center gap-2 group active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-cta)]"
                 >
                   <span>{normalizePersianTypography(currentSlide.buttonText)}</span>
                   <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
                 </Link>
 
-                <div className="text-xs font-black px-4 py-2.5 rounded-2xl border bg-slate-100/80 text-slate-700 border-slate-200 dark:bg-white/[0.04] dark:text-slate-300 dark:border-white/[0.08] flex items-center gap-2">
+                <div className="text-[13px] sm:text-xs font-black px-3.5 sm:px-4 min-h-[48px] sm:min-h-0 py-0 sm:py-2.5 rounded-2xl border bg-slate-100/80 text-slate-700 border-slate-200 dark:bg-white/[0.04] dark:text-slate-300 dark:border-white/[0.08] flex items-center gap-2">
                   <Award className="h-4 w-4 shrink-0 text-[var(--color-emphasis-text)] dark:text-inherit" />
                   <span>{normalizePersianTypography(currentSlide.badge)}</span>
                 </div>
@@ -316,7 +316,7 @@ export default function Home() {
 
             {/* Visual 3D Asset Showcase Column (Desktop/Tablet) */}
             <div className="hidden md:flex md:col-span-5 items-center justify-center relative">
-              <div className="relative w-64 h-64 lg:w-80 lg:h-80 rounded-3xl p-6 bg-white/90 dark:bg-[#121c33]/80 border border-slate-200/80 dark:border-white/[0.08] backdrop-blur-md flex items-center justify-center shadow-md dark:shadow-2xl group hero-visual-tile">
+              <div className="relative w-56 h-56 lg:w-56 lg:h-56 rounded-3xl p-5 bg-white/90 dark:bg-[#121c33]/80 border border-slate-200/80 dark:border-white/[0.08] backdrop-blur-md flex items-center justify-center shadow-md dark:shadow-2xl group hero-visual-tile">
                 <PictureImage
                   src={currentSlide.image}
                   alt={normalizePersianTypography(currentSlide.title)}
@@ -334,7 +334,7 @@ export default function Home() {
             type="button"
             onClick={() => setActiveSlide((prev) => (prev === 0 ? heroSlides.length - 1 : prev - 1))}
             aria-label="اسلاید قبلی"
-            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black/90 border border-zinc-200/80 dark:border-white/10 text-zinc-800 dark:text-zinc-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer"
+            className="absolute right-1 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 sm:w-10 sm:h-10 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black/90 border border-zinc-200/80 dark:border-white/10 text-zinc-800 dark:text-zinc-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer"
           >
             <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
@@ -342,13 +342,13 @@ export default function Home() {
             type="button"
             onClick={() => setActiveSlide((prev) => (prev + 1) % heroSlides.length)}
             aria-label="اسلاید بعدی"
-            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black/90 border border-zinc-200/80 dark:border-white/10 text-zinc-800 dark:text-zinc-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer"
+            className="absolute left-1 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 sm:w-10 sm:h-10 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black/90 border border-zinc-200/80 dark:border-white/10 text-zinc-800 dark:text-zinc-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer"
           >
             <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
 
-          {/* Slide Indicator Dots (Centered — theme-aware contrast) */}
-          <div className="relative z-10 flex items-center justify-center gap-2 mt-6 pt-3 border-t border-zinc-200/80 dark:border-zinc-800/80" role="tablist" aria-label="اسلایدهای صفحه اصلی">
+          {/* Slide Indicator Dots (Centered — theme-aware contrast; 44px hit area) */}
+          <div className="relative z-10 flex items-center justify-center gap-1 sm:gap-2 mt-3 sm:mt-6 pt-3 border-t border-zinc-200/80 dark:border-zinc-800/80" role="tablist" aria-label="اسلایدهای صفحه اصلی">
             {heroSlides.map((slide, idx) => (
               <button
                 key={slide.id}
@@ -356,62 +356,22 @@ export default function Home() {
                 role="tab"
                 aria-selected={activeSlide === idx}
                 aria-label={`اسلاید ${toPersianDigits(idx + 1)}`}
-                className={`h-2.5 rounded-full transition-all duration-300 motion-reduce:transition-none cursor-pointer ${
-                  activeSlide === idx
-                    ? 'w-8 bg-primary-600 dark:bg-primary-400 shadow-md shadow-primary-500/50'
-                    : 'w-2.5 bg-zinc-400 dark:bg-zinc-600 hover:bg-zinc-500 dark:hover:bg-zinc-400'
-                }`}
-              />
+                className="h-11 min-w-11 sm:min-w-0 sm:h-6 px-1 flex items-center justify-center cursor-pointer"
+              >
+                <span
+                  className={`block h-2.5 rounded-full transition-all duration-300 motion-reduce:transition-none ${
+                    activeSlide === idx
+                      ? 'w-8 bg-primary-600 dark:bg-primary-400 shadow-md shadow-primary-500/50'
+                      : 'w-2.5 bg-zinc-400 dark:bg-zinc-600'
+                  }`}
+                />
+              </button>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 2. Wholesale / B2B Banner Strip */}
-      <section className="w-full">
-        <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0e1629] border border-slate-200/90 dark:border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
-          <div className="flex items-center gap-3 text-right">
-            <div className="w-10 h-10 rounded-xl bg-primary-50 dark:bg-primary-950/40 border border-primary-200/60 dark:border-primary-900/50 flex items-center justify-center text-[var(--color-emphasis-text)] shrink-0">
-              <PackageCheck className="h-5 w-5" />
-            </div>
-            <div>
-              <h3 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white">{normalizePersianTypography(settings.b2bTitle || STORE_SETTINGS_DEFAULTS.b2bTitle)}</h3>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{normalizePersianTypography(settings.b2bDesc || STORE_SETTINGS_DEFAULTS.b2bDesc)}</p>
-            </div>
-          </div>
-          <Link
-            to={settings.b2bLink || STORE_SETTINGS_DEFAULTS.b2bLink}
-            className="px-4 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-black text-xs transition-all shadow-sm shadow-[var(--color-cta)]/25 shrink-0 cursor-pointer"
-          >
-            {normalizePersianTypography(settings.b2bButtonText || STORE_SETTINGS_DEFAULTS.b2bButtonText)}
-          </Link>
-        </div>
-      </section>
-
-      {/* 3. Value Propositions Bar */}
-      <section className="w-full">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          {valueProps.map((item, i) => {
-            const Icon = item.icon;
-            return (
-              <div 
-                key={i} 
-                className="flex items-center gap-3.5 p-4 rounded-2xl bg-white dark:bg-[#0e1629] border border-slate-200/80 dark:border-white/[0.07] shadow-xs hover:border-slate-300 dark:hover:border-white/[0.15] transition-all"
-              >
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border ${item.color}`}>
-                  <Icon className="h-6 w-6 stroke-[2]" />
-                </div>
-                <div className="min-w-0">
-                  <h4 className="text-xs sm:text-sm font-black text-slate-900 dark:text-slate-100">{item.title}</h4>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">{item.desc}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* 4. Amazing Deals Section */}
+      {/* 2. Amazing Deals Section — product-first fold */}
       <section className="w-full">
         <div className="bg-gradient-to-br from-rose-50/40 via-white to-slate-50 dark:from-[#0e1629] dark:via-[#0c1220] dark:to-[#070b14] rounded-3xl p-5 sm:p-8 text-slate-900 dark:text-white border border-rose-200/70 dark:border-white/[0.08] shadow-lg dark:shadow-2xl relative overflow-hidden transition-colors">
           
@@ -422,7 +382,7 @@ export default function Home() {
                 <Flame className="h-5 w-5 animate-bounce" />
               </div>
               <div>
-                <h2 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white">{normalizePersianTypography(settings.dealsTitle || STORE_SETTINGS_DEFAULTS.dealsTitle)}</h2>
+                <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">{normalizePersianTypography(settings.dealsTitle || STORE_SETTINGS_DEFAULTS.dealsTitle)}</h2>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{normalizePersianTypography(settings.dealsSubtitle || STORE_SETTINGS_DEFAULTS.dealsSubtitle)}</p>
               </div>
             </div>
@@ -475,12 +435,12 @@ export default function Home() {
                       height="160"
                       className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300 drop-shadow-[0_4px_8px_rgba(0,0,0,0.06)] dark:drop-shadow-none" 
                     />
-                    <span className="absolute top-2 right-2 bg-primary-600 text-white text-[10px] font-black px-2 py-0.5 rounded-lg shadow-xs">
+                    <span className="absolute top-2 right-2 bg-primary-600 text-white text-[11px] font-black px-2 py-0.5 rounded-lg shadow-xs">
                       {toPersianDigits(p.discount || 0)}٪
                     </span>
                   </div>
 
-                  <h3 className="text-xs font-bold line-clamp-2 leading-relaxed min-h-[36px] text-zinc-800 dark:text-zinc-100 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors">
+                  <h3 className="text-[13px] font-bold line-clamp-2 leading-relaxed min-h-[44px] text-zinc-800 dark:text-zinc-100 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors">
                     {p.title}
                   </h3>
 
@@ -490,7 +450,7 @@ export default function Home() {
                         {formatPrice(p.originalPrice)}
                       </span>
                     )}
-                    <span className="text-xs sm:text-sm font-black text-[var(--color-emphasis-text)]">
+                    <span className="text-[13px] sm:text-[15px] font-black text-[var(--color-emphasis-text)]">
                       {formatPrice(p.price)}
                     </span>
                   </div>
@@ -505,11 +465,55 @@ export default function Home() {
         </div>
       </section>
 
+      {/* 3. Wholesale / B2B Banner Strip */}
+      <section className="w-full">
+        <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0e1629] border border-slate-200/90 dark:border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
+          <div className="flex items-center gap-3 text-right">
+            <div className="w-10 h-10 rounded-xl bg-primary-50 dark:bg-primary-950/40 border border-primary-200/60 dark:border-primary-900/50 flex items-center justify-center text-[var(--color-emphasis-text)] shrink-0">
+              <PackageCheck className="h-5 w-5" />
+            </div>
+            <div>
+              <h3 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white">{normalizePersianTypography(settings.b2bTitle || STORE_SETTINGS_DEFAULTS.b2bTitle)}</h3>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{normalizePersianTypography(settings.b2bDesc || STORE_SETTINGS_DEFAULTS.b2bDesc)}</p>
+            </div>
+          </div>
+          <Link
+            to={settings.b2bLink || STORE_SETTINGS_DEFAULTS.b2bLink}
+            className="px-4 min-h-[44px] inline-flex items-center rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-black text-[13px] transition-all shadow-sm shadow-[var(--color-cta)]/25 shrink-0 cursor-pointer"
+          >
+            {normalizePersianTypography(settings.b2bButtonText || STORE_SETTINGS_DEFAULTS.b2bButtonText)}
+          </Link>
+        </div>
+      </section>
+
+      {/* 4. Value Propositions Bar */}
+      <section className="w-full">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+          {valueProps.map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <div 
+                key={i} 
+                className="flex items-center gap-3.5 p-4 rounded-2xl bg-white dark:bg-[#0e1629] border border-slate-200/80 dark:border-white/[0.07] shadow-xs hover:border-slate-300 dark:hover:border-white/[0.15] transition-all"
+              >
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border ${item.color}`}>
+                  <Icon className="h-6 w-6 stroke-[2]" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-xs sm:text-sm font-black text-slate-900 dark:text-slate-100">{item.title}</h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">{item.desc}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
       {/* 5. Category Visual Circles */}
       <section className="w-full">
         <div className="flex items-center justify-between mb-4 sm:mb-6">
           <div>
-            <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white">دسته‌بندی‌های تخصصی</h2>
+            <h2 className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-white">دسته‌بندی‌های تخصصی</h2>
             <p className="text-xs text-zinc-600 dark:text-zinc-300 mt-0.5">انتخاب تجهیزات بر اساس دسته‌بندی</p>
           </div>
 
@@ -521,7 +525,7 @@ export default function Home() {
                 onClick={() => scrollCats('prev')}
                 disabled={!canScrollPrev}
                 aria-label="دسته‌بندی‌های قبلی"
-                className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-[var(--color-surface-light)] dark:bg-[#0d121c] text-zinc-700 dark:text-zinc-200 hover:text-[var(--color-emphasis-text)] hover:border-[var(--color-cta)]/40 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs"
+                className="min-touch-target w-9 h-9 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-[var(--color-surface-light)] dark:bg-[#0d121c] text-zinc-700 dark:text-zinc-200 hover:text-[var(--color-emphasis-text)] hover:border-[var(--color-cta)]/40 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs"
               >
                 <ChevronRight className="h-4 w-4" />
               </button>
@@ -530,7 +534,7 @@ export default function Home() {
                 onClick={() => scrollCats('next')}
                 disabled={!canScrollNext}
                 aria-label="دسته‌بندی‌های بعدی"
-                className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-[var(--color-surface-light)] dark:bg-[#0d121c] text-zinc-700 dark:text-zinc-200 hover:text-[var(--color-emphasis-text)] hover:border-[var(--color-cta)]/40 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs"
+                className="min-touch-target w-9 h-9 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-[var(--color-surface-light)] dark:bg-[#0d121c] text-zinc-700 dark:text-zinc-200 hover:text-[var(--color-emphasis-text)] hover:border-[var(--color-cta)]/40 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>

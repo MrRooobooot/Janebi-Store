@@ -1,10 +1,10 @@
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from '../setup/request.js';
 import express from 'express';
 import { json } from 'express';
 import { db } from '../../server/db/index.js';
-import { users, coupons, products, orders, orderItems, reviews } from '../../server/db/schema.js';
-import { eq } from 'drizzle-orm';
+import { users, coupons, products, orders, orderItems, cartItems, reviews, wishlistItems, productFeatures } from '../../server/db/schema.js';
+import { eq, inArray } from 'drizzle-orm';
 import adminRoutes from '../../server/routes/admin.js';
 import jwt from 'jsonwebtoken';
 import { env } from '../../server/env.js';
@@ -14,6 +14,9 @@ const app = express();
 app.use(json());
 app.use('/api/admin', adminRoutes);
 app.use(errorHandler);
+
+// Products seeded by this suite (removed in the afterAll below).
+const seededProductIds: number[] = [];
 
 describe('Admin hardening: self-role guard, audit coverage, coupon edit', () => {
   const suffix = Date.now();
@@ -135,6 +138,9 @@ describe('Admin derived-state invariants: review delete, product delete, bulk-de
     });
   });
 
+  // Fixtures are deleted in the file-level afterAll below: a persistent dev DB
+  // keeps them otherwise, and a product row pointing at a missing image makes
+  // design-audit fail with err:N (404s that read as UI bugs).
   async function seedProduct(stock = 50) {
     const [prod] = await db.insert(products).values({
       title: 'کالای تست مشتق',
@@ -145,6 +151,7 @@ describe('Admin derived-state invariants: review delete, product delete, bulk-de
       stockQuantity: stock,
       sku: 'DI-SKU-' + suffix + '-' + Math.floor(Math.random() * 1e6),
     }).returning();
+    seededProductIds.push(prod.id);
     return prod;
   }
 
@@ -380,4 +387,18 @@ describe('Admin users list chronology (R3)', () => {
     const row = res.body.find((u: { id: string }) => u.id === newestId);
     expect(row.createdAt).toBe(base + 3000);
   });
+});
+
+// Residue guard: every product this suite seeds is deleted with its dependent
+// rows, so `npm run verify` stops repopulating data/janebi.db with products whose
+// images 404 — that residue made the next design-audit run fail with err:N.
+afterAll(async () => {
+  if (seededProductIds.length === 0) return;
+  await db.delete(orderItems).where(inArray(orderItems.productId, seededProductIds));
+  await db.delete(cartItems).where(inArray(cartItems.productId, seededProductIds));
+  await db.delete(wishlistItems).where(inArray(wishlistItems.productId, seededProductIds));
+  await db.delete(productFeatures).where(inArray(productFeatures.productId, seededProductIds));
+  await db.delete(reviews).where(inArray(reviews.productId, seededProductIds));
+  await db.delete(products).where(inArray(products.id, seededProductIds));
+  seededProductIds.length = 0;
 });

@@ -45,15 +45,15 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
       <div className="flex items-center justify-between gap-2 mb-2.5 relative z-10">
           <div className="min-w-0 flex-1">
             {outOfStock ? (
-              <span className="bg-slate-100 dark:bg-white/[0.06] text-slate-500 dark:text-slate-400 text-[10px] font-black px-2 py-0.5 rounded-full border border-slate-200 dark:border-white/[0.08] inline-block">
+              <span className="bg-slate-100 dark:bg-white/[0.06] text-slate-500 dark:text-slate-400 text-[11px] font-black px-2 py-0.5 rounded-full border border-slate-200 dark:border-white/[0.08] inline-block">
                 ناموجود
               </span>
             ) : product.discount && product.discount > 0 ? (
-              <span className="bg-[var(--color-cta)] text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs inline-block">
+              <span className="bg-[var(--color-cta)] text-white text-[11px] font-black px-2 py-0.5 rounded-full shadow-xs inline-block">
                 {toPersianDigits(product.discount)}٪ تخفیف
               </span>
             ) : (
-              <span className="block font-bold text-[10px] text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-white/[0.04] px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-white/[0.06] whitespace-nowrap overflow-hidden text-ellipsis">
+              <span className="block font-bold text-[11px] text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-white/[0.04] px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-white/[0.06] whitespace-nowrap overflow-hidden text-ellipsis">
                 {product.brand || 'اورجینال'}
               </span>
             )}
@@ -146,7 +146,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
           </div>
 
           {/* 4. Product Title */}
-          <h3 className="font-black text-xs sm:text-sm text-slate-900 dark:text-slate-100 line-clamp-2 leading-relaxed h-10 sm:h-12 flex items-start group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors mb-1.5">
+          <h3 className="font-black text-[13px] sm:text-[15px] text-slate-900 dark:text-slate-100 line-clamp-2 leading-relaxed h-11 sm:h-12 flex items-start group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors mb-1.5">
             {product.title}
           </h3>
 
@@ -181,7 +181,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
                 -
               </span>
             )}
-            <div className="text-xs sm:text-sm font-black text-[var(--color-emphasis-text)] font-mono tracking-tight leading-tight whitespace-nowrap">
+            <div className="text-[13px] sm:text-[15px] font-black text-[var(--color-emphasis-text)] font-mono tracking-tight leading-tight whitespace-nowrap">
               {formatPrice(product.price).replace(' تومان', '')}
             </div>
             <span className="text-[9px] font-bold text-slate-500 dark:text-slate-400 leading-tight">تومان</span>
@@ -193,7 +193,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
             disabled={outOfStock}
             onClick={handleAddToCart}
             aria-label={outOfStock ? 'کالای ناموجود' : `افزودن ${product.title} به سبد خرید`}
-            className={`raycast-btn h-9 sm:h-9 px-3 sm:px-3.5 rounded-xl flex items-center justify-center gap-1 text-xs font-black transition-all duration-200 cursor-pointer shrink-0 ${
+            className={`raycast-btn h-10 sm:h-10 px-3 sm:px-3.5 rounded-xl flex items-center justify-center gap-1 text-[13px] font-black transition-all duration-200 cursor-pointer shrink-0 ${
               outOfStock 
                 ? 'bg-slate-100 dark:bg-white/[0.05] text-slate-500 dark:text-slate-400 border border-slate-200/60 dark:border-white/[0.06] cursor-not-allowed shadow-none'
                 : added 
