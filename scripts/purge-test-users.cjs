@@ -44,6 +44,14 @@ console.log('dependency rows:', JSON.stringify(dep));
 console.log('products whose rating must be recomputed:', JSON.stringify(reviewedProducts));
 console.log('purge targets (sample):', JSON.stringify(NON_ADMIN.slice(0, 5).map((u) => u.id)), NON_ADMIN.length > 5 ? `… +${NON_ADMIN.length - 5} more` : '');
 
+// Product residue: vitest suites leave «کالای تست …» / test-*.jpg rows behind in a
+// persistent dev DB — they 404 in design-audit (err:N) and must go with the users.
+// Rows referenced by a real order are never touched (FK-safe by construction).
+const TEST_PRODUCTS = db.prepare(
+  "select id, title from products where (title like '%تست%' or image like '%test%') and id not in (select product_id from order_items where product_id is not null)"
+).all();
+console.log('product residue:', TEST_PRODUCTS.length, JSON.stringify(TEST_PRODUCTS.slice(0, 3).map((p) => p.id)));
+
 if (mode !== 'apply') {
   console.log('INSPECT ONLY');
   process.exit(0);
@@ -75,6 +83,16 @@ db.backup(backupPath).then(() => {
           : `delete from users where id in (${ph}) and role <> 'admin'`
       ).run(...ids).changes,
     };
+    // product residue (test fixtures) — dependent rows first, same transaction
+    const pids = TEST_PRODUCTS.map((p) => p.id);
+    if (pids.length) {
+      const pph = pids.map(() => '?').join(',');
+      const delP = (sql) => db.prepare(sql).run(...pids).changes;
+      removed.product_reviews = delP(`delete from reviews where product_id in (${pph})`);
+      removed.product_cart = delP(`delete from cart_items where product_id in (${pph})`);
+      removed.product_wishlist = delP(`delete from wishlist_items where product_id in (${pph})`);
+      removed.products = delP(`delete from products where id in (${pph})`);
+    }
     // keep storefront aggregates honest after review deletion
     for (const pid of reviewedProducts) {
       const agg = db.prepare('select coalesce(avg(rating),0) a, count(*) c from reviews where product_id = ? and approved = 1').get(pid);
