@@ -17,6 +17,10 @@ const envSchema = z.object({
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
   JWT_ACCESS_SECRET: z.string().min(10, "JWT_ACCESS_SECRET must be at least 10 characters long"),
   JWT_REFRESH_SECRET: z.string().min(10, "JWT_REFRESH_SECRET must be at least 10 characters long"),
+  // Founder/super-admin account id. The owner row is protected from other admins
+  // (no password reset / role / points mutation, hidden from GET /admin/users).
+  // Empty = protection disabled.
+  OWNER_USER_ID: z.string().optional().or(z.literal("")),
   ZARINPAL_MERCHANT_ID: z.string().length(36, "ZARINPAL_MERCHANT_ID must be 36 characters long").optional().or(z.literal("")),
   ZARINPAL_SANDBOX: z.string().default("true").transform((val: string) => val === "true"),
   DATABASE_URL: z.string().default("./data/janebi.db"),

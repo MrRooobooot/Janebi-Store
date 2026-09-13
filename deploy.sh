@@ -46,15 +46,15 @@ rsync -avz -e "ssh $SSH_OPTS" ./package.json ./docker-compose*.yml "$REMOTE:$APP
 # For each SMS_* key present locally, append it to the remote .env ONLY if the
 # key is missing there. Existing remote lines (APP_URL, JWT secrets, Zarinpal
 # keys, etc.) are never touched. The local .env itself is never copied over.
-echo "🔐 Merging SMS_* env keys into remote .env (append-only)..."
+echo "🔐 Merging SMS_*/OWNER_USER_ID env keys into remote .env (append-only)..."
 LOCAL_ENV="$(pwd)/.env"
 if [ -f "$LOCAL_ENV" ]; then
   ssh $SSH_OPTS "$REMOTE" "touch $APP_DIR/.env"
-  grep -E '^(SMS_|# ?SMS_)' "$LOCAL_ENV" | grep -vE '^#\s*SMS_' | while IFS='=' read -r KEY VALUE; do
+  grep -E '^(SMS_|OWNER_USER_ID|# ?SMS_)' "$LOCAL_ENV" | grep -vE '^#\s*(SMS_|OWNER)' | while IFS='=' read -r KEY VALUE; do
     [ -z "$KEY" ] && continue
     ssh $SSH_OPTS "$REMOTE" "grep -q '^${KEY}=' $APP_DIR/.env || printf '%s=%s\n' '$KEY' '$VALUE' >> $APP_DIR/.env"
   done
-  echo "✅ SMS_* keys merged (existing remote values preserved)"
+  echo "✅ SMS_*/OWNER_USER_ID keys merged (existing remote values preserved)"
 else
   echo "⚠️ No local .env found — skipping env merge"
 fi

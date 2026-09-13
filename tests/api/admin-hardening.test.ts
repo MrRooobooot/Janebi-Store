@@ -230,3 +230,92 @@ describe('Admin derived-state invariants: review delete, product delete, bulk-de
     expect(gone).toBeUndefined();
   });
 });
+
+
+// ---------------------------------------------------------
+// R1/R2: owner-account protection + admin list pagination
+// ---------------------------------------------------------
+describe('Admin owner protection + list pagination', () => {
+  const suffix = Date.now();
+  const ownerId = 'own-owner-' + suffix;
+  const otherAdminId = 'own-admin-' + suffix;
+  const otherAdminToken = jwt.sign({ userId: otherAdminId }, env.JWT_ACCESS_SECRET, { expiresIn: '1h' });
+  const ownerToken = jwt.sign({ userId: ownerId }, env.JWT_ACCESS_SECRET, { expiresIn: '1h' });
+
+  beforeAll(async () => {
+    // joinedDate is set so these fixtures sort to the TOP of the paged admin list
+    // (the shared test DB accumulates thousands of legacy NULL-joined rows).
+    await db.insert(users).values([
+      { id: ownerId, name: 'مالک فروشگاه', phone: '09' + Math.floor(1e8 + Math.random() * 9e8), password: 'hash', role: 'admin', joinedDate: new Date().toISOString() },
+      { id: otherAdminId, name: 'ادمین دیگر', phone: '09' + Math.floor(1e8 + Math.random() * 9e8), password: 'hash', role: 'admin', joinedDate: new Date().toISOString() },
+    ]);
+    process.env.OWNER_USER_ID = ownerId;
+  });
+
+  it('rejects role / password / points mutations on the owner account (403 OWNER_PROTECTED)', async () => {
+    const role = await request(app)
+      .put(`/api/admin/users/${ownerId}/role`)
+      .set('Authorization', `Bearer ${otherAdminToken}`)
+      .send({ role: 'user' });
+    expect(role.status).toBe(403);
+    expect(role.body.code).toBe('OWNER_PROTECTED');
+
+    const pw = await request(app)
+      .put(`/api/admin/users/${ownerId}/password`)
+      .set('Authorization', `Bearer ${otherAdminToken}`)
+      .send({ newPassword: 'hijacked123' });
+    expect(pw.status).toBe(403);
+
+    const pts = await request(app)
+      .put(`/api/admin/users/${ownerId}/points`)
+      .set('Authorization', `Bearer ${otherAdminToken}`)
+      .send({ vipPoints: 999 });
+    expect(pts.status).toBe(403);
+
+    const row = await db.query.users.findFirst({ where: eq(users.id, ownerId) });
+    expect(row?.role).toBe('admin');
+    expect(row?.vipPoints).not.toBe(999);
+  });
+
+  // Walk every page: the shared test DB carries ~2k legacy rows and joined_date is
+  // heterogeneous (Persian display text + ISO), so a single page's membership is
+  // not a reliable oracle — the whole result set is.
+  async function allUserIds(token: string): Promise<string[]> {
+    const ids: string[] = [];
+    for (let page = 1; page <= 8; page++) {
+      const res = await request(app)
+        .get(`/api/admin/users?page=${page}&limit=500`)
+        .set('Authorization', `Bearer ${token}`);
+      expect(res.status).toBe(200);
+      const rows: { id: string }[] = res.body;
+      ids.push(...rows.map((u) => u.id));
+      if (rows.length < 500) break;
+    }
+    return ids;
+  }
+
+  it('hides the owner row from other admins but shows it to the owner', async () => {
+    const asOther = await allUserIds(otherAdminToken);
+    expect(asOther).not.toContain(ownerId);
+    expect(asOther).toContain(otherAdminId);
+
+    const asOwner = await allUserIds(ownerToken);
+    expect(asOwner).toContain(ownerId);
+  });
+
+  it('paginates admin lists and reports X-Total-Count', async () => {
+    const res = await request(app)
+      .get('/api/admin/users?page=1&limit=1')
+      .set('Authorization', `Bearer ${otherAdminToken}`);
+    expect(res.status).toBe(200);
+    expect(res.body.length).toBe(1);
+    expect(Number(res.headers['x-total-count'])).toBeGreaterThan(0);
+
+    // junk params must not crash and must fall back to the capped default
+    const junk = await request(app)
+      .get('/api/admin/users?page=abc&limit=-5')
+      .set('Authorization', `Bearer ${otherAdminToken}`);
+    expect(junk.status).toBe(200);
+    expect(Array.isArray(junk.body)).toBe(true);
+  });
+});

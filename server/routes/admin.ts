@@ -10,6 +10,7 @@ import { validate } from '../middleware/validate.js';
 import { bulkIdsSchema, adminPasswordSchema, roleSchema, pointsSchema, productCreateSchema, productUpsertSchema, orderStatusSchema, couponCreateSchema, couponUpsertSchema, trackingSchema, approvedSchema, messageStatusSchema, settingsSchema } from '../validators/index.js';
 import { bumpTokenVersion } from './tokenVersion.js';
 import { restockItemsAndRefundPoints } from '../lib/orderLifecycle.js';
+import { env } from '../env.js';
 
 const router = Router();
 
@@ -24,6 +25,56 @@ const ORDER_STATUS_TEXTS: Record<string, string> = {
 
 // Apply middleware to all admin routes
 router.use(authenticate, requireAdmin);
+
+// ---------------------------------------------------------
+// OWNER (founder account) PROTECTION
+// The owner id comes from OWNER_USER_ID (server-side only — never a phone/id
+// literal in client code). Other admins may not mutate or even list that row.
+// ---------------------------------------------------------
+function ownerUserId(): string {
+  return String(process.env.OWNER_USER_ID || env.OWNER_USER_ID || '').trim();
+}
+function isOwnerTarget(id: string): boolean {
+  const owner = ownerUserId();
+  return owner.length > 0 && id === owner;
+}
+const OWNER_PROTECTED_MESSAGE = 'این حساب (مالک فروشگاه) محافظت‌شده است و توسط ادمین‌های دیگر قابل تغییر نیست';
+function denyOwner(res: any) {
+  return res.status(403).json({
+    error: OWNER_PROTECTED_MESSAGE,
+    message: OWNER_PROTECTED_MESSAGE,
+    code: 'OWNER_PROTECTED',
+  });
+}
+
+// ---------------------------------------------------------
+// ADMIN LIST PAGINATION
+// Opt-in ?page=&limit= (defaults: page 1, cap 500 rows) — a list endpoint must
+// never stream a whole table at the panel. X-Total-Count rides along so a UI
+// can build pager controls without a second endpoint.
+// ---------------------------------------------------------
+const ADMIN_LIST_CAP = 500;
+// No ?limit= → limit null (full list, backwards compatible: a silently truncated
+// admin list is its own bug class). Explicit paging is capped so the API cannot be
+// asked for an unbounded slice.
+function pageParams(req: any): { limit: number | null; offset: number } {
+  const rawLimit = Number(req.query?.limit);
+  const rawPage = Number(req.query?.page);
+  const explicit = Number.isFinite(rawLimit) && rawLimit > 0;
+  if (!explicit) return { limit: null, offset: 0 };
+  const limit = Math.min(Math.floor(rawLimit), ADMIN_LIST_CAP);
+  const page = Number.isFinite(rawPage) && rawPage > 0 ? Math.floor(rawPage) : 1;
+  return { limit, offset: (page - 1) * limit };
+}
+async function setTotalCountHeader(res: any, table: any, where?: any): Promise<void> {
+  try {
+    const base = db.select({ n: sql<number>`count(*)` }).from(table);
+    const rows = where ? await base.where(where) : await base;
+    res.setHeader('X-Total-Count', String(Number(rows[0]?.n) || 0));
+  } catch (error) {
+    console.warn('X-Total-Count failed:', error);
+  }
+}
 
 // ---------------------------------------------------------
 // AUDIT LOG — records every admin mutation (audit §3.7)
@@ -268,16 +319,23 @@ router.get("/analytics", async (req, res) => {
 // ---------------------------------------------------------
 router.get('/users', async (req, res) => {
   try {
+    const { limit, offset } = pageParams(req);
     const allUsers = await db.query.users.findMany({
-      orderBy: [desc(users.joinedDate)]
+      orderBy: [desc(users.joinedDate)],
+      ...(limit !== null ? { limit, offset } : {}),
     });
-    
+
+    // Owner cloaking: a non-owner admin never learns the owner account exists.
+    const requesterId = String((req as any).user?.id || '');
+    const visible = allUsers.filter(u => !isOwnerTarget(String(u.id)) || String(u.id) === requesterId);
+
     // Omit passwords
-    const safeUsers = allUsers.map(u => {
+    const safeUsers = visible.map(u => {
       const { password, ...rest } = u;
       return rest;
     });
 
+    await setTotalCountHeader(res, users);
     res.json(safeUsers);
   } catch (error) {
     res.status(500).json({ message: 'Internal server error' });
@@ -291,6 +349,8 @@ router.put('/users/:id/password', validate(adminPasswordSchema), async (req, res
   try {
     const { id } = req.params as { id: string };
     const { newPassword } = req.body;
+
+    if (isOwnerTarget(id)) return denyOwner(res);
 
     const bcrypt = (await import('bcrypt')).default;
     const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -318,6 +378,8 @@ router.put('/users/:id/role', validate(roleSchema), async (req, res) => {
     const { role } = req.body;
     const { id } = req.params as { id: string };
 
+    if (isOwnerTarget(id)) return denyOwner(res);
+
     // Self-lockout guard: an admin cannot demote their own account — the
     // only admins left with panel access would be zero and the panel dies.
     if (id === (req as any).user?.id && role !== 'admin') {
@@ -342,6 +404,8 @@ router.put('/users/:id/points', validate(pointsSchema), async (req, res) => {
   try {
     const { id } = req.params as { id: string };
     const { vipPoints } = req.body;
+
+    if (isOwnerTarget(id)) return denyOwner(res);
 
     const [updated] = await db.update(users)
       .set({ vipPoints })
@@ -618,7 +682,10 @@ router.put('/orders/:id/status', validate(orderStatusSchema), async (req, res) =
 // ---------------------------------------------------------
 router.get('/coupons', async (req, res) => {
   try {
-    const allCoupons = await db.select().from(coupons);
+    const { limit, offset } = pageParams(req);
+    const couponQuery = db.select().from(coupons);
+    const allCoupons = limit !== null ? await couponQuery.limit(limit).offset(offset) : await couponQuery;
+    await setTotalCountHeader(res, coupons);
     res.json(allCoupons);
   } catch (error) {
     res.status(500).json({ message: 'Internal server error' });
@@ -725,13 +792,18 @@ router.get('/contact-messages', async (req, res) => {
     if (statusFilter && !allowed.includes(statusFilter)) {
       return res.status(400).json({ message: 'Invalid status filter' });
     }
-    const messages = await db.select().from(contactMessages).orderBy(desc(contactMessages.createdAt));
-    const filtered = statusFilter && statusFilter !== 'all'
-      ? messages.filter((m: { status: string }) => m.status === statusFilter)
-      : statusFilter === 'all'
-        ? messages
-        : messages.filter((m: { status: string }) => m.status !== 'archived');
-    res.json(filtered);
+    const { limit, offset } = pageParams(req);
+    const where =
+      statusFilter === 'all'
+        ? undefined
+        : statusFilter
+          ? eq(contactMessages.status, statusFilter)
+          : sql`${contactMessages.status} <> 'archived'`;
+    const base = db.select().from(contactMessages);
+    const scoped = (where ? base.where(where) : base).orderBy(desc(contactMessages.createdAt));
+    const messages = limit !== null ? await scoped.limit(limit).offset(offset) : await scoped;
+    await setTotalCountHeader(res, contactMessages, where);
+    res.json(messages);
   } catch (error) {
     console.error('Fetch contact messages error:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -864,10 +936,13 @@ router.put('/orders/:id/tracking', validate(trackingSchema), async (req, res) =>
 // ---------------------------------------------------------
 router.get('/reviews', async (req, res) => {
   try {
+    const { limit, offset } = pageParams(req);
     const allReviews = await db.query.reviews.findMany({
       orderBy: [desc(reviews.date)],
-      with: { product: true }
+      with: { product: true },
+      ...(limit !== null ? { limit, offset } : {}),
     });
+    await setTotalCountHeader(res, reviews);
     res.json(allReviews);
   } catch (error) {
     console.error('Fetch admin reviews error:', error);
@@ -954,7 +1029,10 @@ router.delete('/reviews/:id', async (req, res) => {
 router.get('/newsletter', async (req, res) => {
   try {
     const { newsletterSubscribers } = await import('../db/schema.js');
-    const subscribers = await db.select().from(newsletterSubscribers);
+    const { limit, offset } = pageParams(req);
+    const subscriberQuery = db.select().from(newsletterSubscribers);
+    const subscribers = limit !== null ? await subscriberQuery.limit(limit).offset(offset) : await subscriberQuery;
+    await setTotalCountHeader(res, newsletterSubscribers);
     res.json(subscribers);
   } catch (error) {
     res.status(500).json({ message: 'Internal server error' });
