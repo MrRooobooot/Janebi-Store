@@ -4,7 +4,7 @@ import { users, products, orders, orderItems, reviews, coupons, productFeatures,
 import { appCache } from '../utils/cache.js';
 import { STORE_SETTINGS_DEFAULTS } from '../../src/lib/constants.js';
 import { HERO_IMAGE_DEFAULTS } from './settings.js';
-import { eq, desc, sql, inArray, and } from 'drizzle-orm';
+import { eq, ne, desc, sql, inArray, and } from 'drizzle-orm';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
 import { validate } from '../middleware/validate.js';
 import { bulkIdsSchema, adminPasswordSchema, roleSchema, pointsSchema, productCreateSchema, productUpsertSchema, orderStatusSchema, couponCreateSchema, couponUpsertSchema, trackingSchema, approvedSchema, messageStatusSchema, settingsSchema } from '../validators/index.js';
@@ -320,7 +320,15 @@ router.get("/analytics", async (req, res) => {
 router.get('/users', async (req, res) => {
   try {
     const { limit, offset } = pageParams(req);
-    const allUsers = await db.query.users.findMany({
+    const requesterId = String((req as any).user?.id || '');
+    const ownerId = ownerUserId();
+    // Owner cloaking runs in SQL, not on the already-sliced page: filtering after
+    // LIMIT/OFFSET shorted pages and let X-Total-Count (raw table count) admit the
+    // hidden account's existence to non-owner admins.
+    const hideOwner = ownerId.length > 0 && requesterId !== ownerId;
+    const visibleTo = hideOwner ? ne(users.id, ownerId) : undefined;
+    const visible = await db.query.users.findMany({
+      where: visibleTo,
       // Real chronology: joined_date holds Persian display text (۱۴۰۵/۶/۷) and must
       // never drive ORDER BY. created_at (epoch ms) is backfilled for legacy rows;
       // unknown rows sort oldest via COALESCE 0.
@@ -328,17 +336,13 @@ router.get('/users', async (req, res) => {
       ...(limit !== null ? { limit, offset } : {}),
     });
 
-    // Owner cloaking: a non-owner admin never learns the owner account exists.
-    const requesterId = String((req as any).user?.id || '');
-    const visible = allUsers.filter(u => !isOwnerTarget(String(u.id)) || String(u.id) === requesterId);
-
     // Omit passwords
     const safeUsers = visible.map(u => {
       const { password, ...rest } = u;
       return rest;
     });
 
-    await setTotalCountHeader(res, users);
+    await setTotalCountHeader(res, users, visibleTo);
     res.json(safeUsers);
   } catch (error) {
     res.status(500).json({ message: 'Internal server error' });

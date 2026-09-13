@@ -318,6 +318,23 @@ describe('Admin owner protection + list pagination', () => {
     expect(junk.status).toBe(200);
     expect(Array.isArray(junk.body)).toBe(true);
   });
+
+  // A cloaked viewer must not be able to tell (via the count header or a short
+  // page) that a hidden account exists: the filter has to run in SQL, before the
+  // LIMIT/OFFSET slice and before the count.
+  it('keeps X-Total-Count and page sizes honest under owner cloaking', async () => {
+    const asOther = await request(app)
+      .get('/api/admin/users?page=1&limit=500')
+      .set('Authorization', `Bearer ${otherAdminToken}`);
+    const enumerated = await allUserIds(otherAdminToken);
+    expect(asOther.body.length).toBe(Math.min(500, enumerated.length));
+    expect(Number(asOther.headers['x-total-count'])).toBe(enumerated.length);
+
+    const asOwner = await request(app)
+      .get('/api/admin/users?page=1&limit=500')
+      .set('Authorization', `Bearer ${ownerToken}`);
+    expect(Number(asOwner.headers['x-total-count'])).toBe(enumerated.length + 1);
+  });
 });
 
 // R3 — the admin user list must be chronological. joined_date holds Persian *display*
