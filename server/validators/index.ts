@@ -241,6 +241,9 @@ export const productUpsertSchema = z.object({
     description: z.string().nullish(),
     stockQuantity: optionalPrice.optional(),
     sku: z.string().min(1).optional(),
+    // Spec/feature pills shown on PDP + JSON-LD additionalProperty. '' entries
+    // dropped server-side; cap 20 to bound textarea-abuse.
+    features: z.array(z.string().min(1).max(120)).max(20).optional(),
   }),
 });
 

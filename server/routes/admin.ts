@@ -364,7 +364,7 @@ router.put('/users/:id/points', validate(pointsSchema), async (req, res) => {
 // ---------------------------------------------------------
 router.post('/products', validate(productCreateSchema), async (req, res) => {
   try {
-    const { title, category, price, originalPrice, discount, image, brand, warranty, description, stockQuantity, sku } = req.body;
+    const { title, category, price, originalPrice, discount, image, brand, warranty, description, stockQuantity, sku, features } = req.body;
 
     const [inserted] = await db.insert(products).values({
       title,
@@ -380,6 +380,17 @@ router.post('/products', validate(productCreateSchema), async (req, res) => {
       sku: sku || `SKU-${Date.now()}`
     }).returning();
 
+    if (inserted && Array.isArray(features)) {
+      const clean = features.map((f: string) => String(f).trim()).filter(Boolean).slice(0, 20);
+      if (clean.length) {
+        await db.transaction(async (tx) => {
+          for (const feature of clean) {
+            await tx.insert(productFeatures).values({ productId: inserted.id, feature });
+          }
+        });
+      }
+    }
+
     appCache.invalidate('product');
     appCache.invalidate('categories');
     logAudit(req, 'product.create', 'product', String(inserted.id), { title, category, price });
@@ -393,7 +404,7 @@ router.post('/products', validate(productCreateSchema), async (req, res) => {
 router.put('/products/:id', validate(productUpsertSchema), async (req, res) => {
   try {
     const { id } = req.params as { id: string };
-    const { title, category, price, originalPrice, discount, image, brand, warranty, description, stockQuantity, sku } = req.body;
+    const { title, category, price, originalPrice, discount, image, brand, warranty, description, stockQuantity, sku, features } = req.body;
 
     const [updated] = await db.update(products).set({
       ...(title !== undefined && { title }),
@@ -411,6 +422,20 @@ router.put('/products/:id', validate(productUpsertSchema), async (req, res) => {
 
     if (!updated) {
       return res.status(404).json({ error: 'محصول یافت نشد', message: 'محصول یافت نشد' });
+    }
+
+    // Spec pills (product_features) ride the same edit: replace-all keeps the
+    // admin form as the single source. Transactional delete+insert so a
+    // partial write can't leave half a feature list.
+    if (Array.isArray(features)) {
+      const clean = features.map((f: string) => String(f).trim()).filter(Boolean).slice(0, 20);
+      const prodId = parseInt(id);
+      await db.transaction(async (tx) => {
+        await tx.delete(productFeatures).where(eq(productFeatures.productId, prodId));
+        for (const feature of clean) {
+          await tx.insert(productFeatures).values({ productId: prodId, feature });
+        }
+      });
     }
 
     appCache.invalidate('product');

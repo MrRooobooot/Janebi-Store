@@ -95,7 +95,8 @@ export default function AdminProducts() {
     warranty: '۷ روز مهلت تست',
     description: '',
     stockQuantity: '15',
-    sku: ''
+    sku: '',
+    features: [] as string[]
   });
 
   useEffect(() => {
@@ -239,7 +240,8 @@ export default function AdminProducts() {
         warranty: product.warranty || '۷ روز مهلت تست',
         description: product.description || '',
         stockQuantity: product.stockQuantity ? product.stockQuantity.toString() : '10',
-        sku: (product as any).sku || ''
+        sku: (product as any).sku || '',
+        features: (product as any).features ?? []
       });
     } else {
       setEditingProduct(null);
@@ -255,7 +257,8 @@ export default function AdminProducts() {
         warranty: '۷ روز مهلت تست',
         description: '',
         stockQuantity: '15',
-        sku: ''
+        sku: '',
+        features: []
       });
     }
     setIsModalOpen(true);
@@ -285,7 +288,8 @@ export default function AdminProducts() {
       warranty: formData.warranty.trim(),
       description: formData.description.trim(),
       stockQuantity: stockNum,
-      sku: formData.sku.trim() || undefined
+      sku: formData.sku.trim() || undefined,
+      features: (formData.features as string[]).map((f) => f.trim()).filter(Boolean)
     };
 
     try {
@@ -788,6 +792,22 @@ export default function AdminProducts() {
                     );
                   })}
                 </div>
+              </div>
+
+              {/* Spec pills — rendered as «سایر مشخصات و ویژگی‌ها» on the PDP + JSON-LD additionalProperty */}
+              <div>
+                <label htmlFor="product-features" className="block text-gray-800 dark:text-gray-200 mb-1.5">
+                  مشخصات فنی (هر خط یک مورد)
+                </label>
+                <textarea
+                  id="product-features"
+                  rows={3}
+                  dir="rtl"
+                  value={(formData.features as string[]).join('\n')}
+                  onChange={(e) => setFormData(prev => ({ ...prev, features: e.target.value.split('\n') }))}
+                  placeholder={['مثلاً:', 'جنس: سیلیکون مات', 'سایز: ۱.۵ متر', 'شارژ سریع: ۶۵ وات'].join('\n')}
+                  className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500 leading-relaxed"
+                />
               </div>
 
               {/* Description */}
