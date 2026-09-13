@@ -46,9 +46,66 @@ function homeFallback(): RouteMeta {
   };
 }
 
+// Static routes present in sitemap.xml — crawlers without JS must still get a
+// distinct title/description (SEO health check 0913). Copy mirrors the page
+// h1s in src/pages (no invented claims).
+const STATIC_ROUTE_META: Record<string, Omit<RouteMeta, "ogUrl">> = {
+  "/offers": {
+    title: "پیشنهادهای ویژه و محدود | جانبی آرنا",
+    description:
+      "لیست لحظه‌ای تخفیف‌های جانبی آرنا: شارژر، کابل، گلس، قاب و هندزفری اورجینال با ارسال سریع به سراسر ایران.",
+    ogType: "website",
+  },
+  "/new-products": {
+    title: "جدیدترین محصولات جانبی آرنا",
+    description:
+      "تازه‌ترین لوازم جانبی موبایل وارد شده به فروشگاه جانبی آرنا؛ مدل‌های جدید شارژر، کابل، گلس و قاب با ضمانت اصالت.",
+    ogType: "website",
+  },
+  "/brands": {
+    title: "برندهای لوازم جانبی | جانبی آرنا",
+    description:
+      "مرکز خرید محصولات برندهای سامسونگ، اپل، شیائومی، انکر، بیسوس و سایر برندهای لوازم جانبی موبایل با گارانتی اصالت.",
+    ogType: "website",
+  },
+  "/about": {
+    title: "درباره جانبی آرنا | فروشگاه تخصصی لوازم جانبی",
+    description:
+      "داستان، مأموریت و افتخارات جانبی آرنا؛ مرجع تخصصی عرضه مستقیم لوازم جانبی موبایل و تبلت با ضمانت اصالت کالا.",
+    ogType: "website",
+  },
+  "/contact": {
+    title: "تماس با ما | پشتیبانی جانبی آرنا",
+    description:
+      "شماره تماس، واتساپ، اینستاگرام، تلگرام و ایمیل پشتیبانی جانبی آرنا؛ پاسخ‌گویی سریع به سؤالات و سفارش‌ها.",
+    ogType: "website",
+  },
+  "/faq": {
+    title: "سؤالات متداول | راهنمای خرید جانبی آرنا",
+    description:
+      "پاسخ پرسش‌های رایج درباره ارسال، مرجوعی، گارانتی اصالت، پرداخت امن و پیگیری سفارش در فروشگاه جانبی آرنا.",
+    ogType: "website",
+  },
+  "/terms": {
+    title: "شرایط و قوانین استفاده | جانبی آرنا",
+    description:
+      "قوانین ثبت سفارش، پرداخت، ارسال، مرجوعی و حریم خصوصی در فروشگاه اینترنتی جانبی آرنا.",
+    ogType: "website",
+  },
+  "/privacy": {
+    title: "سیاست حفظ حریم خصوصی | جانبی آرنا",
+    description:
+      "نحوه جمع‌آوری، نگهداری و حفاظت از اطلاعات شخصی و داده‌های سفارش کاربران جانبی آرنا.",
+    ogType: "website",
+  },
+};
+
 /** Fetch route-specific metadata. Returns null → caller keeps the generic shell tags. */
 async function routeMetaFor(pathname: string): Promise<RouteMeta | null> {
   try {
+    const stat = STATIC_ROUTE_META[pathname];
+    if (stat) return { ...stat, ogUrl: `https://janebiarena.ir${pathname}` };
+
     // Product detail: /product/:id and /products/:id (canonical = plural form)
     const productMatch = pathname.match(/^\/products?\/(\d+)\/?$/);
     if (productMatch) {
