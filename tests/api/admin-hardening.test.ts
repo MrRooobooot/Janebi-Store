@@ -3,7 +3,7 @@ import request from '../setup/request.js';
 import express from 'express';
 import { json } from 'express';
 import { db } from '../../server/db/index.js';
-import { users, coupons } from '../../server/db/schema.js';
+import { users, coupons, products, orders, orderItems, reviews } from '../../server/db/schema.js';
 import { eq } from 'drizzle-orm';
 import adminRoutes from '../../server/routes/admin.js';
 import jwt from 'jsonwebtoken';
@@ -116,5 +116,117 @@ describe('Admin hardening: self-role guard, audit coverage, coupon edit', () => 
 
   it('cleans up test coupon', async () => {
     await db.delete(coupons).where(eq(coupons.code, code));
+  });
+});
+
+
+// ---------------------------------------------------------
+// Regression: admin mutations that must keep derived state honest
+// (proven broken on sandbox 2026-09-13; ledger docs/UI-AUDIT-LOG.md §admin review)
+// ---------------------------------------------------------
+describe('Admin derived-state invariants: review delete, product delete, bulk-delete unwind', () => {
+  const suffix = Date.now();
+  const adminId = 'di-admin-' + suffix;
+  const adminToken = jwt.sign({ userId: adminId }, env.JWT_ACCESS_SECRET, { expiresIn: '1h' });
+
+  beforeAll(async () => {
+    await db.insert(users).values({
+      id: adminId, name: 'ادمین حالت مشتق', phone: '09' + Math.floor(1e8 + Math.random() * 9e8), password: 'hash', role: 'admin'
+    });
+  });
+
+  async function seedProduct(stock = 50) {
+    const [prod] = await db.insert(products).values({
+      title: 'کالای تست مشتق',
+      category: 'accessories',
+      price: 100000,
+      image: '/images/products/test-derived.jpg',
+      brand: 'تست',
+      stockQuantity: stock,
+      sku: 'DI-SKU-' + suffix + '-' + Math.floor(Math.random() * 1e6),
+    }).returning();
+    return prod;
+  }
+
+  it('deleting an approved review recomputes the product rating/count', async () => {
+    const prod = await seedProduct();
+    const five = 'di-rev5-' + suffix;
+    const one = 'di-rev1-' + suffix;
+    await db.insert(reviews).values([
+      { id: five, productId: prod.id, userId: adminId, userName: 'کاربر الف', rating: 5, title: 'خوب', comment: 'خوب بود', date: '1405/06/20' },
+      { id: one, productId: prod.id, userId: adminId, userName: 'کاربر ب', rating: 1, title: 'بد', comment: 'بد بود', date: '1405/06/20' },
+    ]);
+
+    for (const id of [five, one]) {
+      const res = await request(app)
+        .put(`/api/admin/reviews/${id}/approved`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({ approved: true });
+      expect(res.status).toBe(200);
+    }
+    let row = await db.query.products.findFirst({ where: eq(products.id, prod.id) });
+    expect(row?.rating).toBe(3);
+    expect(row?.reviewsCount).toBe(2);
+
+    const del = await request(app)
+      .delete(`/api/admin/reviews/${one}`)
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(del.status).toBe(200);
+
+    row = await db.query.products.findFirst({ where: eq(products.id, prod.id) });
+    // the deleted review must not keep counting toward the storefront aggregate
+    expect(row?.rating).toBe(5);
+    expect(row?.reviewsCount).toBe(1);
+  });
+
+  it('refuses to hard-delete a product that appears in an order (409, no FK crash)', async () => {
+    const prod = await seedProduct();
+    const orderId = 'ORD-DI-' + suffix;
+    await db.insert(orders).values({
+      id: orderId, userId: adminId, date: '1405/06/20', status: 'processing', statusText: 'در حال پردازش',
+      total: 100000, subtotal: 100000, shippingFee: 0, discountAmount: 0,
+      paymentMethod: 'پرداخت در محل', shippingMethod: 'پست پیشتاز',
+      recipientName: 'تست', recipientPhone: '09120000000', recipientAddress: 'تهران',
+      vipPointsUsed: 0, vipPointsEarned: 0, createdAt: new Date().toISOString(),
+    });
+    await db.insert(orderItems).values({
+      orderId, productId: prod.id, price: 100000, qty: 1, title: 'کالای تست مشتق', image: '/x.jpg', brand: 'تست',
+    });
+
+    const res = await request(app)
+      .delete(`/api/admin/products/${prod.id}`)
+      .set('Authorization', `Bearer ${adminToken}`);
+
+    expect(res.status).toBe(409);
+    expect(res.body.code).toBe('PRODUCT_IN_ORDERS');
+    const still = await db.query.products.findFirst({ where: eq(products.id, prod.id) });
+    expect(still?.id).toBe(prod.id);
+  });
+
+  it('bulk-deleting an active order restocks its items (parity with single cancel)', async () => {
+    const prod = await seedProduct(50);
+    const orderId = 'ORD-DIB-' + suffix;
+    await db.insert(orders).values({
+      id: orderId, userId: adminId, date: '1405/06/20', status: 'processing', statusText: 'در حال پردازش',
+      total: 200000, subtotal: 200000, shippingFee: 0, discountAmount: 0,
+      paymentMethod: 'پرداخت در محل', shippingMethod: 'پست پیشتاز',
+      recipientName: 'تست', recipientPhone: '09120000000', recipientAddress: 'تهران',
+      vipPointsUsed: 0, vipPointsEarned: 0, createdAt: new Date().toISOString(),
+    });
+    await db.insert(orderItems).values({
+      orderId, productId: prod.id, price: 100000, qty: 2, title: 'کالای تست مشتق', image: '/x.jpg', brand: 'تست',
+    });
+
+    const res = await request(app)
+      .post('/api/admin/orders/bulk-delete')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ ids: [orderId] });
+
+    expect(res.status).toBe(200);
+    expect(res.body.deleted).toBe(1);
+    const row = await db.query.products.findFirst({ where: eq(products.id, prod.id) });
+    expect(row?.stockQuantity).toBe(52); // 50 + qty 2 — a plain DELETE used to lose this
+    const gone = await db.query.orders.findFirst({ where: eq(orders.id, orderId) });
+    expect(gone).toBeUndefined();
   });
 });

@@ -352,6 +352,7 @@ router.put('/users/:id/points', validate(pointsSchema), async (req, res) => {
       return res.status(404).json({ error: 'کاربر یافت نشد' });
     }
 
+    logAudit(req, 'user.points.update', 'user', id, { vipPoints: updated.vipPoints, targetName: updated.name });
     res.json({ message: 'امتیاز VIP کاربر با موفقیت بروزرسانی شد', vipPoints: updated.vipPoints });
   } catch (error) {
     console.error('Admin update points error:', error);
@@ -464,6 +465,19 @@ router.delete('/products/:id', async (req, res) => {
       return res.status(404).json({ error: 'محصول یافت نشد', message: 'محصول یافت نشد' });
     }
 
+    // order_items.product_id is a NOT NULL FK (no cascade): a hard DELETE of any
+    // product that was ever ordered aborts with "FOREIGN KEY constraint failed".
+    // Refuse with an actionable message instead of a 500 + raw SQL error text.
+    const ordered = await db
+      .select({ id: orderItems.id })
+      .from(orderItems)
+      .where(eq(orderItems.productId, prodId))
+      .limit(1);
+    if (ordered.length > 0) {
+      const msg = 'این محصول در سفارش‌های ثبت‌شده استفاده شده و برای حفظ سابقه خرید قابل حذف نیست. برای خارج کردن از فروش، موجودی را صفر کنید.';
+      return res.status(409).json({ error: msg, message: msg, code: 'PRODUCT_IN_ORDERS' });
+    }
+
     // Portable async transaction: works on both SQLite (queued by db wrapper)
     // and PostgreSQL.
     await db.transaction(async (tx) => {
@@ -480,7 +494,7 @@ router.delete('/products/:id', async (req, res) => {
     res.json({ message: 'محصول با موفقیت حذف شد' });
   } catch (error: any) {
     console.error('Delete product error:', error);
-    res.status(500).json({ message: error.message || 'خطای سرور در حذف محصول' });
+    res.status(500).json({ message: 'خطای سرور در حذف محصول' });
   }
 });
 
@@ -759,6 +773,7 @@ router.post('/messages/read-all', async (req, res) => {
         .returning({ id: contactMessages.id });
       return rows.length;
     });
+    logAudit(req, 'message.read_all', 'message', null, { updated });
     res.json({ updated, deleted: 0 });
   } catch (error) {
     console.error('Bulk mark-all-read error:', error);
@@ -778,6 +793,7 @@ router.post('/messages/bulk-delete', validate(bulkIdsSchema), async (req, res) =
         .returning({ id: contactMessages.id });
       return rows.length;
     });
+    logAudit(req, 'message.bulk_delete', 'message', null, { ids, count: deleted });
     res.json({ deleted });
   } catch (error) {
     console.error('Bulk delete messages error:', error);
@@ -786,19 +802,36 @@ router.post('/messages/bulk-delete', validate(bulkIdsSchema), async (req, res) =
 });
 
 // POST /api/admin/orders/bulk-delete — {ids: (string|number)[]}
-// Deletes order items and orders atomically (items first, FK-safe).
+// Deletes order items and orders atomically (items first, FK-safe) and unwinds the
+// financial side effects first: orders still holding inventory/points
+// (pending_payment, processing) are restocked, the points they spent are refunded
+// and the points they earned (COD) are clawed back — mirroring the single-order
+// cancel path. A plain DELETE silently burned stock forever.
 router.post('/orders/bulk-delete', validate(bulkIdsSchema), async (req, res) => {
   try {
     const { ids } = req.body as { ids: string[] };
-    const deleted = await db.transaction(async (tx) => {
+    const result = await db.transaction(async (tx) => {
+      const rows = await tx.select().from(orders).where(inArray(orders.id, ids));
+      for (const order of rows) {
+        if (order.status !== 'pending_payment' && order.status !== 'processing') continue;
+        await restockItemsAndRefundPoints(tx, order.id, order.userId, order.vipPointsUsed);
+        const earned = order.status === 'processing' ? Number(order.vipPointsEarned) || 0 : 0;
+        if (earned > 0 && order.userId) {
+          await tx.update(users)
+            .set({ vipPoints: sql`${users.vipPoints} - ${earned}` })
+            .where(and(eq(users.id, order.userId), sql`${users.vipPoints} >= ${earned}`));
+        }
+      }
       await tx.delete(orderItems).where(inArray(orderItems.orderId, ids));
-      const rows = await tx
+      const removed = await tx
         .delete(orders)
         .where(inArray(orders.id, ids))
         .returning({ id: orders.id });
-      return rows.length;
+      return { deleted: removed.length, ids: removed.map((r) => r.id) };
     });
-    res.json({ deleted });
+    appCache.invalidate('product');
+    logAudit(req, 'order.bulk_delete', 'order', null, { ids: result.ids, count: result.deleted });
+    res.json({ deleted: result.deleted });
   } catch (error) {
     console.error('Bulk delete orders error:', error);
     res.status(500).json({ message: 'خطا در حذف سفارش‌ها' });
@@ -819,6 +852,7 @@ router.put('/orders/:id/tracking', validate(trackingSchema), async (req, res) =>
       return res.status(404).json({ error: 'سفارش یافت نشد' });
     }
 
+    logAudit(req, 'order.tracking.update', 'order', id, { refId: refId ?? null });
     res.json(updated);
   } catch (error) {
     res.status(500).json({ message: 'خطای سرور در ثبت کد رهگیری' });
@@ -869,6 +903,7 @@ router.put('/reviews/:id/approved', validate(approvedSchema), async (req, res) =
       appCache.invalidate('product');
     }
     appCache.invalidate('reviews:latest');
+    logAudit(req, 'review.moderate', 'review', id, { approved, productId: review.productId ?? null });
     res.json({ success: true, approved, message: approved ? 'نظر تأیید شد' : 'نظر رد شد (از نمایش عمومی خارج شد)' });
   } catch (error) {
     console.error('Review approve error:', error);
@@ -879,11 +914,37 @@ router.put('/reviews/:id/approved', validate(approvedSchema), async (req, res) =
 router.delete('/reviews/:id', async (req, res) => {
   try {
     const { id } = req.params as { id: string };
+    const review = await db.query.reviews.findFirst({ where: eq(reviews.id, id) });
+    if (!review) {
+      return res.status(404).json({ message: 'نظر یافت نشد' });
+    }
+
     await db.delete(reviews).where(eq(reviews.id, id));
+
+    // Deleting an approved review MUST re-derive the product's aggregate from the
+    // remaining approved rows (same contract as the approve/reject toggle) — without
+    // this the PDP keeps advertising a rating whose review no longer exists.
+    if (review.productId) {
+      const agg = await db
+        .select({
+          avg: sql<number>`COALESCE(AVG(${reviews.rating}), 0)`,
+          count: sql<number>`COUNT(*)`,
+        })
+        .from(reviews)
+        .where(and(eq(reviews.productId, review.productId), eq(reviews.approved, true)));
+      await db.update(products)
+        .set({ rating: Math.round(Number(agg[0]?.avg) * 10) / 10, reviewsCount: Number(agg[0]?.count) || 0 })
+        .where(eq(products.id, review.productId));
+      appCache.invalidate(`reviews:${review.productId}`);
+      appCache.invalidate(`product:${review.productId}`);
+      appCache.invalidate('product');
+    }
     appCache.invalidate('reviews:latest');
+    logAudit(req, 'review.delete', 'review', id, { productId: review.productId ?? null, rating: review.rating });
     res.json({ success: true, message: 'نظر با موفقیت حذف شد' });
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error' });
+    console.error('Review delete error:', error);
+    res.status(500).json({ message: 'خطای سرور در حذف نظر' });
   }
 });
 
@@ -905,6 +966,7 @@ router.delete('/newsletter/:email', async (req, res) => {
     const { newsletterSubscribers } = await import('../db/schema.js');
     const { email } = req.params;
     await db.delete(newsletterSubscribers).where(eq(newsletterSubscribers.email, email.toLowerCase()));
+    logAudit(req, 'newsletter.delete', 'newsletter', email.toLowerCase(), {});
     res.json({ success: true, message: 'عضویت با موفقیت حذف شد' });
   } catch (error) {
     res.status(500).json({ message: 'Internal server error' });
