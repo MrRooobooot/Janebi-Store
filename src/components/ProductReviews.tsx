@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Star, ThumbsUp, ThumbsDown, CircleCheck, MessageSquarePlus, Filter, Award, Sparkles, Send, UserCheck, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { useAuth } from '../contexts/AuthContext';
+import { useLocation } from 'react-router-dom';
 import { useToast } from '../contexts/ToastContext';
 import { authFetch } from '../lib/api';
 import { getJson } from '../lib/jsonFetch';
@@ -49,6 +50,7 @@ function formatFaDate(iso: string): string {
 
 export default function ProductReviews({ productId, initialReviewsCount = 0, initialRating = 0 }: ProductReviewsProps) {
   const { isLoggedIn, user } = useAuth();
+  const location = useLocation();
   const { addToast } = useToast();
   const prefersReducedMotion = useReducedMotion();
 
@@ -70,6 +72,16 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
   const [reviewComment, setReviewComment] = useState('');
   const [recommend, setRecommend] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // Deep link /products/:id?writeReview=1 (from the post-delivery CTA) opens
+  // the form directly. Guests land on the same URL but the form button is
+  // auth-gated; we clear the param either way so a refresh doesn't re-open it.
+  useEffect(() => {
+    if (!location.search.includes('writeReview=1')) return;
+    const url = new URL(window.location.href);
+    url.searchParams.delete('writeReview');
+    window.history.replaceState({}, '', url.pathname + (url.search ? url.search : ''));
+    if (isLoggedIn) setShowForm(true);
+  }, [location.search, isLoggedIn]);
 
   const loadReviews = React.useCallback((targetPage: number) => {
     setLoading(true);

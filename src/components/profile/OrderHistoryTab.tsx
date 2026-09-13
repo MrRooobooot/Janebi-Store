@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Package, Search, Printer, XCircle, Clock, CheckCircle2, MapPin, Calendar, CreditCard } from 'lucide-react';
+import { Package, Search, Printer, XCircle, Clock, CheckCircle2, MapPin, Calendar, CreditCard, MessageSquarePlus } from 'lucide-react';
 import { Order } from '../../types';
 import { toPersianDigits, formatPrice } from '../../lib/utils';
 import { useToast } from '../../contexts/ToastContext';
@@ -181,6 +181,16 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
                       <div className="text-[11px] text-gray-500 mt-0.5">
                         {toPersianDigits(item.qty)} عدد × {formatPrice(item.price)}
                       </div>
+                      {order.status === 'delivered' && (
+                        <button
+                          onClick={() => navigate(`/products/${item.id}?writeReview=1`)}
+                          aria-label={`ثبت نظر درباره ${item.title}`}
+                          className="mt-1 inline-flex items-center gap-1 text-[11px] font-bold text-[var(--color-emphasis-text)] hover:underline"
+                        >
+                          <MessageSquarePlus className="h-3 w-3" />
+                          ثبت نظر
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}
