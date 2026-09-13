@@ -76,4 +76,4 @@ Gate: `npm run verify` PASS (406 تست)، `design-audit` **8/8 PASS** (WebKit+C
 نکتهٔ ابزاری (دام): `data/janebi.db` محلی و snapshot قدیمی `dk-*` دارند و audit را با `err:80` می‌شکنند؛ snapshot تازه با `better-sqlite3 .backup()` + `docker cp` + کپی `public/images/products/*.avif` (gitignore شده) لازم است.
 
 ## Next rotations (standing goal)
-- G: تکراری‌سازی پروب چرخش F در cron طراحی (پایش خودکار checkout) یا چرخش بعدی per UI-AUDIT-LOG.
+- همهٔ ردیف‌های open لاگ بسته شده‌اند (0913). چرخش بعدی: hand-audit دوره‌ای روی سطوح کشف‌نشده + تثبیت پروب‌های چرخش C/F به‌عنوان رگرسیون روزانه (در صورت خواست کاربر).

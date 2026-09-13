@@ -2,6 +2,19 @@
 
 ## Status: Completed (Aug 28, 2026)
 
+### Round 2026-09-13b — Rotation F: checkout/payment micro-flow (SHIPPED, live 57d7ad3)
+
+- [x] **پروب زنده** `scripts/probes/probe-rotation-f.mjs` روی sandbox `:3978` (snapshot prod با `better-sqlite3 .backup()` + `docker cp`؛ دام: snapshot/DB محلی قدیمی `dk-*` → `err:80` در audit). ۱۲ سناریو: مهمان، نرمال‌سازی تلفن، اعتبارسنجی، COD، آنلاین/درگاه، callback. ۵ یافتهٔ واقعی، ۵ فیکس:
+  1. **نشت انگلیسی ۴۰۱** — توست `Unauthorized: No token provided` روی submit سشن‌منقضی/میهمان → گارد ۴۰۱ با کپی فارسی + هدایت `/login`.
+  2. **blur تلفن** (باقی‌ماندهٔ چرخش C) — `9123456789` نرمال نمی‌شد → `onBlur: normalizeIranianMobile`.
+  3. **ریدایرکت‌های انگلیسی `payment/verify`** (`Invalid parameters|Order not found|Internal error`) → متن فارسی + `encodeURIComponent`.
+  4. **callback خام** — هر `message` دلخواه رندر می‌شد → فقط پیام فارسی، وگرنه متن پیش‌فرض.
+  5. **شناسه‌های machine** — `ss01` وزیرمتن ارقام ASCII کد سفارش را به گلیف فارسی می‌برد (شناسهٔ کپی‌شدنی خراب) + `.dir-ltr` در CSS تعریف نشده بود → utility `.latin-nums` + تعریف `.dir-ltr`؛ اعمال روی توست/ردیف سفارش/داشبورد/callback.
+- [x] گیت: `npm run verify` PASS (406 تست)، `design-audit` **8/8 PASS** (err:0)، probe sandbox **12/12**؛ دیپلوی OK + health `database ok`.
+- [x] اثبات روی prod (بدون ایجاد سفارش واقعی): blur `9123456789→09123456789` ✓؛ توست مهمان فارسی + ریدایرکت `/login` ✓؛ صفر نشت انگلیسی در callback ✓؛ `latin-nums` در CSS سرو‌شده ✓؛ `Location` فارسی روی `/api/payment/verify` ✓؛ vision روی `f-s7-toast-latin.png` = ارقام لاتین و BiDi سالم ✓.
+- [x] Ledger: `docs/UI-AUDIT-LOG.md` §Rotation F (۵ یافته، شواهد، wontfix/سالم‌ها).
+- Next: چرخش بعدی per لاگ؛ برای check-out روی prod با حساب واقعی باید کاربر تأیید کند (ایجاد سفارش واقعی = داده واقعی).
+
 ### Round 2026-09-13 — Rotation C (forms) + specs backfill + SEO meta + review path (SHIPPED, live 61e93b8)
 
 - [x] **چرخش C فرم‌ها (probe زنده prod، DOM+pixel+vision، لایت/دارک ×1280/390)** — ۴ فیکس ریشه‌ای: `noValidate` روی ۴ فرم (تولتیپ انگلیسی مرورگر، اعتبارسنجی فارسی JS غیرقابل‌دسترس)؛ پیام type zod روی `z.number()` (نشت "Invalid input: expected number, received null" به بنر کوپن) + گارد `Number.isFinite(cartTotal)`؛ توست `bottom-20 lg:bottom-4 z-[60]` (نشت روی MobileBottomNav، overlapPx=0 پسابازرسی)؛ حذف ارائه دوبل خطای کوپن (بنر inline قابل‌بستن = تنها سطح). ۴ wontfix با شاهد پیکسلی (استپر disabled opacity، تب غیرفعال 4.58، CTA 4.73 بزرگ‌متن). Ledger: UI-AUDIT-LOG §Rotation C.
