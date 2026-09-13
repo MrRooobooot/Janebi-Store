@@ -43,5 +43,18 @@ Pixel probe (`scripts/probes/probe-pixel.mjs`) is the ONLY contrast authority �
 | 0912 | mobile burger button | 390 | — | `items-center justify-center` w/o flex = no-op | code read | missing `flex` | added flex | fixed |
 | 0912 | «مشاهده همه» misaligned / icon side | 1280 | — | vision flags | DOM probe: link x=57 (left edge = correct RTL justify-between); icon-right pattern consistent app-wide | — | none | wontfix |
 
+## Rotation C — forms & micro-interactions (auth modal, coupon, qty stepper) — 0913
+Probe: `scripts/probes/probe-rotation-c.mjs` + `shots-rotation-c.mjs` (live prod, DOM+pixel+vision, light/dark × 1280/390)
+|| 0913 | AuthModal + Login/Register/Checkout | 1280+390 | both | native browser validation tooltip — English "Please fill out this field." (LTR) covered RTL label; app's Persian JS validators unreachable (`emptySubmitFeedback: NO FEEDBACK`) | prod probe + screenshot fix-m-light-auth-toast | `required` attrs without `noValidate` on form | `noValidate` added 4 forms; probe re-run: Persian toast shown all 4 combos | fixed |
+|| 0913 | coupon apply | 1280+390 | both | zod English leak: banner showed "Invalid input: expected number, received null" | prod probe couponErrorText | zod v4 type-error msg must sit on z.number() itself; + client sent NaN cartTotal | `z.number("مبلغ سبد…معتبر باشد")` + `Number.isFinite(cartTotal)` guard; live curl: msg Persian | fixed |
+|| 0913 | toast stack vs MobileBottomNav | 390 | both | toasts (`bottom-4 z-50`) rendered ON TOP of nav (`bottom-0 z-40`) — nav icons un-clickable during toast | prod screenshot c-m-*-cart-coupon-err + vision | fixed container with no mobile inset for nav | `bottom-20 lg:bottom-4 z-[60]`; geometry probe: overlapPx 0 @390, toastTop 718 < navTop 770 | fixed |
+|| 0913 | coupon error dual surface | 390+1280 | both | same error shown as inline banner AND toast | useCartSummary: setCouponError + addToast | duplicate channels | inline dismissible banner = single surface (toast kept for success/rate-limit paths via catch); probe duplicateToast:false | fixed |
+|| 0913 | qty stepper cart | 1280+390 | both | minus@1 disabled opacity .3; plus 44×44; hover fill rose | DOM probe | intentional affordance | none | wontfix |
+|| 0913 | auth modal health | 1280+390 | both | focus-on-open=dialog, Escape closes, backdrop closes, body scroll restored, eye-toggle works, submit 378×48/304×48, input contrast 7.0–7.6 pixel, error banner 6.1–18.1 pixel | DOM+pixel probe | — | none needed | wontfix |
+|| 0913 | inactive tab light 390 | 390 | light | tabInactiveContrast 4.58 | pixel probe | ≥4.5 AA floor met | none | wontfix |
+|| 0913 | submitContrast d-m-light 4.73 | — | light | pixel 4.73 | rose CTA #e11d48 vs white text = 4.7:1 — AA pass for ≥18px bold (button is text-sm bold 48px, large-text exemption 3:1) | — | none | wontfix |
+
+Gate: design-audit 8/8 PASS (WebKit+Chromium × light/dark × 390/1280), `npm run verify` PASS, deployed BUILD_INFO `9afc76d`, prod re-probe 4/4 combos Persian feedback.
+
 ## Next rotations (standing goal)
-- C: forms/micro-interactions (auth modal, coupon apply, quantity steppers live behavior)
+- F: checkout/payment micro-flow + post-purchase review CTA (rotation F planned with specs backfill)
