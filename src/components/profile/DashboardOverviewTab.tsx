@@ -109,7 +109,7 @@ export default function DashboardOverviewTab({
         {orders.length > 0 ? (
           <div className="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] space-y-3">
             <div className="flex items-center justify-between text-xs font-bold">
-              <span className="text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">کد سفارش: {orders[0].id}</span>
+              <span className="text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">کد سفارش: <span dir="ltr" className="latin-nums">{orders[0].id}</span></span>
               <span className={`px-3 py-1 rounded-full text-[10px] ${
                   orders[0].status === 'delivered' ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300'
                   : orders[0].status === 'cancelled' ? 'bg-rose-100 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300'

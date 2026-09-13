@@ -50,20 +50,20 @@ export default function CheckoutCallback() {
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-8">
           {isSuccess 
             ? 'سفارش شما با موفقیت ثبت شد و در اسرع وقت پردازش خواهد شد.' 
-            : message || 'متأسفانه در فرآیند پرداخت خطایی رخ داد یا پرداخت توسط شما لغو شد.'}
+            : (message && /[\u0600-\u06FF]/.test(message)) ? message : 'متأسفانه در فرآیند پرداخت خطایی رخ داد یا پرداخت توسط شما لغو شد.'}
         </p>
 
         <div className="bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] rounded-2xl p-4 mb-8 space-y-3 text-right">
           {orderId && (
             <div className="flex justify-between items-center text-sm">
               <span className="text-gray-500 dark:text-gray-400">شماره سفارش:</span>
-              <span className="font-bold text-[var(--color-text-main-light)] dark:text-white dir-ltr">{orderId}</span>
+              <span className="font-bold text-[var(--color-text-main-light)] dark:text-white dir-ltr latin-nums">{orderId}</span>
             </div>
           )}
           {refId && isSuccess && (
             <div className="flex justify-between items-center text-sm">
               <span className="text-gray-500 dark:text-gray-400">کد پیگیری تراکنش:</span>
-              <span className="font-bold text-[var(--color-text-main-light)] dark:text-white dir-ltr">{refId}</span>
+              <span className="font-bold text-[var(--color-text-main-light)] dark:text-white dir-ltr latin-nums">{refId}</span>
             </div>
           )}
         </div>

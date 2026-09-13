@@ -130,7 +130,7 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-xs">
                 <div className="flex items-center gap-3">
                   <span className="font-extrabold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
-                    کد سفارش: {order.id}
+                    کد سفارش: <span dir="ltr" className="latin-nums">{order.id}</span>
                   </span>
                   <span
                     className={`px-3 py-1 rounded-full text-[11px] font-bold ${

@@ -78,12 +78,12 @@ router.get('/verify', async (req, res) => {
     const status = req.query.Status as string;
 
     if (!authority || !status) {
-      return res.redirect('/checkout/callback?status=failed&message=Invalid parameters');
+      return res.redirect('/checkout/callback?status=failed&message=' + encodeURIComponent('پارامترهای بازگشتی تراکنش ناقص است'));
     }
 
     const orderList = await db.select().from(orders).where(eq(orders.authority, authority)).limit(1);
     if (orderList.length === 0) {
-      return res.redirect('/checkout/callback?status=failed&message=Order not found');
+      return res.redirect('/checkout/callback?status=failed&message=' + encodeURIComponent('سفارش موردنظر یافت نشد'));
     }
 
     const order = orderList[0];
@@ -212,7 +212,7 @@ router.get('/verify', async (req, res) => {
 
   } catch (error) {
     console.error('Payment verify error:', error);
-    res.redirect('/checkout/callback?status=failed&message=Internal error');
+    res.redirect('/checkout/callback?status=failed&message=' + encodeURIComponent('خطای داخلی در تأیید پرداخت'));
   }
 });
 

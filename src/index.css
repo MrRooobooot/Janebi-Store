@@ -350,6 +350,18 @@ textarea::placeholder {
   font-feature-settings: "ss01" on;
 }
 
+/* Machine identifiers (order codes, tracking refs): body applies Vazirmatn "ss01"
+   which re-renders ASCII digits as Persian glyphs — wrong for copyable IDs.
+   Real Persian-digit codepoints (toPersianDigits output) are unaffected. */
+.latin-nums {
+  font-feature-settings: "ss01" off;
+}
+/* was referenced across components (Footer/Settings/callback) but never defined */
+.dir-ltr {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
 /* ── Modern Vibrancy & Surface Utility Classes ──────────────────── */
 .surface-glass {
   background-color: var(--color-surface-glass-light);

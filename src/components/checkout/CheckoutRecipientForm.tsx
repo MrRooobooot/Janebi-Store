@@ -145,6 +145,7 @@ export default function CheckoutRecipientForm({
               dir="ltr"
               value={formData.phone}
               onChange={(e) => updateField('phone', e.target.value)}
+              onBlur={(e) => updateField('phone', normalizeIranianMobile(e.target.value))}
               placeholder="09123456789"
               className={`w-full bg-gray-50/80 dark:bg-gray-800/70 border rounded-2xl py-3 px-4 pl-10 text-left font-mono text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none transition-colors ${
                 !isPhoneValid

@@ -57,5 +57,23 @@ Probe: `scripts/probes/probe-rotation-c.mjs` + `shots-rotation-c.mjs` (live prod
 
 Gate: design-audit 8/8 PASS (WebKit+Chromium × light/dark × 390/1280), `npm run verify` PASS, deployed BUILD_INFO `9afc76d`, prod re-probe 4/4 combos Persian feedback.
 
+## Rotation F — checkout / payment micro-flow (0913)
+
+Probe: `scripts/probes/probe-rotation-f.mjs` — sandbox `:3978` (prod DB snapshot via better-sqlite3 `backup()`), Playwright 390px, toast capture through `[role="alert"]` polling (toasts live 3s — a post-hoc read loses them).
+
+| تاریخ | سطح | ویوپورت | تم | یافته | شاهد | ریشه | فیکس | وضعیت |
+|---|---|---|---|---|---|---|---|---|
+| 0913 | checkout guest submit | 390 | light | نشت پیام خام انگلیسی سرور: توست `Unauthorized: No token provided` | probe S1 (toast capture) + prod re-probe | `addToast(data.message)` روی ۴۰۱ بدون هیچ شاخهٔ اختصاصی؛ سشن منقضی/میهمان = پیام خام API روی صورت کاربر | گارد `res.status === 401` → «برای ثبت سفارش ابتدا وارد حساب خود شوید» + `navigate('/login')` | fixed |
+| 0913 | phone input blur | 390 | light | `9123456789` بعد از blur تبدیل نمی‌شد (باقی‌ماندهٔ چرخش C) | probe S2 DOM `inputValue` | input فقط `onChange` داشت؛ نرمال‌سازی صرفاً در submit و در انتخاب آدرس ذخیره‌شده | `onBlur` → `normalizeIranianMobile` | fixed |
+| 0913 | `/api/payment/verify` ریدایرکت‌ها | — | — | پیام‌های انگلیسی خام در URL: `message=Invalid parameters|Order not found|Internal error` → روی صورت کاربر در callback | probe S6 + `curl -sI /api/payment/verify` | سه ریدایرکت سرور با متن انگلیسی | متن فارسی + `encodeURIComponent` | fixed |
+| 0913 | CheckoutCallback copy | all | both | هر `message` دلخواه از query بدون فیلتر رندر می‌شد | probe S6 | `message || fallback` | رندر فقط اگر حاوی حروف فارسی باشد، وگرنه متن پیش‌فرض | fixed |
+| 0913 | شناسه‌های machine (کد سفارش) | 390 | both | `ORD-...-71A7` با گلیف ارقام فارسی رندر می‌شد (`...-71A۷`) — شناسهٔ کپی‌شدنی خراب | vision روی `docs/shots/f-s7-toast-latin.png` + `docs/shots/f-s4-cod-history.png` | `body { font-feature-settings: "ss01" }` (Vazirmatn) ارقام ASCII را به گلیف فارسی می‌برد؛ `dir-ltr` هم در CSS تعریف نشده بود | utility `.latin-nums` (`ss01: off`) + تعریف گمشدهٔ `.dir-ltr`؛ اعمال روی توست‌ها، ردیف سفارش، داشبورد، callback | fixed |
+
+سالم/بدون ایراد (شاهددار): استپر و submit ≥44px (`h=52`)، مسیر COD کامل (`POST /api/orders 201` → `/profile?tab=orders` + توست کد سفارش، صفر فراخوانی payment)، مسیر آنلاین → توست فارسی درگاه بدون نشت انگلیسی (`503` در sandbox = کلید درگاه محلی، نه باگ)، اعتبارسنجی فارسی تک‌سطحی (`لطفا تمامی اطلاعات ضروری گیرنده را تکمیل کنید`)، خالی‌بودن سبد = EmptyState صادق.
+
+Gate: `npm run verify` PASS (406 تست)، `design-audit` **8/8 PASS** (WebKit+Chromium × light/dark × 390/1280، err:0)، probe sandbox **12/12**، prod re-probe: blur `09123456789` ✓، توست مهمان فارسی + ریدایرکت `/login` ✓، صفر نشت انگلیسی در callback ✓، `latin-nums` در CSS سرو‌شده ✓، ریدایرکت verify فارسی ✓.
+
+نکتهٔ ابزاری (دام): `data/janebi.db` محلی و snapshot قدیمی `dk-*` دارند و audit را با `err:80` می‌شکنند؛ snapshot تازه با `better-sqlite3 .backup()` + `docker cp` + کپی `public/images/products/*.avif` (gitignore شده) لازم است.
+
 ## Next rotations (standing goal)
-- F: checkout/payment micro-flow + post-purchase review CTA (rotation F planned with specs backfill)
+- G: تکراری‌سازی پروب چرخش F در cron طراحی (پایش خودکار checkout) یا چرخش بعدی per UI-AUDIT-LOG.

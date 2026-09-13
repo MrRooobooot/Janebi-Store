@@ -114,7 +114,15 @@ export function useCheckoutForm() {
       });
       
       const data = await res.json();
-      
+
+      // 401 = no session at all (refresh cookie failed) — Persian copy + login,
+      // never the raw server string ("Unauthorized: No token provided").
+      if (res.status === 401) {
+        addToast('برای ثبت سفارش ابتدا وارد حساب خود شوید', 'error');
+        navigate('/login');
+        return;
+      }
+
       if (!res.ok) {
         addToast(data.message || 'خطا در ثبت سفارش', 'error');
         setSubmitting(false);
