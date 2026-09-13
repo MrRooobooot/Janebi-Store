@@ -301,14 +301,14 @@ export default function Home() {
               <div className="pt-1 sm:pt-2 flex flex-wrap items-center gap-2.5 sm:gap-3">
                 <Link
                   to={currentSlide.buttonLink}
-                  className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] text-white font-black px-5 sm:px-6 min-h-[48px] rounded-2xl text-[13px] sm:text-sm transition-colors duration-200 shadow-lg shadow-[var(--color-cta)]/30 flex items-center gap-2 group active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-cta)]"
+                  className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] text-white font-black px-5 sm:px-6 min-h-[44px] sm:min-h-[48px] rounded-2xl text-[13px] sm:text-sm transition-colors duration-200 shadow-lg shadow-[var(--color-cta)]/30 flex items-center gap-2 group active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-cta)]"
                 >
                   <span>{normalizePersianTypography(currentSlide.buttonText)}</span>
                   <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
                 </Link>
 
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                  <div className="flex items-center gap-1.5 text-[12px] font-bold text-slate-500 dark:text-slate-400 sm:hidden">
+                  <div className="hidden">
                     <Award className="h-3.5 w-3.5 shrink-0 text-[var(--color-emphasis-text)]" />
                     <span>{normalizePersianTypography(currentSlide.badge)}</span>
                   </div>
@@ -379,10 +379,10 @@ export default function Home() {
 
       {/* 2. Amazing Deals Section — product-first fold */}
       <section className="w-full">
-        <div className="bg-gradient-to-br from-rose-50/40 via-white to-slate-50 dark:from-[#0e1629] dark:via-[#0c1220] dark:to-[#070b14] rounded-3xl p-3 sm:p-8 text-slate-900 dark:text-white border border-rose-200/70 dark:border-white/[0.08] shadow-lg dark:shadow-2xl relative overflow-hidden transition-colors">
+        <div className="bg-gradient-to-br from-rose-50/40 via-white to-slate-50 dark:from-[#0e1629] dark:via-[#0c1220] dark:to-[#070b14] rounded-3xl p-2.5 sm:p-8 text-slate-900 dark:text-white border border-rose-200/70 dark:border-white/[0.08] shadow-lg dark:shadow-2xl relative overflow-hidden transition-colors">
           
           {/* Section Header */}
-          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 mb-3 sm:mb-6 pb-2 sm:pb-4 border-b border-rose-100 dark:border-white/[0.06]">
+          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 mb-2 sm:mb-6 pb-2 sm:pb-4 border-b border-rose-100 dark:border-white/[0.06]">
             <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
               <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-primary-50 dark:bg-primary-950/40 border border-primary-200/60 dark:border-primary-900/50 flex items-center justify-center text-[var(--color-emphasis-text)] shrink-0">
                 <Flame className="h-5 w-5 animate-bounce" />
@@ -433,7 +433,7 @@ export default function Home() {
                   to={`/product/${p.id}`}
                   className="bg-white hover:bg-white dark:bg-[#121c33] dark:hover:bg-[#162340] border border-slate-200/80 hover:border-primary-300 dark:border-white/[0.07] dark:hover:border-primary-500/40 rounded-2xl p-3 sm:p-3.5 text-slate-900 dark:text-white flex flex-col justify-between transition-all duration-200 shadow-xs hover:shadow-md group"
                 >
-                  <div className="relative aspect-[4/3] sm:aspect-square rounded-2xl bg-slate-50 dark:bg-white/[0.06] p-2.5 sm:p-3 mb-3 flex items-center justify-center overflow-hidden border border-slate-100 dark:border-white/[0.09]">
+                  <div className="relative aspect-[4/3] sm:aspect-square rounded-2xl bg-slate-100 dark:bg-white/[0.08] p-2.5 sm:p-3 mb-3 flex items-center justify-center overflow-hidden border border-slate-100 dark:border-white/[0.09]">
                     <PictureImage 
                       src={p.image} 
                       alt={p.title} 
