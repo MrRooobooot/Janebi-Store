@@ -99,7 +99,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 <button
                   onClick={onClose}
                   aria-label="بستن سبد خرید"
-                  className="min-touch-target p-2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/[0.06] rounded-xl transition-colors cursor-pointer"
+                  className="min-touch-target flex items-center justify-center p-2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/[0.06] rounded-xl transition-colors cursor-pointer"
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -213,7 +213,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
 
                             <button
                               onClick={() => removeFromCart(item.id)}
-                              className="min-touch-target text-zinc-400 hover:text-rose-500 p-2 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors cursor-pointer"
+                              className="min-touch-target flex items-center justify-center text-zinc-400 hover:text-rose-500 p-2 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors cursor-pointer"
                               title="حذف از سبد"
                               aria-label="حذف این کالا"
                             >

@@ -76,7 +76,7 @@ export default function CartSummaryCard({
             type="submit"
             disabled={couponLoading || !couponInput.trim()}
             aria-label="اعمال کد تخفیف"
-            className="min-touch-target bg-primary-600 hover:bg-primary-700 dark:bg-primary-600 dark:hover:bg-primary-500 text-white font-extrabold px-5 py-3 rounded-2xl text-xs transition-all disabled:opacity-40 active:scale-95 shadow-sm shrink-0"
+            className="min-touch-target inline-flex items-center justify-center bg-primary-600 hover:bg-primary-700 dark:bg-primary-600 dark:hover:bg-primary-500 text-white font-extrabold px-5 py-3 rounded-2xl text-xs transition-all disabled:opacity-40 active:scale-95 shadow-sm shrink-0"
           >
             {couponLoading ? 'بررسی...' : 'اعمال'}
           </button>
@@ -97,7 +97,7 @@ export default function CartSummaryCard({
                 type="button"
                 onClick={dismissCouponError}
                 aria-label="بستن پیام خطای کد تخفیف"
-                className="min-touch-target text-rose-400 hover:text-rose-600 dark:hover:text-rose-300 rounded-lg"
+                className="min-touch-target inline-flex items-center justify-center text-rose-400 hover:text-rose-600 dark:hover:text-rose-300 rounded-lg"
               >
                 <X className="h-3.5 w-3.5" />
               </button>

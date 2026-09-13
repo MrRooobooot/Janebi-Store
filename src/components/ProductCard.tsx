@@ -91,7 +91,7 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
 
         {/* 2. Visual Product Image Container */}
         <Link to={`/product/${product.id}`} className="block group-hover:opacity-95 transition-opacity">
-          <div className="relative aspect-square w-full rounded-2xl bg-[var(--color-tile-light)] dark:bg-[var(--color-tile-dark)] border border-slate-100 dark:border-white/[0.05] p-3 sm:p-4 flex items-center justify-center overflow-hidden mb-2.5 group-hover:border-[var(--color-border-light-hover)] dark:group-hover:border-white/[0.12] transition-colors">
+          <div className="relative aspect-square w-full rounded-2xl bg-[var(--color-tile-light)] dark:bg-[var(--color-tile-dark)] border border-slate-100 dark:border-white/[0.09] p-3 sm:p-4 flex items-center justify-center overflow-hidden mb-2.5 group-hover:border-[var(--color-border-light-hover)] dark:group-hover:border-white/[0.12] transition-colors">
             
             {/* Ambient Radial Accent */}
             <div className="absolute inset-0 bg-radial from-[var(--color-cta)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

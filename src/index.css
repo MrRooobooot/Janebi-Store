@@ -274,12 +274,13 @@ textarea::placeholder {
 }
 
 /* ── Interactive Touch-Target Minimum (44px Rule) ────────────────── */
+/* Size only — NEVER set `display` here: a display value from this file outranks
+   Tailwind's `hidden`/`lg:flex` utilities (later in the cascade), which silently
+   kept desktop-only header controls visible on phones. Add `flex items-center
+   justify-center` at the call site when centering is needed. */
 .min-touch-target {
   min-height: 44px;
   min-width: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 }
 
 /* ── Mobile Safe Area Utilities ──────────────────────────────────── */

@@ -271,30 +271,30 @@ export default function Home() {
   };
 
   return (
-    <div className="space-y-8 sm:space-y-12 pb-16 w-full max-w-full overflow-hidden box-border">
+    <div className="space-y-8 sm:space-y-12 pb-24 lg:pb-16 w-full max-w-full overflow-hidden box-border">
       
       {/* 1. Hero Showcase Section */}
       <section className="w-full box-border">
-        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-white via-slate-50 to-rose-50/30 dark:from-[#0e1629] dark:via-[#0c1220] dark:to-[#070b14] border border-slate-200/90 dark:border-white/[0.08] shadow-lg dark:shadow-2xl p-3.5 sm:p-7 lg:p-6 transition-colors duration-500 min-h-0 sm:min-h-[400px] lg:min-h-[340px] flex flex-col justify-between">
+        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-white via-slate-50 to-rose-50/30 dark:from-[#0e1629] dark:via-[#0c1220] dark:to-[#070b14] border border-slate-200/90 dark:border-white/[0.08] shadow-lg dark:shadow-2xl p-3 sm:p-7 lg:p-6 transition-colors duration-500 min-h-0 sm:min-h-[400px] lg:min-h-[340px] flex flex-col justify-between">
           
           {/* Ambient Dot Grid (dual-theme, non-hardcoded) */}
           <div className="absolute inset-0 bg-[radial-gradient(var(--color-border-light)_1px,transparent_1px)] dark:bg-[radial-gradient(var(--color-border-dark)_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none opacity-60" />
 
           {/* Grid: Text Column & Graphic Column */}
-          <div key={activeSlide} className="hero-slide-content relative z-10 w-full grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
+          <div key={activeSlide} className="hero-slide-content relative z-10 w-full flex items-start sm:items-center gap-3 sm:gap-6 md:grid md:grid-cols-12 md:gap-8">
             
             {/* Text & Actions */}
-            <div className="md:col-span-7 space-y-2.5 sm:space-y-4 text-right">
+            <div className="min-w-0 flex-1 md:col-span-7 space-y-2.5 sm:space-y-4 text-right">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-50 dark:bg-primary-950/40 border border-primary-200/60 dark:border-primary-900/50 text-[var(--color-emphasis-text)] dark:text-primary-300 text-xs font-black shadow-xs">
                 <Sparkles className="h-3.5 w-3.5 animate-pulse text-[var(--color-emphasis-text)] dark:text-primary-400 shrink-0" />
                 <span>{normalizePersianTypography(currentSlide.tag)}</span>
               </div>
 
-              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white leading-[1.2] sm:leading-[1.15] tracking-tight">
+              <h1 className="text-[22px] sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white leading-[1.35] sm:leading-[1.15] tracking-tight">
                 {normalizePersianTypography(currentSlide.title)}
               </h1>
 
-              <p className="hidden sm:block text-base text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+              <p className="text-[13px] sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed font-normal line-clamp-2 sm:line-clamp-none">
                 {normalizePersianTypography(currentSlide.subtitle)}
               </p>
 
@@ -307,16 +307,22 @@ export default function Home() {
                   <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
                 </Link>
 
-                <div className="hidden sm:flex text-xs font-black px-4 min-h-0 py-2.5 rounded-2xl border bg-slate-100/80 text-slate-700 border-slate-200 dark:bg-white/[0.04] dark:text-slate-300 dark:border-white/[0.08] items-center gap-2">
-                  <Award className="h-4 w-4 shrink-0 text-[var(--color-emphasis-text)] dark:text-inherit" />
-                  <span>{normalizePersianTypography(currentSlide.badge)}</span>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                  <div className="flex items-center gap-1.5 text-[12px] font-bold text-slate-500 dark:text-slate-400 sm:hidden">
+                    <Award className="h-3.5 w-3.5 shrink-0 text-[var(--color-emphasis-text)]" />
+                    <span>{normalizePersianTypography(currentSlide.badge)}</span>
+                  </div>
+                  <div className="hidden sm:flex text-xs font-black px-4 py-2.5 rounded-2xl border bg-slate-100/80 text-slate-700 border-slate-200 dark:bg-white/[0.04] dark:text-slate-300 dark:border-white/[0.08] items-center gap-2">
+                    <Award className="h-4 w-4 shrink-0 text-[var(--color-emphasis-text)] dark:text-inherit" />
+                    <span>{normalizePersianTypography(currentSlide.badge)}</span>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Visual 3D Asset Showcase Column (Desktop/Tablet) */}
-            <div className="hidden md:flex md:col-span-5 items-center justify-center relative">
-              <div className="relative w-56 h-56 lg:w-56 lg:h-56 rounded-3xl p-5 bg-white/90 dark:bg-[#121c33]/80 border border-slate-200/80 dark:border-white/[0.08] backdrop-blur-md flex items-center justify-center shadow-md dark:shadow-2xl group hero-visual-tile">
+            <div className="flex shrink-0 md:col-span-5 items-center justify-center relative">
+              <div className="relative w-24 h-24 sm:w-56 sm:h-56 lg:w-56 lg:h-56 rounded-2xl sm:rounded-3xl p-0 sm:p-5 bg-transparent sm:bg-white/90 dark:sm:bg-[#121c33]/80 border-0 sm:border border-slate-200/80 dark:border-white/[0.08] sm:backdrop-blur-md flex items-center justify-center sm:shadow-md dark:sm:shadow-2xl group hero-visual-tile">
                 <PictureImage
                   src={currentSlide.image}
                   alt={normalizePersianTypography(currentSlide.title)}
@@ -334,7 +340,7 @@ export default function Home() {
             type="button"
             onClick={() => setActiveSlide((prev) => (prev === 0 ? heroSlides.length - 1 : prev - 1))}
             aria-label="اسلاید قبلی"
-            className="absolute right-1 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 sm:w-10 sm:h-10 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black/90 border border-zinc-200/80 dark:border-white/10 text-zinc-800 dark:text-zinc-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer"
+            className="hidden sm:flex absolute right-1 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 sm:w-10 sm:h-10 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black/90 border border-zinc-200/80 dark:border-white/10 text-zinc-800 dark:text-zinc-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer"
           >
             <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
@@ -342,13 +348,13 @@ export default function Home() {
             type="button"
             onClick={() => setActiveSlide((prev) => (prev + 1) % heroSlides.length)}
             aria-label="اسلاید بعدی"
-            className="absolute left-1 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 sm:w-10 sm:h-10 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black/90 border border-zinc-200/80 dark:border-white/10 text-zinc-800 dark:text-zinc-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer"
+            className="hidden sm:flex absolute left-1 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 sm:w-10 sm:h-10 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black/90 border border-zinc-200/80 dark:border-white/10 text-zinc-800 dark:text-zinc-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer"
           >
             <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
 
           {/* Slide Indicator Dots (Centered — theme-aware contrast; 44px hit area) */}
-          <div className="relative z-10 flex items-center justify-center gap-1 sm:gap-2 mt-1 sm:mt-6 pt-2 sm:pt-3 border-t border-zinc-200/80 dark:border-zinc-800/80" role="tablist" aria-label="اسلایدهای صفحه اصلی">
+          <div className="relative z-10 flex items-center justify-center gap-1 sm:gap-2 sm:mt-6 sm:pt-3 border-t border-zinc-200/80 dark:border-zinc-800/80" role="tablist" aria-label="اسلایدهای صفحه اصلی">
             {heroSlides.map((slide, idx) => (
               <button
                 key={slide.id}
@@ -376,23 +382,23 @@ export default function Home() {
         <div className="bg-gradient-to-br from-rose-50/40 via-white to-slate-50 dark:from-[#0e1629] dark:via-[#0c1220] dark:to-[#070b14] rounded-3xl p-3 sm:p-8 text-slate-900 dark:text-white border border-rose-200/70 dark:border-white/[0.08] shadow-lg dark:shadow-2xl relative overflow-hidden transition-colors">
           
           {/* Section Header */}
-          <div className="relative z-10 flex flex-row items-center justify-between gap-3 mb-2.5 sm:mb-6 pb-1.5 sm:pb-4 border-b border-rose-100 dark:border-white/[0.06]">
+          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 mb-3 sm:mb-6 pb-2 sm:pb-4 border-b border-rose-100 dark:border-white/[0.06]">
             <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
               <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-primary-50 dark:bg-primary-950/40 border border-primary-200/60 dark:border-primary-900/50 flex items-center justify-center text-[var(--color-emphasis-text)] shrink-0">
                 <Flame className="h-5 w-5 animate-bounce" />
               </div>
               <div className="min-w-0">
-                <h2 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white truncate">{normalizePersianTypography(settings.dealsTitle || STORE_SETTINGS_DEFAULTS.dealsTitle)}</h2>
-                <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">{normalizePersianTypography(settings.dealsSubtitle || STORE_SETTINGS_DEFAULTS.dealsSubtitle)}</p>
+                <h2 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white">{normalizePersianTypography(settings.dealsTitle || STORE_SETTINGS_DEFAULTS.dealsTitle)}</h2>
+                <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">{normalizePersianTypography(settings.dealsSubtitle || STORE_SETTINGS_DEFAULTS.dealsSubtitle)}</p>
               </div>
             </div>
 
             {/* Countdown Clock */}
-            <div className="bg-white/80 dark:bg-[#121c33] border border-slate-200/80 dark:border-white/[0.08] px-2.5 sm:px-3.5 py-1.5 rounded-2xl text-xs font-bold shadow-xs shrink-0">
+            <div className="self-start sm:self-auto sm:bg-white/80 sm:dark:bg-[#121c33] sm:border sm:border-slate-200/80 sm:dark:border-white/[0.08] sm:px-3.5 sm:py-1.5 sm:rounded-2xl text-xs font-bold sm:shadow-xs shrink-0">
               <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-[var(--color-emphasis-text)] shrink-0" />
               <span className="hidden sm:inline text-slate-700 dark:text-slate-300">فرصت باقی‌مانده:</span>
-              <div className="flex items-center gap-1 text-sm font-black text-[var(--color-emphasis-text)]">
+              <div dir="ltr" className="flex items-center gap-1 text-sm font-black text-[var(--color-emphasis-text)]">
                 <span className="tabular-nums bg-slate-50 dark:bg-black/40 px-1 sm:px-1.5 py-0.5 rounded-lg border border-slate-200/80 dark:border-white/[0.08] text-[var(--color-cta)] dark:text-[var(--color-emphasis-text)]">{toPersianDigits(timeLeft.hours.toString().padStart(2, '0'))}</span>
                 <span>:</span>
                 <span className="tabular-nums bg-slate-50 dark:bg-black/40 px-1 sm:px-1.5 py-0.5 rounded-lg border border-slate-200/80 dark:border-white/[0.08] text-[var(--color-cta)] dark:text-[var(--color-emphasis-text)]">{toPersianDigits(timeLeft.minutes.toString().padStart(2, '0'))}</span>
@@ -407,7 +413,7 @@ export default function Home() {
                 aria-valuenow={59 - timeLeft.seconds}
                 aria-valuemin={0}
                 aria-valuemax={59}
-                className="mt-1.5 h-1 rounded-full bg-slate-100 dark:bg-white/[0.06] overflow-hidden"
+                className="hidden sm:block mt-1.5 h-1 rounded-full bg-slate-100 dark:bg-white/[0.06] overflow-hidden"
               >
                 <div className="h-1 bg-[var(--color-cta)]/50 rounded-full transition-all duration-1000 ease-linear" style={{ width: `${((59 - timeLeft.seconds) / 59) * 100}%` }} />
               </div>
@@ -425,9 +431,9 @@ export default function Home() {
                 <Link
                   key={p.id}
                   to={`/product/${p.id}`}
-                  className="bg-white hover:bg-white dark:bg-[#121c33] dark:hover:bg-[#162340] border border-slate-200/80 hover:border-primary-300 dark:border-white/[0.07] dark:hover:border-primary-500/40 rounded-2xl p-2.5 sm:p-3.5 text-slate-900 dark:text-white flex flex-col justify-between transition-all duration-200 shadow-xs hover:shadow-md group"
+                  className="bg-white hover:bg-white dark:bg-[#121c33] dark:hover:bg-[#162340] border border-slate-200/80 hover:border-primary-300 dark:border-white/[0.07] dark:hover:border-primary-500/40 rounded-2xl p-3 sm:p-3.5 text-slate-900 dark:text-white flex flex-col justify-between transition-all duration-200 shadow-xs hover:shadow-md group"
                 >
-                  <div className="relative h-16 sm:h-auto sm:aspect-square rounded-xl bg-slate-50 dark:bg-white/[0.02] p-2.5 sm:p-3 mb-2.5 sm:mb-3 flex items-center justify-center overflow-hidden border border-slate-100 dark:border-white/[0.05]">
+                  <div className="relative aspect-[4/3] sm:aspect-square rounded-2xl bg-slate-50 dark:bg-white/[0.06] p-2.5 sm:p-3 mb-3 flex items-center justify-center overflow-hidden border border-slate-100 dark:border-white/[0.09]">
                     <PictureImage 
                       src={p.image} 
                       alt={p.title} 
@@ -435,12 +441,12 @@ export default function Home() {
                       height="160"
                       className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300 drop-shadow-[0_4px_8px_rgba(0,0,0,0.06)] dark:drop-shadow-none" 
                     />
-                    <span className="absolute top-2 right-2 bg-primary-600 text-white text-[11px] font-black px-2 py-0.5 rounded-lg shadow-xs">
+                    <span className="absolute top-2 right-2 bg-primary-600 text-white text-[11px] font-black px-2 py-1 rounded-lg shadow-xs">
                       {toPersianDigits(p.discount || 0)}٪
                     </span>
                   </div>
 
-                  <h3 className="text-[13px] font-bold line-clamp-2 leading-relaxed min-h-[36px] sm:min-h-[44px] text-zinc-800 dark:text-zinc-100 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors">
+                  <h3 className="text-[13px] font-bold line-clamp-2 leading-relaxed min-h-[44px] sm:min-h-[44px] text-zinc-800 dark:text-zinc-100 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors">
                     {p.title}
                   </h3>
 
@@ -450,7 +456,7 @@ export default function Home() {
                         {formatPrice(p.originalPrice)}
                       </span>
                     )}
-                    <span className="text-[13px] sm:text-[15px] font-black text-[var(--color-emphasis-text)]">
+                    <span className="text-[15px] sm:text-base font-black text-[var(--color-emphasis-text)]">
                       {formatPrice(p.price)}
                     </span>
                   </div>

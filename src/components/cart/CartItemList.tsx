@@ -33,7 +33,7 @@ export default function CartItemList({
         <button
           onClick={clearCart}
           aria-label="پاک کردن تمام اقلام سبد خرید"
-          className="min-touch-target text-xs font-bold text-rose-500 hover:text-rose-600 dark:hover:text-rose-400 flex items-center gap-1.5 hover:bg-rose-50 dark:hover:bg-rose-500/10 px-3 py-1.5 rounded-xl transition-colors active:scale-95"
+          className="min-touch-target flex items-center gap-1.5 text-xs font-bold text-rose-500 hover:text-rose-600 dark:hover:text-rose-400 flex items-center gap-1.5 hover:bg-rose-50 dark:hover:bg-rose-500/10 px-3 py-1.5 rounded-xl transition-colors active:scale-95"
         >
           <Trash2 className="h-4 w-4" />
           پاک کردن سبد
@@ -133,7 +133,7 @@ export default function CartItemList({
               <button
                 onClick={() => removeFromCart(item.id)}
                 aria-label={`حذف ${item.title} از سبد خرید`}
-                className="min-touch-target text-gray-400 hover:text-rose-500 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all active:scale-95"
+                className="min-touch-target flex items-center justify-center text-gray-400 hover:text-rose-500 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all active:scale-95"
               >
                 <Trash2 className="h-4 w-4" />
               </button>
