@@ -18,6 +18,11 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
   const inCompare = isInCompare(product.id);
   const [added, setAdded] = useState(false);
   const outOfStock = typeof product.stockQuantity === 'number' && product.stockQuantity <= 0;
+  // Compact (dense rows like the deals strip): same design language, 4:3 tile and
+  // tighter padding so the price + CTA still land inside the first phone screen.
+  const compact = variant === 'compact';
+  const cardPad = compact ? 'p-2.5 sm:p-3.5' : 'p-3 sm:p-4 pb-3.5 sm:pb-4';
+  const tileAspect = compact ? 'aspect-[4/3] sm:aspect-square' : 'aspect-square';
   // R2-09: reset timer is cleared on unmount.
   const addedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
@@ -39,7 +44,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
   };
 
   return (
-    <div className="linear-card bg-white dark:bg-[#0e1629] rounded-2xl border border-slate-200/80 dark:border-white/[0.08] p-3 sm:p-4 pb-3.5 sm:pb-4 transition-all duration-300 relative flex flex-col h-full group select-none hover:-translate-y-0.5 hover:shadow-[var(--shadow-elevation-2)] overflow-hidden">
+    <div className={`linear-card bg-white dark:bg-[#0e1629] rounded-2xl border border-slate-200/80 dark:border-white/[0.08] ${cardPad} transition-all duration-300 relative flex flex-col h-full group select-none hover:-translate-y-0.5 hover:shadow-[var(--shadow-elevation-2)] overflow-hidden`}>
       
       {/* 1. Header Badges & Quick Action Floating Buttons */}
       <div className="flex items-center justify-between gap-2 mb-2.5 relative z-10">
@@ -95,7 +100,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
 
         {/* 2. Visual Product Image Container */}
         <Link to={`/product/${product.id}`} className="block group-hover:opacity-95 transition-opacity">
-          <div className="relative aspect-square w-full rounded-2xl bg-[var(--color-tile-light)] dark:bg-[var(--color-tile-dark)] border border-slate-100 dark:border-white/[0.09] p-3 sm:p-4 flex items-center justify-center overflow-hidden mb-2.5 group-hover:border-[var(--color-border-light-hover)] dark:group-hover:border-white/[0.12] transition-colors">
+          <div className={`relative ${tileAspect} w-full rounded-2xl bg-white dark:bg-[var(--color-tile-dark)] border border-slate-200/70 dark:border-white/[0.09] p-3 sm:p-4 flex items-center justify-center overflow-hidden mb-2.5 group-hover:border-[var(--color-border-light-hover)] dark:group-hover:border-white/[0.12] transition-colors`}>
             
             {/* Ambient Radial Accent */}
             <div className="absolute inset-0 bg-radial from-[var(--color-cta)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -118,8 +123,6 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
           </div>
 
           {variant === 'full' && (
-            <>
-          {/* Category + rating row (flex — no % caps, no fake «جدید» from missing rating) */}
           <div className="flex items-center justify-between gap-2 mb-1 px-0.5">
             <span className="font-bold text-[11px] text-[var(--color-emphasis-text)] truncate min-w-0">
               {product.category}
@@ -150,13 +153,14 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
               </div>
             ) : null}
           </div>
+          )}
 
           {/* 4. Product Title */}
           <h3 className="font-black text-[13px] sm:text-[15px] text-slate-900 dark:text-slate-100 line-clamp-2 leading-relaxed h-11 sm:h-12 flex items-start group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors mb-1.5">
             {product.title}
           </h3>
 
-          {/* Guarantee / Trust Micro-Badge (Fixed slot to guarantee vertical harmony) */}
+          {variant === 'full' && (
           <div className="h-5 flex items-center text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate">
             {product.warranty ? (
               <div className="flex items-center gap-1 truncate">
@@ -170,7 +174,6 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
               </div>
             )}
           </div>
-            </>
           )}
         </Link>
 
