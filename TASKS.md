@@ -12,7 +12,7 @@
 - [x] تست رگرسیون: ۳ invariant در `tests/api/admin-hardening.test.ts`؛ گیت `npm run verify` = **409 passed / 5 skipped**؛ دیپلوی + اثبات آرتیفکت سرو‌شده.
 - [x] **R1 محافظت حساب مالک** — `OWNER_USER_ID` (env) + گارد `403 OWNER_PROTECTED` روی role/password/points + cloaking در `GET /users`؛ سیم‌کشی env/example/deploy.sh؛ اثبات زندهٔ prod: غیرمالک → ۴۰۳×۳ و مالک در لیست نیست، مالک → می‌بیند؛ حالت مالک دست‌نخورده.
 - [x] **R2 صفحه‌بندی** — `?page=&limit=` (سقف ۵۰۰) + همیشه `X-Total-Count` روی ۵ لیست؛ بدون پارامتر = لیست کامل (کاپ پیش‌فرض = truncation خاموش، رد شد)؛ فیلتر status پیام‌ها در SQL. اثبات prod: `page=1&limit=1` + `X-Total-Count: 8`.
-- [ ] باز (جدید): **R3** `users.joined_date` متن نمایشی فارسی است → ترتیب لیست کاربران زمانی نیست؛ نیاز به migration `created_at`. جزئیات: `docs/ADMIN-CODE-REVIEW-2026-09-13.md` §۲/R3.
+- [x] **R3 بسته شد** (۱۴۰۵/۰۶/۲۲): `users.created_at` (epoch ms) به اسکیما هر دو دیالکت + migration `0012_users_created_at.sql`؛ `ORDER BY COALESCE(created_at,0) DESC`؛ ثبت `createdAt` در register و OTP؛ اسکریپت `scripts/backfill-user-created-at.cjs` (بازحل دقیق روز از متن جلالی ذخیره‌شده، بدون جعل). روی prod: ستون + journal تأیید، ۲/۳ ردیف بازحل شد (`۱۴۰۵/۶/۱۴` → ۲۰۲۶-۰۹-۰۵)، ردیف مالک با placeholder «۱ فروردین ۱۴۰۵» عمداً `NULL` و آخر لیست. جزئیات: `docs/ADMIN-CODE-REVIEW-2026-09-13.md` §۲/R3.
 
 ### Round 2026-09-13b — Rotation F: checkout/payment micro-flow (SHIPPED, live 57d7ad3)
 
