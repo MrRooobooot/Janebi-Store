@@ -87,7 +87,16 @@ Purge پس از آخرین گیت (قاعدهٔ جدید): ۳۴ کاربر + ۹ 
 اثبات زنده روی prod (`BUILD_INFO=e773786`): موبایل — تیتر بخش ۱۱۲۹→**۵۳۵**، اولین کارت ۱۲۸۲→**۶۸۸** (داخل فولد ۸۴۴)، هیرو ۴۰۶→۳۷۴، CTA ۴۰→۴۸، اهداف <۴۴px ۳۹→۳۰؛ دسکتاپ — تیتر ۹۶۸→**۶۵۵**، اولین کارت ۱۲۳۰→**۷۴۶** (فولد ۸۰۰)، هیرو ۴۴۹→۴۰۳، قیمت ۱۲→۱۵. گیت: `npm run verify` PASS، design-audit **8/8 err:0**، `e2e-prod` **8/8**.
 بستهٔ ۴ (مقیاس ریتم عمودی) عمداً ارسال نشد → ارتفاع کل تقریباً بیتغییر (۶۲۱۴→۶۱۴۹ موبایل، ۴۳۳۰→۴۳۰۰ دسکتاپ).
 
-ریشهٔ residue (رفع ریشهای): سوییت `admin-hardening` کالاهای ساختهشده را با تمام ردیفهای وابسته حذف میکند (order_items/cart/wishlist/features/reviews) — دیگر `test-derived.jpg` در DB نمیماند و design-audit با `err:N` رد نمیشود. ترتیب اجرا همچنان مهم است: gate → purge → audit.
+ریشهٔ residue (رفع ریشهای، تکمیلشده در راند بازبینی زیر): سوییت `admin-hardening` کالاهای ساختهشده را حذف میکند و `tests/global-teardown.ts` پس از کل اجرا کاربران/محصولات فیکسچر را پاک میکند — ریتوئال «purge بعد از gate» دیگر لازم نیست.
+
+## Independent review round (0913) — findings accepted, fixed, re-verified
+| 0913 | home fold, **price** row | 390 | both | review: کارت در فولد بود ولی **قیمت** نه (y=906 در ۸۴۴ و زیر فولد گوشی واقعی ~۶۶۰) → خروجی موردنظر کاربر محقق نشده بود | probe زنده: `priceTop 906 → 606`, `priceBottom 625 < 660` | متریک اشتباه (top کارت به‌جای قیمت) + هیرو/هدر بخش بلند | هیرو موبایل ۲۴۳px (H1 ۲۴، زیرعنوان/چیپ مخفی زیر sm)، هدر بخش تک‌ردیفه، کارت (p-2.5، تصویر h-16) | fixed |
+| 0913 | `order:paid` دوبل | — | — | review: `markOrderPaid` نتیجهٔ flip را برنمی‌گرداند و emit بی‌قید بود → کالبک هم‌زمان/تکراری = دو پیامک/دو هشدار | read کد: `payment.ts:130` return بی‌مقدار + `:176,:197` emit بی‌قید | emit روی مسیر غیر‌گذار | `markOrderPaid(): boolean` + `if (flipped) emitOrderPaid(...)`؛ تست: verify هم‌زمان + replay → **exactly 1** emit | fixed |
+| 0913 | `/api/admin/users` صفحه‌بندی | — | — | review: `ORDER BY coalesce(created_at,0) DESC` بدون tie-breaker؛ چند کاربر با یک timestamp روزمبنا → احتمال افت/تکرار ردیف بین صفحات | prod: دو کاربر `created_at=1788566400000` یکسان | نبود کلید ثانویه | `desc(users.id)` + تست پیمایش همهٔ صفحات با timestamp یکسان (بدون تکرار/افت) | fixed |
+| 0913 | residue تست | — | — | review: «ریشهٔ residue بسته شد» نیمه‌درست بود — کاربران فیکسچر باقی می‌ماندند (۳→۱۷→۲۹) و ریتوئال purge دستی لازم بود | شمارش قبل/بعد سوئیت روی `data/janebi.db` | پاک‌سازی فقط در یک سوییت و فقط محصول | `tests/global-setup.ts` + `global-teardown.ts`: حذف کاربران/محصولات فیکسچر پس از کل اجرا؛ اثبات: `npm run verify` → `users=3 / products=14 / testimg=0` بدون purge دستی | fixed |
+
+تأیید مجدد پس از فیکس (`BUILD_INFO=4e647d9`, parity `dist/server.cjs md5 874f6bb2…` محلی==کانتینر): `npm run verify` PASS (57 فایل/422 تست) · design-audit **8/8 err:0** · `e2e-prod` **8/8** · فولد prod: ۳۹۰×۶۶۰ قیمت ۶۰۶–۶۲۵ (کامل داخل فولد، ۲ کارت با قیمت)، ۳۹۰×۸۴۴ چهار کارت، ۳۶۰×۶۴۰ دو کارت؛ `docH` ۶۲۱۴→۵۶۷۶.
+باقی‌مانده (پذیرفته): **دسکتاپ** ۱۲۸۰×۸۰۰ — کارت‌ها در فولد‌اند (۷۴۶) ولی قیمت y=۱۰۲۵ می‌ماند؛ رفع نیازمند خرد‌کردن هدر دسکتاپ (۱۴۷px) یا هیرو (۴۰۳px) است — بستهٔ جداگانه.
 
 ## Real-account E2E on prod (0913, aidin) — COD order + receipt-SMS gap
 | 0913 | `/checkout` hard-load as a guest | 1280 | light | suspicion: صفحهٔ سفید (بدون گیت ورود) | DOM پس از hydration: EmptyState «سبد خرید شما خالی است! … مشاهده محصولات» | خواندن میان‌هیدریشن، نه باگ رندر | — | wontfix |
