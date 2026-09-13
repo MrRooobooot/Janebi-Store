@@ -10,7 +10,9 @@
 - [x] **B3 (بالا)** `orders/bulk-delete` بدون بازگردانی موجودی/امتیاز حذف می‌کرد (استوک ۵۰ ماند، باید ۵۲). فیکس: restock + بازگشت خرج‌شده + پس‌گرفت clamp‌شدهٔ COD در همان تراکنش؛ برابری با مسیر cancel تکی اثبات شد. ✅
 - [x] **B4 (متوسط)** پوشش Audit: ۸ رویداد جدید (points/tracking/bulk-delete پیام‌ها/newsletter/review) → ۱۹ مسیر تغییردهنده همه لاگ دارند.
 - [x] تست رگرسیون: ۳ invariant در `tests/api/admin-hardening.test.ts`؛ گیت `npm run verify` = **409 passed / 5 skipped**؛ دیپلوی + اثبات آرتیفکت سرو‌شده.
-- [ ] باز (نیازمند تصمیم مالک): R1 محافظت ادمین ارشد (هیچ گاردی روی ریست رمز/نقش/امتیاز حساب مالک نیست) • R2 صفحه‌بندی لیست‌های users/reviews/coupons/newsletter. گزارش کامل: `docs/ADMIN-CODE-REVIEW-2026-09-13.md`.
+- [x] **R1 محافظت حساب مالک** — `OWNER_USER_ID` (env) + گارد `403 OWNER_PROTECTED` روی role/password/points + cloaking در `GET /users`؛ سیم‌کشی env/example/deploy.sh؛ اثبات زندهٔ prod: غیرمالک → ۴۰۳×۳ و مالک در لیست نیست، مالک → می‌بیند؛ حالت مالک دست‌نخورده.
+- [x] **R2 صفحه‌بندی** — `?page=&limit=` (سقف ۵۰۰) + همیشه `X-Total-Count` روی ۵ لیست؛ بدون پارامتر = لیست کامل (کاپ پیش‌فرض = truncation خاموش، رد شد)؛ فیلتر status پیام‌ها در SQL. اثبات prod: `page=1&limit=1` + `X-Total-Count: 8`.
+- [ ] باز (جدید): **R3** `users.joined_date` متن نمایشی فارسی است → ترتیب لیست کاربران زمانی نیست؛ نیاز به migration `created_at`. جزئیات: `docs/ADMIN-CODE-REVIEW-2026-09-13.md` §۲/R3.
 
 ### Round 2026-09-13b — Rotation F: checkout/payment micro-flow (SHIPPED, live 57d7ad3)
 
