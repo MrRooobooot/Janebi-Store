@@ -25,7 +25,11 @@ import { STORE_SETTINGS_DEFAULTS } from '../lib/constants';
 export default function ProductDetail() {
   const { id } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
-  const [activeTab, setActiveTab] = useState('description');
+  // Deep link /products/:id?writeReview=1 (post-delivery review CTA) opens the
+  // reviews tab directly — the form lives there; ProductReviews clears the param.
+  const [activeTab, setActiveTab] = useState(() =>
+    typeof window !== 'undefined' && window.location.search.includes('writeReview=1') ? 'reviews' : 'description'
+  );
   const [loading, setLoading] = useState(true);
   const [showStickyBar, setShowStickyBar] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
