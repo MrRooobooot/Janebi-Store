@@ -353,8 +353,8 @@ export default function Home() {
             <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
 
-          {/* Slide Indicator Dots (Centered — theme-aware contrast; 44px hit area) */}
-          <div className="relative z-10 flex items-center justify-center gap-1 sm:gap-2 sm:mt-6 sm:pt-3 border-t border-zinc-200/80 dark:border-zinc-800/80" role="tablist" aria-label="اسلایدهای صفحه اصلی">
+          {/* Slide Indicator Dots (phones: overlaid on the card's bottom edge; sm+: own row) */}
+          <div className="absolute bottom-1 inset-x-0 z-10 flex items-center justify-center gap-1 sm:static sm:inset-auto sm:bottom-auto sm:mt-6 sm:pt-3 sm:gap-2 sm:border-t border-zinc-200/80 dark:border-zinc-800/80" role="tablist" aria-label="اسلایدهای صفحه اصلی">
             {heroSlides.map((slide, idx) => (
               <button
                 key={slide.id}
@@ -428,39 +428,7 @@ export default function Home() {
               ))
             ) : dealProducts.length > 0 ? (
               dealProducts.map((p) => (
-                <Link
-                  key={p.id}
-                  to={`/product/${p.id}`}
-                  className="bg-white hover:bg-white dark:bg-[#121c33] dark:hover:bg-[#162340] border border-slate-200/80 hover:border-primary-300 dark:border-white/[0.07] dark:hover:border-primary-500/40 rounded-2xl p-3 sm:p-3.5 text-slate-900 dark:text-white flex flex-col justify-between transition-all duration-200 shadow-xs hover:shadow-md group"
-                >
-                  <div className="relative aspect-[4/3] sm:aspect-square rounded-2xl bg-slate-100 dark:bg-white/[0.08] p-2.5 sm:p-3 mb-3 flex items-center justify-center overflow-hidden border border-slate-100 dark:border-white/[0.09]">
-                    <PictureImage 
-                      src={p.image} 
-                      alt={p.title} 
-                      width="160"
-                      height="160"
-                      className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300 drop-shadow-[0_4px_8px_rgba(0,0,0,0.06)] dark:drop-shadow-none" 
-                    />
-                    <span className="absolute top-2 right-2 bg-primary-600 text-white text-[11px] font-black px-2 py-1 rounded-lg shadow-xs">
-                      {toPersianDigits(p.discount || 0)}٪
-                    </span>
-                  </div>
-
-                  <h3 className="text-[13px] font-bold line-clamp-2 leading-relaxed min-h-[44px] sm:min-h-[44px] text-zinc-800 dark:text-zinc-100 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors">
-                    {p.title}
-                  </h3>
-
-                  <div className="mt-2 pt-1.5 sm:mt-3 sm:pt-2 border-t border-zinc-100 dark:border-zinc-700/50 flex flex-col items-end">
-                    {p.originalPrice && p.originalPrice > p.price && (
-                      <span className="text-[10px] text-zinc-500 dark:text-zinc-400 line-through">
-                        {formatPrice(p.originalPrice)}
-                      </span>
-                    )}
-                    <span className="text-[15px] sm:text-base font-black text-[var(--color-emphasis-text)]">
-                      {formatPrice(p.price)}
-                    </span>
-                  </div>
-                </Link>
+                <ProductCard key={p.id} product={p} variant="compact" />
               ))
             ) : (
               <div className="col-span-full py-8 text-center text-sm font-medium text-zinc-500 dark:text-zinc-300">
@@ -633,7 +601,7 @@ export default function Home() {
         </div>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
           {loading ? (
             Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)
           ) : loadError ? (

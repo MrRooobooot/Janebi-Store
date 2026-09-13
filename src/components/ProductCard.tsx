@@ -9,7 +9,7 @@ import { Product } from '../types';
 import PictureImage from './PictureImage';
 import { toPersianDigits, formatPrice } from '../lib/utils';
 
-const ProductCard = memo(function ProductCard({ product }: { product: Product }) {
+const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { product: Product; variant?: 'full' | 'compact' }) {
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { toggleCompare, isInCompare } = useCompare();
   const { addToCart } = useCart();
@@ -60,6 +60,8 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
           </div>
 
           <div className="flex items-center gap-1.5 shrink-0">
+            {variant === 'full' && (
+              <>
             <button
               type="button"
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist(product); }}
@@ -86,6 +88,8 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
             >
               <Scale className="h-3.5 w-3.5" />
             </button>
+              </>
+            )}
           </div>
         </div>
 
@@ -113,6 +117,8 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
             )}
           </div>
 
+          {variant === 'full' && (
+            <>
           {/* Category + rating row (flex — no % caps, no fake «جدید» from missing rating) */}
           <div className="flex items-center justify-between gap-2 mb-1 px-0.5">
             <span className="font-bold text-[11px] text-[var(--color-emphasis-text)] truncate min-w-0">
@@ -164,6 +170,8 @@ const ProductCard = memo(function ProductCard({ product }: { product: Product })
               </div>
             )}
           </div>
+            </>
+          )}
         </Link>
 
       {/* 5. Footer: Price & Add-To-Cart CTA — pinned to card bottom (never bleeds out) */}
