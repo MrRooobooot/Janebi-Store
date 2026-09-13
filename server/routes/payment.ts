@@ -111,7 +111,7 @@ router.get('/verify', async (req, res) => {
   // Shared success path: idempotency-guarded transition to `processing` +
   // VIP points earned by the order (single source of truth for both the
   // sandbox dummy path and the real verified-payment path).
-  const markOrderPaid = async (tx: any, orderId: string, refId: string) => {
+  const markOrderPaid = async (tx: any, orderId: string, refId: string): Promise<boolean> => {
     // R1-02: atomic predicate — the read-then-write pattern was TOCTOU-racy.
     // The status flip only lands if the row is still pending_payment; the
     // .returning() row count is the arbiter (0 rows => another transaction
@@ -127,10 +127,11 @@ router.get('/verify', async (req, res) => {
         eq(orders.status, 'pending_payment')
       ))
       .returning({ id: orders.id });
-    if (!updatedRows || updatedRows.length === 0) return;
+    if (!updatedRows || updatedRows.length === 0) return false;
     if (order.vipPointsEarned && order.vipPointsEarned > 0 && order.userId) {
       await tx.update(users).set({ vipPoints: sql`${users.vipPoints} + ${order.vipPointsEarned}` }).where(eq(users.id, order.userId));
     }
+    return true;
   };
 
   const emitOrderPaid = async (orderId: string) => {
@@ -170,10 +171,12 @@ router.get('/verify', async (req, res) => {
       (authority.startsWith('DUMMY_AUTH_') || authority.startsWith('ZP_DEV_') || authority.startsWith('SEP_DEV_'))
     ) {
       const dummyRefId = `REF-${Math.floor(Math.random() * 1000000)}`;
-      await db.transaction(async (tx) => {
-        await markOrderPaid(tx, order.id, dummyRefId);
+      const flipped = await db.transaction(async (tx) => {
+        return await markOrderPaid(tx, order.id, dummyRefId);
       });
-      emitOrderPaid(order.id);
+      // Only a real status flip may emit: a concurrent callback that lost the
+      // pending_payment race must not send a second receipt SMS / bot alert.
+      if (flipped) emitOrderPaid(order.id);
       
       return res.redirect(`/checkout/callback?status=success&orderId=${order.id}&ref_id=${dummyRefId}`);
     }
@@ -191,10 +194,11 @@ router.get('/verify', async (req, res) => {
     if (verifyResult.success) {
       const refId = verifyResult.refId || `REF-${Math.floor(Math.random() * 1000000)}`;
       
-      await db.transaction(async (tx) => {
-        await markOrderPaid(tx, order.id, refId);
+      const flipped = await db.transaction(async (tx) => {
+        return await markOrderPaid(tx, order.id, refId);
       });
-      emitOrderPaid(order.id);
+      // Idempotent emit: the loser of a concurrent-verify race must stay silent.
+      if (flipped) emitOrderPaid(order.id);
 
       return res.redirect(`/checkout/callback?status=success&orderId=${order.id}&ref_id=${refId}`);
     } else {

@@ -275,7 +275,7 @@ export default function Home() {
       
       {/* 1. Hero Showcase Section */}
       <section className="w-full box-border">
-        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-white via-slate-50 to-rose-50/30 dark:from-[#0e1629] dark:via-[#0c1220] dark:to-[#070b14] border border-slate-200/90 dark:border-white/[0.08] shadow-lg dark:shadow-2xl p-4 sm:p-7 lg:p-6 transition-colors duration-500 min-h-0 sm:min-h-[400px] lg:min-h-[340px] flex flex-col justify-between">
+        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-white via-slate-50 to-rose-50/30 dark:from-[#0e1629] dark:via-[#0c1220] dark:to-[#070b14] border border-slate-200/90 dark:border-white/[0.08] shadow-lg dark:shadow-2xl p-3.5 sm:p-7 lg:p-6 transition-colors duration-500 min-h-0 sm:min-h-[400px] lg:min-h-[340px] flex flex-col justify-between">
           
           {/* Ambient Dot Grid (dual-theme, non-hardcoded) */}
           <div className="absolute inset-0 bg-[radial-gradient(var(--color-border-light)_1px,transparent_1px)] dark:bg-[radial-gradient(var(--color-border-dark)_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none opacity-60" />
@@ -290,11 +290,11 @@ export default function Home() {
                 <span>{normalizePersianTypography(currentSlide.tag)}</span>
               </div>
 
-              <h1 className="text-[26px] sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white leading-[1.2] sm:leading-[1.15] tracking-tight">
+              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white leading-[1.2] sm:leading-[1.15] tracking-tight">
                 {normalizePersianTypography(currentSlide.title)}
               </h1>
 
-              <p className="text-[13px] sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+              <p className="hidden sm:block text-base text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
                 {normalizePersianTypography(currentSlide.subtitle)}
               </p>
 
@@ -307,7 +307,7 @@ export default function Home() {
                   <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
                 </Link>
 
-                <div className="text-[13px] sm:text-xs font-black px-3.5 sm:px-4 min-h-[48px] sm:min-h-0 py-0 sm:py-2.5 rounded-2xl border bg-slate-100/80 text-slate-700 border-slate-200 dark:bg-white/[0.04] dark:text-slate-300 dark:border-white/[0.08] flex items-center gap-2">
+                <div className="hidden sm:flex text-xs font-black px-4 min-h-0 py-2.5 rounded-2xl border bg-slate-100/80 text-slate-700 border-slate-200 dark:bg-white/[0.04] dark:text-slate-300 dark:border-white/[0.08] items-center gap-2">
                   <Award className="h-4 w-4 shrink-0 text-[var(--color-emphasis-text)] dark:text-inherit" />
                   <span>{normalizePersianTypography(currentSlide.badge)}</span>
                 </div>
@@ -348,7 +348,7 @@ export default function Home() {
           </button>
 
           {/* Slide Indicator Dots (Centered — theme-aware contrast; 44px hit area) */}
-          <div className="relative z-10 flex items-center justify-center gap-1 sm:gap-2 mt-3 sm:mt-6 pt-3 border-t border-zinc-200/80 dark:border-zinc-800/80" role="tablist" aria-label="اسلایدهای صفحه اصلی">
+          <div className="relative z-10 flex items-center justify-center gap-1 sm:gap-2 mt-1 sm:mt-6 pt-2 sm:pt-3 border-t border-zinc-200/80 dark:border-zinc-800/80" role="tablist" aria-label="اسلایدهای صفحه اصلی">
             {heroSlides.map((slide, idx) => (
               <button
                 key={slide.id}
@@ -373,31 +373,31 @@ export default function Home() {
 
       {/* 2. Amazing Deals Section — product-first fold */}
       <section className="w-full">
-        <div className="bg-gradient-to-br from-rose-50/40 via-white to-slate-50 dark:from-[#0e1629] dark:via-[#0c1220] dark:to-[#070b14] rounded-3xl p-5 sm:p-8 text-slate-900 dark:text-white border border-rose-200/70 dark:border-white/[0.08] shadow-lg dark:shadow-2xl relative overflow-hidden transition-colors">
+        <div className="bg-gradient-to-br from-rose-50/40 via-white to-slate-50 dark:from-[#0e1629] dark:via-[#0c1220] dark:to-[#070b14] rounded-3xl p-3 sm:p-8 text-slate-900 dark:text-white border border-rose-200/70 dark:border-white/[0.08] shadow-lg dark:shadow-2xl relative overflow-hidden transition-colors">
           
           {/* Section Header */}
-          <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-rose-100 dark:border-white/[0.06]">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary-50 dark:bg-primary-950/40 border border-primary-200/60 dark:border-primary-900/50 flex items-center justify-center text-[var(--color-emphasis-text)]">
+          <div className="relative z-10 flex flex-row items-center justify-between gap-3 mb-2.5 sm:mb-6 pb-1.5 sm:pb-4 border-b border-rose-100 dark:border-white/[0.06]">
+            <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-primary-50 dark:bg-primary-950/40 border border-primary-200/60 dark:border-primary-900/50 flex items-center justify-center text-[var(--color-emphasis-text)] shrink-0">
                 <Flame className="h-5 w-5 animate-bounce" />
               </div>
-              <div>
-                <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">{normalizePersianTypography(settings.dealsTitle || STORE_SETTINGS_DEFAULTS.dealsTitle)}</h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{normalizePersianTypography(settings.dealsSubtitle || STORE_SETTINGS_DEFAULTS.dealsSubtitle)}</p>
+              <div className="min-w-0">
+                <h2 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white truncate">{normalizePersianTypography(settings.dealsTitle || STORE_SETTINGS_DEFAULTS.dealsTitle)}</h2>
+                <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">{normalizePersianTypography(settings.dealsSubtitle || STORE_SETTINGS_DEFAULTS.dealsSubtitle)}</p>
               </div>
             </div>
 
             {/* Countdown Clock */}
-            <div className="bg-white/80 dark:bg-[#121c33] border border-slate-200/80 dark:border-white/[0.08] px-3.5 py-1.5 rounded-2xl text-xs font-bold shadow-xs">
+            <div className="bg-white/80 dark:bg-[#121c33] border border-slate-200/80 dark:border-white/[0.08] px-2.5 sm:px-3.5 py-1.5 rounded-2xl text-xs font-bold shadow-xs shrink-0">
               <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-[var(--color-emphasis-text)] shrink-0" />
-              <span className="text-slate-700 dark:text-slate-300">فرصت باقی‌مانده:</span>
+              <span className="hidden sm:inline text-slate-700 dark:text-slate-300">فرصت باقی‌مانده:</span>
               <div className="flex items-center gap-1 text-sm font-black text-[var(--color-emphasis-text)]">
-                <span className="tabular-nums bg-slate-50 dark:bg-black/40 px-1.5 py-0.5 rounded-lg border border-slate-200/80 dark:border-white/[0.08] text-[var(--color-cta)] dark:text-[var(--color-emphasis-text)]">{toPersianDigits(timeLeft.hours.toString().padStart(2, '0'))}</span>
+                <span className="tabular-nums bg-slate-50 dark:bg-black/40 px-1 sm:px-1.5 py-0.5 rounded-lg border border-slate-200/80 dark:border-white/[0.08] text-[var(--color-cta)] dark:text-[var(--color-emphasis-text)]">{toPersianDigits(timeLeft.hours.toString().padStart(2, '0'))}</span>
                 <span>:</span>
-                <span className="tabular-nums bg-slate-50 dark:bg-black/40 px-1.5 py-0.5 rounded-lg border border-slate-200/80 dark:border-white/[0.08] text-[var(--color-cta)] dark:text-[var(--color-emphasis-text)]">{toPersianDigits(timeLeft.minutes.toString().padStart(2, '0'))}</span>
+                <span className="tabular-nums bg-slate-50 dark:bg-black/40 px-1 sm:px-1.5 py-0.5 rounded-lg border border-slate-200/80 dark:border-white/[0.08] text-[var(--color-cta)] dark:text-[var(--color-emphasis-text)]">{toPersianDigits(timeLeft.minutes.toString().padStart(2, '0'))}</span>
                 <span>:</span>
-                <span className="tabular-nums bg-slate-50 dark:bg-black/40 px-1.5 py-0.5 rounded-lg border border-slate-200/80 dark:border-white/[0.08] text-[var(--color-cta)] dark:text-[var(--color-emphasis-text)]">{toPersianDigits(timeLeft.seconds.toString().padStart(2, '0'))}</span>
+                <span className="tabular-nums bg-slate-50 dark:bg-black/40 px-1 sm:px-1.5 py-0.5 rounded-lg border border-slate-200/80 dark:border-white/[0.08] text-[var(--color-cta)] dark:text-[var(--color-emphasis-text)]">{toPersianDigits(timeLeft.seconds.toString().padStart(2, '0'))}</span>
               </div>
               </div>
               {/* Thin seconds bar */}
@@ -425,9 +425,9 @@ export default function Home() {
                 <Link
                   key={p.id}
                   to={`/product/${p.id}`}
-                  className="bg-white hover:bg-white dark:bg-[#121c33] dark:hover:bg-[#162340] border border-slate-200/80 hover:border-primary-300 dark:border-white/[0.07] dark:hover:border-primary-500/40 rounded-2xl p-3.5 text-slate-900 dark:text-white flex flex-col justify-between transition-all duration-200 shadow-xs hover:shadow-md group"
+                  className="bg-white hover:bg-white dark:bg-[#121c33] dark:hover:bg-[#162340] border border-slate-200/80 hover:border-primary-300 dark:border-white/[0.07] dark:hover:border-primary-500/40 rounded-2xl p-2.5 sm:p-3.5 text-slate-900 dark:text-white flex flex-col justify-between transition-all duration-200 shadow-xs hover:shadow-md group"
                 >
-                  <div className="relative aspect-square rounded-xl bg-slate-50 dark:bg-white/[0.02] p-3 mb-3 flex items-center justify-center overflow-hidden border border-slate-100 dark:border-white/[0.05]">
+                  <div className="relative h-16 sm:h-auto sm:aspect-square rounded-xl bg-slate-50 dark:bg-white/[0.02] p-2.5 sm:p-3 mb-2.5 sm:mb-3 flex items-center justify-center overflow-hidden border border-slate-100 dark:border-white/[0.05]">
                     <PictureImage 
                       src={p.image} 
                       alt={p.title} 
@@ -440,11 +440,11 @@ export default function Home() {
                     </span>
                   </div>
 
-                  <h3 className="text-[13px] font-bold line-clamp-2 leading-relaxed min-h-[44px] text-zinc-800 dark:text-zinc-100 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors">
+                  <h3 className="text-[13px] font-bold line-clamp-2 leading-relaxed min-h-[36px] sm:min-h-[44px] text-zinc-800 dark:text-zinc-100 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors">
                     {p.title}
                   </h3>
 
-                  <div className="mt-3 pt-2 border-t border-zinc-100 dark:border-zinc-700/50 flex flex-col items-end">
+                  <div className="mt-2 pt-1.5 sm:mt-3 sm:pt-2 border-t border-zinc-100 dark:border-zinc-700/50 flex flex-col items-end">
                     {p.originalPrice && p.originalPrice > p.price && (
                       <span className="text-[10px] text-zinc-500 dark:text-zinc-400 line-through">
                         {formatPrice(p.originalPrice)}

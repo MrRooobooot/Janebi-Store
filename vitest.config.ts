@@ -5,6 +5,10 @@ export default defineConfig({
     fileParallelism: false,
     environment: 'node',
     exclude: ['**/node_modules/**', '**/dist/**', '**/e2e/**'],
+    // Fixture rows the suites insert into the shared dev DB are removed after the
+    // whole run (see tests/global-teardown.ts) — residue otherwise breaks the
+    // next design-audit run with err:N on 404 test images.
+    globalSetup: ['./tests/global-setup.ts'],
     // Tests must never dispatch real SMS: force the OTP provider gate off so
     // /api/auth/otp/send uses the in-process simulator (debugCode) instead of
     // hitting the live SMS.ir API with fake test phones (intermittent 502s).

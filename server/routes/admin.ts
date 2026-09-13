@@ -332,7 +332,7 @@ router.get('/users', async (req, res) => {
       // Real chronology: joined_date holds Persian display text (۱۴۰۵/۶/۷) and must
       // never drive ORDER BY. created_at (epoch ms) is backfilled for legacy rows;
       // unknown rows sort oldest via COALESCE 0.
-      orderBy: [desc(sql`coalesce(${users.createdAt}, 0)`)],
+      orderBy: [desc(sql`coalesce(${users.createdAt}, 0)`), desc(users.id)],
       ...(limit !== null ? { limit, offset } : {}),
     });
 

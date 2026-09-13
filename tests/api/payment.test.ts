@@ -5,6 +5,7 @@ import { db } from '../../server/db/index.js';
 import { products, users, orders, orderItems } from '../../server/db/schema.js';
 import { eq } from 'drizzle-orm';
 import paymentRoutes from '../../server/routes/payment.js';
+import { storeEvents } from '../../server/services/events.js';
 import jwt from 'jsonwebtoken';
 import { env } from '../../server/env.js';
 
@@ -225,5 +226,56 @@ describe('Payment API', () => {
     expect(repeatVerify.header.location).toContain('status=success');
 
     await db.delete(orders).where(eq(orders.id, successOrderId));
+  });
+
+  // A receipt SMS / owner alert hangs off `order:paid`. Two callbacks racing on
+  // the same authority (user double-clicks the bank page, gateway retries) must
+  // not produce two emits — only the transaction that actually flipped
+  // pending_payment -> processing may announce it.
+  it('emits order:paid exactly once, even when verify is repeated concurrently', async () => {
+    const raceOrderId = 'ORD-RACE-' + Math.floor(100000 + Math.random() * 900000);
+    await db.insert(orders).values({
+      id: raceOrderId,
+      userId: testUserId,
+      date: '1403/05/25',
+      status: 'pending_payment',
+      statusText: 'در انتظار پرداخت',
+      total: 90000,
+      subtotal: 90000,
+      paymentMethod: 'پرداخت آنلاین',
+      shippingMethod: 'پست پیشتاز',
+      recipientName: 'Race User',
+      recipientPhone: testPhone,
+      recipientAddress: 'Tehran'
+    });
+
+    const reqRes = await request(app)
+      .post('/api/payment/request')
+      .set('Authorization', `Bearer ${testToken}`)
+      .send({ orderId: raceOrderId });
+    expect(reqRes.status).toBe(200);
+    const auth = (await db.query.orders.findFirst({ where: eq(orders.id, raceOrderId) }))?.authority;
+    expect(auth).toBeDefined();
+
+    let emits = 0;
+    const listener = () => { emits += 1; };
+    storeEvents.on('order:paid', listener);
+    try {
+      const [a, b] = await Promise.all([
+        request(app).get(`/api/payment/verify?Authority=${auth}&Status=OK`),
+        request(app).get(`/api/payment/verify?Authority=${auth}&Status=OK`),
+      ]);
+      expect(a.status).toBe(302);
+      expect(b.status).toBe(302);
+      // …and a later sequential replay must stay silent too.
+      await request(app).get(`/api/payment/verify?Authority=${auth}&Status=OK`);
+      await new Promise((r) => setTimeout(r, 150)); // emits are fire-and-forget
+      expect(emits).toBe(1);
+      const row = await db.query.orders.findFirst({ where: eq(orders.id, raceOrderId) });
+      expect(row?.status).toBe('processing');
+    } finally {
+      storeEvents.off('order:paid', listener);
+      await db.delete(orders).where(eq(orders.id, raceOrderId));
+    }
   });
 });

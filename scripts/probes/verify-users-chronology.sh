@@ -27,8 +27,10 @@ body() {
   curl -s https://janebiarena.ir/BUILD_INFO; echo
 }
 
+# The backfill script must exist at /tmp on whichever host runs the body.
 if docker info >/dev/null 2>&1; then
   echo "(mode: local docker)"
+  cp -f scripts/backfill-user-created-at.cjs /tmp/backfill-user-created-at.cjs
   body
 else
   echo "(mode: ssh $REMOTE)"

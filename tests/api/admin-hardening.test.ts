@@ -402,3 +402,49 @@ afterAll(async () => {
   await db.delete(products).where(inArray(products.id, seededProductIds));
   seededProductIds.length = 0;
 });
+
+// Paging must stay stable when created_at ties: the backfill gives several rows
+// the same day-level timestamp, and `LIMIT/OFFSET` without a deterministic
+// tie-breaker can drop or duplicate a row between pages.
+describe('admin users paging stability (identical created_at)', () => {
+  const suffix = Date.now();
+  const admin = 'p3-admin-' + suffix;
+  const token = jwt.sign({ userId: admin }, env.JWT_ACCESS_SECRET, { expiresIn: '1h' });
+  const tied = [0, 1, 2].map((i) => ({
+    id: `p3-u${i}-${suffix}`,
+    name: `کاربر ${i}`,
+    phone: '09' + String(Date.now() + i).slice(-9),
+    password: 'hash',
+    role: 'user' as const,
+    createdAt: 1788566400000,
+    joinedDate: '۱۴۰۵/۶/۱۴',
+  }));
+
+  beforeAll(async () => {
+    await db.insert(users).values([
+      { id: admin, name: 'ادمین صفحه‌بندی', phone: '09' + String(Date.now() + 9).slice(-9), password: 'hash', role: 'admin' },
+      ...tied,
+    ]);
+  });
+
+  afterAll(async () => {
+    await db.delete(users).where(inArray(users.id, [admin, ...tied.map((t) => t.id)]));
+  });
+
+  it('never duplicates or drops a tied row across pages', async () => {
+    const seen: string[] = [];
+    for (let page = 1; page <= 10; page++) {
+      const res = await request(app)
+        .get(`/api/admin/users?page=${page}&limit=2`)
+        .set('Authorization', `Bearer ${token}`);
+      expect(res.status).toBe(200);
+      const rows: { id: string }[] = res.body;
+      seen.push(...rows.map((u) => u.id));
+      if (rows.length < 2) break;
+    }
+    expect(new Set(seen).size).toBe(seen.length);
+    for (const row of tied) {
+      expect(seen.filter((id) => id === row.id).length).toBe(1);
+    }
+  });
+});
