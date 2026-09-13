@@ -210,7 +210,7 @@ export default function ChatWidget() {
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(true)}
           aria-label="باز کردن راهنمای خرید"
-          className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] text-white border border-transparent shadow-lg shadow-[var(--color-cta)]/25 w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all relative group cursor-pointer"
+          className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] text-white border border-transparent shadow-lg shadow-[var(--color-cta)]/25 w-11 h-11 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all relative group cursor-pointer"
         >
           <MessageCircle className="h-6 w-6" />
           <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-500 border-2 border-white dark:border-gray-900 rounded-full"></span>
