@@ -36,7 +36,9 @@ export const numericIdParamSchema = z.object({
 export const couponValidationSchema = z.object({
   body: z.object({
     code: z.string().min(1, "کد تخفیف وارد نشده است"),
-    cartTotal: z.number().nonnegative("مبلغ سبد خرید باید عددی مثبت یا صفر باشد"),
+    // zod v4: the type-error message must be set on z.number() itself, else a
+    // null/NaN cartTotal leaks "Invalid input: expected number, received null".
+    cartTotal: z.number("مبلغ سبد خرید باید عددی معتبر باشد").nonnegative("مبلغ سبد خرید باید عددی مثبت یا صفر باشد"),
   })
 });
 

@@ -29,7 +29,7 @@ export function useCartSummary() {
     authFetch('/api/coupons/validate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code: couponInput.trim(), cartTotal }),
+      body: JSON.stringify({ code: couponInput.trim(), cartTotal: Number.isFinite(cartTotal) ? cartTotal : 0 }),
     })
       .then((res) => res.json())
       .then((data) => {
@@ -47,9 +47,8 @@ export function useCartSummary() {
           });
           addToast(`کد تخفیف ${coupon.code} با موفقیت اعمال شد`, 'success');
         } else {
-          const message = data.message || data.error || 'کد تخفیف نامعتبر است';
-          setCouponError(message);
-          addToast(message, 'error');
+          // inline banner (dismissible, aria-describedby) is the single surface — no duplicate toast
+          setCouponError(data.message || data.error || 'کد تخفیف نامعتبر است');
         }
       })
       .catch(() => {

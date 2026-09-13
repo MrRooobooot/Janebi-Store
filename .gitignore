@@ -94,3 +94,4 @@ scripts/probes/*.mjs
 # agent/session scratch — never track
 .agents/
 .hermes/
+docs/shots/

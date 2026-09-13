@@ -221,7 +221,7 @@ export default function Login() {
         </div>
 
         <form
-          onSubmit={mode === "forgot" ? handleResetPassword : handleSubmit}
+          onSubmit={mode === "forgot" ? handleResetPassword : handleSubmit} noValidate
           className="space-y-4"
         >
           <div>
