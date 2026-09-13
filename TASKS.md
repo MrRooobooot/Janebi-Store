@@ -2,6 +2,16 @@
 
 ## Status: Completed (Aug 28, 2026)
 
+### Round 2026-09-13c — بازبینی کد پنل ادمین: ۴ باگ واقعی فیکس + دیپلوی (b4ed0f8)
+
+- [x] متد: بازبینی استاتیک (admin.ts ۱۰۲۴ خط / ۲۸ endpoint + ۱۱ صفحه) + **اثبات تجربی** روی sandbox `:3978` (`scripts/probes/proof-admin-bugs.sh`).
+- [x] **B1 (بحرانی)** `DELETE /reviews/:id` امتیاز را بازمحاسبه نمی‌کرد → نظر ۱★ حذف شد و ویترین همان `3.0/2` ماند (درست `5.0/1`) = امتیاز ساختگی + JSON-LD. فیکس: بازمحاسبه + invalidate کش‌ها + audit. بازآزمون ✅
+- [x] **B2 (بالا)** `DELETE /products/:id` روی محصول سفارش‌شده → `500 FOREIGN KEY constraint failed` با متن خام SQL. فیکس: `409 + PRODUCT_IN_ORDERS` با پیام فارسی راهنما، بدون نشت `error.message`. بازآزمون ✅
+- [x] **B3 (بالا)** `orders/bulk-delete` بدون بازگردانی موجودی/امتیاز حذف می‌کرد (استوک ۵۰ ماند، باید ۵۲). فیکس: restock + بازگشت خرج‌شده + پس‌گرفت clamp‌شدهٔ COD در همان تراکنش؛ برابری با مسیر cancel تکی اثبات شد. ✅
+- [x] **B4 (متوسط)** پوشش Audit: ۸ رویداد جدید (points/tracking/bulk-delete پیام‌ها/newsletter/review) → ۱۹ مسیر تغییردهنده همه لاگ دارند.
+- [x] تست رگرسیون: ۳ invariant در `tests/api/admin-hardening.test.ts`؛ گیت `npm run verify` = **409 passed / 5 skipped**؛ دیپلوی + اثبات آرتیفکت سرو‌شده.
+- [ ] باز (نیازمند تصمیم مالک): R1 محافظت ادمین ارشد (هیچ گاردی روی ریست رمز/نقش/امتیاز حساب مالک نیست) • R2 صفحه‌بندی لیست‌های users/reviews/coupons/newsletter. گزارش کامل: `docs/ADMIN-CODE-REVIEW-2026-09-13.md`.
+
 ### Round 2026-09-13b — Rotation F: checkout/payment micro-flow (SHIPPED, live 57d7ad3)
 
 - [x] **پروب زنده** `scripts/probes/probe-rotation-f.mjs` روی sandbox `:3978` (snapshot prod با `better-sqlite3 .backup()` + `docker cp`؛ دام: snapshot/DB محلی قدیمی `dk-*` → `err:80` در audit). ۱۲ سناریو: مهمان، نرمال‌سازی تلفن، اعتبارسنجی، COD، آنلاین/درگاه، callback. ۵ یافتهٔ واقعی، ۵ فیکس:
