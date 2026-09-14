@@ -14,6 +14,9 @@ npx vitest run --reporter=verbose
 echo "▶ 3. Production Build (Vite Client + Esbuild Server)..."
 npm run build
 
+echo "▶ 4. Static-exposure regression probe (SEC-01: /server.cjs must 404)..."
+bash scripts/probes/static-exposure.sh
+
 echo "======================================================"
 echo "✅ ALL HARDCORE QUALITY GATES PASSED (100% VERIFIED)"
 echo "======================================================"

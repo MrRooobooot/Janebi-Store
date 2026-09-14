@@ -299,6 +299,13 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/admin/upload", uploadRoutes);
 app.use(sitemapRoutes); // GET /sitemap.xml — dynamic, includes blog_posts slugs
 
+// SEC-01: the production web root is `dist/` — the SAME dir esbuild writes
+// `server.cjs` + `server.cjs.map` into. Without this, /server.cjs (compiled
+// backend) and its full source map were publicly downloadable. One guard
+// covers every static mount below (and index.ts's dist mount). `.cjs|.map`
+// never legitimately appears in an /api path.
+app.use((req, res, next) => (/\.(cjs|map)$/i.test(req.path) ? res.status(404).end() : next()));
+
 // Static serving for uploaded assets (products, bale bot uploads)
 app.use("/images", express.static(path.resolve(process.cwd(), "public", "images")));
 
