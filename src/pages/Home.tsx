@@ -7,12 +7,11 @@ import LatestReviews from '../components/LatestReviews';
 import RecentlyViewed from '../components/RecentlyViewed';
 import VipClubBanner from '../components/VipClubBanner';
 import {
-  Sparkles, ArrowLeft, Smartphone, Shield, Zap, Cable, Headphones,
-  BatteryCharging, Truck, ShieldCheck, RefreshCw, Headset, Flame, Star,
-  Clock, TrendingUp, Award, CheckCircle2, Navigation, Layers, ShieldAlert, PackageCheck, ChevronLeft, ChevronRight,
-  Watch, Gamepad2, Radio
+  Sparkles, ArrowLeft, Smartphone, Truck, ShieldCheck, Headset, Flame, Star,
+  Clock, TrendingUp, Award, CheckCircle2, ShieldAlert, PackageCheck, ChevronLeft, ChevronRight,
 } from 'lucide-react';
 import { getJson } from '../lib/jsonFetch';
+import { getCategoryIcon } from '../lib/categoryIcons';
 import { Product } from '../types';
 import { toPersianDigits, formatPrice, getAssetUrl, normalizePersianTypography } from '../lib/utils';
 import { useStoreSettings } from '../hooks/useStoreSettings';
@@ -150,24 +149,7 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [heroSlides.length]);
 
-  const getCategoryIcon = (title: string) => {
-    if (!title) return Smartphone;
-    const t = title.toLowerCase();
-    if (t.includes('محافظ کابل') || t.includes('روکش')) return Layers;
-    if (t.includes('شارژ') || t.includes('آداپتور')) return Zap;
-    if (t.includes('کابل') || t.includes('سیم')) return Cable;
-    if (t.includes('گلس') || t.includes('محافظ صفحه')) return Shield;
-    if (t.includes('هندزفری') || t.includes('ایرباد') || t.includes('هدفون') || t.includes('هدست')) return Headphones;
-    if (t.includes('پاوربانک') || t.includes('باتری')) return BatteryCharging;
-    if (t.includes('هولدر') || t.includes('پایه') || t.includes('نگهدارنده')) return Navigation;
-    if (t.includes('ساعت')) return Watch;
-    if (t.includes('گیم') || t.includes('بازی')) return Gamepad2;
-    if (t.includes('دانگل') || t.includes('اتصال') || t.includes('مودم')) return Radio;
-    if (t.includes('تبدیل') || t.includes('مبدل')) return RefreshCw;
-    if (t.includes('قاب') || t.includes('کاور')) return Smartphone;
-    if (t.includes('لوازم جانبی') || t.includes('accessories')) return Sparkles;
-    return Smartphone;
-  };
+  const currentSlide = heroSlides[activeSlide];
 
   useEffect(() => {
     let cancelled = false;
@@ -240,8 +222,6 @@ export default function Home() {
       color: 'text-amber-600 bg-amber-50 border-amber-200/80 dark:text-amber-400 dark:bg-amber-950/40 dark:border-amber-900/40',
     },
   ], [settings]);
-
-  const currentSlide = heroSlides[activeSlide];
 
   const renderCategoryCard = (cat: any, idx: number) => {
     const Icon = cat.icon || Smartphone;

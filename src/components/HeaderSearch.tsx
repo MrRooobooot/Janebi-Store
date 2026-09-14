@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Search, X, ArrowLeft, Clock, TrendingUp, Tag, Sparkles, LoaderCircle, Command,
-  Smartphone, Shield, Zap, Cable, Headphones, BatteryCharging, SearchX
+  SearchX
 } from 'lucide-react';
+import { getCategoryIcon } from '../lib/categoryIcons';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { SearchItemSkeleton } from './Skeletons';
@@ -26,19 +27,7 @@ interface HeaderSearchProps {
 }
 
 // Icon mapping for DB-driven popular categories (fallback: Smartphone)
-const CATEGORY_ICON_MAP: Record<string, any> = {
-  'قاب و کاور موبایل': Smartphone,
-  'قاب و کاور': Smartphone,
-  'گلس و محافظ صفحه': Shield,
-  'گلس': Shield,
-  'شارژر و آداپتور': Zap,
-  'شارژر': Zap,
-  'کابل و سیم': Cable,
-  'کابل': Cable,
-  'هندزفری و ایرباد': Headphones,
-  'هندزفری': Headphones,
-  'پاوربانک': BatteryCharging,
-};
+
 
 export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus = false }: HeaderSearchProps) {
   const [query, setQuery] = useState('');
@@ -59,7 +48,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
           [...cats]
             .sort((a: { count?: number }, b: { count?: number }) => (b.count || 0) - (a.count || 0))
             .slice(0, 6)
-            .map((c: { title: string }) => ({ name: c.title, icon: CATEGORY_ICON_MAP[c.title] || Smartphone }))
+            .map((c: { title: string }) => ({ name: c.title, icon: getCategoryIcon(c.title) }))
         );
       })
       .catch(() => {
