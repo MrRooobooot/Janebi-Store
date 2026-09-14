@@ -229,3 +229,40 @@ surface of prod (curl/openssl; source read only to confirm root cause).
   no foreign-Origin CORS reflection, canonical/OG built from `APP_URL` (no Host poisoning),
   path-traversal variants 400/404, TRACE 405.
 - **Advisory/accepted:** CSP `script-src 'unsafe-inline'` (inline bootstrap), no `/.well-known/security.txt`.
+
+## SEC-03 hardening round (2026-09-14, commit `838f727` — deployed & live-verified)
+
+Closes the two Advisory items of the 0914 audit + adds a drift guard for SEC-02.
+
+- **`script-src 'unsafe-inline'` removed — hash-pinned instead.** The only *executable*
+  inline script in the shipped shell is the anti-FOUC dark-mode bootstrap in
+  `index.html` (every other inline `<script>` is `application/ld+json`, which is
+  CSP-inert). `server/app.ts` now hashes the built shell at boot
+  (`dist/index.html`, fallback `index.html`) and pins each inline block as
+  `'sha256-…'` in `script-src`; no per-request HTML transform, no extra request,
+  no CWV cost. Live header:
+  `script-src 'self' 'sha256-knevCq+AQOF1vXhoY3xoLTrtVdGBZOb9BHSRkCe1FH8='; script-src-attr 'none'`.
+- **Two new probes.** `scripts/probes/csp-inline.sh` (**gate step 5**) boots a real
+  production server on an isolated DB and fails if the header and the served HTML
+  disagree (any inline hash missing), if `'unsafe-inline'`/`'self'` regress, if
+  `script-src-attr` stops being `none`, or if `security.txt` ≠ 200.
+  `scripts/probes/csp-live.mjs` (chromium **and** webkit, prod) instruments
+  `securitypolicyviolation` before any page script, pre-seeds `theme=dark`, then
+  asserts zero violations, that the inline bootstrap **actually executed**
+  (`documentElement.classList.contains('dark')`), and that the SPA mounted —
+  proof that hash pinning works for real users, not just in the header. Live:
+  `[chromium] PASS violations=0 script-src=0 dark=true` / `[webkit] PASS` same.
+- **`/.well-known/security.txt` — 200, `text/plain`** (RFC 9116: Contact/Expires/
+  Preferred-Languages/Canonical/Policy), sourced from `public/.well-known/` → vite copies
+  to `dist/`, served by an explicit route: `express.static`'s `dotfiles:"ignore"` 404s any
+  dot-directory, and `res.sendFile()` inherits the same rule from `send` — so the route
+  reads + `res.send()` instead (`sendFile` on `/.well-known/*` returns a bare `404 Not Found`).
+- **`scripts/probes/nginx-drift.sh` — SEC-02 drift guard (deliberately NOT in the gate: the
+  gate must not depend on SSH).** Compares the live VPS `nginx -T` against the invariant
+  (every proxy location overwrites `X-Forwarded-For $remote_addr`, zero
+  `proxy_add_x_forwarded_for`) and adds a behavioural leg (7 rapid rotating-XFF login calls
+  must hit `429`). Live run: `proxy locations=4  XFF-remote_addr=4  XFF-append=0` +
+  `401×5 → 429×2` → PASS.
+- **Gate after the round:** `npm run verify` EXIT=0 — strict tsc, **424 passed / 5 skipped
+  (57 files)**, prod build, probe 4 (SEC-01) + probe 5 (SEC-03) PASS. Deploy `838f727`,
+  `BUILD_INFO` on prod == HEAD (`838f727`), key pages `/ /products /cart /blog` all 200.

@@ -53,7 +53,8 @@ Method: raw curl/openssl probes against prod; source read only to confirm root c
 - Canonical/OG URLs are built from `APP_URL`, not the Host header (no host poisoning).
 - Path traversal variants (`..%2f`, `/assets/../../.env`) → 400/404; TRACE → 405.
 
-## Advisory (accepted)
-- CSP `script-src 'self' 'unsafe-inline'` — required by the current inline
-  bootstrap; tightening needs nonce/hash work.
-- No `/.well-known/security.txt`.
+## Advisory — status
+- CSP `script-src 'unsafe-inline'` — **CLOSED 2026-09-14** (commit `838f727`): hash-pinned
+  inline bootstrap, gate probe + live chromium/webkit proof. See the SEC-03 round below.
+- No `/.well-known/security.txt` — **CLOSED 2026-09-14** (commit `838f727`): 200, `text/plain`.
+- `style-src` still needs `'unsafe-inline'` (Tailwind/inline style attributes) — accepted.
