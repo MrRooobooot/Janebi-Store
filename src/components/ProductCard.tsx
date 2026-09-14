@@ -71,7 +71,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
               type="button"
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist(product); }}
               aria-label={inWishlist ? "حذف از لیست علاقه‌مندی‌ها" : "افزودن به لیست علاقه‌مندی‌ها"}
-              className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
+              className={`w-8 h-8 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
                 inWishlist 
                   ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-500 border border-rose-200 dark:border-rose-800' 
                   : 'bg-slate-50 dark:bg-white/[0.04] text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 border border-slate-200/60 dark:border-white/[0.06]'
@@ -84,7 +84,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
               type="button"
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleCompare(product); }}
               aria-label={inCompare ? "حذف از مقایسه" : "افزودن به مقایسه"}
-              className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
+              className={`w-8 h-8 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
                 inCompare 
                   ? 'bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/60 text-[var(--color-emphasis-text)] border border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/40' 
                   : 'bg-slate-50 dark:bg-white/[0.04] text-slate-400 hover:text-[var(--color-emphasis-text)] hover:bg-[var(--color-cta)]/10 dark:hover:bg-[var(--color-cta)]/30 border border-slate-200/60 dark:border-white/[0.06]'
@@ -204,7 +204,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
             disabled={outOfStock}
             onClick={handleAddToCart}
             aria-label={outOfStock ? 'کالای ناموجود' : `افزودن ${product.title} به سبد خرید`}
-            className={`raycast-btn h-10 sm:h-10 px-3 sm:px-3.5 rounded-xl flex items-center justify-center gap-1 text-[13px] font-black transition-all duration-200 cursor-pointer shrink-0 ${
+            className={`raycast-btn h-11 w-11 sm:w-auto sm:h-10 px-0 sm:px-3.5 rounded-xl flex items-center justify-center gap-1 text-[13px] font-black transition-all duration-200 cursor-pointer shrink-0 ${
               outOfStock 
                 ? 'bg-slate-100 dark:bg-white/[0.05] text-slate-500 dark:text-slate-400 border border-slate-200/60 dark:border-white/[0.06] cursor-not-allowed shadow-none'
                 : added 

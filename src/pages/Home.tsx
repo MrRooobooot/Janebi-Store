@@ -255,12 +255,12 @@ export default function Home() {
             e.stopPropagation();
           }
         }}
-        className="w-full h-full min-h-[128px] sm:min-h-[140px] relative flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl bg-white dark:bg-[#0e1629] border border-slate-200/90 dark:border-white/[0.08] hover:border-primary-300 dark:hover:border-primary-500/40 hover:shadow-md transition-all duration-200 group text-center shadow-xs select-none min-touch-target"
+        className="w-full h-full min-h-[140px] sm:min-h-[148px] relative flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl bg-white dark:bg-[#0e1629] border border-slate-200/90 dark:border-white/[0.08] hover:border-primary-300 dark:hover:border-primary-500/40 hover:shadow-md transition-all duration-200 group text-center shadow-xs select-none min-touch-target"
       >
         <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-100 dark:bg-white/[0.04] flex items-center justify-center text-slate-700 dark:text-slate-200 group-hover:bg-[var(--color-cta)] group-hover:text-white transition-all duration-200 mb-2.5 group-hover:scale-105 shadow-xs shrink-0">
           <Icon className="h-5 w-5 sm:h-6 sm:w-6 stroke-[1.8]" />
         </div>
-        <span className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors truncate w-full px-1 block">
+        <span className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors w-full px-1 block leading-tight line-clamp-2">
           {cat.title}
         </span>
         <span className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 block">
@@ -515,7 +515,7 @@ export default function Home() {
               </button>
             </div>
 
-            <Link to="/products" className="text-xs font-black text-[var(--color-emphasis-text)] hover:underline flex items-center gap-1 shrink-0 mr-1 sm:mr-2">
+            <Link to="/products" className="text-xs font-black text-[var(--color-emphasis-text)] hover:underline flex items-center gap-1 shrink-0 mr-1 sm:mr-2 min-h-[44px]">
               <span className="hidden sm:inline">مشاهده کاتالوگ کامل</span>
               <span className="sm:hidden">همه</span>
               <ArrowLeft className="h-3.5 w-3.5" />
@@ -589,7 +589,7 @@ export default function Home() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`shrink-0 snap-start px-3.5 py-1.5 rounded-xl text-xs font-black transition-colors ${
+                className={`shrink-0 snap-start inline-flex items-center px-3.5 min-h-[44px] rounded-xl text-xs font-black transition-colors ${
                   activeTab === tab.id
                     ? 'border-b-2 border-[var(--color-cta)] text-[var(--color-cta)]'
                     : 'text-[var(--color-text-muted-light)] dark:text-[var(--color-text-muted-dark)] hover:text-[var(--color-text-main-light)] dark:hover:text-[var(--color-text-main-dark)]'

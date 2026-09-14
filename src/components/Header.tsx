@@ -120,7 +120,7 @@ export default function Header() {
               {mobileMenuOpen ? <X className="h-5 w-5 sm:h-6 sm:w-6" /> : <Menu className="h-5 w-5 sm:h-6 sm:w-6" />}
             </button>
 
-            <Link to="/" className="focus:outline-none">
+            <Link to="/" className="focus:outline-none min-h-[44px] flex items-center">
               <Logo size="md" />
             </Link>
           </div>
