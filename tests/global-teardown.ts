@@ -1,18 +1,31 @@
 // Global teardown: the suites share one persistent dev DB (data/janebi.db), so
-// every fixture they insert has to be removed after the whole run — otherwise
-// the residue leaks into the next design-audit (products with 404 images →
-// err:N) and into the admin user list (fake admins/customers).
+// every fixture they insert has to be removed after the whole run — otherwise the
+// residue leaks into the next design-audit (products with 404 images → err:N) and
+// into the admin user list.
 //
-// Runs ONCE after all test files (vitest globalTeardown), never concurrently with
-// tests, and only against whatever DATABASE_URL points at — production never runs
-// vitest. Real store accounts (the three admins) are always kept.
+// SAFETY (this runs against whatever DATABASE_URL points at):
+//   1. Real accounts are protected by TIME, not by id shape: a row is only deleted
+//      when the epoch embedded in its id is >= the run start (minus skew), i.e. it
+//      was created by this run. Real registrations use the very same `usr-${Date.now()}`
+//      shape as fixtures, so id patterns alone can never tell them apart.
+//   2. Operators are extra-protected: a row with role='admin' is only removed when
+//      its id also matches a test-fixture prefix (hl-, di-, own-, r3-).
+//   3. Products are matched by test markers only (title/SKU/image), never by id.
+//   4. FORCE_FIXTURE_PURGE=1 (explicit operator action) re-enables the old broad
+//      sweep for cleaning a DB that already holds residue.
 import Database from 'better-sqlite3';
 import path from 'path';
 
-const KEEP = (process.env.KEEP_IDS || 'usr-admin-aidin,usr-admin-ali,usr-admin-masoume')
-  .split(',').map((s) => s.trim()).filter(Boolean);
+const KEEP_IDS = (process.env.KEEP_IDS || '').split(',').map((s) => s.trim()).filter(Boolean);
+const ADMIN_FIXTURE = /^(hl|di|own|r3)[-_]|^adm_|^usr[_]contract/;
 
-export default function teardown() {
+/** Epoch (ms) embedded in a fixture id such as `hl-user-1789333913408`, or null. */
+function embeddedEpoch(id: string): number | null {
+  const m = String(id).match(/(\d{13})/);
+  return m ? Number(m[1]) : null;
+}
+
+export default function teardown(startedAt = Date.now()) {
   const url = process.env.DATABASE_URL || './data/janebi.db';
   if (/^postgres(ql)?:\/\//.test(url)) return; // pg parity runs use their own schema
   const file = path.isAbsolute(url) ? url : path.resolve(process.cwd(), url);
@@ -26,16 +39,24 @@ export default function teardown() {
   const has = (t: string) => !!db.prepare("select name from sqlite_master where type='table' and name=?").get(t);
   if (!has('users')) { db.close(); return; }
 
-  // Fixture-id shapes seen across the suites: hl-*, di-*, own-*, r3-*, usr-*,
-  // *contract_test_*, adm_<x>, plus anything ending in a 13-digit epoch.
-  const where = `id not in (${KEEP.map(() => '?').join(',')}) and (
-      id like 'hl-%' or id like 'di-%' or id like 'own-%' or id like 'r3-%' or id like 'usr-%'
-      or id like '%\\_test%' escape '\\' or id like 'adm\\_%' escape '\\' or id glob '*-17????????????')`;
-  const ids: string[] = db.prepare(`select id from users where ${where}`).all(...KEEP).map((r: any) => r.id);
+  const force = process.env.FORCE_FIXTURE_PURGE === '1';
+  const sessionFloor = startedAt - 10 * 60 * 1000; // clock skew / slow suite tolerance
+  const rows: Array<{ id: string; role: string | null }> = KEEP_IDS.length
+    ? db.prepare(`select id, role from users where id not in (${KEEP_IDS.map(() => '?').join(',')})`).all(...KEEP_IDS)
+    : db.prepare('select id, role from users').all();
+
+  const ids = rows.filter((u) => {
+    if (force) return true;
+    const ts = embeddedEpoch(u.id);
+    const runFresh = ts !== null && ts >= sessionFloor;
+    if (!runFresh) return false;                   // pre-existing row (incl. every real customer) → protected
+    if (u.role === 'admin') return ADMIN_FIXTURE.test(u.id); // operator accounts survive unless they are run-fresh fixtures
+    return true;                                   // created by this run → fixture
+  }).map((u) => u.id);
 
   const ph = ids.map(() => '?').join(',') || "''";
   const products: number[] = has('products')
-    ? db.prepare("select id from products where title like '%تست%' or image like '%test%' or sku like 'DI-SKU-%'").all().map((r: any) => r.id)
+    ? db.prepare("select id from products where title like '%کالای تست%' or image like '%test%' or sku like 'DI-SKU-%'").all().map((r: any) => r.id)
     : [];
   const pph = products.map(() => '?').join(',') || "''";
 
@@ -61,7 +82,7 @@ export default function teardown() {
     const usersRemoved = del(`delete from users where id in (${ph})`, ids);
     db.exec('COMMIT');
     if (usersRemoved || products.length) {
-      console.log(`[teardown] residue removed — users:${usersRemoved}, products:${products.length}`);
+      console.log(`[teardown] residue removed — users:${usersRemoved}, products:${products.length} (only rows created during this run)`);
     }
   } catch (e: any) {
     db.exec('ROLLBACK');

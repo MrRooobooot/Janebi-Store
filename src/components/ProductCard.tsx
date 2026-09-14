@@ -123,8 +123,8 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
           </div>
 
           {variant === 'full' && (
-          <div className="flex items-center justify-between gap-2 mb-1 px-0.5">
-            <span className="font-bold text-[11px] text-[var(--color-emphasis-text)] truncate min-w-0">
+          <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 mb-1 px-0.5">
+            <span className="font-bold text-[11px] text-[var(--color-emphasis-text)] truncate min-w-0 flex-1">
               {product.category}
             </span>
             {product.rating ? (

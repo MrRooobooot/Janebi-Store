@@ -355,7 +355,7 @@ export default function Home() {
 
           {/* Slide indicators — phones auto-rotate every 6s and swipe, the dots row is sm+ only
               (on a 390px card the dots collided with the CTA/text edges) */}
-          <div className="hidden sm:flex items-center justify-center gap-2 relative z-10 sm:mt-6 sm:pt-3 sm:border-t border-zinc-200/80 dark:border-zinc-800/80" role="tablist" aria-label="اسلایدهای صفحه اصلی">
+          <div className="hidden sm:flex items-center justify-center gap-2 relative z-10 mt-6 pt-3 border-t border-zinc-200/80 dark:border-zinc-800/80" role="tablist" aria-label="اسلایدهای صفحه اصلی">
             {heroSlides.map((slide, idx) => (
               <button
                 key={slide.id}
@@ -363,7 +363,7 @@ export default function Home() {
                 role="tab"
                 aria-selected={activeSlide === idx}
                 aria-label={`اسلاید ${toPersianDigits(idx + 1)}`}
-                className="h-11 min-w-11 sm:min-w-0 sm:h-6 px-1 flex items-center justify-center cursor-pointer"
+                className="h-6 min-w-6 px-1 flex items-center justify-center cursor-pointer"
               >
                 <span
                   className={`block h-2.5 rounded-full transition-all duration-300 motion-reduce:transition-none ${

@@ -241,7 +241,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
           <button
             type="submit"
             aria-label="جستجو"
-            className="absolute right-3.5 flex items-center justify-center text-gray-400 hover:text-[var(--color-emphasis-text)] transition-colors"
+            className="absolute right-3.5 top-0 bottom-0 min-w-[44px] flex items-center justify-center text-gray-400 hover:text-[var(--color-emphasis-text)] transition-colors"
             title="جستجو"
           >
             <Search className="h-4 sm:h-5 w-4 sm:w-5" />

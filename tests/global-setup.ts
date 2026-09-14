@@ -4,5 +4,8 @@
 import teardown from './global-teardown.js';
 
 export default function globalSetup() {
-  return () => teardown();
+  // The start timestamp is the safety anchor: the teardown will only delete rows
+  // created during THIS run, so a persistent DB holding real customers survives.
+  const startedAt = Date.now();
+  return () => teardown(startedAt);
 }
