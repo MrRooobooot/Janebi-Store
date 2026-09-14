@@ -48,6 +48,17 @@ export default function Login() {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // The SMS stays valid server-side for 5 minutes; a reload or a second tab must
+  // not force the user to request (and pay for) another one.
+  useEffect(() => {
+    const until = Number(sessionStorage.getItem(`janebi.otp.sent.${normalizeIranianMobile(phone)}`) || 0);
+    if (until > Date.now()) {
+      setOtpSent(true);
+      startCountdown(Math.ceil((until - Date.now()) / 1000));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // R2-08: countdown interval is cleared on unmount to avoid setState on
   // unmounted components / leaking intervals between resend attempts.
   const otpIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -88,9 +99,19 @@ export default function Login() {
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
+        sessionStorage.setItem(`janebi.otp.sent.${normalizedPhone}`, String(Date.now() + (data.expiresIn || 120) * 1000));
         setOtpSent(true);
         startCountdown(data.expiresIn || 120);
         addToast(data.message || "کد تایید ارسال شد", "success");
+      } else if (res.status === 429) {
+        // The server rate-limits a resend only while a still-valid code exists for
+        // this phone (/otp/send: 429 while >60s of the 5-minute window remains).
+        // Demanding a new SMS here burns credit and confuses the user, so unlock the
+        // form and let them enter the code they already received.
+        sessionStorage.setItem(`janebi.otp.sent.${normalizedPhone}`, String(Date.now() + ((data.retryAfter || 60) + 60) * 1000));
+        setOtpSent(true);
+        startCountdown((data.retryAfter || 60) + 60);
+        addToast(data.message || "کد قبلی هنوز معتبر است؛ همان کد پیامک‌شده را وارد کنید", "info");
       } else if (res.status === 503) {
         addToast("سرویس پیامکی فعال نیست", "error");
       } else {

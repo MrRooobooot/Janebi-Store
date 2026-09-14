@@ -48,12 +48,23 @@ rsync -avz -e "ssh $SSH_OPTS" ./package.json ./docker-compose*.yml "$REMOTE:$APP
 # keys, etc.) are never touched. The local .env itself is never copied over.
 echo "🔐 Merging SMS_*/OWNER_USER_ID env keys into remote .env (append-only)..."
 LOCAL_ENV="$(pwd)/.env"
+ENV_FLAG="/tmp/janebi-env-changed.$$"
+rm -f "$ENV_FLAG"
 if [ -f "$LOCAL_ENV" ]; then
   ssh $SSH_OPTS "$REMOTE" "touch $APP_DIR/.env"
-  grep -E '^(SMS_|OWNER_USER_ID|# ?SMS_)' "$LOCAL_ENV" | grep -vE '^#\s*(SMS_|OWNER)' | while IFS='=' read -r KEY VALUE; do
+  # `ssh -n` is REQUIRED: without it every ssh call swallows the loop's stdin and
+  # the merge silently stops after the first key (that is how SMS_ORDER_TEMPLATE_ID
+  # and SAMAN_TERMINAL_ID ended up missing on the VPS). Process substitution feeds
+  # the loop instead of a pipe so the append flag survives for Step 4.
+  while IFS='=' read -r KEY VALUE; do
     [ -z "$KEY" ] && continue
-    ssh $SSH_OPTS "$REMOTE" "grep -q '^${KEY}=' $APP_DIR/.env || printf '%s=%s\n' '$KEY' '$VALUE' >> $APP_DIR/.env"
-  done
+    if ssh $SSH_OPTS -n "$REMOTE" "grep -q '^${KEY}=' $APP_DIR/.env"; then
+      echo "   = $KEY (already set on VPS, untouched)"
+    elif ssh $SSH_OPTS -n "$REMOTE" "printf '%s=%s\n' '$KEY' '$VALUE' >> $APP_DIR/.env"; then
+      echo "   + $KEY (appended)"
+      touch "$ENV_FLAG"
+    fi
+  done < <(grep -E '^(SMS_|OWNER_USER_ID|# ?SMS_)' "$LOCAL_ENV" | grep -vE '^#\s*(SMS_|OWNER)')
   echo "✅ SMS_*/OWNER_USER_ID keys merged (existing remote values preserved)"
 else
   echo "⚠️ No local .env found — skipping env merge"
@@ -64,6 +75,13 @@ CONTAINER_NAME="$([ "$IS_STAGING" = true ] && echo 'janebi-store-staging' || ech
 PORT="$([ "$IS_STAGING" = true ] && echo '3001' || echo '3000')"
 
 echo "📦 Updating container $CONTAINER_NAME..."
+# env_file is read at container CREATE time, so a plain restart would keep serving
+# stale env after a new key was appended: recreate first, then re-copy dist (the
+# code bind-mount survives, but docker cp keeps an image-baked dist in sync too).
+if [ -f "$ENV_FLAG" ]; then
+  echo "♻️  .env gained new keys — recreating container to pick them up"
+  ssh $SSH_OPTS "$REMOTE" "cd $APP_DIR && docker compose up -d app 2>&1 | tail -2"
+fi
 ssh $SSH_OPTS "$REMOTE" "
   docker cp $APP_DIR/dist/server.cjs $CONTAINER_NAME:/app/dist/server.cjs
   docker cp $APP_DIR/dist/assets/. $CONTAINER_NAME:/app/dist/assets/
