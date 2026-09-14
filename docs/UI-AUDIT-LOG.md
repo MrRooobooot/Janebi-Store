@@ -169,3 +169,8 @@ Purge پس از آخرین گیت (قاعدهٔ جدید): ۳۴ کاربر + ۹ 
 | مسیر | موتور/تم | یافته | ریشه | فیکس | اثبات |
 |------|----------|-------|------|------|-------|
 | / (بنر VIP) | هر دو | دارک: CTA «دریافت هدیه» `dark:bg-cta` کریمزن روی گرادیان کریمزن (1.34:1) + اینپوت سفید خالص (خیرگی، تضاد وارونه — اینپوت پرکنتراست‌تر از CTA) | بنر theme-fixed کریمزن است ولی کنترل‌ها theme-variant بودند | کنترل‌ها theme-invariant علیه کریمزن: CTA `zinc-950/90` + `border-white/40` + آیکون `yellow-300`؛ اینپوت `black/25` + متن سفید + placeholder `white/70` | پیکسل-پروب :3978 و prod: boundary 3.5–3.6:1 (WCAG 1.4.11)، متن 18.8:1، placeholder ~4.3:1؛ design-audit 8/8؛ verify 424 green؛ باندل سرو‌شده `index-BtUGUDHg.js` sha256==محلی |
+
+## آیکن‌های تماتیک دسته‌بندی‌ها (0914, live 1c57be1)
+| مسیر | یافته | فیکس | اثبات |
+|------|-------|------|-------|
+| / (دسته‌بندی‌های تخصصی) + HeaderSearch (دسته‌های پرطرفدار) | آیکن چند دسته با موضوع هم‌خوان نبود: خودرو→Sparkles، هولدر→Navigation (پین نقشه)، دانگل→Radio، مبدل→RefreshCw، هدفون→Headphones، شارژر→Zap خالی | lib مشترک `src/lib/categoryIcons.ts` (تک منبع حقیقت + ترتیب match خاص قبل عمومی): خودرو→Car، هولدر→MonitorSmartphone، دانگل→Usb، مبدل→ArrowRightLeft، هدفون/هدست→Headset، شارژر→PlugZap؛ حذف دو map موازی در Home/HeaderSearch | پروب prod: ۲۰ دسته همگی آیکن تماتیک (`cats-prod-check-0914.mjs`)؛ ۲۱ تست unit؛ verify 424+21 green؛ design-audit 8/8؛ دیپلوی + vendor-react سرو‌شده شامل آیکن‌های جدید |
