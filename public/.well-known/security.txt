@@ -1,0 +1,5 @@
+Contact: mailto:info@janebi-arena.ir
+Expires: 2027-09-01T00:00:00.000Z
+Preferred-Languages: fa, en
+Canonical: https://janebiarena.ir/.well-known/security.txt
+Policy: https://janebiarena.ir/privacy

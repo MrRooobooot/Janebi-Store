@@ -17,6 +17,9 @@ npm run build
 echo "▶ 4. Static-exposure regression probe (SEC-01: /server.cjs must 404)..."
 bash scripts/probes/static-exposure.sh
 
+echo "▶ 5. CSP inline-hash probe (SEC-03: no 'unsafe-inline' + security.txt)..."
+bash scripts/probes/csp-inline.sh
+
 echo "======================================================"
 echo "✅ ALL HARDCORE QUALITY GATES PASSED (100% VERIFIED)"
 echo "======================================================"

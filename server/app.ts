@@ -4,6 +4,8 @@ import helmet from "helmet";
 import pino from "pino-http";
 import rateLimit from "express-rate-limit";
 import path from "path";
+import fs from "fs";
+import { createHash } from "crypto";
 
 import { errorHandler } from "./middleware/errorHandler.js";
 import { requestIdMiddleware } from "./middleware/requestId.js";
@@ -79,13 +81,33 @@ app.use((req: any, res: any, next: any) => {
 app.use(requestIdMiddleware);
 
 // Middleware - Security Headers with CSP
+// SEC-03: `script-src` carries NO 'unsafe-inline'. The only executable inline
+// script in the shipped shell is the anti-FOUC dark-mode bootstrap in
+// index.html (ld+json blocks are inert under CSP and need no hash). Its exact
+// bytes are hashed at boot and pinned as 'sha256-…'; rebuilding the shell
+// recomputes the hash, and scripts/probes/csp-inline.sh fails the gate on any
+// drift between the served HTML and the header.
+const inlineScriptHashes = (() => {
+  for (const candidate of ["dist/index.html", "index.html"]) {
+    try {
+      const html = fs.readFileSync(path.resolve(process.cwd(), candidate), "utf8");
+      return [
+        ...html.matchAll(/<script(?![^>]*\bsrc=)(?![^>]*ld\+json)[^>]*>([\s\S]*?)<\/script>/gi),
+      ].map((m) => `'sha256-${createHash("sha256").update(m[1]).digest("base64")}'`);
+    } catch {
+      /* shell not built yet at this path — try the next candidate */
+    }
+  }
+  return [];
+})();
+
 app.use(
   helmet({
     contentSecurityPolicy: env.NODE_ENV === "production"
       ? {
           directives: {
             defaultSrc: ["'self'"],
-            scriptSrc: ["'self'", "'unsafe-inline'"],
+            scriptSrc: ["'self'", ...inlineScriptHashes],
             styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
             fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
             imgSrc: ["'self'", "data:", "https:", "http:"],
@@ -298,6 +320,20 @@ app.use("/api/blog", blogRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/admin/upload", uploadRoutes);
 app.use(sitemapRoutes); // GET /sitemap.xml — dynamic, includes blog_posts slugs
+
+// RFC 9116 security.txt. express.static defaults to `dotfiles: "ignore"`, so the
+// `/.well-known` segment (leading dot) would 404 through the dist mount — this
+// explicit route is the only way it is served. dist/ first (vite copies
+// public/ → dist/ at build), public/ as the dev/unbuilt fallback.
+app.get("/.well-known/security.txt", (_req, res) => {
+  for (const candidate of ["dist/.well-known/security.txt", "public/.well-known/security.txt"]) {
+    const file = path.resolve(process.cwd(), candidate);
+    // NOTE: res.sendFile() runs through `send`, whose default `dotfiles:"ignore"`
+    // 404s any path containing a dot-directory — so read+send instead.
+    if (fs.existsSync(file)) return res.type("text/plain").send(fs.readFileSync(file, "utf8"));
+  }
+  res.status(404).end();
+});
 
 // SEC-01: the production web root is `dist/` — the SAME dir esbuild writes
 // `server.cjs` + `server.cjs.map` into. Without this, /server.cjs (compiled
