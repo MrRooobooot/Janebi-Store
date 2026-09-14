@@ -1,0 +1,1433 @@
+[
+ {
+  "id": 5590,
+  "brand": "نزتک",
+  "title": "مودم روتر همراه و رومیزی LTE نزتک مدل HOPE با پشتیبانی از وای‌فای 6 و ",
+  "our": 6200000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 5589,
+  "brand": "زد تی ای",
+  "title": "مودم جیبی 5G زد تی ای مدل U30 Air با باتری 4500 میلی‌آمپر ساعت، پشتیبا",
+  "our": 24580750,
+  "model": "U30",
+  "offers": 14,
+  "marketMin": 21499000,
+  "marketMain": 21499000,
+  "marketShops": 85,
+  "deltaMainPct": 14.3,
+  "deltaMinPct": 14.3,
+  "bands": [
+   {
+    "from": 21499000,
+    "shops": 85
+   },
+   {
+    "from": 24700000,
+    "shops": 3
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 5588,
+  "brand": "همراه اول",
+  "title": "مودم 5G همراه اول مدل HA5420 با سرعت دانلود 4.67 گیگابیت بر ثانیه، پشت",
+  "our": 24900000,
+  "model": "HA5420",
+  "offers": 14,
+  "marketMin": 19800000,
+  "marketMain": 19800000,
+  "marketShops": 14,
+  "deltaMainPct": 25.8,
+  "deltaMinPct": 25.8,
+  "bands": [
+   {
+    "from": 19800000,
+    "shops": 14
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 5587,
+  "brand": "اس تی سی",
+  "title": "مودم جیبی 4.5G اس تی سی مدل E5785-330 با باتری 3000 میلی‌آمپرساعت، پشت",
+  "our": 18700000,
+  "model": "E5785-330",
+  "offers": 14,
+  "marketMin": 8900000,
+  "marketMain": 14000000,
+  "marketShops": 5,
+  "deltaMainPct": 33.6,
+  "deltaMinPct": 110.1,
+  "bands": [
+   {
+    "from": 14000000,
+    "shops": 5
+   },
+   {
+    "from": 20500000,
+    "shops": 4
+   },
+   {
+    "from": 8900000,
+    "shops": 2
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 5586,
+  "brand": "هوآوی",
+  "title": "مودم همراه 4.5G هوآوی مدل E5785-320a با پشتیبانی از TD-LTE و FD-LTE، س",
+  "our": 15500000,
+  "model": "E5785-320a",
+  "offers": 14,
+  "marketMin": 12500000,
+  "marketMain": 12500000,
+  "marketShops": 28,
+  "deltaMainPct": 24,
+  "deltaMinPct": 24,
+  "bands": [
+   {
+    "from": 12500000,
+    "shops": 28
+   },
+   {
+    "from": 14300000,
+    "shops": 0
+   },
+   {
+    "from": 18400000,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 5585,
+  "brand": "هوآوی",
+  "title": "مودم همراه 4.5G هوآوی مدل E5785-320a با باتری 3000 میلی‌آمپرساعت، پشتی",
+  "our": 16169100,
+  "model": "E5785-320a",
+  "offers": 14,
+  "marketMin": 12500000,
+  "marketMain": 12500000,
+  "marketShops": 28,
+  "deltaMainPct": 29.4,
+  "deltaMinPct": 29.4,
+  "bands": [
+   {
+    "from": 12500000,
+    "shops": 28
+   },
+   {
+    "from": 23433300,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 5584,
+  "brand": "آلکاتل",
+  "title": "مودم همراه 4G آلکاتل مدل MW12VK با پشتیبانی CAT12، سرعت دانلود 600 و آ",
+  "our": 13700000,
+  "model": "MW12VK",
+  "offers": 14,
+  "marketMin": 12500001,
+  "marketMain": 12500001,
+  "marketShops": 14,
+  "deltaMainPct": 9.6,
+  "deltaMinPct": 9.6,
+  "bands": [
+   {
+    "from": 12500001,
+    "shops": 14
+   },
+   {
+    "from": 15949550,
+    "shops": 0
+   },
+   {
+    "from": 19575000,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 5583,
+  "brand": "نتربیت",
+  "title": "مودم همراه 4G LTE نتربیت مدل NWR-945X با باتری 3000 میلی‌آمپر ساعت، پش",
+  "our": 4400000,
+  "model": "NWR-945X",
+  "offers": 14,
+  "marketMin": 4228818,
+  "marketMain": 4228818,
+  "marketShops": 122,
+  "deltaMainPct": 4,
+  "deltaMinPct": 4,
+  "bands": [
+   {
+    "from": 4228818,
+    "shops": 122
+   },
+   {
+    "from": 4750000,
+    "shops": 0
+   },
+   {
+    "from": 5500000,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 5581,
+  "brand": "ورنا",
+  "title": "ساعت هوشمند ورنا مدل Ultra pack 01 به همراه هندزفری بیسیم دارای قابلیت",
+  "our": 2350000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 5576,
+  "brand": "سامسونگ",
+  "title": "ساعت هوشمند سامسونگ مدل Galaxy Watch Ultra دارای قابلیت های کنترل موسی",
+  "our": 70970000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 5573,
+  "brand": "راینو",
+  "title": "بند ساعت راینو مدل Diamond Cartir مناسب برای ساعت هوشمند ورنا W45 Max ",
+  "our": 828000,
+  "model": "49mm",
+  "offers": 14,
+  "marketMin": 765450,
+  "marketMain": 765450,
+  "marketShops": 0,
+  "deltaMainPct": 8.2,
+  "deltaMinPct": 8.2,
+  "bands": [
+   {
+    "from": 765450,
+    "shops": 0
+   },
+   {
+    "from": 1103100,
+    "shops": 0
+   },
+   {
+    "from": 1305920,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched"
+ },
+ {
+  "id": 5572,
+  "brand": "راینو",
+  "title": "بند راینو مدل 3Bead مناسب برای ساعت هوشمند اسمارت واچ T1000 Ultra",
+  "our": 931950,
+  "model": "3Bead",
+  "offers": 14,
+  "marketMin": 949000,
+  "marketMain": 949000,
+  "marketShops": 0,
+  "deltaMainPct": -1.8,
+  "deltaMinPct": -1.8,
+  "bands": [
+   {
+    "from": 949000,
+    "shops": 0
+   },
+   {
+    "from": 1211600,
+    "shops": 0
+   },
+   {
+    "from": 1430000,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched"
+ },
+ {
+  "id": 5571,
+  "brand": "راینو",
+  "title": "بند راینو مدل Silicone مناسب برای ساعت هوشمند ورنا W45 Max / W49 Ultra",
+  "our": 265500,
+  "model": "49mm",
+  "offers": 14,
+  "marketMin": 765450,
+  "marketMain": 765450,
+  "marketShops": 0,
+  "deltaMainPct": -65.3,
+  "deltaMinPct": -65.3,
+  "bands": [
+   {
+    "from": 765450,
+    "shops": 0
+   },
+   {
+    "from": 1103100,
+    "shops": 0
+   },
+   {
+    "from": 1305920,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched"
+ },
+ {
+  "id": 5570,
+  "brand": "اسپریگ",
+  "title": "بند اسپریگ مدل Silic RLX مناسب برای ساعت هوشمند سامسونگ Galaxy Watch U",
+  "our": 1215000,
+  "model": "47mm",
+  "offers": 14,
+  "marketMin": 441000,
+  "marketMain": 441000,
+  "marketShops": 0,
+  "deltaMainPct": 175.5,
+  "deltaMinPct": 175.5,
+  "bands": [
+   {
+    "from": 441000,
+    "shops": 0
+   },
+   {
+    "from": 770000,
+    "shops": 0
+   },
+   {
+    "from": 1067000,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched"
+ },
+ {
+  "id": 5569,
+  "brand": "راینو",
+  "title": "بند راینو مدل 3Bead مناسب برای ساعت هوشمند T800 ultra / T900 ultra / H",
+  "our": 948330,
+  "model": "3Bead",
+  "offers": 14,
+  "marketMin": 949000,
+  "marketMain": 949000,
+  "marketShops": 0,
+  "deltaMainPct": -0.1,
+  "deltaMinPct": -0.1,
+  "bands": [
+   {
+    "from": 949000,
+    "shops": 0
+   },
+   {
+    "from": 1211600,
+    "shops": 0
+   },
+   {
+    "from": 2071000,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched"
+ },
+ {
+  "id": 5567,
+  "brand": "راینو",
+  "title": "بند ساعت راینو مدل Cartir-2Line مناسب برای ساعت هوشمند T1000 Ultra 49m",
+  "our": 863280,
+  "model": "Cartir-2Line",
+  "offers": 14,
+  "marketMin": 248000,
+  "marketMain": 350000,
+  "marketShops": 18,
+  "deltaMainPct": 146.7,
+  "deltaMinPct": 248.1,
+  "bands": [
+   {
+    "from": 350000,
+    "shops": 18
+   },
+   {
+    "from": 432000,
+    "shops": 2
+   },
+   {
+    "from": 248000,
+    "shops": 0
+   }
+  ],
+  "confidence": "brand-only+deep"
+ },
+ {
+  "id": 5566,
+  "brand": "بیسوس",
+  "title": "پایه نگهدارنده گوشی موبایل و تبلت باسئوس مدل Backseat car holder",
+  "our": 2390000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 5563,
+  "brand": "بیسوس",
+  "title": "پایه نگهدارنده گوشی موبایل و تبلت باسئوس مدل CAR MOUNT HOLDER",
+  "our": 3030000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 5547,
+  "brand": "مک دودو",
+  "title": "مبدل OTG تبدیل USB به USB-C مک دودو مدل NewPack 2022",
+  "our": 400000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 5545,
+  "brand": "شیائومی",
+  "title": "پاوربانک 22.5 وات شیائومی مدل P16ZM ظرفیت 10000 میلی آمپر ساعت",
+  "our": 2692800,
+  "model": "P16ZM",
+  "offers": 14,
+  "marketMin": 2024000,
+  "marketMain": 2024000,
+  "marketShops": 59,
+  "deltaMainPct": 33,
+  "deltaMinPct": 33,
+  "bands": [
+   {
+    "from": 2024000,
+    "shops": 59
+   },
+   {
+    "from": 2931586,
+    "shops": 4
+   },
+   {
+    "from": 3790000,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 5544,
+  "brand": "بیسوس",
+  "title": "پاوربانک 22 وات بیسوس مدل EnerFill FC51 Bipow 2 Pro ظرفیت 30000 میلی‌آ",
+  "our": 8912400,
+  "model": "FC51",
+  "offers": 14,
+  "marketMin": 3100000,
+  "marketMain": 4270000,
+  "marketShops": 18,
+  "deltaMainPct": 108.7,
+  "deltaMinPct": 187.5,
+  "bands": [
+   {
+    "from": 4270000,
+    "shops": 18
+   },
+   {
+    "from": 7000000,
+    "shops": 18
+   },
+   {
+    "from": 5400000,
+    "shops": 10
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 5543,
+  "brand": "سامسونگ",
+  "title": "پاوربانک 45 وات سامسونگ مدل Battery Pack EB-P4520 ظرفیت 20000 میلی‌آمپ",
+  "our": 7960000,
+  "model": "EB-P4520",
+  "offers": 14,
+  "marketMin": 3590000,
+  "marketMain": 3590000,
+  "marketShops": 190,
+  "deltaMainPct": 121.7,
+  "deltaMinPct": 121.7,
+  "bands": [
+   {
+    "from": 3590000,
+    "shops": 190
+   },
+   {
+    "from": 4850000,
+    "shops": 0
+   },
+   {
+    "from": 9200000,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 5542,
+  "brand": "ریمکس",
+  "title": "پاوربانک 22.5 وات ریمکس مدل RPP-660 ظرفیت 30000 میلی آمپر ساعت",
+  "our": 4970000,
+  "model": "RPP-660",
+  "offers": 14,
+  "marketMin": 4480000,
+  "marketMain": 4480000,
+  "marketShops": 5,
+  "deltaMainPct": 10.9,
+  "deltaMinPct": 10.9,
+  "bands": [
+   {
+    "from": 4480000,
+    "shops": 5
+   },
+   {
+    "from": 5129400,
+    "shops": 0
+   },
+   {
+    "from": 7952000,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 5541,
+  "brand": "شیائومی",
+  "title": "پاوربانک 33 وات شیائومی مدل PB2030MI ظرفیت 20000 میلی آمپر ساعت - گلوب",
+  "our": 5602200,
+  "model": "PB2030MI",
+  "offers": 14,
+  "marketMin": 2680000,
+  "marketMain": 7370000,
+  "marketShops": 365,
+  "deltaMainPct": -24,
+  "deltaMinPct": 109,
+  "bands": [
+   {
+    "from": 7370000,
+    "shops": 365
+   },
+   {
+    "from": 4831000,
+    "shops": 132
+   },
+   {
+    "from": 2680000,
+    "shops": 62
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 5540,
+  "brand": "ای دیتا",
+  "title": "پاوربانک ای دیتا مدل P20000QCD ظرفیت 20000 میلی آمپر ساعت",
+  "our": 4958300,
+  "model": "P20000QCD",
+  "offers": 14,
+  "marketMin": 4390000,
+  "marketMain": 4390000,
+  "marketShops": 54,
+  "deltaMainPct": 12.9,
+  "deltaMinPct": 12.9,
+  "bands": [
+   {
+    "from": 4390000,
+    "shops": 54
+   },
+   {
+    "from": 5369700,
+    "shops": 6
+   },
+   {
+    "from": 8449000,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 5539,
+  "brand": "شیائومی",
+  "title": "پاوربانک 22.5 وات شیائومی مدل PB2020MI ظرفیت 20000 میلی آمپر ساعت",
+  "our": 3499000,
+  "model": "PB2020MI",
+  "offers": 14,
+  "marketMin": 4199000,
+  "marketMain": 5152000,
+  "marketShops": 2,
+  "deltaMainPct": -32.1,
+  "deltaMinPct": -16.7,
+  "bands": [
+   {
+    "from": 5152000,
+    "shops": 2
+   },
+   {
+    "from": 4199000,
+    "shops": 0
+   },
+   {
+    "from": 6490000,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched"
+ },
+ {
+  "id": 5538,
+  "brand": "شیائومی",
+  "title": "پاوربانک 18 وات شیائومی مدل Redmi ظرفیت 20000 میلی‌آمپرساعت",
+  "our": 2750000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 5537,
+  "brand": "اونیکوما",
+  "title": "هدست گیمینگ اونیکوما مدل X10",
+  "our": 3955800,
+  "model": "X10",
+  "offers": 14,
+  "marketMin": 2890000,
+  "marketMain": 3450000,
+  "marketShops": 34,
+  "deltaMainPct": 14.7,
+  "deltaMinPct": 36.9,
+  "bands": [
+   {
+    "from": 3450000,
+    "shops": 34
+   },
+   {
+    "from": 2890000,
+    "shops": 28
+   },
+   {
+    "from": 3980000,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 5536,
+  "brand": "تسکو",
+  "title": "هدست گیمینگ تسکو مدل GH 6170 HELIOS",
+  "our": 7346900,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 5535,
+  "brand": "اونیکوما",
+  "title": "هدست گیمینگ اونیکوما مدل x33",
+  "our": 2859600,
+  "model": "x33",
+  "offers": 14,
+  "marketMin": 2320000,
+  "marketMain": 2320000,
+  "marketShops": 84,
+  "deltaMainPct": 23.3,
+  "deltaMinPct": 23.3,
+  "bands": [
+   {
+    "from": 2320000,
+    "shops": 84
+   },
+   {
+    "from": 2650000,
+    "shops": 0
+   },
+   {
+    "from": 3300000,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 5533,
+  "brand": "اونیکوما",
+  "title": "هدست گیمینگ اونیکوما مدل X26",
+  "our": 4500000,
+  "model": "X26",
+  "offers": 14,
+  "marketMin": 2880000,
+  "marketMain": 2880000,
+  "marketShops": 31,
+  "deltaMainPct": 56.3,
+  "deltaMinPct": 56.3,
+  "bands": [
+   {
+    "from": 2880000,
+    "shops": 31
+   },
+   {
+    "from": 5100000,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 5532,
+  "brand": "تسکو",
+  "title": "هدست گیمینگ تسکو مدل GH 5141 Zonyx RGB",
+  "our": 4435300,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 5531,
+  "brand": "اونیکوما",
+  "title": "هدست گیمینگ اونیکوما مدل X12 RGB",
+  "our": 3700000,
+  "model": "X12",
+  "offers": 14,
+  "marketMin": 2870000,
+  "marketMain": 2870000,
+  "marketShops": 39,
+  "deltaMainPct": 28.9,
+  "deltaMinPct": 28.9,
+  "bands": [
+   {
+    "from": 2870000,
+    "shops": 39
+   },
+   {
+    "from": 3500000,
+    "shops": 0
+   },
+   {
+    "from": 4300000,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 5530,
+  "brand": "اونیکوما",
+  "title": "هدست گیمینگ اونیکوما مدل X31",
+  "our": 2727600,
+  "model": "X31",
+  "offers": 14,
+  "marketMin": 2200000,
+  "marketMain": 2200000,
+  "marketShops": 48,
+  "deltaMainPct": 24,
+  "deltaMinPct": 24,
+  "bands": [
+   {
+    "from": 2200000,
+    "shops": 48
+   },
+   {
+    "from": 2899000,
+    "shops": 0
+   },
+   {
+    "from": 4032000,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 5518,
+  "brand": "ناتینگ",
+  "title": "هدفون بلوتوثی ناتینگ مدل CMF Buds Light با نویز کنسلینگ فعال (ANC)، در",
+  "our": 6930370,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 5517,
+  "brand": "هایلو",
+  "title": "هدفون بلوتوثی هایلو مدل X1 Pro با نویز کنسلینگ فعال (ANC)، درگاه شارژ ",
+  "our": 5033700,
+  "model": "IPX4",
+  "offers": 14,
+  "marketMin": 2299000,
+  "marketMain": 3450000,
+  "marketShops": 4,
+  "deltaMainPct": 45.9,
+  "deltaMinPct": 119,
+  "bands": [
+   {
+    "from": 3450000,
+    "shops": 4
+   },
+   {
+    "from": 2299000,
+    "shops": 0
+   },
+   {
+    "from": 2845000,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched"
+ },
+ {
+  "id": 5516,
+  "brand": "شیائومی",
+  "title": "هدفون بلوتوثی شیائومی مدل Redmi Buds 5 Pro با نویز کنسلینگ فعال (ANC)،",
+  "our": 7210000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 5515,
+  "brand": "ناتینگ",
+  "title": "هدفون بلوتوثی ناتینگ مدل CMF Buds Pro با نویز کنسلینگ فعال (ANC)، نویز",
+  "our": 5450000,
+  "model": "IP54",
+  "offers": 14,
+  "marketMin": 5650000,
+  "marketMain": 11704000,
+  "marketShops": 3,
+  "deltaMainPct": -53.4,
+  "deltaMinPct": -3.5,
+  "bands": [
+   {
+    "from": 11704000,
+    "shops": 3
+   },
+   {
+    "from": 5650000,
+    "shops": 0
+   },
+   {
+    "from": 136500000,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched"
+ },
+ {
+  "id": 5512,
+  "brand": "ایفورج",
+  "title": "هندزفری ایفورج مدل MA-103",
+  "our": 700000,
+  "model": "MA-103",
+  "offers": 14,
+  "marketMin": 645000,
+  "marketMain": 645000,
+  "marketShops": 9,
+  "deltaMainPct": 8.5,
+  "deltaMinPct": 8.5,
+  "bands": [
+   {
+    "from": 645000,
+    "shops": 9
+   },
+   {
+    "from": 882000,
+    "shops": 0
+   },
+   {
+    "from": 1800000,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 5511,
+  "brand": "ایفورج",
+  "title": "هندزفری ایفورج مدل MA-104C",
+  "our": 1050000,
+  "model": "MA-104C",
+  "offers": 14,
+  "marketMin": 990000,
+  "marketMain": 990000,
+  "marketShops": 4,
+  "deltaMainPct": 6.1,
+  "deltaMinPct": 6.1,
+  "bands": [
+   {
+    "from": 990000,
+    "shops": 4
+   },
+   {
+    "from": 1239480,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched"
+ },
+ {
+  "id": 5510,
+  "brand": "ایفورج",
+  "title": "هندزفری ایفورج مدل MA-107",
+  "our": 1050000,
+  "model": "MA-107",
+  "offers": 14,
+  "marketMin": 900000,
+  "marketMain": 900000,
+  "marketShops": 9,
+  "deltaMainPct": 16.7,
+  "deltaMinPct": 16.7,
+  "bands": [
+   {
+    "from": 900000,
+    "shops": 9
+   },
+   {
+    "from": 1039900,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 5508,
+  "brand": "تسکو",
+  "title": "هندزفری سیمی تسکو مدل TH 5088",
+  "our": 829000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 5507,
+  "brand": "کی تی",
+  "title": "هندزفری سیمی کی تی مدل فرنگیس",
+  "our": 326000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 5497,
+  "brand": "انکر",
+  "title": "شارژر دیواری 30 وات انکر مدل Zolo A2698",
+  "our": 1997000,
+  "model": "A2698",
+  "offers": 14,
+  "marketMin": 699000,
+  "marketMain": 3449000,
+  "marketShops": 3363,
+  "deltaMainPct": -42.1,
+  "deltaMinPct": 185.7,
+  "bands": [
+   {
+    "from": 3449000,
+    "shops": 3363
+   },
+   {
+    "from": 1235000,
+    "shops": 932
+   },
+   {
+    "from": 699000,
+    "shops": 591
+   }
+  ],
+  "confidence": "brand-only+deep"
+ },
+ {
+  "id": 5496,
+  "brand": "سامسونگ",
+  "title": "شارژر دیواری 45 وات سامسونگ مدل EP-T4511 Low Standby به همراه کابل USB",
+  "our": 4699000,
+  "model": "EP-T4511",
+  "offers": 14,
+  "marketMin": 950000,
+  "marketMain": 3044000,
+  "marketShops": 377,
+  "deltaMainPct": 54.4,
+  "deltaMinPct": 394.6,
+  "bands": [
+   {
+    "from": 3044000,
+    "shops": 377
+   },
+   {
+    "from": 950000,
+    "shops": 206
+   },
+   {
+    "from": 2300000,
+    "shops": 17
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 5495,
+  "brand": "بنیوس",
+  "title": "شارژر دیواری 25 وات دو پورت بنیوس مدل BE-CH06",
+  "our": 1100000,
+  "model": "BE-CH06",
+  "offers": 14,
+  "marketMin": 1375000,
+  "marketMain": 1375000,
+  "marketShops": 0,
+  "deltaMainPct": -20,
+  "deltaMinPct": -20,
+  "bands": [
+   {
+    "from": 1375000,
+    "shops": 0
+   },
+   {
+    "from": 1600000,
+    "shops": 0
+   },
+   {
+    "from": 1800000,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched"
+ },
+ {
+  "id": 5494,
+  "brand": "سامسونگ",
+  "title": "شارژر دیواری 25 وات سامسونگ مدل EP-TA800",
+  "our": 2199000,
+  "model": "EP-TA800",
+  "offers": 14,
+  "marketMin": 395000,
+  "marketMain": 395000,
+  "marketShops": 0,
+  "deltaMainPct": 456.7,
+  "deltaMinPct": 456.7,
+  "bands": [
+   {
+    "from": 395000,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched"
+ },
+ {
+  "id": 5493,
+  "brand": "اپل",
+  "title": "شارژر دیواری 20 وات اپل مدل B/A",
+  "our": 3899000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 5492,
+  "brand": "بنیوس",
+  "title": "شارژر دیواری 25 وات بنیوس مدل BE-CH03",
+  "our": 990000,
+  "model": "BE-CH03",
+  "offers": 14,
+  "marketMin": 177000,
+  "marketMain": 209000,
+  "marketShops": 278,
+  "deltaMainPct": 373.7,
+  "deltaMinPct": 459.3,
+  "bands": [
+   {
+    "from": 209000,
+    "shops": 278
+   },
+   {
+    "from": 177000,
+    "shops": 137
+   },
+   {
+    "from": 269000,
+    "shops": 93
+   }
+  ],
+  "confidence": "brand-only+deep"
+ },
+ {
+  "id": 5491,
+  "brand": "سامسونگ",
+  "title": "شارژر دیواری 25 وات سامسونگ مدل EP-T2510",
+  "our": 1900000,
+  "model": "EP-T2510",
+  "offers": 14,
+  "marketMin": 449000,
+  "marketMain": 1910000,
+  "marketShops": 83,
+  "deltaMainPct": -0.5,
+  "deltaMinPct": 323.2,
+  "bands": [
+   {
+    "from": 1910000,
+    "shops": 83
+   },
+   {
+    "from": 449000,
+    "shops": 2
+   },
+   {
+    "from": 580000,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 5490,
+  "brand": "سامسونگ",
+  "title": "شارژر دیواری 25 وات سامسونگ مدل T2510",
+  "our": 1799000,
+  "model": "T2510",
+  "offers": 14,
+  "marketMin": 443000,
+  "marketMain": 1910000,
+  "marketShops": 371,
+  "deltaMainPct": -5.8,
+  "deltaMinPct": 306.1,
+  "bands": [
+   {
+    "from": 1910000,
+    "shops": 371
+   },
+   {
+    "from": 443000,
+    "shops": 351
+   },
+   {
+    "from": 2260000,
+    "shops": 44
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 5489,
+  "brand": "یس پلاس",
+  "title": "کابل تبدیل USB به USB-C یس پلاس مدل SUPER FAST CHARGE 6A طول 1 متر",
+  "our": 486000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 5488,
+  "brand": "تراسمی",
+  "title": "کابل شارژ usb-C به لایتنینگ تراسمی CA55-04 طول 1 متر",
+  "our": 1499900,
+  "model": "CA55-04",
+  "offers": 14,
+  "marketMin": null,
+  "marketMain": null,
+  "marketShops": null,
+  "deltaMainPct": null,
+  "deltaMinPct": null,
+  "bands": [],
+  "confidence": "brand-only"
+ },
+ {
+  "id": 5487,
+  "brand": "نیبیوا",
+  "title": "کابل تبدیل USB به USB-C نیبیوا مدل Fast Charge 120W طول 1.5 متر",
+  "our": 798000,
+  "model": "120W",
+  "offers": 14,
+  "marketMin": 99000,
+  "marketMain": 99000,
+  "marketShops": 78,
+  "deltaMainPct": 706.1,
+  "deltaMinPct": 706.1,
+  "bands": [
+   {
+    "from": 99000,
+    "shops": 78
+   },
+   {
+    "from": 848000,
+    "shops": 0
+   },
+   {
+    "from": 1098000,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 5481,
+  "brand": "گلس استار",
+  "title": "محافظ صفحه نمایش حریم شخصی گلس استار مدل PRF مناسب برای گوشی موبایل اپ",
+  "our": 260000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 5480,
+  "brand": "سامورایی",
+  "title": "محافظ صفحه نمایش سامورایی مدل ovglass مناسب برای گوشی موبایل شیائومی P",
+  "our": 369000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 5479,
+  "brand": "سامورایی",
+  "title": "محافظ صفحه نمایش سامورایی مدل Invisiglass مناسب برای گوشی موبایل سامسو",
+  "our": 425000,
+  "model": "S25",
+  "offers": 14,
+  "marketMin": 615000,
+  "marketMain": 615000,
+  "marketShops": 0,
+  "deltaMainPct": -30.9,
+  "deltaMinPct": -30.9,
+  "bands": [
+   {
+    "from": 615000,
+    "shops": 0
+   },
+   {
+    "from": 763000,
+    "shops": 0
+   },
+   {
+    "from": 915000,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched"
+ },
+ {
+  "id": 5478,
+  "brand": "شهر گلس",
+  "title": "محافظ صفحه نمایش حریم شخصی شهر گلس مدل PRV مناسب برای گوشی موبایل سامس",
+  "our": 202000,
+  "model": "A23",
+  "offers": 14,
+  "marketMin": 100000,
+  "marketMain": 100000,
+  "marketShops": 0,
+  "deltaMainPct": 102,
+  "deltaMinPct": 102,
+  "bands": [
+   {
+    "from": 100000,
+    "shops": 0
+   },
+   {
+    "from": 193000,
+    "shops": 0
+   },
+   {
+    "from": 227000,
+    "shops": 0
+   }
+  ],
+  "confidence": "model-matched"
+ },
+ {
+  "id": 5477,
+  "brand": "لیتو",
+  "title": "محافظ صفحه نمایش لیتو مدل PRIVACY مناسب برای گوشی موبایل اپلIPHONE 13 ",
+  "our": 449000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 5476,
+  "brand": "گلس استار",
+  "title": "محافظ صفحه نمایش گلس استار مدل SUGA-Glass مناسب برای گوشی موبایل اپل i",
+  "our": 265000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 5475,
+  "brand": "لیتو",
+  "title": "محافظ صفحه نمایش لیتو مدل PRICY TEMPERED مناسب برای گوشی موبایل اپل Ip",
+  "our": 449000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 5474,
+  "brand": "شهر گلس",
+  "title": "محافظ صفحه نمایش شهر گلس مدل Anti-Static مناسب برای گوشی موبایل اپل IP",
+  "our": 305000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 14,
+  "brand": "Baseus",
+  "title": "محافظ کابل و شارژر سیلیکونی ضد پارگی فنری ۴ عددی",
+  "our": 65000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 13,
+  "brand": "Baseus",
+  "title": "پایه نگهدارنده و هولدر مگنتی خودرو باسئوس مدل MagPro",
+  "our": 485000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 12,
+  "brand": "Baseus",
+  "title": "محافظ صفحه نمایش سرامیکی iPhone 15 Pro Max",
+  "our": 290000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 11,
+  "brand": "Anker",
+  "title": "کابل شارژ لایتنینگ به USB-C انکر مدل PowerLine III MFi",
+  "our": 480000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 10,
+  "brand": "Xiaomi",
+  "title": "هندزفری بلوتوثی شیائومی Redmi Buds 5 Pro",
+  "our": 2450000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 9,
+  "brand": "Apple",
+  "title": "شارژر مغناطیسی بی‌سیم Apple MagSafe Charger اصلی",
+  "our": 1890000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 8,
+  "brand": "Nillkin",
+  "title": "قاب نیلکین CamShield Pro برای Xiaomi 14 Ultra",
+  "our": 520000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 7,
+  "brand": "Baseus",
+  "title": "پاوربانک ۲۰۰۰۰ میلی‌آمپر بیسوس Adaman با شارژ سریع ۶۵ وات",
+  "our": 2150000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 6,
+  "brand": "Samsung",
+  "title": "هندزفری بی‌سیم سامسونگ Galaxy Buds2 Pro",
+  "our": 4500000,
+  "model": "Buds2",
+  "offers": 14,
+  "marketMin": 695000,
+  "marketMain": 1139900,
+  "marketShops": 23,
+  "deltaMainPct": 294.8,
+  "deltaMinPct": 547.5,
+  "bands": [
+   {
+    "from": 1139900,
+    "shops": 23
+   },
+   {
+    "from": 695000,
+    "shops": 20
+   },
+   {
+    "from": 20800000,
+    "shops": 5
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 5,
+  "brand": "Samsung",
+  "title": "شارژر دیواری ۲۵ وات سوپر فست سامسونگ EP-TA800",
+  "our": 839000,
+  "model": "EP-TA800",
+  "offers": 14,
+  "marketMin": 310000,
+  "marketMain": 310000,
+  "marketShops": 866,
+  "deltaMainPct": 170.6,
+  "deltaMinPct": 170.6,
+  "bands": [
+   {
+    "from": 310000,
+    "shops": 866
+   },
+   {
+    "from": 1347998,
+    "shops": 534
+   },
+   {
+    "from": 1821000,
+    "shops": 82
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 4,
+  "brand": "Apple",
+  "title": "قاب سیلیکونی مگ‌سیف دار iPhone 15 Pro",
+  "our": 689000,
+  "model": null,
+  "skipped": "no model code"
+ },
+ {
+  "id": 3,
+  "brand": "Samsung",
+  "title": "گلس فول چسب شیشه‌ای Samsung Galaxy S24 Ultra",
+  "our": 432000,
+  "model": "S24",
+  "offers": 14,
+  "marketMin": 590000,
+  "marketMain": 139300000,
+  "marketShops": 33,
+  "deltaMainPct": -99.7,
+  "deltaMinPct": -26.8,
+  "bands": [
+   {
+    "from": 139300000,
+    "shops": 33
+   },
+   {
+    "from": 175000000,
+    "shops": 10
+   },
+   {
+    "from": 230000000,
+    "shops": 9
+   }
+  ],
+  "confidence": "model-matched+deep"
+ },
+ {
+  "id": 2,
+  "brand": "Anker",
+  "title": "شارژر دیواری ۲۰ وات پورت USB-C انکر Nano Pro",
+  "our": 539000,
+  "model": null,
+  "skipped": "no model code"
+ }
+]
