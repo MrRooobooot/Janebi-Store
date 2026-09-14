@@ -82,7 +82,7 @@ export default function Logo({ className = "", variant = 'full', size = 'md' }: 
         </div>
         <div className="flex flex-col text-left">
           <span className={`${textSizes[size]} font-black tracking-tight text-zinc-900 dark:text-white`}>
-            Janebi <span className="text-[#e11d48]">Arena</span>
+            Janebi <span className="text-[var(--color-emphasis-text)]">Arena</span>
           </span>
           <span className="text-[8px] sm:text-[9px] text-zinc-500 dark:text-zinc-400 font-bold tracking-wider font-mono">
             OFFICIAL STORE
@@ -102,7 +102,7 @@ export default function Logo({ className = "", variant = 'full', size = 'md' }: 
           <span className={`${textSizes[size]} font-black tracking-tight text-[#0B1536] dark:text-white group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors`}>
             جانبی
           </span>
-          <span className={`${textSizes[size]} font-black tracking-tight text-[#e11d48]`}>
+          <span className={`${textSizes[size]} font-black tracking-tight text-[var(--color-emphasis-text)]`}>
             آرنا
           </span>
         </div>
