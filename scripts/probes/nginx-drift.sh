@@ -11,7 +11,13 @@ set -uo pipefail
 REMOTE="${REMOTE:-ubuntu@45.82.137.67}"
 SSH_OPTS="-o BatchMode=yes -o ConnectTimeout=12 -o StrictHostKeyChecking=accept-new"
 
-CONF=$(ssh -n $SSH_OPTS "$REMOTE" 'sudo nginx -T 2>/dev/null') || { echo "FAIL: cannot read nginx config from $REMOTE"; exit 1; }
+# --from-file <path>: offline negative-control mode — run the same invariant check
+# against a synthetic `nginx -T` dump (used to prove the guard actually FAILS on drift).
+if [ "${1:-}" = "--from-file" ]; then
+  CONF=$(cat "$2") || { echo "FAIL: cannot read $2"; exit 1; }
+else
+  CONF=$(ssh -n $SSH_OPTS "$REMOTE" 'sudo nginx -T 2>/dev/null') || { echo "FAIL: cannot read nginx config from $REMOTE"; exit 1; }
+fi
 
 overwrite=$(printf '%s' "$CONF" | grep -c 'X-Forwarded-For \$remote_addr')
 append=$(printf '%s' "$CONF" | grep -c 'proxy_add_x_forwarded_for')
