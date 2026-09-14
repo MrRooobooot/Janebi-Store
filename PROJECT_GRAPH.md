@@ -266,3 +266,16 @@ Closes the two Advisory items of the 0914 audit + adds a drift guard for SEC-02.
 - **Gate after the round:** `npm run verify` EXIT=0 — strict tsc, **424 passed / 5 skipped
   (57 files)**, prod build, probe 4 (SEC-01) + probe 5 (SEC-03) PASS. Deploy `838f727`,
   `BUILD_INFO` on prod == HEAD (`838f727`), key pages `/ /products /cart /blog` all 200.
+
+### بازرسی مستقل SEC-01/02/03 — کارت `t_fb3103bf` (2026-09-14، پروفایل `novin-khodro`) → **تأیید، تخلف صفر**
+
+بازرس مستقل (مدل متفاوت، اسکیل `janebi-arena-production-readiness`) همهچیز را از صفر بازتولید کرد و تأییدم:
+- **هش مستقل**: `base64(sha256(inline_body))` روی HTML گرفتهشده از prod vs هدر `script-src` → در هر ۴ مسیر `/`, `/products`, `/cart`, `/blog` مطابق، `inline_count=1`، `unsafe-inline=0`.
+- **کنترل منفی هر دو پروپ** با ورودی متفاوت از کنترل منفی من: شل دستکاریشده → هش جدید `sha256-ls5V0JRfJCr54xLXpgrYhmKcohxvbrvVwhOPnfrokf0=` → `NOT PINNED` → exit 1؛ کانفیگ مصنوعی nginx → `XFF-append=1` → exit 1. یعنی منطق پروپها واقعی است، نه vacuously green.
+- **`csp-live`**: chromium + webkit روی prod → `violations=0 script-src=0 dark=true rootChildren=2 consoleCSP=0`.
+- **بایتپاریتی (این ریسک واقعی بود و بسته شد)**: `md5 dist/index.html = 919bfd9a26f62bfb43088ae4a985c8a7` یکسان در `dist` محلی، دیسک هاست VPS، و `/app/dist/index.html` داخل کانتینر — تأیید مستقل خودم هم همین را نشان داد. پس هش در بوت دقیقاً روی همان فایلی است که سرو میشود.
+- **مسیرهای دیسکی nginx** (`^/fonts/`, `^/assets/*\.(js|css|woff2?|ttf|eot)$`, `^(products|brands)/*\.(svg|png|jpg|jpeg|webp|ico)$`, `^\d+\.txt$`) هیچکدام `*.html` را match نمیکنند → **fail-closed**: هر اسکریپت inline آینده که هش نخورده باشد بلاک میشود، نه سرو. تنها HTML استثنایی روی دیسک = فایل تأیید گوگل (۲۰۰، با هدر CSP، صفر `<script>`).
+- **`style-src 'unsafe-inline'` حذفشدنی نیست**: ۹ مورد `style={{…}}` رانتایم در `src/` (تأیید مستقل من: `grep -ro "style={{" | wc -l = 9`) → نگه داشته شد، مستند.
+- گیت: `npm run verify` EXIT=0 (۵۷ فایل، ۴۲۴ pass / ۵ skip)، probe4+probe5 PASS؛ `nginx -T` زنده: `XFF-remote_addr=4 append=0`؛ `/server.cjs` و `.map` ۴۰۴. هیچ تغییری روی prod داده نشد.
+
+**درس عملیاتی این دور** (ثبت در skill `hermes-project-tracking`): کارت با `skills=[...]` باید اسکیلی را نام ببرد که روی **پروفایل assignee** نصب است؛ اسکیل ناموجود → `hermes --skill <x>` → `Error: Unknown skill(s)` و worker در ثانیهٔ اول exit 1 (dispatcher فقط «worker crashed» نشان میدهد). و مدل `default` (`openrouter/glm-5.3-flash` از گیتوی 127.0.0.1:20128) الان ۴۰۴ «No active credentials for provider: openrouter» میدهد → هر spawn پروفایل default، judge در goal-mode، و decompose کارتهای triage با همین علت میمیرد.
