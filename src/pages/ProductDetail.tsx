@@ -423,7 +423,7 @@ export default function ProductDetail() {
                       {product.features.map((feat: string, idx: number) => (
                         <span
                           key={idx}
-                          className="bg-[var(--color-cta)]/70 dark:bg-[var(--color-cta)]/30 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] text-xs font-bold px-3 py-1.5 rounded-xl border border-[var(--color-cta)]/80 dark:border-[var(--color-cta)]/40 flex items-center gap-1.5"
+                          className="bg-[var(--color-cta)] text-white text-xs font-bold px-3 py-1.5 rounded-xl border border-[var(--color-cta)] flex items-center gap-1.5 shadow-xs"
                         >
                           <Zap className="h-3.5 w-3.5 text-[var(--color-emphasis-text)]" />
                           {feat}

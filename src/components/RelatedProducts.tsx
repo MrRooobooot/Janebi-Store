@@ -76,7 +76,7 @@ export default function RelatedProducts({ product }: { product: Product }) {
             محصولات مشابه در دسته‌بندی «{product.category}»
           </h2>
         </div>
-        <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800/80 px-2.5 py-1 rounded-full border border-zinc-200/80 dark:border-zinc-700 shrink-0">
+        <span className="text-xs font-bold text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800/80 px-2.5 py-1 rounded-full border border-zinc-200/80 dark:border-zinc-700 shrink-0">
           {toPersianDigits(related.length)} کالا
         </span>
       </div>

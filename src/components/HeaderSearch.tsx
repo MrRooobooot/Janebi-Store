@@ -476,7 +476,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
                           onClick={() => handleSelectCategory(cat.name)}
                           className="flex items-center gap-2.5 p-2.5 rounded-xl text-right bg-gray-50 dark:bg-gray-800/60 hover:bg-[var(--color-cta)]/10 dark:hover:bg-[var(--color-cta)]/40 border border-[var(--color-border-light)] dark:border-gray-700/40 cursor-pointer transition-all group"
                         >
-                          <div className="p-1.5 rounded-lg bg-[var(--color-cta)]/70 dark:bg-[var(--color-cta)]/60 text-[var(--color-emphasis-text)] group-hover:scale-110 transition-transform">
+                          <div className="p-1.5 rounded-lg bg-[var(--color-cta)] text-white group-hover:scale-110 transition-transform">
                             <CategoryIcon className="h-4 w-4" />
                           </div>
                           <span className="text-xs font-semibold text-gray-800 dark:text-gray-200 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors">
