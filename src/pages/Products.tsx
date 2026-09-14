@@ -105,6 +105,9 @@ export default function Products() {
         </div>
 
         {/* Main Content Layout Grid */}
+        {/* Product cards carry h3 titles, so the grid needs its own h2 to keep the
+            document outline valid (h1 page title -> h2 section -> h3 cards). */}
+        <h2 className="sr-only">فهرست محصولات</h2>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Sidebar Component */}
