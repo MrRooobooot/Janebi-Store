@@ -111,7 +111,16 @@ router.get('/verify', async (req, res) => {
   // Shared success path: idempotency-guarded transition to `processing` +
   // VIP points earned by the order (single source of truth for both the
   // sandbox dummy path and the real verified-payment path).
-  const markOrderPaid = async (tx: any, orderId: string, refId: string): Promise<boolean> => {
+  // The order row is written BEFORE any gateway is picked, so the payment label can
+// only be finalised once a gateway has settled the payment — hardcoding «زرین‌پال»
+// there lied whenever the failover router used سامان.
+const ONLINE_LABEL: Record<string, string> = {
+  zarinpal: 'پرداخت آنلاین زرین‌پال',
+  saman: 'پرداخت آنلاین سامان',
+  dummy: 'پرداخت آنلاین (آزمایشی)'
+};
+
+const markOrderPaid = async (tx: any, orderId: string, refId: string, provider: string = 'zarinpal'): Promise<boolean> => {
     // R1-02: atomic predicate — the read-then-write pattern was TOCTOU-racy.
     // The status flip only lands if the row is still pending_payment; the
     // .returning() row count is the arbiter (0 rows => another transaction
@@ -120,7 +129,8 @@ router.get('/verify', async (req, res) => {
       .set({
         status: 'processing',
         statusText: 'در حال پردازش (پرداخت موفق)',
-        refId: refId
+        refId: refId,
+        paymentMethod: ONLINE_LABEL[provider] || 'پرداخت آنلاین'
       })
       .where(and(
         eq(orders.id, orderId),
@@ -172,7 +182,7 @@ router.get('/verify', async (req, res) => {
     ) {
       const dummyRefId = `REF-${Math.floor(Math.random() * 1000000)}`;
       const flipped = await db.transaction(async (tx) => {
-        return await markOrderPaid(tx, order.id, dummyRefId);
+        return await markOrderPaid(tx, order.id, dummyRefId, 'dummy');
       });
       // Only a real status flip may emit: a concurrent callback that lost the
       // pending_payment race must not send a second receipt SMS / bot alert.
@@ -195,7 +205,7 @@ router.get('/verify', async (req, res) => {
       const refId = verifyResult.refId || `REF-${Math.floor(Math.random() * 1000000)}`;
       
       const flipped = await db.transaction(async (tx) => {
-        return await markOrderPaid(tx, order.id, refId);
+        return await markOrderPaid(tx, order.id, refId, verifyResult.provider);
       });
       // Idempotent emit: the loser of a concurrent-verify race must stay silent.
       if (flipped) emitOrderPaid(order.id);

@@ -218,6 +218,10 @@ describe('Payment API', () => {
     const processedOrder = await db.query.orders.findFirst({ where: eq(orders.id, successOrderId) });
     expect(processedOrder?.status).toBe('processing');
     expect(processedOrder?.refId).toBeDefined();
+    // The gateway label is finalised by the gateway that actually settled the
+    // payment — the order row is written before any gateway exists, so a label
+    // baked in at creation time would name the wrong brand after a failover.
+    expect(processedOrder?.paymentMethod).toBe('پرداخت آنلاین (آزمایشی)');
 
     // Idempotency: verify again returns success without error
     const repeatVerify = await request(app)

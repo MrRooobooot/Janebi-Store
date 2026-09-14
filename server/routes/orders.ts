@@ -214,7 +214,7 @@ router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
         discountAmount: totalDiscount,
         vipPointsUsed: pointsToDeduct,
         vipPointsEarned: earnedVipPoints,
-        paymentMethod: paymentMethod === "online" ? "پرداخت آنلاین زرین‌پال" : "پرداخت در محل",
+        paymentMethod: paymentMethod === "online" ? "پرداخت آنلاین" : "پرداخت در محل",
         shippingMethod: shippingMethod === "express" ? "پست پیشتاز (سریع)" : "پست سفارشی (معمولی)",
         recipientName: recipient.name,
         recipientPhone: recipient.phone,
