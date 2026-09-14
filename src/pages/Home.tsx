@@ -353,8 +353,9 @@ export default function Home() {
             <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
 
-          {/* Slide Indicator Dots (phones: bottom-left over the art, clear of the CTA; sm+: own row) */}
-          <div className="absolute bottom-1 left-3 right-auto z-10 flex items-center justify-center gap-1 sm:static sm:inset-auto sm:right-auto sm:bottom-auto sm:mt-6 sm:pt-3 sm:gap-2 sm:border-t border-zinc-200/80 dark:border-zinc-800/80" role="tablist" aria-label="اسلایدهای صفحه اصلی">
+          {/* Slide indicators — phones auto-rotate every 6s and swipe, the dots row is sm+ only
+              (on a 390px card the dots collided with the CTA/text edges) */}
+          <div className="hidden sm:flex items-center justify-center gap-2 relative z-10 sm:mt-6 sm:pt-3 sm:border-t border-zinc-200/80 dark:border-zinc-800/80" role="tablist" aria-label="اسلایدهای صفحه اصلی">
             {heroSlides.map((slide, idx) => (
               <button
                 key={slide.id}
