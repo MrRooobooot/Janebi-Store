@@ -197,3 +197,35 @@ Full evidence + remediation list: `PROJECT_AUDIT.md`. Highest-priority debts:
 - **DB backups on VPS = NONE** (no backups dir). `npm run db:backup` is local-only. Recommended next ops item: VPS-side cron `VACUUM INTO /home/ubuntu/backups/` (keep 7) — DB is the only stateful data.
 - **Backup gap re-audited (2026-09-11 late) — actually COVERED:** `/home/ubuntu/bin/janebi-backup.sh` + cron `30 2 * * *` already run: in-container better-sqlite3 `backup()` → docker cp → `PRAGMA integrity_check` → keep 7 db + 7 .env. Log shows 7 consecutive OK nights (…→20260911 integrity=ok 588K). Corollary: PROJECT_GRAPH's earlier "backups dir absent" note was WRONG (checked wrong path). Verified live.
 - **containerd snapshot verdict:** 12G overlayfs = 2 live images (janebi-store-app 1.22GB + postgres 417MB) + their build/layer history in the moby namespace (75 Committed snapshots parented by active layers; `ctr snapshots rm` refuses with "cannot remove snapshot with child" — parent chains). NOT safely reclaimable without deleting rollback history. Only real lever: periodic `docker image prune` + accepting build churn, or moving build off-VPS (buildx/GHA) so old layers never accumulate. Disk stable at 70% (6.7G free).
+
+## Live black-box security audit (2026-09-14, commit `452d1cb` — deployed & live-verified)
+
+Full report: `docs/SECURITY-AUDIT-2026-09-14.md`. Scope: unauthenticated external
+surface of prod (curl/openssl; source read only to confirm root cause).
+
+- **SEC-01 CRITICAL — backend bundle + source map were publicly downloadable.**
+  `GET /server.cjs` → 200 (439 KB), `GET /server.cjs.map` → 200 (731 KB, `sourcesContent:true`,
+  385 KB real TS across 49 server files). Root cause: prod web root `dist/` IS the esbuild
+  output dir (`server/index.ts:117` `express.static(path.join(cwd,"dist"))`), so the SPA's own
+  static mount served the compiled backend and its map. No secret literals in the bundle
+  (all secrets via `process.env`), but the full route table/auth/validation logic was exposed.
+  **Fix:** one guard middleware in `server/app.ts` (before every static mount) →
+  `/(\.(cjs|map)$/i)` ⇒ 404. Regression probe `scripts/probes/static-exposure.sh` boots a real
+  production server on an isolated DB and is wired into `npm run verify` as **step 4**.
+  Live: both 404, legit `/assets/*.js` + `/manifest.webmanifest` still 200.
+- **SEC-02 HIGH — IP rate limiting fully bypassable via client-supplied `X-Forwarded-For`.**
+  nginx used `$proxy_add_x_forwarded_for` (append) while the app sets `trust proxy 1`, which
+  resolves `req.ip` from the untrusted leftmost XFF entry = a client-controlled header.
+  Proof: with the auth limiter saturated (429 unspoofed), 4 requests with distinct
+  `X-Forwarded-For: 10.0.0.N` returned 401 (allowed). Impact: unlimited login/OTP-SMS
+  brute force + bypass of coupon/contact/newsletter limiters.
+  **Fix:** nginx overwrites — `proxy_set_header X-Forwarded-For $remote_addr;` (4 proxy
+  locations); live conf now versioned at `deploy/nginx-janebi-store.conf`.
+  Post-fix live: 9 rapid rotating-XFF calls → 401×5 then 429 (single bucket = real IP).
+- **Verified sound:** TLS (HTTP/2, LE cert, HSTS 1y+subdomains), 301 http→https and www→apex
+  canonical, full helmet header set + CSP reporting, `.env`/`.git`/`data/janebi.db`/`package.json`/
+  `/metrics` 404, all `/api/admin/*` 401 unauthenticated, `alg:none` and garbage JWT rejected,
+  Zod-validated + parameterized inputs (SQLi probes inert, malformed JSON → clean 400),
+  no foreign-Origin CORS reflection, canonical/OG built from `APP_URL` (no Host poisoning),
+  path-traversal variants 400/404, TRACE 405.
+- **Advisory/accepted:** CSP `script-src 'unsafe-inline'` (inline bootstrap), no `/.well-known/security.txt`.
