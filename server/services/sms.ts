@@ -3,8 +3,9 @@
 //
 // Provider: SMS.ir (same account/key as the OTP flow).
 //   - template path: SMS_ORDER_TEMPLATE_ID set → /v1/send/verify with the two
-//     named parameters a receipt template must declare: OrderCode, Amount.
-//     Panel template text: «سفارش #OrderCode# ثبت شد. مبلغ: #Amount# تومان»
+//     named parameters a receipt template must declare: ORDERCODE, AMOUNT (the
+//     names must match the panel placeholders exactly, case included).
+//     Panel template 937005: «جانبی آرنا: سفارش #ORDERCODE# ثبت شد. مبلغ: #AMOUNT# تومان»
 //   - free-text path: SMS_LINE_NUMBER set → /v1/send/bulk with the composed text.
 //   - neither configured → log once and skip. A missing SMS config must never
 //     fail an order.
@@ -36,8 +37,8 @@ export async function sendOrderReceiptSms(input: OrderReceiptInput): Promise<boo
         mobile,
         templateId: Number(env.SMS_ORDER_TEMPLATE_ID),
         parameters: [
-          { name: 'OrderCode', value: input.orderId },
-          { name: 'Amount', value: fa(input.total.toLocaleString('en-US')) },
+          { name: 'ORDERCODE', value: input.orderId },
+          { name: 'AMOUNT', value: fa(input.total.toLocaleString('en-US')) },
         ],
       }
     : { lineNumber: env.SMS_LINE_NUMBER, messageText: receiptText(input.orderId, input.total), mobiles: [mobile] };

@@ -36,8 +36,8 @@ describe('order receipt SMS', () => {
     expect(calls[0].body.mobile).toBe('9125373830'); // no leading zero for sms.ir
     expect(calls[0].body.templateId).toBe(401811);
     expect(calls[0].body.parameters).toEqual([
-      { name: 'OrderCode', value: 'ORD-TEST-1A2B' },
-      { name: 'Amount', value: '۳۱۰٬۰۰۰' },
+      { name: 'ORDERCODE', value: 'ORD-TEST-1A2B' },
+      { name: 'AMOUNT', value: '۳۱۰٬۰۰۰' },
     ]);
   });
 
