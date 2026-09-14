@@ -119,7 +119,10 @@ router.get("/sitemap.xml", async (_req, res) => {
         return (
           "  <url>\n" +
           `    <loc>${xmlEscape(loc)}</loc>\n` +
-          `    <lastmod>${today}</lastmod>\n` +
+          // No lastmod: the catalogue has no per-product change timestamp, and
+          // stamping every URL with "today" on every request is exactly the kind of
+          // inaccurate lastmod Google learns to ignore (schema: products carry no
+          // created_at/updated_at; only blog posts do).
           "    <changefreq>weekly</changefreq>\n" +
           "    <priority>0.7</priority>\n" +
           "  </url>\n"
@@ -134,7 +137,8 @@ router.get("/sitemap.xml", async (_req, res) => {
         return (
           "  <url>\n" +
           `    <loc>${xmlEscape(loc)}</loc>\n` +
-          `    <lastmod>${today}</lastmod>\n` +
+          // Same policy as products: no per-category change timestamp exists, so
+          // claiming "today" every day would poison lastmod for the whole sitemap.
           "    <changefreq>daily</changefreq>\n" +
           "    <priority>0.9</priority>\n" +
           "  </url>\n"
