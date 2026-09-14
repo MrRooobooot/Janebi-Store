@@ -92,7 +92,11 @@ describe("productOgImageFor", () => {
     await db.insert(products).values({ id: rasterId, title: "SEO raster probe", category: "test", price: 1000, image: "/images/products/p-14.jpg", brand: "probe", stockQuantity: 1 });
     try {
       expect(await productOgImageFor(`/product/${svgId}`)).toEqual({ og: "https://janebiarena.ir/og-image.jpg", hero: "https://janebiarena.ir/products/cpr-14.svg" });
-      expect(await productOgImageFor(`/products/${rasterId}`)).toEqual({ og: "https://janebiarena.ir/images/products/p-14.jpg", hero: "https://janebiarena.ir/images/products/p-14.jpg" });
+      expect(await productOgImageFor(`/products/${rasterId}`)).toEqual({
+        // social card keeps JPEG; the LCP preload points at the AVIF the <picture> picks
+        og: "https://janebiarena.ir/images/products/p-14.jpg",
+        hero: "https://janebiarena.ir/images/products/p-14.avif"
+      });
       expect(await productOgImageFor("/product/999999")).toBeNull();
     } finally {
       await db.delete(products).where(eq(products.id, svgId));

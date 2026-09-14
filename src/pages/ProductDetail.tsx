@@ -144,7 +144,7 @@ export default function ProductDetail() {
         <div className="w-16 h-16 rounded-2xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/40 text-[var(--color-emphasis-text)] flex items-center justify-center mb-4 border border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/60 shadow-inner">
           <AlertCircle className="h-8 w-8" />
         </div>
-        <h3 className="text-xl font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] mb-2">محصول یافت نشد!</h3>
+        <h2 className="text-xl font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] mb-2">محصول یافت نشد!</h2>
         <p className="text-gray-500 dark:text-gray-300 mb-6">
           احتمالاً این محصول حذف شده یا آدرس را اشتباه وارد کرده‌اید.
         </p>
@@ -418,7 +418,7 @@ export default function ProductDetail() {
                 {/* Features Badges */}
                 {product.features && product.features.length > 0 && (
                   <div className="mb-8">
-                    <h3 className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-3">ویژگی‌های برجسته:</h3>
+                    <h2 className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-3">ویژگی‌های برجسته:</h2>
                     <div className="flex flex-wrap gap-2">
                       {product.features.map((feat: string, idx: number) => (
                         <span

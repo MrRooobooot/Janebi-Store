@@ -255,9 +255,15 @@ export async function productOgImageFor(pathname: string): Promise<{ og: string;
     // Social crawlers (Telegram/WhatsApp/Facebook/X) do not render SVG, so the
     // legacy local SVG art would produce a card with no image at all — fall back
     // to the site's raster share card instead.
-    const hero = img.startsWith("http") ? img : `https://janebiarena.ir${img}`;
+    const absolute = (v: string) => (v.startsWith("http") ? v : `https://janebiarena.ir${v}`);
+    // The <picture> element prefers AVIF, so that is the request Lighthouse counts as
+    // LCP: preloading the JPEG sibling would download twice and help nothing. The
+    // social card, however, must stay a raster JPEG/PNG — crawlers do not render AVIF
+    // or SVG (the legacy local vector art falls back to the site share card).
+    const avifSibling = img.match(/^(\/images\/products\/.+)\.(jpe?g|png)$/i);
+    const hero = absolute(avifSibling ? `${avifSibling[1]}.avif` : img);
     if (/\.svgz?($|\?)/i.test(img)) return { og: "https://janebiarena.ir/og-image.jpg", hero };
-    return { og: hero, hero };
+    return { og: absolute(img), hero };
   } catch {
     return null;
   }

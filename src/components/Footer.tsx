@@ -159,7 +159,7 @@ export default function Footer() {
               className="w-28 h-28 aspect-square bg-white dark:bg-white rounded-2xl border border-slate-200/80 dark:border-white/[0.08] flex items-center justify-center p-2 shadow-xs hover:scale-105 transition-all duration-300 relative group overflow-hidden shrink-0 enamad-tile"
             >
               {!imgLoaded && !imgError && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-100 animate-pulse text-[10px] text-zinc-400 font-bold p-1">
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-100 animate-pulse text-[10px] text-zinc-600 dark:text-zinc-400 font-bold p-1">
                   <span>در حال بارگذاری نماد...</span>
                 </div>
               )}

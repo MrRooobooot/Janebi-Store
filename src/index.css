@@ -135,9 +135,9 @@
   --shadow-glow-emerald: 0 8px 24px -4px rgba(16, 185, 129, 0.30);
 
   /* ── CTA Fill Tokens (token: color.semantic.cta.*) — white text 4.70:1 AA ✅ ── */
-  --color-cta: #e11d48;
-  --color-cta-hover: #be123c;
-  --color-cta-active: #9f1239;
+  --color-cta: #be123c;  /* AA on light surfaces: #e11d48 measured 4.28-4.48:1; #be123c keeps white-on-fill at 6.4:1 */
+  --color-cta-hover: #9f1239;
+  --color-cta-active: #881337;
   --color-emphasis-text: #be123c;  /* AA: #e11d48 on light surfaces measured 4.28-4.48:1 */
   --color-accent-surface: #fb7185;
   --shadow-glow-cta: 0 8px 24px -4px rgba(225, 29, 72, 0.35);
