@@ -35,8 +35,11 @@ interface PictureImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageElemen
 export default function PictureImage({
   src,
   alt,
-  width,
-  height,
+  // Intrinsic size defaults to the catalogue's 512x512 source art: browsers need
+  // explicit dimensions to reserve space, and omitting them fired Lighthouse's
+  // unsized-images audit on every consumer that did not pass a size.
+  width = 512,
+  height = 512,
   fallbackIcon: FallbackIcon,
   priority = false,
   avifSrc,

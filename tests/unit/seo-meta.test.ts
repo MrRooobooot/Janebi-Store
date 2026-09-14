@@ -1,5 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { escapeHtml, injectSeoMetadata, routeMetaForRequest } from "../../server/lib/seoMeta";
+import { escapeHtml, injectSeoMetadata, routeMetaForRequest, productOgImageFor } from "../../server/lib/seoMeta";
+import { db } from "../../server/db/index";
+import { products } from "../../server/db/schema";
+import { eq } from "drizzle-orm";
 
 const SHELL = `<!doctype html><html><head><title>جانبی آرنا | خرید آنلاین لوازم جانبی موبایل و تبلت با ضمانت اصالت</title>
 <meta name="description" content="فروشگاه تخصصی جانبی آرنا" />
@@ -61,9 +64,39 @@ describe("routeMetaForRequest fallbacks", () => {
     expect(await routeMetaForRequest("/some/unknown/page", new URLSearchParams())).toBeNull();
   });
 
+  it("preloads the product hero image so the LCP is discoverable pre-hydration", () => {
+    const html = injectSeoMetadata(SHELL, {
+      title: "t", description: "d", ogType: "product", ogUrl: "https://janebiarena.ir/products/5884",
+      ogImage: "https://janebiarena.ir/og-image.jpg",
+      preloadImage: "https://janebiarena.ir/images/products/p-5884.jpg"
+    });
+    expect(html).toContain('<link rel="preload" as="image" href="https://janebiarena.ir/images/products/p-5884.jpg" fetchpriority="high" />');
+  });
+
   it("returns category metadata for category listing", async () => {
     // DB is stubbed in unit env? routeMetaForCategory requires db — assert it does not throw and returns shape or null
     const result = await routeMetaForRequest("/products", new URLSearchParams("category=پاوربانک"));
     expect(result === null || typeof result!.title === "string").toBe(true);
+  });
+});
+
+describe("productOgImageFor", () => {
+  // A social card needs a raster image: Telegram/WhatsApp/Facebook/X ignore SVG,
+  // so the legacy local vector art used by the first catalogue items must resolve
+  // to the site's raster share card instead of producing an image-less preview.
+  const svgId = 991401;
+  const rasterId = 991402;
+
+  it("falls back to the raster share card for SVG product art", async () => {
+    await db.insert(products).values({ id: svgId, title: "SEO SVG probe", category: "test", price: 1000, image: "/products/cpr-14.svg", brand: "probe", stockQuantity: 1 });
+    await db.insert(products).values({ id: rasterId, title: "SEO raster probe", category: "test", price: 1000, image: "/images/products/p-14.jpg", brand: "probe", stockQuantity: 1 });
+    try {
+      expect(await productOgImageFor(`/product/${svgId}`)).toEqual({ og: "https://janebiarena.ir/og-image.jpg", hero: "https://janebiarena.ir/products/cpr-14.svg" });
+      expect(await productOgImageFor(`/products/${rasterId}`)).toEqual({ og: "https://janebiarena.ir/images/products/p-14.jpg", hero: "https://janebiarena.ir/images/products/p-14.jpg" });
+      expect(await productOgImageFor("/product/999999")).toBeNull();
+    } finally {
+      await db.delete(products).where(eq(products.id, svgId));
+      await db.delete(products).where(eq(products.id, rasterId));
+    }
   });
 });

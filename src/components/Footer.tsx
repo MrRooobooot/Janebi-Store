@@ -46,7 +46,7 @@ export default function Footer() {
               <Truck className="h-6 w-6" strokeWidth={2} />
             </div>
             <div>
-              <h4 className="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-0.5">ارسال سریع و رایگان</h4>
+              <h3 className="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-0.5">ارسال سریع و رایگان</h3>
               <p className="text-[11px] text-slate-500 dark:text-slate-400">سفارش‌های بالای {toPersianDigits((settings.freeShippingThreshold || FREE_SHIPPING_THRESHOLD).toLocaleString('fa-IR'))} تومان</p>
             </div>
           </div>
@@ -56,7 +56,7 @@ export default function Footer() {
               <HeadphonesIcon className="h-6 w-6" strokeWidth={2} />
             </div>
             <div>
-              <h4 className="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-0.5">پشتیبانی تخصصی</h4>
+              <h3 className="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-0.5">پشتیبانی تخصصی</h3>
               <p className="text-[11px] text-slate-500 dark:text-slate-400">{toPersianDigits(settings.supportHours || '۷ روز هفته، ۹ صبح تا ۹ شب')}</p>
             </div>
           </div>
@@ -66,7 +66,7 @@ export default function Footer() {
               <Shield className="h-6 w-6" strokeWidth={2} />
             </div>
             <div>
-              <h4 className="font-bold text-zinc-900 dark:text-zinc-100 text-xs sm:text-sm mb-0.5">۷ روز ضمانت بازگشت</h4>
+              <h3 className="font-bold text-zinc-900 dark:text-zinc-100 text-xs sm:text-sm mb-0.5">۷ روز ضمانت بازگشت</h3>
               <p className="text-[11px] text-zinc-500 dark:text-zinc-400">تضمین سلامت فنی کالا</p>
             </div>
           </div>
@@ -76,7 +76,7 @@ export default function Footer() {
               <CheckCircle className="h-6 w-6" strokeWidth={2} />
             </div>
             <div>
-              <h4 className="font-bold text-zinc-900 dark:text-zinc-100 text-xs sm:text-sm mb-0.5">ضمانت اصالت کالا</h4>
+              <h3 className="font-bold text-zinc-900 dark:text-zinc-100 text-xs sm:text-sm mb-0.5">ضمانت اصالت کالا</h3>
               <p className="text-[11px] text-zinc-500 dark:text-zinc-400">۱۰۰٪ اورجینال با گارانتی معتبر</p>
             </div>
           </div>
@@ -106,7 +106,7 @@ export default function Footer() {
 
           {/* Links column (§2.7 / §9): quick customer links incl. order tracking */}
           <div className="lg:col-span-3 space-y-3 text-right">
-            <h4 className="text-sm font-black text-zinc-900 dark:text-zinc-100">دسترسی سریع</h4>
+            <h3 className="text-sm font-black text-zinc-900 dark:text-zinc-100">دسترسی سریع</h3>
             <nav className="flex flex-col items-start gap-2.5 text-xs text-zinc-600 dark:text-zinc-400" aria-label="لینک‌های فوتر">
               <Link
                 to="/profile/orders"
@@ -121,7 +121,7 @@ export default function Footer() {
           {/* Newsletter Section */}
           <div className="lg:col-span-2 flex flex-col justify-between bg-gradient-to-r from-[var(--color-cta)]/10 to-[var(--color-cta)]/5 dark:from-zinc-900 dark:to-zinc-800/60 p-6 rounded-3xl border border-[var(--color-cta)]/60 dark:border-zinc-800 text-right">
             <div>
-              <h4 className="text-base font-black text-zinc-900 dark:text-zinc-100 mb-1">عضویت در خبرنامه جانبی آرنا</h4>
+              <h3 className="text-base font-black text-zinc-900 dark:text-zinc-100 mb-1">عضویت در خبرنامه جانبی آرنا</h3>
               <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">از جدیدترین تخفیف‌ها، پکیج‌ها و کدهای تخفیف اختصاصی باخبر شوید.</p>
             </div>
             <form onSubmit={handleSubscribe} className="flex w-full mt-4">
@@ -165,6 +165,7 @@ export default function Footer() {
               )}
               <img
                 referrerPolicy="origin"
+                loading="lazy"
                 src={sealSrc}
                 alt="نماد اعتماد الکترونیکی جانبی آرنا"
                 width="112"

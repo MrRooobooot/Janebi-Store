@@ -407,7 +407,7 @@ export default function ProductDetail() {
                           <AlertCircle className="h-4 w-4" /> تنها {toPersianDigits(stock)} عدد در انبار باقیست
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 text-xs font-extrabold border border-emerald-200 dark:border-emerald-900/50">
+                        <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-xs font-extrabold border border-emerald-200 dark:border-emerald-900/50">
                           <PackageCheck className="h-4 w-4" /> موجود و آماده ارسال
                         </span>
                       )}
@@ -751,6 +751,7 @@ export default function ProductDetail() {
                 <div className="flex items-center gap-2 shrink-0 flex-1 justify-end">
                   <button
                     onClick={() => toggleWishlist(product)}
+                    aria-label={inWishlist ? 'حذف از علاقه‌مندی‌ها' : 'افزودن به علاقه‌مندی‌ها'}
                     className={`min-touch-target w-11 h-11 rounded-xl border flex items-center justify-center transition-colors active:scale-95 shrink-0 ${
                       inWishlist
                         ? 'text-rose-500 bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-900/50'
@@ -818,7 +819,7 @@ export default function ProductDetail() {
                     className={`text-[10px] font-extrabold px-2 py-1 rounded-full leading-none ${
                       outOfStock
                         ? 'bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400'
-                        : 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400'
+                        : 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300'
                     }`}
                   >
                     {outOfStock ? 'ناموجود' : 'موجود در انبار'}

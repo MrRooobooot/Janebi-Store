@@ -107,7 +107,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
             
             <PictureImage
               src={product.image}
-              alt={product.title}
+              alt=""  /* decorative: the card link already exposes the title */
               width="280"
               height="280"
               sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 240px"

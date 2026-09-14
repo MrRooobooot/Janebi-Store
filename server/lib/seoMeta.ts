@@ -17,6 +17,8 @@ interface RouteMeta {
   ogType: "website" | "product" | "article";
   ogUrl: string;
   ogImage?: string;
+  /** The real LCP image for this route — preloaded so it is discoverable in the initial HTML. */
+  preloadImage?: string;
 }
 
 export function escapeHtml(value: string): string {
@@ -231,11 +233,17 @@ export function injectSeoMetadata(html: string, meta: RouteMeta): string {
   if (meta.ogImage) {
     setTag(/<meta\s+property="og:image"[^>]*>/, `<meta property="og:image" content="${esc(meta.ogImage)}" />`);
   }
+  // Lighthouse's LCP-discovery insight: a hero image that only appears after React
+  // hydration is not discoverable in the initial document (mobile LCP paid ~0.4s
+  // for it). Preloading it here — server-rendered routes only — fixes that.
+  if (meta.preloadImage && !/<link[^>]+rel="preload"[^>]+as="image"/.test(out)) {
+    out = out.replace("</head>", `  <link rel="preload" as="image" href="${esc(meta.preloadImage)}" fetchpriority="high" />\n</head>`);
+  }
   return out;
 }
 
 /** Fetch product og:image (absolute) when the product exists; null otherwise. */
-export async function productOgImageFor(pathname: string): Promise<string | null> {
+export async function productOgImageFor(pathname: string): Promise<{ og: string; hero: string } | null> {
   const match = pathname.match(/^\/products?\/(\d+)\/?$/);
   if (!match) return null;
   try {
@@ -244,7 +252,12 @@ export async function productOgImageFor(pathname: string): Promise<string | null
     });
     if (!product?.image) return null;
     const img = String(product.image);
-    return img.startsWith("http") ? img : `https://janebiarena.ir${img}`;
+    // Social crawlers (Telegram/WhatsApp/Facebook/X) do not render SVG, so the
+    // legacy local SVG art would produce a card with no image at all — fall back
+    // to the site's raster share card instead.
+    const hero = img.startsWith("http") ? img : `https://janebiarena.ir${img}`;
+    if (/\.svgz?($|\?)/i.test(img)) return { og: "https://janebiarena.ir/og-image.jpg", hero };
+    return { og: hero, hero };
   } catch {
     return null;
   }

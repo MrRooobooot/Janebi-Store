@@ -169,7 +169,7 @@ async function startServer() {
         if (!structuredLd && !meta) return res.sendFile(path.join(distPath, "index.html"));
         let html = shell;
         if (structuredLd) html = injectBreadcrumbIntoHtml(html, structuredLd);
-        if (meta) html = injectSeoMetadata(html, productImage ? { ...meta, ogImage: productImage } : meta);
+        if (meta) html = injectSeoMetadata(html, productImage ? { ...meta, ogImage: productImage.og, preloadImage: productImage.hero } : meta);
         return res
           .status(200)
           .set("Content-Type", "text/html")
