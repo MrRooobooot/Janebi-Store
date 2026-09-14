@@ -123,16 +123,16 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
                   value={emailOrPhone}
                   onChange={(e) => setEmailOrPhone(e.target.value)}
                   placeholder="شماره موبایل یا ایمیل..."
-                  className="w-full bg-[var(--color-surface-light)] text-[var(--color-text-main-light)] placeholder:text-gray-400 rounded-xl py-3.5 pr-4 pl-10 text-xs sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-white"
+                  className="w-full bg-black/25 text-white placeholder:text-white/70 rounded-xl py-3.5 pr-4 pl-10 text-xs sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-white/70"
                 />
-                <Mail className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Mail className="h-5 w-5 text-white/60 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
               <button
                 type="submit"
                 disabled={submitting}
-                className="bg-zinc-900 hover:bg-black dark:bg-[var(--color-cta)] dark:hover:bg-[var(--color-cta-hover)] disabled:opacity-60 text-white px-6 py-3.5 rounded-xl font-extrabold text-xs sm:text-sm transition-all duration-300 flex items-center justify-center gap-2 shrink-0 shadow-lg active:scale-95 cursor-pointer"
+                className="bg-zinc-950/90 hover:bg-black border border-white/40 text-white px-6 py-3.5 rounded-xl font-extrabold text-xs sm:text-sm transition-all duration-300 flex items-center justify-center gap-2 shrink-0 shadow-lg active:scale-95 cursor-pointer"
               >
-                <Gift className="h-4 w-4 text-[var(--color-emphasis-text)]" />
+                <Gift className="h-4 w-4 text-yellow-300" />
                 {submitting ? 'در حال ثبت...' : 'دریافت هدیه'}
               </button>
             </form>
