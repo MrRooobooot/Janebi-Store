@@ -164,7 +164,7 @@ router.get("/:id/reviews", validate(numericIdParamSchema), async (req, res) => {
 
     const rows = await db.query.reviews.findMany({
       where: and(eq(reviews.productId, productId), eq(reviews.approved, true)),
-      orderBy: [desc(reviews.date), desc(reviews.id)],
+      orderBy: sql`${reviews.date} desc, ${reviews.id} desc`,
       limit,
       offset: (safePage - 1) * limit,
     });
@@ -182,7 +182,7 @@ router.get("/:id/reviews", validate(numericIdParamSchema), async (req, res) => {
   
   const productReviews = await db.query.reviews.findMany({
     where: and(eq(reviews.productId, productId), eq(reviews.approved, true)),
-    orderBy: [desc(reviews.date), desc(reviews.id)]
+    orderBy: sql`${reviews.date} desc, ${reviews.id} desc`,
   });
 
   appCache.set(cacheKey, productReviews, 60);

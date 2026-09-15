@@ -151,7 +151,7 @@ router.get('/stats', async (req, res) => {
 
     // Recent orders
     const recentOrders = await db.query.orders.findMany({
-      orderBy: [desc(orders.date)],
+      orderBy: desc(orders.date),
       limit: 6,
       with: { items: true }
     });
@@ -332,7 +332,7 @@ router.get('/users', async (req, res) => {
       // Real chronology: joined_date holds Persian display text (۱۴۰۵/۶/۷) and must
       // never drive ORDER BY. created_at (epoch ms) is backfilled for legacy rows;
       // unknown rows sort oldest via COALESCE 0.
-      orderBy: [desc(sql`coalesce(${users.createdAt}, 0)`), desc(users.id)],
+      orderBy: sql`coalesce(${users.createdAt}, 0) desc, ${users.id} desc`,
       ...(limit !== null ? { limit, offset } : {}),
     });
 
@@ -587,7 +587,7 @@ router.get('/orders', async (req, res) => {
       const [paged, countRows] = await Promise.all([
         db.query.orders.findMany({
           where,
-          orderBy: [desc(orders.date)],
+          orderBy: desc(orders.date),
           with: { items: true },
           limit: lim,
           offset: (pg - 1) * lim,
@@ -598,7 +598,7 @@ router.get('/orders', async (req, res) => {
     }
     const allOrders = await db.query.orders.findMany({
       where,
-      orderBy: [desc(orders.date)],
+      orderBy: desc(orders.date),
       with: { items: true }
     });
     res.json(allOrders);
@@ -945,7 +945,7 @@ router.get('/reviews', async (req, res) => {
   try {
     const { limit, offset } = pageParams(req);
     const allReviews = await db.query.reviews.findMany({
-      orderBy: [desc(reviews.date)],
+      orderBy: desc(reviews.date),
       with: { product: true },
       ...(limit !== null ? { limit, offset } : {}),
     });

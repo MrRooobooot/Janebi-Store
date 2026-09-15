@@ -21,7 +21,7 @@ router.get(["/", "/my-orders"], async (req: AuthRequest, res) => {
     with: {
       items: true
     },
-    orderBy: [desc(orders.date)]
+    orderBy: sql`${orders.date} desc`,
   });
   
   const formatted = allOrders.map(o => ({
