@@ -233,3 +233,9 @@ Purge پس از آخرین گیت (قاعدهٔ جدید): ۳۴ کاربر + ۹ 
 - ThemeContext: حالت پیشفرض light؛ دارک فقط با انتخاب صریح (localStorage theme=dark) — سیستم‌پرفرنس تحمیل نمی‌شود (C11 قبلی).
 - Storefront دسکتاپ: هیچ toggle تم (حذف در C11)؛ toggle تنها در drawer منوی موبایل + پنل ادمین.
 - اثبات prod: desktop default=false dark، toggle=0؛ موبایل: قبل false → بعد true. probe: theme-default-0915.mjs. verify EXIT=0، design-audit 8/8.
+
+## گریل-می تم — همه توصیه‌ها اعمال (0915, live 686ca63)
+- Q1 انتخاب صریح کاربران دسکتاپ محترم ماند (بدون ریست اجباری) — ThemeContext فقط savedTheme=dark
+- Q2 toggle پنل ادمین حفظ شد (AdminLayout) — فقط storefront دسکتاپ بدون toggle
+- Q3 (SW/CSS 24h) بدون اکشن — باندل hash جدید (`686ca63` dist) SW stale-while-revalidate خودش را به‌روز می‌کند
+- اثبات prod: probe theme-default-0915.mjs → pass:true (desktop light/no-toggle، mobile toggle کار می‌کند)
