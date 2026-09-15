@@ -13,9 +13,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const savedTheme = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       
-      if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+      if (savedTheme === 'dark') {
+        // Explicit user choice only — system preference no longer forces dark (user: «پیشفرض روشن باشه»)
         setIsDarkMode(true);
         document.documentElement.classList.add('dark');
       }

@@ -267,7 +267,7 @@ export default function Home() {
               <div
                 key={slide.id}
                 aria-hidden={idx !== activeSlide}
-                className="hero-slide-content relative z-10 w-full col-start-1 row-start-1 gap-3 sm:gap-6 md:gap-8 md:grid md:grid-cols-12 transition-opacity duration-300 motion-reduce:transition-none motion-reduce:duration-0"
+                className="hero-slide-content relative z-10 w-full col-start-1 row-start-1 transition-opacity duration-300 motion-reduce:transition-none motion-reduce:duration-0"
                 style={{ opacity: idx === activeSlide ? 1 : 0, pointerEvents: idx === activeSlide ? 'auto' : 'none', visibility: idx === activeSlide ? 'visible' : 'hidden' }}
               >
                 <HeroSlideContent slide={slide} />
@@ -407,26 +407,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3. Wholesale / B2B Banner Strip */}
-      <section className="w-full">
-        <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0e1629] border border-slate-200/90 dark:border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
-          <div className="flex items-center gap-3 text-right">
-            <div className="w-10 h-10 rounded-xl bg-primary-50 dark:bg-primary-950/40 border border-primary-200/60 dark:border-primary-900/50 flex items-center justify-center text-[var(--color-emphasis-text)] shrink-0">
-              <PackageCheck className="h-5 w-5" />
-            </div>
-            <div>
-              <h3 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white">{normalizePersianTypography(settings.b2bTitle || STORE_SETTINGS_DEFAULTS.b2bTitle)}</h3>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{normalizePersianTypography(settings.b2bDesc || STORE_SETTINGS_DEFAULTS.b2bDesc)}</p>
-            </div>
-          </div>
-          <Link
-            to={settings.b2bLink || STORE_SETTINGS_DEFAULTS.b2bLink}
-            className="px-4 min-h-[44px] inline-flex items-center rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-black text-[13px] transition-all shadow-sm shadow-[var(--color-cta)]/25 shrink-0 cursor-pointer"
-          >
-            {normalizePersianTypography(settings.b2bButtonText || STORE_SETTINGS_DEFAULTS.b2bButtonText)}
-          </Link>
-        </div>
-      </section>
+      {/* 3. Wholesale / B2B Banner Strip — removed (user: «نیازی نداریم»); /contact?type=wholesale still reachable from header nav */}
 
       {/* 4. Value Propositions Bar */}
       <section className="w-full">

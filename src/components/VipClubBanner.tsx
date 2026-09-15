@@ -3,6 +3,8 @@ import { motion } from 'motion/react';
 import { Mail, Gift, Sparkles, CheckCircle2, Check, Copy } from 'lucide-react';
 import { useToast } from '../contexts/ToastContext';
 import { jsonFetch } from '../lib/jsonFetch';
+import { normalizeIranianMobile, isValidIranianMobile } from '../lib/utils';
+import { Smartphone } from 'lucide-react';
 
 interface VipClubBannerProps {
   badge?: string;
@@ -12,7 +14,7 @@ interface VipClubBannerProps {
 }
 
 export default function VipClubBanner({ badge, title, subtitle, couponCode }: VipClubBannerProps) {
-  const [emailOrPhone, setEmailOrPhone] = useState('');
+  const [phone, setPhone] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -40,16 +42,11 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const value = emailOrPhone.trim();
-    if (!value) {
-      addToast('لطفا ایمیل یا شماره موبایل خود را وارد کنید', 'error');
-      return;
-    }
-    // Only email addresses go to the newsletter API; phone numbers are
-    // accepted locally but the endpoint is email-based.
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(value)) {
-      addToast('لطفا یک آدرس ایمیل معتبر وارد کنید', 'error');
+    // Phone-only membership (user: «واقعا کار کنه و فقط شماره موبایل») —
+    // normalized server-side into newsletter_subscribers with phone: prefix.
+    const normalized = normalizeIranianMobile(phone);
+    if (!isValidIranianMobile(normalized)) {
+      addToast('لطفا شماره موبایل معتبر وارد کنید (۰۹...)', 'error');
       return;
     }
 
@@ -57,10 +54,10 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
     try {
       await jsonFetch('/api/contact/newsletter', {
         method: 'POST',
-        body: JSON.stringify({ email: value }),
+        body: JSON.stringify({ phone: normalized }),
       });
       setSubmitted(true);
-      addToast('عضویت در خبرنامه با موفقیت انجام شد!', 'success');
+      addToast('عضویت شما با موفقیت ثبت شد!', 'success');
     } catch (err) {
       addToast(err instanceof Error ? err.message : 'خطا در برقراری ارتباط با سرور', 'error');
     } finally {
@@ -120,12 +117,14 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
               <div className="relative grow">
                 <input
                   type="text"
-                  value={emailOrPhone}
-                  onChange={(e) => setEmailOrPhone(e.target.value)}
-                  placeholder="شماره موبایل یا ایمیل..."
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  inputMode="tel"
+                  dir="ltr"
+                  placeholder="۰۹۱۲ ××× ××××"
                   className="w-full bg-black/25 text-white placeholder:text-white/70 rounded-xl py-3.5 pr-4 pl-10 text-xs sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-white/70"
                 />
-                <Mail className="h-5 w-5 text-white/60 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Smartphone className="h-5 w-5 text-white/70 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
               <button
                 type="submit"

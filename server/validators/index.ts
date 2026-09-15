@@ -351,7 +351,10 @@ export const contactSchema = z.object({
 });
 
 export const newsletterSchema = z.object({
-  body: z.object({ email: emailSchema }),
+  body: z.object({
+    email: emailSchema.optional(),
+    phone: z.string().optional(),
+  }).refine((b) => Boolean(b.email || b.phone), { message: 'email or phone required' }),
 });
 
 // Admin bulk operations — ids are primary keys of contact_messages / orders

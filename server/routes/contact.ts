@@ -90,11 +90,22 @@ router.post("/", validate(contactSchema), async (req, res) => {
 // Newsletter signup — consumed by the site footer; rows surface in the admin
 // Newsletter page (GET/DELETE /api/admin/newsletter).
 router.post("/newsletter", validate(newsletterSchema), async (req, res) => {
-  const { email } = req.body;
+  const { email, phone } = req.body;
 
   try {
-    // Zod schema already normalizes Persian/Arabic digits, trims and lowercases.
-    const normalized = toEnglishDigits(String(email)).trim().toLowerCase();
+    // Phone-first (VIP banner: «فقط شماره موبایل») with email fallback for the
+    // footer form. Phone rows are prefixed so admin export can tell them apart.
+    let normalized: string;
+    if (phone) {
+      const digits = toEnglishDigits(String(phone)).replace(/[\s-]/g, "");
+      if (!isIranianMobile(digits)) {
+        return res.status(400).json({ error: "شماره موبایل معتبر نیست (۰۹...)" });
+      }
+      normalized = `phone:${digits}`;
+    } else {
+      // Zod schema already normalizes Persian/Arabic digits, trims and lowercases.
+      normalized = toEnglishDigits(String(email)).trim().toLowerCase();
+    }
     const existing = await db.query.newsletterSubscribers.findFirst({
       where: eq(newsletterSubscribers.email, normalized),
     });

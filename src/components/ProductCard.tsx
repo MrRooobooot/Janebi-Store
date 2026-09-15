@@ -188,8 +188,8 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
                 {formatPrice(product.originalPrice).replace(' تومان', '')}
               </span>
             ) : (
-              <span className="text-[11px] text-transparent select-none leading-tight" aria-hidden="true">
-                -
+              <span className="text-[11px] leading-tight invisible" aria-hidden="true">
+                ·
               </span>
             )}
             <div className="text-[13px] sm:text-[15px] font-black text-[var(--color-emphasis-text)] tracking-tight leading-tight whitespace-nowrap">

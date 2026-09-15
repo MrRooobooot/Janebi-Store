@@ -95,11 +95,11 @@ export default function Footer() {
             <div className="space-y-2 text-xs text-zinc-600 dark:text-zinc-400 pt-2 font-medium border-t border-zinc-200/80 dark:border-zinc-800">
               <div className="flex items-center gap-2">
                 <Phone className="h-4 w-4 text-[var(--color-emphasis-text)] shrink-0" />
-                <span>تلفن پشتیبانی: <span dir="ltr" className="font-bold font-mono">{toPersianDigits(settings.phone)}</span></span>
+                <span>تلفن پشتیبانی: <span dir="ltr" className="font-bold tabular-nums">{toPersianDigits(settings.phone)}</span></span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-[var(--color-emphasis-text)] shrink-0" />
-                <span>ایمیل: <span dir="ltr" className="font-bold font-mono">{settings.email}</span></span>
+                <span>ایمیل: <span dir="ltr" className="font-bold tabular-nums">{settings.email}</span></span>
               </div>
             </div>
           </div>

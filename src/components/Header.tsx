@@ -23,7 +23,6 @@ export default function Header() {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const settings = useStoreSettings();
-  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -91,7 +90,7 @@ export default function Header() {
               {settings.announcement.split('کد تخفیف:').length === 2 ? (
                 <>
                   {settings.announcement.split('کد تخفیف:')[0]}کد تخفیف:{' '}
-                  <span dir="ltr" className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] font-black font-mono text-[10px] align-middle">
+                  <span dir="ltr" className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] font-black text-[10px] align-middle">
                     {settings.announcement.split('کد تخفیف:')[1].trim()}
                   </span>
                 </>
@@ -107,7 +106,7 @@ export default function Header() {
               پشتیبانی آنلاین — پاسخ‌گوییم
             </span>
             <span className="h-3 w-px bg-zinc-300 dark:bg-zinc-700" />
-            <span>تلفن پشتیبانی: <span dir="ltr" className="font-mono font-bold text-zinc-700 dark:text-zinc-300">{toPersianDigits(settings.phone)}</span></span>
+            <span>تلفن پشتیبانی: <span dir="ltr" className="font-bold tabular-nums text-zinc-700 dark:text-zinc-300">{toPersianDigits(settings.phone)}</span></span>
             <span className="h-3 w-px bg-zinc-300 dark:bg-zinc-700" />
             <span>ساعت کاری: {toPersianDigits(settings.supportHours)}</span>
           </div>
@@ -141,46 +140,17 @@ export default function Header() {
 
           {/* User Controls & Quick Badges */}
           <div className="flex items-center gap-1 sm:gap-1.5 lg:gap-2 shrink-0 relative z-30">
-            {/* Mobile Search Button */}
-            <button
-              aria-label="جستجو"
-              className="min-touch-target flex items-center justify-center md:hidden p-1.5 sm:p-2 text-slate-700 dark:text-slate-200 bg-slate-100/80 dark:bg-white/[0.06] hover:text-[var(--color-emphasis-text)] rounded-xl hover:bg-primary-50 dark:hover:bg-primary-950/40 transition-colors shadow-xs"
-              onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
-            >
-              <Search className="h-5 w-5" />
-            </button>
-
-            {/* Dark Mode Switcher */}
-            <button
-              aria-label={isDarkMode ? "تغییر به حالت روز" : "تغییر به حالت شب"}
-              title={isDarkMode ? "حالت روز (روشن)" : "حالت شب (تاریک)"}
-              onClick={toggleTheme}
-              className="min-touch-target hidden sm:flex items-center justify-center p-1.5 sm:p-2 text-slate-700 dark:text-slate-200 bg-slate-100/80 dark:bg-white/[0.06] hover:text-[var(--color-emphasis-text)] rounded-xl hover:bg-primary-50 dark:hover:bg-primary-950/40 transition-colors shadow-xs"
-            >
-              {isDarkMode ? <Sun className="h-5 w-5 text-amber-400" /> : <Moon className="h-5 w-5 text-slate-600" />}
-            </button>
+            {/* Theme toggle moved to hamburger drawer (user: «ببرش داخل منوی همبرگری») */}
 
             {/* Compare entry removed (user: «لازم نیست») — /compare stays reachable from product cards */}
 
-            {/* Wishlist Badge */}
-            <Link
-              to="/wishlist"
-              className="p-1.5 sm:p-2 text-slate-600 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 rounded-xl hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors relative hidden lg:flex items-center"
-              title="علاقه‌مندی‌ها"
-            >
-              <Heart className="h-5 w-5" />
-              {wishlist.length > 0 && (
-                <span className="absolute top-1 right-1 bg-rose-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                  {toPersianDigits(wishlist.length)}
-                </span>
-              )}
-            </Link>
+            {/* Wishlist entry removed from header (user: «ببرش داخل منوی همبرگری») — drawer + MobileBottomNav cover it */}
 
             {/* Cart Button */}
             <button
               onClick={openCartDrawer}
               aria-label="مشاهده سبد خرید"
-              className="min-touch-target hidden sm:flex items-center gap-1.5 bg-primary-50 hover:bg-primary-100 dark:bg-primary-950/40 text-[var(--color-emphasis-text)] border border-primary-200 dark:border-primary-800/60 px-2.5 sm:px-3 lg:px-3.5 py-1.5 sm:py-2 rounded-xl transition-all duration-200 shadow-xs cursor-pointer active:scale-95 min-touch-target"
+              className="hidden sm:flex items-center gap-1.5 h-11 bg-primary-50 hover:bg-primary-100 dark:bg-primary-950/40 text-[var(--color-emphasis-text)] border border-primary-200 dark:border-primary-800/60 px-3 rounded-xl transition-all duration-200 shadow-xs cursor-pointer active:scale-95"
             >
               <div className="relative">
                 <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -200,7 +170,7 @@ export default function Header() {
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
                   aria-expanded={userDropdownOpen}
                   aria-haspopup="menu"
-                  className="flex items-center gap-1 p-1 sm:p-2 rounded-xl bg-slate-100 dark:bg-white/[0.06] text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/[0.1] text-xs font-bold transition-colors"
+                  className="flex items-center gap-1.5 h-11 px-2.5 rounded-xl bg-slate-100 dark:bg-white/[0.06] text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/[0.1] text-xs font-bold transition-colors"
                 >
                   <User className="h-4 w-4 text-[var(--color-emphasis-text)]" />
                   <span className="hidden sm:inline max-w-[100px] truncate">{user?.name || 'حساب کاربری'}</span>
@@ -264,12 +234,10 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Mobile Search Expanding Input */}
-        {mobileSearchOpen && (
-          <div className="md:hidden py-2.5 border-t border-zinc-200 dark:border-zinc-800">
-            <HeaderSearch autoFocus onSearchSubmit={() => setMobileSearchOpen(false)} />
-          </div>
-        )}
+        {/* Mobile Search — always visible compact bar (user: «نوار جستجو داریم آیا نیاز هست؟») */}
+        <div className="md:hidden pb-2.5 -mt-1">
+          <HeaderSearch />
+        </div>
 
         {/* Secondary Category Navigation (Desktop) */}
         <nav className="hidden lg:flex items-center gap-6 py-2.5 border-t border-slate-100 dark:border-white/[0.06] text-xs font-medium text-slate-600 dark:text-slate-300 relative z-20">
