@@ -170,7 +170,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
 
                           {/* Price & Savings Display */}
                           <div className="mt-1 flex items-center gap-2">
-                            <span className="text-xs font-black text-[var(--color-emphasis-text)] font-mono">
+                            <span className="text-xs font-black text-[var(--color-emphasis-text)]">
                               {formatPrice(item.price * item.quantity)}
                             </span>
                             {hasDiscount && (
@@ -232,7 +232,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 <div className="p-4 sm:p-5 border-t border-zinc-100 dark:border-zinc-800/80 bg-zinc-50/70 dark:bg-zinc-900/40 space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400">مجموع کل قابل پرداخت:</span>
-                    <span aria-live="polite" className="text-base font-black text-[var(--color-emphasis-text)] font-mono">
+                    <span aria-live="polite" className="text-base font-black text-[var(--color-emphasis-text)]">
                       {formatPrice(cartTotal)}
                     </span>
                   </div>

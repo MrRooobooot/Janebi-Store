@@ -71,13 +71,13 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/80 dark:border-zinc-800 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:bg-white dark:hover:bg-zinc-800/70 focus-within:ring-2 focus-within:ring-[var(--color-cta)]/40">
+          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-white dark:bg-[#0e1629] border border-slate-200/80 dark:border-white/[0.07] transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-slate-300 dark:hover:border-white/[0.15]">
             <div className="p-2.5 rounded-xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] shrink-0">
               <CheckCircle className="h-6 w-6" strokeWidth={2} />
             </div>
             <div>
-              <h3 className="font-bold text-zinc-900 dark:text-zinc-100 text-xs sm:text-sm mb-0.5">ضمانت اصالت کالا</h3>
-              <p className="text-[11px] text-zinc-500 dark:text-zinc-400">۱۰۰٪ اورجینال با گارانتی معتبر</p>
+              <h3 className="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-0.5">ضمانت اصالت کالا</h3>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">۱۰۰٪ اورجینال با گارانتی معتبر</p>
             </div>
           </div>
         </div>
@@ -109,7 +109,7 @@ export default function Footer() {
             <h3 className="text-sm font-black text-zinc-900 dark:text-zinc-100">دسترسی سریع</h3>
             <nav className="flex flex-col items-start gap-2.5 text-xs text-zinc-600 dark:text-zinc-400" aria-label="لینک‌های فوتر">
               <Link
-                to="/profile/orders"
+                to="/profile?tab=orders"
                 className="inline-flex items-center gap-2 font-bold hover:text-[var(--color-emphasis-text)] transition-colors"
               >
                 <PackageSearch className="h-4 w-4 text-[var(--color-emphasis-text)] shrink-0" />

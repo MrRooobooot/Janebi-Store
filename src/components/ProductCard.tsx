@@ -155,8 +155,8 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
           </div>
           )}
 
-          {/* 4. Product Title */}
-          <h3 className="font-black text-[13px] sm:text-[15px] text-slate-900 dark:text-slate-100 line-clamp-2 leading-relaxed h-11 sm:h-12 flex items-start group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors mb-1.5">
+          {/* 4. Product Title — text-wrap balance kills single-word orphan lines («با» alone) */}
+          <h3 className="font-black text-[13px] sm:text-[15px] text-slate-900 dark:text-slate-100 line-clamp-2 leading-relaxed h-11 sm:h-12 flex items-start group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors mb-1.5 [text-wrap:balance]">
             {product.title}
           </h3>
 
@@ -192,7 +192,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
                 -
               </span>
             )}
-            <div className="text-[13px] sm:text-[15px] font-black text-[var(--color-emphasis-text)] font-mono tracking-tight leading-tight whitespace-nowrap">
+            <div className="text-[13px] sm:text-[15px] font-black text-[var(--color-emphasis-text)] tracking-tight leading-tight whitespace-nowrap">
               {formatPrice(product.price).replace(' تومان', '')}
             </div>
             <span className="text-[9px] font-bold text-slate-500 dark:text-slate-400 leading-tight">تومان</span>

@@ -6,6 +6,7 @@ import FAQ from '../components/FAQ';
 import LatestReviews from '../components/LatestReviews';
 import RecentlyViewed from '../components/RecentlyViewed';
 import VipClubBanner from '../components/VipClubBanner';
+import HeroSlideContent from '../components/home/HeroSlideContent';
 import {
   Sparkles, ArrowLeft, Smartphone, Truck, ShieldCheck, Headset, Flame, Star,
   Clock, TrendingUp, Award, CheckCircle2, ShieldAlert, PackageCheck, ChevronLeft, ChevronRight,
@@ -256,71 +257,32 @@ export default function Home() {
       {/* 1. Hero Showcase Section */}
       <section className="w-full box-border">
         <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-white via-slate-50 to-rose-50/30 dark:from-[#0e1629] dark:via-[#0c1220] dark:to-[#070b14] border border-slate-200/90 dark:border-white/[0.08] shadow-lg dark:shadow-2xl p-3 sm:p-7 lg:p-6 transition-colors duration-500 min-h-0 sm:min-h-[400px] lg:min-h-[340px] flex flex-col justify-between">
-          
           {/* Ambient Dot Grid (dual-theme, non-hardcoded) */}
           <div className="absolute inset-0 bg-[radial-gradient(var(--color-border-light)_1px,transparent_1px)] dark:bg-[radial-gradient(var(--color-border-dark)_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none opacity-60" />
 
-          {/* Grid: Text Column & Graphic Column */}
-          <div key={activeSlide} className="hero-slide-content relative z-10 w-full flex items-start sm:items-center gap-3 sm:gap-6 md:grid md:grid-cols-12 md:gap-8">
-            
-            {/* Text & Actions */}
-            <div className="min-w-0 flex-1 md:col-span-7 space-y-2.5 sm:space-y-4 text-right">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-50 dark:bg-primary-950/40 border border-primary-200/60 dark:border-primary-900/50 text-[var(--color-emphasis-text)] dark:text-primary-300 text-xs font-black shadow-xs">
-                <Sparkles className="h-3.5 w-3.5 animate-pulse text-[var(--color-emphasis-text)] dark:text-primary-400 shrink-0" />
-                <span>{normalizePersianTypography(currentSlide.tag)}</span>
+          {/* Slides stacked in one grid cell → container height = tallest slide; no CLS on slide change (user: «سایز باکس عوض میشه») */}
+          <div className="hidden sm:grid grid-cols-1">
+            {heroSlides.map((slide, idx) => (
+              <div
+                key={slide.id}
+                aria-hidden={idx !== activeSlide}
+                className="hero-slide-content relative z-10 w-full col-start-1 row-start-1 gap-3 sm:gap-6 md:gap-8 md:grid md:grid-cols-12 transition-opacity duration-300 motion-reduce:transition-none motion-reduce:duration-0"
+                style={{ opacity: idx === activeSlide ? 1 : 0, pointerEvents: idx === activeSlide ? 'auto' : 'none', visibility: idx === activeSlide ? 'visible' : 'hidden' }}
+              >
+                <HeroSlideContent slide={slide} />
               </div>
-
-              <h1 className="text-[22px] sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white leading-[1.35] sm:leading-[1.15] tracking-tight">
-                {normalizePersianTypography(currentSlide.title)}
-              </h1>
-
-              <p className="text-[13px] sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed font-normal line-clamp-2 sm:line-clamp-none">
-                {normalizePersianTypography(currentSlide.subtitle)}
-              </p>
-
-              <div className="pt-1 sm:pt-2 flex flex-wrap items-center gap-2.5 sm:gap-3">
-                <Link
-                  to={currentSlide.buttonLink}
-                  className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] text-white font-black px-5 sm:px-6 min-h-[44px] sm:min-h-[48px] rounded-2xl text-[13px] sm:text-sm transition-colors duration-200 shadow-lg shadow-[var(--color-cta)]/30 flex items-center gap-2 group active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-cta)]"
-                >
-                  <span>{normalizePersianTypography(currentSlide.buttonText)}</span>
-                  <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
-                </Link>
-
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                  <div className="hidden">
-                    <Award className="h-3.5 w-3.5 shrink-0 text-[var(--color-emphasis-text)]" />
-                    <span>{normalizePersianTypography(currentSlide.badge)}</span>
-                  </div>
-                  <div className="hidden sm:flex text-xs font-black px-4 py-2.5 rounded-2xl border bg-slate-100/80 text-slate-700 border-slate-200 dark:bg-white/[0.04] dark:text-slate-300 dark:border-white/[0.08] items-center gap-2">
-                    <Award className="h-4 w-4 shrink-0 text-[var(--color-emphasis-text)] dark:text-inherit" />
-                    <span>{normalizePersianTypography(currentSlide.badge)}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Visual 3D Asset Showcase Column (Desktop/Tablet) */}
-            <div className="flex shrink-0 md:col-span-5 items-center justify-center relative">
-              <div className="relative w-24 h-24 sm:w-56 sm:h-56 lg:w-56 lg:h-56 rounded-2xl sm:rounded-3xl p-0 sm:p-5 bg-transparent sm:bg-white/90 dark:sm:bg-[#121c33]/80 border-0 sm:border border-slate-200/80 dark:border-white/[0.08] sm:backdrop-blur-md flex items-center justify-center sm:shadow-md dark:sm:shadow-2xl group hero-visual-tile">
-                <PictureImage
-                  src={currentSlide.image}
-                  alt={normalizePersianTypography(currentSlide.title)}
-                  width="320"
-                  height="320"
-                  priority={true}
-                  className="w-full h-full object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.08)] dark:drop-shadow-[0_20px_30px_rgba(0,0,0,0.6)] group-hover:scale-105 transition-transform duration-500 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-                />
-              </div>
-            </div>
+            ))}
           </div>
-
+          {/* Mobile: single slide render (stacked hidden slides would break 390px flow height) */}
+          <div className="sm:hidden">
+            <HeroSlideContent slide={currentSlide} />
+          </div>
           {/* Navigation Arrows for PC Mouse & Mobile Tap */}
           <button
             type="button"
             onClick={() => setActiveSlide((prev) => (prev === 0 ? heroSlides.length - 1 : prev - 1))}
             aria-label="اسلاید قبلی"
-            className="hidden sm:flex absolute right-1 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 sm:w-10 sm:h-10 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black/90 border border-zinc-200/80 dark:border-white/10 text-zinc-800 dark:text-zinc-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer"
+            className="hidden sm:flex absolute right-2 lg:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black/90 border border-zinc-200/80 dark:border-white/10 text-zinc-800 dark:text-zinc-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer"
           >
             <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
@@ -328,7 +290,7 @@ export default function Home() {
             type="button"
             onClick={() => setActiveSlide((prev) => (prev + 1) % heroSlides.length)}
             aria-label="اسلاید بعدی"
-            className="hidden sm:flex absolute left-1 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 sm:w-10 sm:h-10 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black/90 border border-zinc-200/80 dark:border-white/10 text-zinc-800 dark:text-zinc-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer"
+            className="hidden sm:flex absolute left-2 lg:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black/90 border border-zinc-200/80 dark:border-white/10 text-zinc-800 dark:text-zinc-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer"
           >
             <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
@@ -551,13 +513,15 @@ export default function Home() {
 
       {/* 6. Trending Products Tabs Focus on Core Categories */}
       <section className="w-full">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-zinc-200 dark:border-zinc-800 pb-3">
-          <div className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-[var(--color-emphasis-text)]" />
-            <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white">کالاهای برگزیده بازار</h2>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-primary-50 dark:bg-primary-950/40 border border-primary-200/60 dark:border-primary-900/50">
+              <TrendingUp className="h-4 w-4 text-[var(--color-emphasis-text)]" />
+            </div>
+            <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white whitespace-nowrap">کالاهای برگزیده بازار</h2>
           </div>
 
-          {/* Core Category Tabs */}
+          {/* Core Category Tabs — pill chips (modern segmented style, no dated underline scoop) */}
           <div className="flex items-center gap-1.5 overflow-x-auto custom-scrollbar scroll-smooth snap-x pb-1 sm:pb-0">
             {[
               { id: 'all', label: 'همه محصولات' },
@@ -569,10 +533,11 @@ export default function Home() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`shrink-0 snap-start inline-flex items-center px-3.5 min-h-[44px] rounded-xl text-xs font-black transition-colors ${
+                aria-pressed={activeTab === tab.id}
+                className={`shrink-0 snap-start inline-flex items-center px-3.5 min-h-[36px] sm:min-h-[38px] rounded-full text-xs font-black transition-all duration-200 border ${
                   activeTab === tab.id
-                    ? 'border-b-2 border-[var(--color-cta)] text-[var(--color-cta)]'
-                    : 'text-[var(--color-text-muted-light)] dark:text-[var(--color-text-muted-dark)] hover:text-[var(--color-text-main-light)] dark:hover:text-[var(--color-text-main-dark)]'
+                    ? 'bg-[var(--color-cta)] border-[var(--color-cta)] text-white shadow-xs shadow-[var(--color-cta)]/30'
+                    : 'border-zinc-200 dark:border-zinc-700/70 text-[var(--color-text-muted-light)] dark:text-[var(--color-text-muted-dark)] hover:text-[var(--color-text-main-light)] dark:hover:text-[var(--color-text-main-dark)] hover:border-[var(--color-cta)]/40 bg-white dark:bg-white/[0.04]'
                 }`}
               >
                 {tab.label}

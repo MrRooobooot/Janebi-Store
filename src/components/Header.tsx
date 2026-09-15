@@ -151,20 +151,7 @@ export default function Header() {
               {isDarkMode ? <Sun className="h-5 w-5 text-amber-400" /> : <Moon className="h-5 w-5 text-slate-600" />}
             </button>
 
-            {/* Compare Badge */}
-            <Link
-              to="/compare"
-              aria-label="مشاهده لیست مقایسه کالاها"
-              className="p-1.5 sm:p-2 text-slate-600 dark:text-slate-400 hover:text-[var(--color-emphasis-text)] rounded-xl hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors relative hidden lg:flex items-center min-touch-target"
-              title="مقایسه کالاها"
-            >
-              <ArrowLeftRight className="h-5 w-5" />
-              {compareItems.length > 0 && (
-                <span className="absolute top-1 right-1 bg-slate-800 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center" aria-label={`${compareItems.length} مورد در مقایسه`}>
-                  {toPersianDigits(compareItems.length)}
-                </span>
-              )}
-            </Link>
+            {/* Compare entry removed (user: «لازم نیست») — /compare stays reachable from product cards */}
 
             {/* Wishlist Badge */}
             <Link
@@ -189,7 +176,7 @@ export default function Header() {
               <div className="relative">
                 <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-primary-600 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center border-2 border-white dark:border-[#0c1220] shadow-xs font-mono">
+                  <span className="absolute -top-2 -right-2 bg-primary-600 text-white text-[9px] font-black min-w-4 h-4 px-0.5 rounded-full flex items-center justify-center border-2 border-white dark:border-[#0c1220] shadow-xs">
                     {toPersianDigits(cartCount)}
                   </span>
                 )}
@@ -302,12 +289,15 @@ export default function Header() {
       {mobileMenuOpen && (
         <div className="lg:hidden border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] px-4 py-4 space-y-3 animate-in slide-in-from-top-2 duration-150">
           <div className="grid grid-cols-2 gap-2 text-xs font-medium">
-            {navLinks.map((link) => (
+            {navLinks.map((link, i) => (
               <Link
                 key={link.to}
                 to={link.to}
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 hover:bg-[var(--color-cta)]/10 dark:hover:bg-[var(--color-cta)]/30 hover:text-[var(--color-emphasis-text)] text-zinc-800 dark:text-zinc-200 text-center"
+                className={`p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 hover:bg-[var(--color-cta)]/10 dark:hover:bg-[var(--color-cta)]/30 hover:text-[var(--color-emphasis-text)] text-zinc-800 dark:text-zinc-200 text-center ${
+                  // odd item count: last link spans both columns (no orphan slot)
+                  navLinks.length % 2 === 1 && i === navLinks.length - 1 ? 'col-span-2' : ''
+                }`}
               >
                 {link.label}
               </Link>

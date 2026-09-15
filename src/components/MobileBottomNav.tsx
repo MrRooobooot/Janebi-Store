@@ -84,7 +84,7 @@ export default function MobileBottomNav() {
                   <motion.span
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute -top-1.5 -right-2 text-[10px] font-black h-4 min-w-4 px-1 rounded-full flex items-center justify-center shadow-xs bg-primary-600 text-white font-mono"
+                    className="absolute -top-1.5 -right-2 text-[10px] font-black h-4 min-w-4 px-1 rounded-full flex items-center justify-center shadow-xs bg-primary-600 text-white"
                   >
                     {toPersianDigits(item.badge)}
                   </motion.span>

@@ -51,7 +51,7 @@ export const STORE_SETTINGS_DEFAULTS: Record<string, string> = {
   // Homepage sections — admin/bale-bot editable (2026-09-09). Every homepage
   // block reads these via /api/settings; defaults = current live copy.
   announcementBarEnabled: 'true', // 'false' hides the top announcement bar (bot toggle st:bar_tog)
-  dealsTitle: 'پیشنهادات شگفت‌انگیز روز',
+  dealsTitle: 'پیشنهادهای شگفت‌انگیز روز',
   dealsSubtitle: 'تخفیف‌های محدود با تضمین کمترین قیمت بازار',
   b2bTitle: 'فروش عمده، کارتنی و همکاران سراسر ایران',
   b2bDesc: 'قیمت همکاری ویژه برای مغازه‌داران و خریداران عمده هولدر، قاب، گلس و کابل',

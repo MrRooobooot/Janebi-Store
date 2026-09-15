@@ -409,7 +409,7 @@ export default function AdminSettings() {
 
         {/* ۴. بخش‌های محتوایی صفحه اصلی (تاشو) */}
         <CollapsibleSection
-          title="پیشنهادات شگفت‌انگیز"
+          title="پیشنهادهای شگفت‌انگیز"
           icon={<Zap className="h-5 w-5 text-red-500" />}
           defaultOpen
         >

@@ -281,7 +281,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
                 <div className="p-3 bg-gray-50/50 dark:bg-gray-800/30 flex justify-between items-center text-xs text-gray-500 dark:text-gray-400 px-4">
                   <span className="font-semibold flex items-center gap-1.5">
                     <Sparkles className="h-3.5 w-3.5 text-[var(--color-emphasis-text)]" />
-                    پیشنهادات آنی ({results.length.toLocaleString('fa-IR')} محصول)
+                    پیشنهادهای آنی ({results.length.toLocaleString('fa-IR')} محصول)
                   </span>
                   <span className="text-[11px] hidden sm:inline text-gray-400">
                     با کلیدهای جهت‌نما یا کلیک انتخـاب کنید
