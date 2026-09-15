@@ -184,3 +184,11 @@ Purge پس از آخرین گیت (قاعدهٔ جدید): ۳۴ کاربر + ۹ 
 | مسیر | یافته | فیکس | اثبات |
 |------|-------|------|-------|
 | /brands + /products فیلتر برند | ۱) برند دوزبانه تکراری: Anker/انکر، Apple/اپل، Samsung/سامسونگ، Baseus/بیسوس، Xiaomi/شیائومی → ۲ ردیف فیلتر و ۲ کارت مجزا ۲) ۳۳ برند بدون کاور (تایل خاکستری متنی) و بدون بج شمارش ۳) تیتر «آلکاتل (آلکاتل)» دوبل | ادغام ۱۲ کالا به نام فارسی (canonical، seed faName) با `scripts/merge-dup-brands.cjs` idempotent؛ `/api/brands` حالا cover واقعی (MIN(product.image)) برای هر برند بدون meta برمی‌گرداند؛ تیتر پارانتز فقط وقتی faName≠name؛ onError کاور → fallback لوگوی برند | API prod: ۳۹→۳۴ برند، ۳۳/۳۳ با کاور، فیلتر سامسونگ=9 کالا؛ vision /brands لایو: «real hardware photo covers present across all visible cards، badge on every card، no duplicate parens»؛ verify EXIT=0 |
+
+## ۱۳ کامنت بازبینی in-app (0914/0915, live 41e992c — ۴ گروه)
+| گروه | کامنت‌ها → فیکس | اثبات prod |
+|------|-----------------|------------|
+| Hero (Home.tsx) | ۲ مرکزچین + ۳ فلش روی متن + ۵ پرش ارتفاع: اسلایدها در یک سلول grid استک شدند (ارتفاع ثابت = بلندترین، صفر CLS) → کامپوننت `HeroSlideContent.tsx`؛ متن ستون gutter px-8/10؛ فلش‌ها inset | پروب: height 1045→1045 stable، arrowOverlap=0px |
+| Header (Header.tsx) | ۱ بج سبد «۱۰» کلیپ/فونت مونو: min-w-4 + px-0.5 + حذف font-mono (ارقام فارسی در مونو لاتین نمی‌گنجند)؛ ۱۲ آیکن مقایسه حذف («لازم نیست»)؛ ۱۳ منوی موبایل آیتم آخر فرق (9 لینک) col-span-2 | served bundle: old badge class gone، compare link gone، drawer col-span-2 ✓ |
+| Typography (ProductCard/CartDrawer/tokens) | ۸ قیمت فارسی در font-mono (فاصله‌های عجیب + بریدن «تومان»): font-mono از قیمت/بج تخفیف حذف | served: price mono gone ✓ |
+| Copy/Footer (Footer/Home/constants) | ۴ «پیشنهادات»→«پیشنهادهای» (+ row دیتابیس settings prod)؛ ۹ تب‌ها → pill chips مدرن با aria-pressed، حذف underline دهه‌ای؛ ۱۰ «پیگیری سفارش» /profile/orders 404 → /profile?tab=orders؛ ۱۱ تایل چهارم trust هم‌رنگ سه تایل دیگر (bg-white/slate) | footerLink=/profile?tab=orders ✓ trustTile uniform ✓ tabs radius=pill ✓ |

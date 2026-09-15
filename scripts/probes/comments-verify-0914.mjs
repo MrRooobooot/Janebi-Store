@@ -3,7 +3,7 @@ import { chromium } from 'playwright';
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport:{width:1280,height:900} });
 const out = {};
-await page.goto('http://localhost:3978/', { waitUntil:'networkidle', timeout:20000 }).catch(()=>{});
+await page.goto('https://janebiarena.ir/', { waitUntil:'networkidle', timeout:20000 }).catch(()=>{});
 await page.waitForTimeout(1200);
 // C1: cart badge no clip, no font-mono
 out.badge = await page.evaluate(() => {
