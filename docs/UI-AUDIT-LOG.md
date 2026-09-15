@@ -228,3 +228,8 @@ Purge پس از آخرین گیت (قاعدهٔ جدید): ۳۴ کاربر + ۹ 
 | ۱ | drizzle 0.45.2 `orderBy: [a, b]` آرایه‌ای → SQL نامعتبر `order by (a desc, b desc)` که SQLite رد می‌کند (regression از 4e647d9 با مرتب‌سازی دوکلیدی users) | همه findMany orderBy آرایه‌ای → sql fragment خام (users, reviews ×2, orders) | repro: drizzle toSQL نشان داد پرانتز؛ sqlite3 CLI «near desc» |
 | ۲ | استقرار: `docker compose build` از src ناهمگون VPS ساخت (env.ts/برخی src قدیمی از سینک‌های ناقص قبلی) + bind-mount dist با باندل کهنه چربیده بود | سینک کامل src + rm -rf dist + tar تازه + restart | باندل کانتینر md5 == محلی؛ درون‌کانتینر GET → **200, users: 3** |
 - deploy-vps gotcha جدید: پس از هر سینک src باید **کل درخت src** تازه برود و dist از تصویر تازه کپی شود؛ build cache با src کهنه باندل می‌سازد.
+
+## تم پیشفرض سفید + دارک فقط موبایل (0915, live 89eedbf)
+- ThemeContext: حالت پیشفرض light؛ دارک فقط با انتخاب صریح (localStorage theme=dark) — سیستم‌پرفرنس تحمیل نمی‌شود (C11 قبلی).
+- Storefront دسکتاپ: هیچ toggle تم (حذف در C11)؛ toggle تنها در drawer منوی موبایل + پنل ادمین.
+- اثبات prod: desktop default=false dark، toggle=0؛ موبایل: قبل false → بعد true. probe: theme-default-0915.mjs. verify EXIT=0، design-audit 8/8.
