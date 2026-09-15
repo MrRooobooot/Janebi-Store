@@ -221,3 +221,10 @@ Purge پس از آخرین گیت (قاعدهٔ جدید): ۳۴ کاربر + ۹ 
 |-------|------|------|-------|
 | ۱ سایدبار /products «مرتب‌سازی» | sticky ۱۶۹۳px در ویوپورت ۹۰۰ → ۸۰۰px پایین غیرقابل‌دسترس؛ بج‌های شمارش بی‌min-width؛ لیست ۳۴ برند در max-h-56 (۵ آیتم نمایان) | sticky با max-h calc(100vh−7.5rem)+overflow-y-auto؛ بج min-w-7 tabular-nums؛ برند max-h-80 | پروب prod: sidebarH=780 scrollable ✓ badge ✓ maxH=320px ✓ |
 | ۲ فوتر «اندازه‌ها مرتب نیست» | items-stretch + rounded/p ناهمگون بین ۴ ستون | gap-8→6، حذف items-stretch، newsletter/enamad هم‌سطح about/links (rounded-2xl p-5) | design-audit 8/8، verify EXIT=0 |
+
+## 🐛 admin/users 500 — دو ریشه پشت‌سرهم (0915, live 3b8f4d3)
+| # | ریشه | فیکس | اثبات |
+|---|------|------|-------|
+| ۱ | drizzle 0.45.2 `orderBy: [a, b]` آرایه‌ای → SQL نامعتبر `order by (a desc, b desc)` که SQLite رد می‌کند (regression از 4e647d9 با مرتب‌سازی دوکلیدی users) | همه findMany orderBy آرایه‌ای → sql fragment خام (users, reviews ×2, orders) | repro: drizzle toSQL نشان داد پرانتز؛ sqlite3 CLI «near desc» |
+| ۲ | استقرار: `docker compose build` از src ناهمگون VPS ساخت (env.ts/برخی src قدیمی از سینک‌های ناقص قبلی) + bind-mount dist با باندل کهنه چربیده بود | سینک کامل src + rm -rf dist + tar تازه + restart | باندل کانتینر md5 == محلی؛ درون‌کانتینر GET → **200, users: 3** |
+- deploy-vps gotcha جدید: پس از هر سینک src باید **کل درخت src** تازه برود و dist از تصویر تازه کپی شود؛ build cache با src کهنه باندل می‌سازد.
