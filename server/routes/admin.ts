@@ -327,14 +327,16 @@ router.get('/users', async (req, res) => {
     // hidden account's existence to non-owner admins.
     const hideOwner = ownerId.length > 0 && requesterId !== ownerId;
     const visibleTo = hideOwner ? ne(users.id, ownerId) : undefined;
-    const visible = await db.query.users.findMany({
-      where: visibleTo,
+    // db.select() not db.query.* — the relational API needs schema relations config;
+    // select() matches the working pattern used everywhere else in this file.
+    const visible = await db.select().from(users)
+      .where(visibleTo)
       // Real chronology: joined_date holds Persian display text (۱۴۰۵/۶/۷) and must
       // never drive ORDER BY. created_at (epoch ms) is backfilled for legacy rows;
       // unknown rows sort oldest via COALESCE 0.
-      orderBy: sql`coalesce(${users.createdAt}, 0) desc, ${users.id} desc`,
-      ...(limit !== null ? { limit, offset } : {}),
-    });
+      .orderBy(sql`coalesce(${users.createdAt}, 0) desc, ${users.id} desc`)
+      .limit(limit ?? ADMIN_LIST_CAP)
+      .offset(limit === null ? 0 : offset);
 
     // Omit passwords
     const safeUsers = visible.map(u => {
