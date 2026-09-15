@@ -164,13 +164,25 @@ export default function Brands() {
                   <div className="relative h-40 rounded-2xl overflow-hidden mb-4 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center">
                     {b.image ? (
                       <>
-                        <img 
-                          src={b.image} 
-                          alt={b.name} 
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                        <img
+                          src={b.image}
+                          alt={b.name}
+                          onError={(e) => {
+                            // Broken cover (renamed/missing asset): fall back to the logo-tile cover
+                            const cover = e.currentTarget.parentElement;
+                            if (cover) {
+                              cover.dataset.imgFailed = '1';
+                              e.currentTarget.style.display = 'none';
+                              cover.querySelector('[data-cover-fallback]')?.removeAttribute('hidden');
+                            }
+                          }}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                           loading="lazy"
                           decoding="async"
                         />
+                        <div data-cover-fallback hidden className="absolute inset-0 flex items-center justify-center p-6">
+                          <BrandLogo name={b.name} size="lg" />
+                        </div>
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                         {/* Item count tag */}
                         <div className="absolute top-3 left-3">
@@ -192,7 +204,10 @@ export default function Brands() {
                     </div>
                     <div>
                       <h3 className="text-base font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors">
-                        {b.faName} <span className="font-sans text-xs text-gray-400 font-medium">({b.name})</span>
+                        {b.faName}
+                        {b.faName !== b.name && (
+                          <span className="font-sans text-xs text-gray-400 font-medium"> ({b.name})</span>
+                        )}
                       </h3>
                       <span className="text-[11px] text-[var(--color-emphasis-text)]/80 font-bold">
                         نمایندگی رسمی <Star className="inline h-3 w-3 fill-current -mt-0.5" />

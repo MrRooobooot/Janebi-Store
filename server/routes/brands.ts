@@ -11,14 +11,19 @@ const router = Router();
 
 router.get("/", async (_req, res) => {
   try {
-    // Real per-brand product counts, plus brands that exist only in products.
+    // Real per-brand product counts + a REAL cover (first product image) for
+    // brands without seed metadata — no invented assets, no empty gray tiles.
     const rows = await db
-      .select({ name: products.brand, count: sql<number>`count(*)` })
+      .select({
+        name: products.brand,
+        count: sql<number>`count(*)`,
+        cover: sql<string>`min(${products.image})`,
+      })
       .from(products)
       .groupBy(products.brand);
 
-    const liveCounts = new Map<string, number>();
-    for (const r of rows) liveCounts.set(r.name, Number(r.count));
+    const live = new Map<string, { count: number; cover: string | null }>();
+    for (const r of rows) live.set(r.name, { count: Number(r.count), cover: r.cover || null });
 
     const metaByName = new Map(ALL_BRANDS.map((b) => [b.name, b]));
     const seen = new Set<string>();
@@ -26,21 +31,24 @@ router.get("/", async (_req, res) => {
     const result = [];
     // Catalog brands first (keeps stable ordering + rich metadata)
     for (const b of ALL_BRANDS) {
-      const count = liveCounts.get(b.name) || 0;
+      const liveInfo = live.get(b.name);
+      const count = liveInfo?.count || 0;
       if (count > 0) {
-        result.push({ ...b, count });
+        result.push({ ...b, count, image: b.image || liveInfo?.cover || undefined });
         seen.add(b.name);
       }
     }
     // Any product brand not in the catalog (operator-added) at the end
-    for (const [name, count] of liveCounts.entries()) {
+    for (const [name, info] of live.entries()) {
       if (!seen.has(name)) {
+        const meta = metaByName.get(name);
         result.push({
           name,
-          faName: name,
-          count,
-          desc: "",
-          ...(metaByName.get(name)?.logo ? { logo: metaByName.get(name)!.logo } : {}),
+          faName: meta?.faName || name,
+          count: info.count,
+          desc: meta?.desc || "",
+          image: meta?.image || info.cover || undefined,
+          ...(meta?.logo ? { logo: meta.logo } : {}),
         });
       }
     }
