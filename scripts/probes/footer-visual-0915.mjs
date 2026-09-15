@@ -1,0 +1,16 @@
+import { chromium } from 'playwright';
+import fs from 'fs';
+const browser = await chromium.launch();
+const page = await browser.newPage({ viewport:{width:1280,height:900} });
+await page.goto('https://janebiarena.ir/', { waitUntil:'networkidle', timeout:30000 }).catch(()=>{});
+await page.evaluate(() => document.querySelector('footer .grid.grid-cols-2')?.scrollIntoView({block:'center'}));
+await page.waitForTimeout(800);
+fs.writeFileSync('/tmp/footer-tiles.png', await page.screenshot());
+const page2 = await browser.newPage({ viewport:{width:1280,height:900} });
+await page2.goto('https://janebiarena.ir/products', { waitUntil:'networkidle', timeout:30000 }).catch(()=>{});
+await page2.waitForTimeout(1500);
+await page2.evaluate(() => document.querySelector('aside.hidden')?.scrollIntoView({block:'start'}));
+await page2.waitForTimeout(600);
+fs.writeFileSync('/tmp/sidebar-filter.png', await page2.screenshot());
+await browser.close();
+console.log('shots saved');

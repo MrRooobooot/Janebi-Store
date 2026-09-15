@@ -83,7 +83,7 @@ export default function Footer() {
         </div>
 
         {/* Newsletter & Info & Trust Seal Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 mb-10 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 mb-10">
           {/* About & Contact Info */}
           <div className="lg:col-span-4 space-y-4 text-right flex flex-col justify-between p-5 rounded-2xl bg-white dark:bg-[#0e1629] border border-slate-200/80 dark:border-white/[0.07] shadow-xs">
             <div className="space-y-2">
@@ -119,7 +119,7 @@ export default function Footer() {
           </div>
 
           {/* Newsletter Section */}
-          <div className="lg:col-span-2 flex flex-col justify-between bg-gradient-to-r from-[var(--color-cta)]/10 to-[var(--color-cta)]/5 dark:from-zinc-900 dark:to-zinc-800/60 p-6 rounded-3xl border border-[var(--color-cta)]/60 dark:border-zinc-800 text-right">
+          <div className="lg:col-span-2 flex flex-col justify-between bg-gradient-to-r from-[var(--color-cta)]/10 to-[var(--color-cta)]/5 dark:from-zinc-900 dark:to-zinc-800/60 p-5 rounded-2xl border border-[var(--color-cta)]/60 dark:border-zinc-800 text-right">
             <div>
               <h3 className="text-base font-black text-zinc-900 dark:text-zinc-100 mb-1">عضویت در خبرنامه جانبی آرنا</h3>
               <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">از جدیدترین تخفیف‌ها، پکیج‌ها و کدهای تخفیف اختصاصی باخبر شوید.</p>
@@ -144,7 +144,7 @@ export default function Footer() {
           </div>
 
           {/* Enamad Trust Seal Badge - Responsive Card */}
-          <div className="md:col-span-2 lg:col-span-3 flex flex-col items-center justify-center p-6 rounded-3xl bg-white dark:bg-[#0e1629] border border-slate-200/80 dark:border-white/[0.07] shadow-xs text-center">
+          <div className="md:col-span-2 lg:col-span-3 flex flex-col items-center justify-center p-5 rounded-2xl bg-white dark:bg-[#0e1629] border border-slate-200/80 dark:border-white/[0.07] shadow-xs text-center">
             <span className="text-xs font-black text-slate-800 dark:text-slate-200 mb-3 flex items-center gap-1.5">
               <Award className="h-4 w-4 text-[var(--color-emphasis-text)]" />
               نماد اعتماد الکترونیکی
