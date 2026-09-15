@@ -3,7 +3,7 @@ import { chromium } from 'playwright';
 const browser = await chromium.launch();
 // DESKTOP: no toggle anywhere, default light, localStorage dark still honored (explicit user choice)
 const d = await browser.newPage({ viewport:{width:1280,height:900} });
-await d.goto('http://localhost:3978/', { waitUntil:'networkidle', timeout:20000 }).catch(()=>{});
+await d.goto('https://janebiarena.ir/', { waitUntil:'networkidle', timeout:20000 }).catch(()=>{});
 await d.waitForTimeout(1000);
 const desktop = await d.evaluate(() => ({
   dark: document.documentElement.classList.contains('dark'),
@@ -11,7 +11,7 @@ const desktop = await d.evaluate(() => ({
 }));
 // MOBILE: toggle in drawer works
 const m = await browser.newPage({ viewport:{width:390,height:844} });
-await m.goto('http://localhost:3978/', { waitUntil:'networkidle', timeout:20000 }).catch(()=>{});
+await m.goto('https://janebiarena.ir/', { waitUntil:'networkidle', timeout:20000 }).catch(()=>{});
 await m.waitForTimeout(800);
 await m.click('button[aria-label="باز کردن منو"]');
 await m.waitForTimeout(500);
