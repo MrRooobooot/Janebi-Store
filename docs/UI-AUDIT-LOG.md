@@ -201,3 +201,17 @@ Purge پس از آخرین گیت (قاعدهٔ جدید): ۳۴ کاربر + ۹ 
 | Logo (Logo) | ۵ «دیزاین زیباتر»: تایل نشان → گرادیان primary + سایه گلو + نقطه hover | logoTile gradient ✓ |
 | Footer (Footer) | ۴ فضای مرده/خشکی: بلوک about/links → سطح کارت یکدست | footerCards bg ✓ |
 - VPS src sync کامل شد (قبلاً PageHeader.tsx در درخت VPS نبود → build fail؛ رفع).
+
+## ۱۲ کامنت دوم + حل ریشه‌ای دسکتاپ/موبایل (0915, live dc912d2)
+| گروه | کامنت → ریشه/فیکس | اثبات prod |
+|------|--------------------|------------|
+| Hero C8 (ریشه‌ای) | باکس ۱۴۰×۱۴۰۰؟ ۱۰۴۵px مربعی: wrapper اسلاید `md:grid md:grid-cols-12` داشت درون استک grid → محتوا در ستون ۶۸px له می‌شد. Wrapper = سلول ساده | heroH: 1045→**403**، اسلایدها 292 |
+| C17 | بنر عمده حذف («نیازی نداریم»)؛ مسیر wholesale از nav سرپاست | b2bGone ✓ |
+| C19/20 (ریشه‌ای) | همبرگر «کار نمیکنه روی دسکتاپ»: CSS سرو‌شده VPS کهنه بود — `.min-touch-target{display:inline-flex}` unlayered بر `lg:hidden` می‌چربید؛ dist محلی (فیکس‌شده) ری‌شیپ شد | display:none @1280 ✓ |
+| C10/C11 | wishlist + theme toggle از ردیف هدر حذف (هر دو در drawer هستند)؛ **تم پیشفرض روشن** — سیستم‌پرفرنس دیگر دارک تحمیل نمی‌کند | themeToggleGone ✓ |
+| C12 | آیکن جستجوی موبایل → نوار جستجوی همیشه‌نمایان compact | searchBarMobile ✓ |
+| C14 | دکمه‌های سبد/کاربر هر دو h-11 (44px) | cartH=44 ✓ |
+| C18 | VIP «فقط شماره موبایل + واقعا کار کنه»: سرور {phone} می‌پذیرد (اعتبارسنجی ایرانی، prefix phone: در newsletter_subscribers)، invalid→400؛ اینپوت dir=ltr tel | 200/400 ✓ |
+| C7/C9 | تلفن فارسی از font-mono → tabular-nums (فوتر+بنر) | promoChip mono:false ✓ |
+| C15/C16 | استک قیمت مرتب (placeholder نامرئی)، ساختار هدر پیشنهادها تأیید | design-audit 8/8 |
+- VPS src درخت کامل سینک شد (events.ts و PageHeader.tsx قبلاً غایب بودند → build fail).
