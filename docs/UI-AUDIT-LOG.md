@@ -215,3 +215,9 @@ Purge پس از آخرین گیت (قاعدهٔ جدید): ۳۴ کاربر + ۹ 
 | C7/C9 | تلفن فارسی از font-mono → tabular-nums (فوتر+بنر) | promoChip mono:false ✓ |
 | C15/C16 | استک قیمت مرتب (placeholder نامرئی)، ساختار هدر پیشنهادها تأیید | design-audit 8/8 |
 - VPS src درخت کامل سینک شد (events.ts و PageHeader.tsx قبلاً غایب بودند → build fail).
+
+## ۲ کامنت products/footer (0915, live 9c81907)
+| کامنت | ریشه | فیکس | اثبات |
+|-------|------|------|-------|
+| ۱ سایدبار /products «مرتب‌سازی» | sticky ۱۶۹۳px در ویوپورت ۹۰۰ → ۸۰۰px پایین غیرقابل‌دسترس؛ بج‌های شمارش بی‌min-width؛ لیست ۳۴ برند در max-h-56 (۵ آیتم نمایان) | sticky با max-h calc(100vh−7.5rem)+overflow-y-auto؛ بج min-w-7 tabular-nums؛ برند max-h-80 | پروب prod: sidebarH=780 scrollable ✓ badge ✓ maxH=320px ✓ |
+| ۲ فوتر «اندازه‌ها مرتب نیست» | items-stretch + rounded/p ناهمگون بین ۴ ستون | gap-8→6، حذف items-stretch، newsletter/enamad هم‌سطح about/links (rounded-2xl p-5) | design-audit 8/8، verify EXIT=0 |
