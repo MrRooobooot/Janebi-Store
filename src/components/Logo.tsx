@@ -94,8 +94,9 @@ export default function Logo({ className = "", variant = 'full', size = 'md' }: 
 
   return (
     <div className={`flex items-center gap-2.5 sm:gap-3 group ${className}`}>
-      <div className="relative p-1 sm:p-1.5 rounded-2xl bg-zinc-100/90 dark:bg-zinc-800/80 border border-zinc-200/80 dark:border-white/10 flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-all duration-300">
+      <div className="relative p-1 sm:p-1.5 rounded-2xl bg-gradient-to-br from-white to-primary-50 dark:from-[#141d33] dark:to-[#1a2542] border border-primary-200/70 dark:border-primary-500/20 flex items-center justify-center shrink-0 shadow-sm shadow-primary-500/10 dark:shadow-primary-400/10 group-hover:scale-105 group-hover:shadow-md group-hover:shadow-primary-500/20 transition-all duration-300">
         <LogoSymbol className={symbolSizes[size]} />
+        <span aria-hidden="true" className="absolute -bottom-1 -left-1 w-2 h-2 rounded-full bg-[var(--color-cta)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 motion-reduce:hidden" />
       </div>
       <div className={`${size === 'md' ? 'max-[379px]:hidden ' : ''}flex flex-col text-right`}>
         <div className="flex items-center gap-1">

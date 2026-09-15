@@ -78,7 +78,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="bg-white/90 dark:bg-[#0c1220]/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-white/[0.08] sticky top-0 z-40 transition-colors duration-200 w-full">
+    <header className="bg-white/90 dark:bg-[#0c1220]/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-white/[0.08] shadow-[0_1px_3px_rgba(0,0,0,0.04)] dark:shadow-[0_1px_3px_rgba(0,0,0,0.3)] sticky top-0 z-40 transition-colors duration-200 w-full">
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
       
       {/* Top Announcement Bar — Strict Overflow Control (hidden when admin/bot disables it) */}
@@ -86,8 +86,17 @@ export default function Header() {
       <div className="bg-slate-100/90 dark:bg-[#060910]/95 text-slate-700 dark:text-slate-300 text-xs py-1.5 px-3 sm:px-4 border-b border-slate-200/70 dark:border-white/[0.06] w-full overflow-hidden transition-colors">
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 text-[11px] font-medium text-[var(--color-cta)] min-w-0">
-            <Sparkles className="h-3.5 w-3.5 animate-none shrink-0" />
-            <span className="text-zinc-800 dark:text-zinc-200 line-clamp-2 sm:line-clamp-none sm:truncate font-semibold">{settings.announcement}</span>
+            <Sparkles className="h-3.5 w-3.5 shrink-0 motion-safe:animate-pulse" />
+            <span className="text-zinc-800 dark:text-zinc-200 line-clamp-2 sm:line-clamp-none sm:truncate font-semibold">
+              {settings.announcement.split('کد تخفیف:').length === 2 ? (
+                <>
+                  {settings.announcement.split('کد تخفیف:')[0]}کد تخفیف:{' '}
+                  <span dir="ltr" className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] font-black font-mono text-[10px] align-middle">
+                    {settings.announcement.split('کد تخفیف:')[1].trim()}
+                  </span>
+                </>
+              ) : settings.announcement}
+            </span>
           </div>
           <div className="hidden md:flex items-center gap-4 text-[11px] text-zinc-600 dark:text-zinc-400 font-medium shrink-0">
             <span className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 font-bold">
@@ -135,7 +144,7 @@ export default function Header() {
             {/* Mobile Search Button */}
             <button
               aria-label="جستجو"
-              className="min-touch-target flex items-center justify-center md:hidden p-1.5 sm:p-2 text-slate-600 dark:text-slate-400 hover:text-[var(--color-emphasis-text)] rounded-xl hover:bg-slate-100 dark:hover:bg-white/[0.06]"
+              className="min-touch-target flex items-center justify-center md:hidden p-1.5 sm:p-2 text-slate-700 dark:text-slate-200 bg-slate-100/80 dark:bg-white/[0.06] hover:text-[var(--color-emphasis-text)] rounded-xl hover:bg-primary-50 dark:hover:bg-primary-950/40 transition-colors shadow-xs"
               onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
             >
               <Search className="h-5 w-5" />
@@ -146,7 +155,7 @@ export default function Header() {
               aria-label={isDarkMode ? "تغییر به حالت روز" : "تغییر به حالت شب"}
               title={isDarkMode ? "حالت روز (روشن)" : "حالت شب (تاریک)"}
               onClick={toggleTheme}
-              className="min-touch-target hidden sm:flex items-center justify-center p-1.5 sm:p-2 text-slate-600 dark:text-slate-300 hover:text-[var(--color-emphasis-text)] rounded-xl hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors"
+              className="min-touch-target hidden sm:flex items-center justify-center p-1.5 sm:p-2 text-slate-700 dark:text-slate-200 bg-slate-100/80 dark:bg-white/[0.06] hover:text-[var(--color-emphasis-text)] rounded-xl hover:bg-primary-50 dark:hover:bg-primary-950/40 transition-colors shadow-xs"
             >
               {isDarkMode ? <Sun className="h-5 w-5 text-amber-400" /> : <Moon className="h-5 w-5 text-slate-600" />}
             </button>

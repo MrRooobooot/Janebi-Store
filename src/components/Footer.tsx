@@ -85,7 +85,7 @@ export default function Footer() {
         {/* Newsletter & Info & Trust Seal Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 mb-10 items-stretch">
           {/* About & Contact Info */}
-          <div className="lg:col-span-4 space-y-4 text-right flex flex-col justify-between">
+          <div className="lg:col-span-4 space-y-4 text-right flex flex-col justify-between p-5 rounded-2xl bg-white dark:bg-[#0e1629] border border-slate-200/80 dark:border-white/[0.07] shadow-xs">
             <div className="space-y-2">
               <Logo size="sm" />
               <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
@@ -105,7 +105,7 @@ export default function Footer() {
           </div>
 
           {/* Links column (§2.7 / §9): quick customer links incl. order tracking */}
-          <div className="lg:col-span-3 space-y-3 text-right">
+          <div className="lg:col-span-3 space-y-3 text-right p-5 rounded-2xl bg-white dark:bg-[#0e1629] border border-slate-200/80 dark:border-white/[0.07] shadow-xs">
             <h3 className="text-sm font-black text-zinc-900 dark:text-zinc-100">دسترسی سریع</h3>
             <nav className="flex flex-col items-start gap-2.5 text-xs text-zinc-600 dark:text-zinc-400" aria-label="لینک‌های فوتر">
               <Link

@@ -32,6 +32,7 @@ export default function Home() {
   const catStartScroll = useRef(0);
   const catDragMoved = useRef(false);
   const [activeSlide, setActiveSlide] = useState(0);
+  const mobileTouchX = useRef(0);
   const [loadError, setLoadError] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
   const settings = useStoreSettings();
@@ -274,8 +275,32 @@ export default function Home() {
             ))}
           </div>
           {/* Mobile: single slide render (stacked hidden slides would break 390px flow height) */}
-          <div className="sm:hidden">
+          <div
+            className="sm:hidden touch-pan-y"
+            onTouchStart={(e) => { mobileTouchX.current = e.touches[0].clientX; }}
+            onTouchEnd={(e) => {
+              const dx = e.changedTouches[0].clientX - mobileTouchX.current;
+              if (Math.abs(dx) > 48) {
+                setActiveSlide((prev) => dx < 0 ? (prev + 1) % heroSlides.length : (prev === 0 ? heroSlides.length - 1 : prev - 1));
+              }
+            }}
+          >
             <HeroSlideContent slide={currentSlide} />
+            {/* Mobile slide indicators — tap targets + swipe affordance (user: «امکان عوض کردن باشه») */}
+            <div className="flex items-center justify-center gap-2 mt-4" role="tablist" aria-label="اسلایدهای صفحه اصلی">
+              {heroSlides.map((slide, idx) => (
+                <button
+                  key={slide.id}
+                  onClick={() => setActiveSlide(idx)}
+                  role="tab"
+                  aria-selected={activeSlide === idx}
+                  aria-label={`اسلاید ${toPersianDigits(idx + 1)}`}
+                  className="h-6 min-w-6 px-1 flex items-center justify-center cursor-pointer"
+                >
+                  <span className={`block h-2 rounded-full transition-all duration-300 motion-reduce:transition-none ${activeSlide === idx ? 'w-6 bg-primary-600 dark:bg-primary-400 shadow-sm shadow-primary-500/40' : 'w-2 bg-zinc-300 dark:bg-zinc-600'}`} />
+                </button>
+              ))}
+            </div>
           </div>
           {/* Navigation Arrows for PC Mouse & Mobile Tap */}
           <button
