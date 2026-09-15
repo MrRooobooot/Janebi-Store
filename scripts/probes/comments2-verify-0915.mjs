@@ -2,7 +2,7 @@
 import { chromium } from 'playwright';
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport:{width:390,height:844} });
-await page.goto('http://localhost:3978/', { waitUntil:'networkidle', timeout:20000 }).catch(()=>{});
+await page.goto('https://janebiarena.ir/', { waitUntil:'networkidle', timeout:20000 }).catch(()=>{});
 await page.waitForTimeout(1200);
 const out = {};
 // C1: mobile slide indicators exist + swipe works

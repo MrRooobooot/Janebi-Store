@@ -192,3 +192,12 @@ Purge پس از آخرین گیت (قاعدهٔ جدید): ۳۴ کاربر + ۹ 
 | Header (Header.tsx) | ۱ بج سبد «۱۰» کلیپ/فونت مونو: min-w-4 + px-0.5 + حذف font-mono (ارقام فارسی در مونو لاتین نمی‌گنجند)؛ ۱۲ آیکن مقایسه حذف («لازم نیست»)؛ ۱۳ منوی موبایل آیتم آخر فرق (9 لینک) col-span-2 | served bundle: old badge class gone، compare link gone، drawer col-span-2 ✓ |
 | Typography (ProductCard/CartDrawer/tokens) | ۸ قیمت فارسی در font-mono (فاصله‌های عجیب + بریدن «تومان»): font-mono از قیمت/بج تخفیف حذف | served: price mono gone ✓ |
 | Copy/Footer (Footer/Home/constants) | ۴ «پیشنهادات»→«پیشنهادهای» (+ row دیتابیس settings prod)؛ ۹ تب‌ها → pill chips مدرن با aria-pressed، حذف underline دهه‌ای؛ ۱۰ «پیگیری سفارش» /profile/orders 404 → /profile?tab=orders؛ ۱۱ تایل چهارم trust هم‌رنگ سه تایل دیگر (bg-white/slate) | footerLink=/profile?tab=orders ✓ trustTile uniform ✓ tabs radius=pill ✓ |
+
+## ۶ کامنت موبایل (0915, live 182f5a6 — ۴ گروه)
+| گروه | کامنت → فیکس | اثبات prod |
+|------|--------------|------------|
+| Hero موبایل (Home) | ۱ «امکان عوض کردن باشه»: سوایپ لمسی >48px + نشانگرهای ضربه‌پذیر مخصوص موبایل | پروب سوییچ مصنوعی: slide 1→2 ✓، dots=3 موبایل |
+| Header (Header) | ۲/۶ «خیلی خشکی شده»: دکمه‌های آیکنی chip رنگی + shadow، هدر elevation، ۳ کد تخفیف WELCOME10 → chip LTR مونو (BiDi سالم)، sparkles pulse | headerBtn bg tinted ✓ promoChip dir=ltr ✓ |
+| Logo (Logo) | ۵ «دیزاین زیباتر»: تایل نشان → گرادیان primary + سایه گلو + نقطه hover | logoTile gradient ✓ |
+| Footer (Footer) | ۴ فضای مرده/خشکی: بلوک about/links → سطح کارت یکدست | footerCards bg ✓ |
+- VPS src sync کامل شد (قبلاً PageHeader.tsx در درخت VPS نبود → build fail؛ رفع).
