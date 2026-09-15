@@ -1,7 +1,7 @@
 import { chromium } from 'playwright';
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport:{width:1280,height:900} });
-await page.goto('http://localhost:3978/products', { waitUntil:'networkidle', timeout:30000 }).catch(()=>{});
+await page.goto('https://janebiarena.ir/products', { waitUntil:'networkidle', timeout:30000 }).catch(()=>{});
 await page.waitForTimeout(1500);
 const r = await page.evaluate(() => {
   const a = document.querySelector('aside.hidden.lg\\:block');
