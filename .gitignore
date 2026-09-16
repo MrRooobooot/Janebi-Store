@@ -88,7 +88,6 @@ bale-worker/.wrangler/
 .hermes/verify-*.json
 
 migration-assets/
-scripts/probes/*.mjs
 .hermes/team/
 
 # agent/session scratch — never track
