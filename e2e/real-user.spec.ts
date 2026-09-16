@@ -140,10 +140,15 @@ test.describe('Home page — real clicks', () => {
     await assertNoErrors(errors);
   });
 
-  test('theme toggle flips dark/light and persists across reload', async ({ page }) => {
+  test('theme toggle (hamburger drawer) flips dark/light and persists across reload', async ({ page }) => {
     const errors = collectErrors(page);
+    // The theme control lives INSIDE the hamburger drawer by user request
+    // («ببرش داخل منوی همبرگری») and that toggle is lg:hidden — so this test
+    // must run at a mobile viewport, not Desktop-Chrome width.
+    await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
-    const themeBtn = page.locator('header button[aria-label*="حالت"]');
+    await page.locator('header button[aria-label="باز کردن منو"]').click();
+    const themeBtn = page.getByRole('button', { name: /حالت (شب|روز)/ }).first();
     await expect(themeBtn).toBeVisible();
     const before = await page.evaluate(() => document.documentElement.classList.contains('dark'));
     await themeBtn.click();
@@ -159,7 +164,9 @@ test.describe('Home page — real clicks', () => {
   test('desktop header search submits to catalog', async ({ page }) => {
     const errors = collectErrors(page);
     await page.goto('/');
-    const search = page.getByPlaceholder('جست‌وجوی محصول، برند یا مدل گوشی...');
+    // Two inputs carry this placeholder (desktop bar + collapsed mobile one) —
+    // pin the visible instance or Playwright throws a strict-mode violation.
+    const search = page.locator('header input[placeholder*="جست‌وجوی محصول"]:visible').first();
     await expect(search).toBeVisible();
     await search.fill('هدفون');
     await search.press('Enter');
@@ -200,19 +207,33 @@ test.describe('Catalog — filters, search, pagination, card actions', () => {
     await assertNoErrors(errors);
   });
 
-  test('card wishlist + compare toggles reflect in header badges', async ({ page }) => {
+  test('card wishlist + compare toggles land in the drawer counters', async ({ page }) => {
     const errors = collectErrors(page);
+    // Header lost its wishlist/compare entries by user request («ببرش داخل
+    // منوی همبرگری» / «لازم نیست») — the counters now live in the drawer, so
+    // assert the contract there instead of in the desktop header.
+    // Two-phase: the compare toggle is `hidden sm:flex` on product cards (compare
+    // is desktop-only by design), while the drawer that shows the counters is
+    // lg:hidden. So toggle at desktop width, then shrink to read the drawer.
+    await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto('/products');
-    const cmpBadgeBefore = await page.locator('header [aria-label*="مورد در مقایسه"]').count();
-    const wish = page.locator('button[aria-label*="علاقه‌مندی"]').first();
-    const cmp = page.locator('button[aria-label*="مقایسه"]').first();
+    const wish = page.locator('button[aria-label*="افزودن به لیست علاقه‌مندی‌ها"]').first();
+    const cmp = page.locator('button[aria-label*="افزودن به مقایسه"]').first();
     await expect(wish).toBeVisible();
     await wish.click();
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(400);
+    await expect(cmp).toBeVisible();
     await cmp.click();
-    await page.waitForTimeout(500);
-    const cmpBadgeAfter = await page.locator('header [aria-label*="مورد در مقایسه"]').count();
-    expect(cmpBadgeAfter).toBeGreaterThan(cmpBadgeBefore);
+    await page.waitForTimeout(400);
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.waitForTimeout(300);
+    await page.locator('header button[aria-label="باز کردن منو"]').click();
+    const drawerWish = page.locator('a').filter({ hasText: /علاقه‌مندی‌ها \(/ }).first();
+    const drawerCmp = page.locator('a').filter({ hasText: /مقایسه \(/ }).first();
+    await expect(drawerWish).toBeVisible();
+    await expect(drawerCmp).toBeVisible();
+    await expect(drawerWish).not.toContainText('علاقه‌مندی‌ها (۰)');
+    await expect(drawerCmp).not.toContainText('مقایسه (۰)');
     await assertNoErrors(errors);
   });
 });
