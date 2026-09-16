@@ -53,3 +53,20 @@ scp .hermes/imports/import-holders.cjs ubuntu@janebiarena.ir:/tmp/
 ssh ubuntu@janebiarena.ir 'docker cp /tmp/import-holders.cjs janebi-store:/app/ && docker exec -w /app janebi-store node import-holders.cjs --apply'
 ```
 نکتهٔ عملیاتی: اسکریپت باید داخل `/app` باشد (وگرنه `better-sqlite3` resolve نمی‌شود) و کپی دارایی‌ها باید **هم** در `dist/` (ریشهٔ nginx) و **هم** `public/` انجام شود.
+
+## ۷) پاک‌سازی کاتالوگ تستی قدیمی (۱۴۰۵/۰۶/۲۵)
+
+دستور کاربر: «همه محصولات تستی قدیمی به غیر از هولدر و نگهدارنده که الان اضافه کردی رو پاک کن».
+
+| اقدام | شاهد |
+|-------|------|
+| Pre-flight روی prod (خواندنی): هدف‌ها ۱۲۹ = ۱۱۷ کالای `JB-*` (ingest تستی) + ۱۲ کالای seed دست‌نویس (`ids 2..14`) | `purge-preflight.cjs` |
+| محافظت: کالاهایی که `order_items`/`cart_items` به آن‌ها ارجاع دارند حذف **نمی‌شوند** | ۲ مورد: `id 14` و `id 5588` — هر دو فقط در سفارش‌های **لغو‌شده** (`ORD-MU06VMVR-8MB7`, `ORD-MTZUIE1H-BYF8`، `refId: null`) |
+| حذف از طریق admin API (audit + invalidate کش) | `deleted: 127`, `failed: []` |
+| بکاپ‌ها | دیتابیس: `janebi-before-test-purge-20260916-090810.db` · ردیف‌ها: `.hermes/imports/purge-backup-20260916.json` |
+| ۲ بازمانده | `stockQuantity=0` شدند (ناموجود، بدون دست‌زدن به تاریخچهٔ سفارش) — بازیابی وضعیت قبلی: ۱۰ و ۱۵۰ |
+| وضعیت نهایی prod | `total=40` = **۳۸ هولدر** (۳۷ ارلدام + باسئوس) + ۲ بازماندهٔ ناموجود؛ `/api/categories` سه دسته برمی‌گرداند |
+| sitemap | ۲۱۳ → **۷۷** URL (منطبق با واقعیت فروشگاه) |
+| اثبات رندر | پروب `post-purge-0916.mjs` Chromium+WebKit: `/`, `/products`, صفحهٔ دسته = ۲۰۰، `broken: 0`, `pageerrors: 0`؛ `/products` و دسته هر کدام ۲۰ کارت در صفحهٔ اول (۳۸ کالا = ۲ صفحه) |
+
+**تصمیم باز (نیازمند نظر کاربر):** حذف کامل آن ۲ کالای تستی مستلزم حذف آیتم‌های سفارش‌های **لغو‌شده**ی متناظر است (تاریخچهٔ سفارش مخدوش می‌شود)؛ راه استاندارد، افزودن پرچم `isActive/hidden` به اسکیما + فیلتر در API و پنل ادمین است تا کالا بدون حذف رکورد از ویترین خارج شود.
