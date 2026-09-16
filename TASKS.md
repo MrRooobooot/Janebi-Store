@@ -1,5 +1,9 @@
 # TASKS.md — Janebi Store UI/UX & Quality Audit
 
+> **Role:** the work ledger — open items, priorities and the round log (what was done, why, evidence).
+> **Not this file:** commit-level change records → `CHANGELOG_AGENT.md`; architecture/system map → `PROJECT_GRAPH.md`;
+> stack + hard rules (e.g. the closed category tree) → `AGENTS.md`; folder indexes → `docs/README.md`, `scripts/README.md`, `tests/README.md`.
+
 ### Round 2026-09-16 — ورود موجودی واقعی انبار: بخش هولدر (SHIPPED، DB-only)
 - [x] **حذف پلیس‌هولدرها:** ۹ کالای دستهٔ «هولدر و نگهدارنده» (`JB-5498..JB-5505` + `HLD-MAG-01` باسئوس MagPro) — بکاپ دیتابیس + `holder-backup-prod-20260916.json` (بازگردانی ممکن).
 - [x] **درج ۳۷ کالای واقعی ارلدام** (`ET-EH*`) با قیمت‌های واقعی لیست کاربر (۸۷۵٬۰۰۰ … ۲۵۰٬۰۰۰ تومان)، `brand=ارلدام`، `category=هولدر و نگهدارنده`؛ اثبات prod: `holder=37`, صفر اختلاف قیمت، صفر باقی‌ماندهٔ تستی، `total=166`.

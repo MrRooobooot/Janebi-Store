@@ -1,3 +1,6 @@
+> **Role:** agent-facing change log, newest first — one entry per landed change (commit, what moved, how it was verified).
+> Open work and priorities live in `TASKS.md`; the system map lives in `PROJECT_GRAPH.md`.
+
 ## 2026-09-11 — API Client Unification (jsonFetch/getJson) — COMMITTED (cf2d1cb, 09a6f37), DEPLOYED, live-verified
 - **New `src/lib/jsonFetch.ts`:** `jsonFetch<T>` (JSON POST/PUT, auto Content-Type, throws typed `ApiError{status,message}` parsed from server `{error}`) + `getJson<T>` (GET, `cache:'no-store'`). Coexists with `authFetch` (authed path untouched).
 - **20 raw JSON fetch call sites migrated across 17 files** (Home, Header, HeaderSearch, Footer, VipClubBanner, LatestReviews, RelatedProducts, DynamicBreadcrumbs, Compare, Brands, Blog, Offers, NewProducts, Contact, VipClubTab, admin/Products ×3, ProductReviews, useStoreSettings, useProductFilters cat/brands). Documented exemptions (stay raw): ProductDetail (AbortController+JSON-LD), AuthContext/Login/ForcedPasswordChange (auth state machine), useProductFilters list fetch (reads X-Total-Count/X-Total-Pages headers), api.ts refresh single-flight.
