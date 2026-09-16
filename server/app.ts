@@ -38,22 +38,26 @@ export const app = express();
 app.set("trust proxy", 1);
 
 // Reporting-Endpoints (modern report-to transport for CSP violations).
-// Absolute URL per request, derived from the forwarded Host header, so it
-// works behind the production reverse proxy without hardcoding the domain.
+// SEC-H1: the endpoint host comes from config (env.APP_URL), never from
+// request headers. It used to trust `X-Forwarded-Host`, which nginx forwards
+// verbatim — so `X-Forwarded-Host: evil.example` both forged this header AND
+// (because nginx caches /api/products etc. for 15s) poisoned the cached
+// response every other visitor received, sending their CSP violation reports
+// to an attacker-controlled origin.
 app.use((req: any, res: any, next: any) => {
-  const host = (req.headers["x-forwarded-host"] as string) || (req.headers.host as string);
-  const proto = (req.headers["x-forwarded-proto"] as string) || "https";
   // Permissions-Policy: deny powerful browser features the storefront never
   // uses (helmet v8 removed its permissionsPolicy middleware, set manually).
   res.setHeader(
     "Permissions-Policy",
     "camera=(), geolocation=(), microphone=(), payment=(self), usb=(), interest-cohort=()"
   );
-  // Reporting-Endpoints (modern report-to transport for CSP violations).
-  // Absolute URL per request, derived from the forwarded Host header, so it
-  // works behind the production reverse proxy without hardcoding the domain.
-  if (host) {
-    res.setHeader("Reporting-Endpoints", `csp-endpoint="${proto}://${host}/api/csp-report"`);
+  // Reporting-Endpoints — absolute URL, derived from the configured app URL.
+  try {
+    const base = new URL(env.APP_URL);
+    const host = base.host;
+    res.setHeader("Reporting-Endpoints", `csp-endpoint="${base.protocol}//${host}/api/csp-report"`);
+  } catch {
+    /* malformed APP_URL already rejected by env validation */
   }
   // X-Robots-Tag: explicit crawl directive for every response (incl. non-HTML
   // assets) — mirrors the index.html meta robots tag so crawlers never fall
@@ -127,30 +131,27 @@ app.use(
 );
 
 // Middleware - Restricted CORS.
-// Same-origin requests (Origin equals the site's own scheme+host, derived from
-// the forwarded Host header) are ALWAYS allowed — blocking them breaks ES
-// module scripts, which send Origin even for same-origin loads.
-function isSameOrigin(origin: string | undefined, req: { headers: Record<string, any> }): boolean {
-  if (!origin) return false;
-  const host = (req.headers["x-forwarded-host"] as string) || (req.headers.host as string);
-  if (!host) return false;
-  return origin === `https://${host}` || origin === `http://${host}`;
-}
-
+// SEC-H1: the allowlist is the ONLY authority. The old `isSameOrigin` helper
+// compared Origin against the request's `X-Forwarded-Host`/`Host` header —
+// nginx forwards `X-Forwarded-Host` verbatim, so `Origin: https://evil.example`
+// + `X-Forwarded-Host: evil.example` earned a credentialed ACAO for ANY
+// origin. Same-origin traffic is already covered by allowedOrigins (APP_URL).
 app.use((req: any, res: any, next: any) => {
   cors({
     origin: (origin, cb) => {
-      // Allow no-origin requests (mobile apps, curl), same-origin module loads,
-      // explicitly configured origins, and everything outside production.
+      // Allow no-origin requests (mobile apps, curl), explicitly configured
+      // origins, and everything outside production.
       if (
         !origin ||
         allowedOrigins.includes(origin) ||
-        isSameOrigin(origin, req) ||
         env.NODE_ENV !== "production"
       ) {
         cb(null, true);
       } else {
-        cb(new Error("Not allowed by CORS"));
+        // SEC-H1: rejections answer WITHOUT CORS headers. `cb(new Error(...))`
+        // routed through the error handler and returned HTTP 500 for every
+        // cross-origin request, which also buried real 500s in the logs.
+        cb(null, false);
       }
     },
     credentials: true,

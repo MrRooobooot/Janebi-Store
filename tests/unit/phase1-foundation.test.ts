@@ -87,6 +87,19 @@ describe('Phase 1 — Production Foundation Integration Tests', () => {
     expect(res.headers['access-control-expose-headers']).toContain('X-Request-ID');
   });
 
+  // SEC-H1: request headers must never steer a response header that nginx
+  // caches — a forwarded host used to be echoed into Reporting-Endpoints,
+  // poisoning the cached response served to every other visitor.
+  it('never reflects a forwarded host into Reporting-Endpoints', async () => {
+    const res = await request(app)
+      .get('/api/products')
+      .set('X-Forwarded-Host', 'evil.example')
+      .set('Host', 'evil.example');
+    const rp = res.headers['reporting-endpoints'] || '';
+    expect(rp).not.toContain('evil.example');
+    expect(rp).toContain(new URL(env.APP_URL).host);
+  });
+
   // -------------------------------------------------------------
   // 5. AppError Class Hierarchy
   // -------------------------------------------------------------

@@ -43,9 +43,15 @@ const envSchema = z.object({
   ),
 }).transform((data) => ({
   ...data,
-  allowedOrigins: data.CORS_ORIGIN
+  // SEC-H1: loopback dev origins are dropped in production — an allowlist that
+  // hands any local dev server a credentialed read of the store's own API is
+  // an unforced risk, and the production env has no use for it.
+  allowedOrigins: (data.CORS_ORIGIN
     ? data.CORS_ORIGIN.split(",").map((o) => o.trim())
-    : [data.APP_URL, "http://localhost:3000", "http://localhost:5173"],
+    : [data.APP_URL, "http://localhost:3000", "http://localhost:5173"]
+  ).filter(
+    (origin) => data.NODE_ENV !== "production" || !/^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/.test(origin)
+  ),
 })).superRefine((data, ctx) => {
   if (data.NODE_ENV === "production") {
     if (INSECURE_DEFAULT_SECRETS.includes(data.JWT_ACCESS_SECRET)) {
