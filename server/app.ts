@@ -30,6 +30,7 @@ import sitemapRoutes from "./routes/sitemap.js";
 import adminRoutes from "./routes/admin.js";
 import uploadRoutes from "./routes/upload.js";
 import { isPostgres, pool, sqlite } from "./db/index.js";
+import { shouldNoIndex } from "./lib/robots.js";
 
 export const app = express();
 
@@ -59,17 +60,9 @@ app.use((req: any, res: any, next: any) => {
   // back to an implied index/noarchive on stray endpoints.
   const pathLower = (req.path || "").toLowerCase();
   const hasSearch = typeof req.query?.search === 'string' && req.query.search.trim().length > 0;
-  if (
-    hasSearch ||
-    pathLower.startsWith("/themes") ||
-    pathLower.startsWith("/wp-") ||
-    pathLower.startsWith("/admin") ||
-    pathLower.startsWith("/checkout") ||
-    pathLower.startsWith("/profile") ||
-    pathLower.startsWith("/cart") ||
-    pathLower.startsWith("/login") ||
-    pathLower.startsWith("/register")
-  ) {
+  // One predicate for header + body (server/lib/robots.ts) — a header-only noindex
+  // left the shell advertising index,follow on the same response.
+  if (shouldNoIndex(pathLower, req.originalUrl?.split("?")[1]) || hasSearch) {
     res.setHeader("X-Robots-Tag", "noindex, follow");
   } else {
     res.setHeader("X-Robots-Tag", "index, follow");

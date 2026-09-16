@@ -8,6 +8,8 @@ import { sendOrderReceiptSms } from './services/sms.js';
 import { ALL_PRODUCTS, REVIEWS_STORE, VALID_COUPONS } from './data/seed-data.js';
 import { blogPostingJsonLdFor, productJsonLdFor, breadcrumbJsonLdFor, productBreadcrumbJsonLdFor, injectBreadcrumbIntoHtml } from "./lib/breadcrumbs.js";
 import { routeMetaForRequest, injectSeoMetadata, productOgImageFor } from "./lib/seoMeta.js";
+import { shouldNoIndex } from "./lib/robots.js";
+import { LEGACY_PRODUCT_REDIRECTS } from "./data/legacyProductRedirects.js";
 import { eq } from "drizzle-orm";
 import express from 'express';
 import path from 'path';
@@ -121,17 +123,19 @@ async function startServer() {
         const [pathname, search] = req.originalUrl.split("?");
         const query = new URLSearchParams(search || "");
 
-        // SEO-001: Return authentic 404 for nonexistent product IDs rather than a Soft 404
+        // SEO-001b: products removed in the catalogue cleanup 301 to the hub — Google
+        // already has these URLs; a permanent redirect keeps their signals alive.
         const productMatch = pathname.match(/^\/products?\/(\d+)\/?$/);
         if (productMatch) {
           const pid = Number(productMatch[1]);
+          const legacy = LEGACY_PRODUCT_REDIRECTS[pid];
+          if (legacy) return res.redirect(301, legacy);
+
+          // SEO-001: Return authentic 404 for nonexistent product IDs rather than a Soft 404
           const exists = await db.query.products.findFirst({
             where: eq(schema.products.id, pid),
           });
-          if (!exists) {
-            res.setHeader("X-Robots-Tag", "noindex, follow");
-            return res.status(404).sendFile(path.join(distPath, "index.html"));
-          }
+          if (!exists) return sendNotFound(res, shell);
         }
 
         // SEO-004: Authentic 404 for any non-route path. The SPA route table is
@@ -151,8 +155,7 @@ async function startServer() {
           /^\/blog\/[^/]+\/?$/.test(pathname) ||
           /^\/admin\/[a-z-]+\/?$/.test(pathname);
         if (!productRoute && !SPA_ROUTES.has(pathname)) {
-          res.setHeader("X-Robots-Tag", "noindex, follow");
-          return res.status(404).sendFile(path.join(distPath, "index.html"));
+          return sendNotFound(res, shell);
         }
 
         const [crumb, postingLd, productLd, meta, productImage, productCrumb] = await Promise.all([
@@ -166,8 +169,13 @@ async function startServer() {
         // Structured JSON-LD only differs on /blog and /product routes; avoid
         // re-reading on every request by falling back to a plain sendFile.
         const structuredLd = [crumb, postingLd, productLd, productCrumb].filter(Boolean).join("\n");
-        if (!structuredLd && !meta) return res.sendFile(path.join(distPath, "index.html"));
-        let html = shell;
+        // No route metadata → cheapest path, but the robots meta still has to match the
+        // X-Robots-Tag the middleware already sent (this early return used to ship the
+        // pristine shell with index,follow on noindex routes like /cart and /login).
+        if (!structuredLd && !meta) {
+          return res.set("Content-Type", "text/html").send(applyNoIndexMeta(shell, pathname, query));
+        }
+        let html = applyNoIndexMeta(shell, pathname, query);
         if (structuredLd) html = injectBreadcrumbIntoHtml(html, structuredLd);
         if (meta) html = injectSeoMetadata(html, productImage ? { ...meta, ogImage: productImage.og, preloadImage: productImage.hero } : meta);
         return res
@@ -202,6 +210,27 @@ async function startServer() {
       recipientPhone: event.recipientPhone,
     });
   });
+}
+
+
+/**
+ * Serve the SPA shell as a genuine 404. The HTTP status is the indexing signal, so no
+ * X-Robots-Tag is sent (that made GSC report deleted URLs under "Excluded by noindex"
+ * instead of "Not found"); the shell's own index,follow meta is swapped for noindex so
+ * header and body never contradict each other.
+ */
+/** Swap the shell's robots meta for noindex on routes the header already marks noindex. */
+function applyNoIndexMeta(html: string, pathname: string, query: URLSearchParams): string {
+  return shouldNoIndex(pathname, query)
+    ? html.replace(/<meta\s+name="robots"[^>]*>/i, '<meta name="robots" content="noindex, nofollow" />')
+    : html;
+}
+
+function sendNotFound(res: import("express").Response, shell: string) {
+  const html = shell
+    .replace(/<meta\s+name="robots"[^>]*>/i, '<meta name="robots" content="noindex, nofollow" />')
+    .replace(/<link[^>]*rel="canonical"[^>]*>\s*/gi, "");
+  return res.status(404).set({ "Content-Type": "text/html", "X-Robots-Tag": "noindex, nofollow" }).send(html);
 }
 
 startServer().catch(console.error);

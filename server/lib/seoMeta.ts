@@ -52,6 +52,16 @@ function homeFallback(): RouteMeta {
 // distinct title/description (SEO health check 0913). Copy mirrors the page
 // h1s in src/pages (no invented claims).
 const STATIC_ROUTE_META: Record<string, Omit<RouteMeta, "ogUrl">> = {
+  "/wishlist": {
+    title: "علاقه‌مندی‌های من | جانبی آرنا",
+    description: "فهرست کالاهای نشان‌شده برای خرید بعدی در فروشگاه جانبی آرنا.",
+    ogType: "website",
+  },
+  "/compare": {
+    title: "مقایسه محصولات | جانبی آرنا",
+    description: "مقایسه مشخصات و قیمت لوازم جانبی موبایل در فروشگاه جانبی آرنا.",
+    ogType: "website",
+  },
   "/offers": {
     title: "پیشنهادهای ویژه و محدود | جانبی آرنا",
     description:
@@ -174,7 +184,7 @@ async function routeMetaForCategory(category: string | null): Promise<RouteMeta 
       .groupBy(products.category)
       .limit(1);
     if (!row[0]) return null;
-    const url = `https://janebiarena.ir/products?category=${encodeURIComponent(category)}`;
+    const url = `https://janebiarena.ir/products`; // hub: filtered variant must not compete with itself
     return {
       title: `خرید ${category} | جانبی آرنا`,
       description: normalizeDescription(

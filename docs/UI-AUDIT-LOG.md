@@ -288,3 +288,17 @@ Purge پس از آخرین گیت (قاعدهٔ جدید): ۳۴ کاربر + ۹ 
 - توکن‌های autocomplete استاندارد (`username`, `current-password`, `new-password`, `tel`, `street-address`, `postal-code`, `email`, `one-time-code`) — autofill مرورگر حالا کار می‌کند.
 
 **گیت:** `npm run verify` → ۴۴۵ پاس / ۵ اسکیپ، `SEC-01 PASS`، `SEC-03 PASS`. دیپلوی OK.
+
+## SEO: گزارش Coverage سرچ‌کنسول — نویز ایندکس و لینک‌های مرده (۱۴۰۵/۰۶/۲۵، live)
+**ورودی:** CSVهای GSC (`Critical issues`: noindex 690 · alternate-canonical 419 · duplicate-without-canonical 271 · 404 54 · blocked-robots 32 · redirect 11 · soft-404 2 · discovered-not-indexed 167 · crawled-not-indexed 154؛ نمودار: not-indexed 1800 / indexed 81).
+
+| ریشه | شاهد اندازه‌گیری‌شده روی prod | فیکس | اثبات پس از دیپلوی |
+|------|------------------------------|------|--------------------|
+| **۲۷۹ کالای حذف‌شده** (کاتالوگ تستی ۰۹۱۶) هنوز در ایندکس گوگل بودند و ۴۰۴ می‌گرفتند؛ ضمناً همان ۴۰۴ها هدر `X-Robots-Tag: noindex` داشتند و در باکت گوگل به‌جای «404» زیر «Excluded by noindex» شمرده می‌شدند (بخش بزرگی از ۶۹۰) | `curl /product/14` → `404 + XR:noindex` | نقشهٔ **۳۰۱** برای هر ۱۳۸ شناسهٔ حذف‌شده (`server/data/legacyProductRedirects.ts`) + ۴۰۴ صادقانه (هدر `noindex` حذف، بدنهٔ shell به `noindex` سوییچ می‌کند) | `/product/14`, `/product/2`, `/product/5498` → **301 → /products**؛ `/products/999999` و `/nonexistent-xyz` → `404 + XR:noindex, nofollow + body:noindex, nofollow` |
+| **تناقض هدر و بدنه**: صفحهٔ noindex بدنهٔ `index, follow` تحویل می‌داد | `/cart` → `XR:noindex` + `body:index, follow` + canonical `/` | یک منبع حقیقت: `server/lib/robots.ts` (`shouldNoIndex`) مصرف‌شده در هر دو مسیر هدر و تزریق بدنه؛ `/wishlist` و `/compare` هم به لیست noindex اضافه شدند | ۸ مسیر (`/cart /login /register /profile /checkout /wishlist /admin /products?search=`) همه **MATCH** |
+| **۲۷۱ Duplicate without user-selected canonical**: هر `?category=` خودکنسونیکال بود در حالی که با `/products` محتوای یکسان دارد | `/products?category=هولدر و نگهدارنده` → canonical خودش | canonical همهٔ لیست‌های فیلترشده به هاب `/products` (عنوان/توضیح دسته حفظ می‌شود) | canonical ⇒ `https://janebiarena.ir/products` |
+| **۴۱۹ Alternate page with proper canonical** | نتیجهٔ طبیعی فیلترها | با تجمیع بالا خودبه‌خود ادغام می‌شود | — |
+| ۵۴ «Not found» | عمدتاً همان کالاهای حذف‌شده | با ۳۰۱ پوشش داده شد؛ برای مسیرهای ناشناس، ۴۰۴ باقی می‌ماند (سیگنال درست) | — |
+
+**گیت:** `npm run verify` → ۴۴۵ پاس/۵ اسکیپ، `SEC-01/SEC-03 PASS`. دیپلوی OK.
+**اقدام لازم در GSC (دستی):** در Indexing → Pages روی «Validate fix» برای هر دو گزارش 404 و noindex بزن و sitemap را دوباره Submit کن؛ تأثیر ۱–۳ هفته.
