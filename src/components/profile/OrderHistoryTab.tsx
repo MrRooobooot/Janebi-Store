@@ -22,12 +22,10 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
   const handleRetryPayment = async (orderId: string) => {
     setRetryingId(orderId);
     try {
-      const token = localStorage.getItem('token');
       const res = await authFetch('/api/payment/request', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({ orderId }),
       });

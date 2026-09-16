@@ -33,9 +33,8 @@ export default function AdminReviews() {
 
   const fetchReviews = async () => {
     try {
-      const token = localStorage.getItem('token');
       const res = await authFetch('/api/admin/reviews', {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: {}
       });
       if (res.ok) {
         const data = await res.json();
@@ -58,7 +57,7 @@ export default function AdminReviews() {
     try {
       const res = await authFetch(`/api/admin/reviews/${rev.id}/approved`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ approved: target }),
       });
       if (res.ok) {
@@ -76,10 +75,9 @@ export default function AdminReviews() {
     if (!confirm('آیا از حذف این نظر اطمینان دارید؟')) return;
 
     try {
-      const token = localStorage.getItem('token');
       const res = await authFetch(`/api/admin/reviews/${id}`, {
         method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: {}
       });
       if (res.ok) {
         setReviews(prev => prev.filter(r => r.id !== id));

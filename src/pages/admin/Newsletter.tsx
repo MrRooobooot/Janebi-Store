@@ -17,9 +17,8 @@ export default function AdminNewsletter() {
 
   const fetchSubscribers = async () => {
     try {
-      const token = localStorage.getItem('token');
       const res = await authFetch('/api/admin/newsletter', {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: {}
       });
       if (res.ok) {
         const data = await res.json();
@@ -41,10 +40,9 @@ export default function AdminNewsletter() {
     if (!confirm(`آیا از حذف ایمیل ${email} اطمینان دارید؟`)) return;
 
     try {
-      const token = localStorage.getItem('token');
       const res = await authFetch(`/api/admin/newsletter/${encodeURIComponent(email)}`, {
         method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: {}
       });
       if (res.ok) {
         setSubscribers(prev => prev.filter(s => s.email !== email));

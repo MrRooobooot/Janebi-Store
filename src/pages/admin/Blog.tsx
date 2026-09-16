@@ -31,12 +31,11 @@ export default function AdminBlog() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [search, setSearch] = useState('');
   const { addToast } = useToast();
-  const token = localStorage.getItem('token');
 
   const fetchPosts = async () => {
     try {
       const res = await authFetch('/api/blog/admin', {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: {}
       });
       if (res.ok) {
         const data = await res.json();
@@ -77,7 +76,7 @@ export default function AdminBlog() {
     try {
       const res = await authFetch(form.id ? `/api/blog/admin/${form.id}` : '/api/blog/admin', {
         method: form.id ? 'PUT' : 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
       if (res.ok) {
@@ -98,7 +97,7 @@ export default function AdminBlog() {
   const togglePublish = async (post: BlogPost) => {
     const res = await authFetch(`/api/blog/admin/${post.id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ published: !post.published }),
     });
     if (res.ok) {
@@ -113,7 +112,7 @@ export default function AdminBlog() {
     if (!window.confirm(`حذف «${post.title}» قابل بازگشت نیست. مطمئنید؟`)) return;
     const res = await authFetch(`/api/blog/admin/${post.id}`, {
       method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` }
+      headers: {}
     });
     if (res.ok) {
       addToast('مقاله حذف شد', 'success');

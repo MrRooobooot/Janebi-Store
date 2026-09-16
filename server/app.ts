@@ -107,7 +107,12 @@ app.use(
             scriptSrc: ["'self'", ...inlineScriptHashes],
             styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
             fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
-            imgSrc: ["'self'", "data:", "https:", "http:"],
+            // SEC-H3: no `http:` scheme source — every product/blog/static asset
+            // is same-origin or https (audited: all 17 DB tables scanned for
+            // http:// URLs → none). Allowing plain http let a MITM or a
+            // compromised third-party origin swap a served image for a
+            // tracking pixel / mixed-content beacon.
+            imgSrc: ["'self'", "data:", "https:"],
             connectSrc: ["'self'", "https://api.zarinpal.com", "https://payment.zarinpal.com", "https://sandbox.zarinpal.com", "https://generativelanguage.googleapis.com", "https://trustseal.enamad.ir"],
             // CSP violation observability: browsers POST violations here.
             // report-uri (legacy directive) is emitted only when CSP_REPORT_URI
@@ -344,6 +349,12 @@ app.use("/images", express.static(path.resolve(process.cwd(), "public", "images"
 // better-sqlite3 handle otherwise) so it works on both deployments.
 app.get("/api/health", async (req, res) => {
   const startedAt = Date.now();
+  // SEC-H2: the detailed block (db size, memory, uptime, node version) is
+  // operator telemetry that only helps an attacker fingerprint the runtime.
+  // It is served to in-host probes (deploy health check + scripts/vps-monitor.py
+  // curl http://127.0.0.1:3000/api/health, which never traverse nginx, hence no
+  // X-Forwarded-For) and stays hidden from public internet traffic.
+  const viaProxy = Boolean(req.headers["x-forwarded-for"]);
   try {
     let dbSize: number | null = null;
     if (isPostgres) {
@@ -367,16 +378,21 @@ app.get("/api/health", async (req, res) => {
     res.json({
       status: "ok",
       database: "ok",
-      latencyMs: Date.now() - startedAt,
-      uptimeSeconds: Math.round(process.uptime()),
-      databaseSizeBytes: dbSize,
-      memory: {
-        rssMb: Math.round(mem.rss / 1024 / 1024),
-        heapUsedMb: Math.round(mem.heapUsed / 1024 / 1024),
-        heapTotalMb: Math.round(mem.heapTotal / 1024 / 1024),
-      },
-      nodeVersion: process.version,
       requestId: req.id,
+      // SEC-H2: telemetry only for non-proxied (in-host) callers.
+      ...(viaProxy
+        ? {}
+        : {
+            latencyMs: Date.now() - startedAt,
+            uptimeSeconds: Math.round(process.uptime()),
+            databaseSizeBytes: dbSize,
+            memory: {
+              rssMb: Math.round(mem.rss / 1024 / 1024),
+              heapUsedMb: Math.round(mem.heapUsed / 1024 / 1024),
+              heapTotalMb: Math.round(mem.heapTotal / 1024 / 1024),
+            },
+            nodeVersion: process.version,
+          }),
     });
   } catch (error: any) {
     console.error("Health check DB failure:", error?.message);

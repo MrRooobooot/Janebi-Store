@@ -35,7 +35,6 @@ interface AnalyticsData {
 }
 
 export default function Dashboard() {
-  const token = localStorage.getItem("token");
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -47,7 +46,7 @@ export default function Dashboard() {
 
   const fetchStats = async () => {
     try {
-      const headers: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
+  const headers: Record<string, string> = {};
       const [statsRes, analyticsRes] = await Promise.all([
         authFetch("/api/admin/stats", { headers, credentials: "include" }),
         authFetch("/api/admin/analytics", { headers, credentials: "include" }),

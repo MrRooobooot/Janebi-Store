@@ -33,8 +33,7 @@ export default function ForcedPasswordChange() {
       return;
     }
 
-    const token = localStorage.getItem("token");
-    if (!token) {
+    if (!user) {
       addToast("نشست شما منقضی شده است. دوباره وارد شوید", "error");
       navigate("/login");
       return;
@@ -49,7 +48,6 @@ export default function ForcedPasswordChange() {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         credentials: "include",
         body: JSON.stringify({ newPassword }),

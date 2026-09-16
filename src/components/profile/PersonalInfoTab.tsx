@@ -49,8 +49,7 @@ export default function PersonalInfoTab() {
       return;
     }
 
-    const token = localStorage.getItem('token');
-    if (!token) {
+    if (!user) {
       addToast('لطفاً ابتدا وارد حساب کاربری شوید', 'error');
       return;
     }
@@ -60,8 +59,7 @@ export default function PersonalInfoTab() {
       const res = await authFetch('/api/users/me/password', {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ currentPassword, newPassword })
       });

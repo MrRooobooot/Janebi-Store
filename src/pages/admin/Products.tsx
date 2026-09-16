@@ -42,7 +42,6 @@ const PRESET_GALLERY = [
 ];
 
 export default function AdminProducts() {
-  const token = localStorage.getItem('token');
   const { addToast } = useToast();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -68,9 +67,7 @@ export default function AdminProducts() {
     try {
       await jsonFetch(`/api/admin/products/${id}`, {
         method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
+        headers: {},
         body: JSON.stringify({ stockQuantity: stockNum })
       });
       setProducts(prev => prev.map(p => p.id === id ? { ...p, stockQuantity: stockNum } : p));
@@ -211,7 +208,7 @@ export default function AdminProducts() {
       form.append('image', file);
       const res = await authFetch('/api/admin/upload/product-image', {
         method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` },
+        headers: {},
         body: form
       });
       const data = await res.json().catch(() => ({}));
@@ -300,9 +297,7 @@ export default function AdminProducts() {
 
       await jsonFetch(url, {
         method,
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
+        headers: {},
         body: JSON.stringify(payload)
       });
 
@@ -320,9 +315,7 @@ export default function AdminProducts() {
     try {
       const res = await authFetch(`/api/admin/products/${id}`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers: {}
       });
 
       if (res.ok) {

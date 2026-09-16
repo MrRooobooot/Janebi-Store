@@ -42,7 +42,6 @@ interface AdminOrder {
 }
 
 export default function AdminOrders() {
-  const token = localStorage.getItem('token');
   const { addToast } = useToast();
   const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [loading, setLoading] = useState(true);
@@ -77,7 +76,7 @@ export default function AdminOrders() {
   const fetchOrders = async () => {
     try {
       const res = await authFetch('/api/admin/orders', {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: {}
       });
       if (!res.ok) throw new Error();
       const data = await res.json();
@@ -96,8 +95,7 @@ export default function AdminOrders() {
       const res = await authFetch(`/api/admin/orders/${orderId}/status`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ status: newStatus, statusText: newStatusText })
       });
@@ -127,8 +125,7 @@ export default function AdminOrders() {
       const res = await authFetch(`/api/admin/orders/${orderId}/tracking`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ refId: trackingInput.trim() })
       });
@@ -296,7 +293,7 @@ export default function AdminOrders() {
     try {
       const res = await authFetch('/api/admin/orders/bulk-delete', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ids })
       });
       if (res.ok) {

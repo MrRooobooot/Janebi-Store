@@ -10,7 +10,6 @@ import PageHeader from '../../components/admin/PageHeader';
 import { toEnglishDigits, toPersianDigits, formatPrice } from '../../lib/utils';
 
 export default function AdminCoupons() {
-  const token = localStorage.getItem('token');
   const { addToast } = useToast();
   const [coupons, setCoupons] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -51,7 +50,7 @@ export default function AdminCoupons() {
   const fetchCoupons = async () => {
     try {
       const res = await authFetch('/api/admin/coupons', {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: {}
       });
       if (!res.ok) throw new Error();
       const data = await res.json();
@@ -116,16 +115,14 @@ export default function AdminCoupons() {
         ? await authFetch(`/api/admin/coupons/${editingCode}`, {
             method: 'PUT',
             headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
+              'Content-Type': 'application/json'
             },
             body: JSON.stringify(base)
           })
         : await authFetch('/api/admin/coupons', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
+              'Content-Type': 'application/json'
             },
             body: JSON.stringify({ ...base, code: formData.code.trim().toUpperCase() })
           });
@@ -150,8 +147,7 @@ export default function AdminCoupons() {
       const res = await authFetch(`/api/admin/coupons/${coupon.code}`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ active: coupon.active === false })
       });
@@ -168,7 +164,7 @@ export default function AdminCoupons() {
     try {
       const res = await authFetch(`/api/admin/coupons/${code}`, {
         method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: {}
       });
       if (!res.ok) throw new Error();
       addToast('کد تخفیف با موفقیت حذف شد', 'success');

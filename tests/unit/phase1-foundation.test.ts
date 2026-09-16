@@ -100,6 +100,20 @@ describe('Phase 1 — Production Foundation Integration Tests', () => {
     expect(rp).toContain(new URL(env.APP_URL).host);
   });
 
+  // SEC-H2: runtime telemetry (db size, memory, uptime, node version) must not
+  // be public — only in-host probes (no X-Forwarded-For, i.e. not via nginx).
+  it('hides health telemetry from proxied callers, serves it in-host', async () => {
+    const viaProxy = await request(app).get('/api/health').set('X-Forwarded-For', '203.0.113.9');
+    expect(viaProxy.status).toBe(200);
+    expect(viaProxy.body.status).toBe('ok');
+    expect(viaProxy.body.nodeVersion).toBeUndefined();
+    expect(viaProxy.body.memory).toBeUndefined();
+
+    const inHost = await request(app).get('/api/health');
+    expect(inHost.body.nodeVersion).toBeDefined();
+    expect(inHost.body.memory).toBeDefined();
+  });
+
   // -------------------------------------------------------------
   // 5. AppError Class Hierarchy
   // -------------------------------------------------------------

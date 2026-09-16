@@ -9,7 +9,6 @@ import { toPersianDigits, toEnglishDigits } from '../../lib/utils';
 import PageControls, { unwrapList } from '../../components/admin/PageControls';
 
 export default function AdminUsers() {
-  const token = localStorage.getItem('token');
   const { addToast } = useToast();
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,7 +30,7 @@ export default function AdminUsers() {
   const fetchUsers = async () => {
     try {
       const res = await authFetch('/api/admin/users', {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: {}
       });
       if (!res.ok) throw new Error();
       const data = await res.json();
@@ -53,8 +52,7 @@ export default function AdminUsers() {
       const res = await authFetch(`/api/admin/users/${userId}/role`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ role: newRole })
       });
@@ -80,8 +78,7 @@ export default function AdminUsers() {
       const res = await authFetch(`/api/admin/users/${passwordModalUser.id}/password`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ newPassword })
       });
@@ -113,8 +110,7 @@ export default function AdminUsers() {
       const res = await authFetch(`/api/admin/users/${pointsModalUser.id}/points`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ vipPoints: pts })
       });

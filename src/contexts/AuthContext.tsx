@@ -62,12 +62,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const checkAuth = async () => {
     try {
-      const token = localStorage.getItem("token");
-      if (token) {
-        const res = await fetch("/api/auth/me", {
-          headers: { Authorization: `Bearer ${token}` },
-          credentials: "include"
-        });
+      // Authenticate with the HttpOnly access cookie only (credentials:
+      // "include"); the mirrored localStorage token is gone by design.
+      {
+        const res = await fetch("/api/auth/me", { credentials: "include" });
         if (res.ok) {
           const data = await res.json();
           if (data.user) {
@@ -89,19 +87,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const refreshData = await refreshRes.json();
           if (refreshData.user) {
             setUser(refreshData.user);
-            if (refreshData.accessToken) {
-              localStorage.setItem("token", refreshData.accessToken);
-            }
             return;
           }
         }
       }
 
       setUser(null);
-      localStorage.removeItem("token");
     } catch {
       setUser(null);
-      localStorage.removeItem("token");
     } finally {
       setIsLoading(false);
     }
@@ -123,9 +116,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (res.ok) {
         setUser(data.user);
         setMustChangePassword(Boolean(data.mustChangePassword || data.user?.mustChangePassword));
-        if (data.accessToken) {
-          localStorage.setItem("token", data.accessToken);
-        }
         addToast(data.message, "success");
         // Return the FRESH flag — reading state here from the caller would be a
         // stale closure (state update hasn't re-rendered yet).
@@ -152,9 +142,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
         setUser(data.user);
-        if (data.accessToken) {
-          localStorage.setItem("token", data.accessToken);
-        }
         addToast(data.message, "success");
         return true;
       } else if (res.status === 503) {
@@ -183,9 +170,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const data = await res.json();
       if (res.ok) {
         setUser(data.user);
-        if (data.accessToken) {
-          localStorage.setItem("token", data.accessToken);
-        }
         addToast(data.message, "success");
         return true;
       } else {
@@ -207,7 +191,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch {}
     setUser(null);
     setMustChangePassword(false);
-    localStorage.removeItem("token");
     addToast("با موفقیت خارج شدید", "success");
   };
 
@@ -217,12 +200,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(prev => prev ? { ...prev, mustChangePassword: false } : null);
   };
 
+  // No client-side credential to hand out: every authed call rides the
+  // HttpOnly cookie (sent automatically for same-origin fetch).
   const getAuthHeaders = (): Record<string, string> => {
-    const token = localStorage.getItem("token");
     const headers: Record<string, string> = {};
-    if (token) {
-      headers["Authorization"] = `Bearer ${token}`;
-    }
     return headers;
   };
 

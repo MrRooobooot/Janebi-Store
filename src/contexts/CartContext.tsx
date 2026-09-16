@@ -83,7 +83,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // Sync cart from server when logged in — MERGE guest cart instead of replacing it.
   // Guest-only items are pushed to the server (POST is an upsert), then the
   // authoritative server list replaces local state. Runs once per login transition.
-  const mergedForToken = React.useRef<string | null>(null);
+  // Merge guard: exactly one guest-cart merge per login transition. It used
+  // to key on the localStorage access token; that token is gone, so the flag
+  // resets on logout instead (see the effect below).
+  const mergedOnce = React.useRef(false);
   // Flips on logout so an in-flight merge loop stops immediately.
   const mergeAborted = React.useRef(false);
   const isLoggedInRef = React.useRef(isLoggedIn);
@@ -91,13 +94,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
     isLoggedInRef.current = isLoggedIn;
     if (!isLoggedIn) {
       mergeAborted.current = true;
+      mergedOnce.current = false;
     }
   }, [isLoggedIn]);
   React.useEffect(() => {
     if (!isLoggedIn) return;
-    const token = localStorage.getItem('token');
-    if (!token || mergedForToken.current === token) return;
-    mergedForToken.current = token;
+    if (mergedOnce.current) return;
+    mergedOnce.current = true;
     mergeAborted.current = false;
 
     const guestItems = cart.filter(item => typeof item.id === 'number');
@@ -110,7 +113,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         try {
           const res = await authFetch('/api/cart', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ productId: item.id, quantity: item.quantity })
           });
           if (!res.ok) failedItems.push(item);
@@ -129,7 +132,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
       if (mergeAborted.current || !isLoggedInRef.current) return;
       try {
-        const res = await authFetch('/api/cart', { headers: { 'Authorization': `Bearer ${token}` } });
+        const res = await authFetch('/api/cart', { headers: {} });
         const data = await res.json();
         if (Array.isArray(data) && !mergeAborted.current && isLoggedInRef.current) {
           setCart(data);
@@ -190,11 +193,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
 
     if (isLoggedIn) {
-      const token = localStorage.getItem('token');
       try {
         const res = await authFetch('/api/cart', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ productId: product.id, quantity })
         });
         // Server responds with the authoritative cart list (upsert) — adopt it.
@@ -212,11 +214,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     saveCart(cartRef.current.filter(item => item.id !== id));
 
     if (isLoggedIn) {
-      const token = localStorage.getItem('token');
       try {
         const res = await authFetch(`/api/cart/${id}`, {
           method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${token}` }
+          headers: {}
         });
         await applyServerCart(res);
       } catch (err) {
@@ -235,11 +236,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     saveCart(cartRef.current.map(item => item.id === id ? { ...item, quantity } : item));
 
     if (isLoggedIn) {
-      const token = localStorage.getItem('token');
       try {
         const res = await authFetch(`/api/cart/${id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ quantity })
         });
         await applyServerCart(res);
@@ -253,11 +253,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     saveCart([]);
     
     if (isLoggedIn) {
-      const token = localStorage.getItem('token');
       try {
         await authFetch(`/api/cart`, {
           method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${token}` }
+          headers: {}
         });
       } catch (err) {
         console.error('Failed to sync clear cart', err);

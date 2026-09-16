@@ -51,13 +51,7 @@ export default function Profile() {
   }, [showLogoutModal]);
 
   const fetchUserOrders = () => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-    authFetch('/api/orders', {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    })
+    authFetch('/api/orders')
       .then((res) => res.json())
       .then((apiOrders) => {
         if (Array.isArray(apiOrders)) {
@@ -78,8 +72,7 @@ export default function Profile() {
   }, [isLoggedIn]);
 
   const handleCancelOrder = async (orderId: string) => {
-    const token = localStorage.getItem('token');
-    if (!token) {
+    if (!isLoggedIn) {
       addToast('لطفاً ابتدا وارد حساب کاربری شوید', 'error');
       return;
     }
@@ -87,9 +80,7 @@ export default function Profile() {
     try {
       const res = await authFetch(`/api/orders/${orderId}/cancel`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers: {}
       });
       const data = await res.json();
       if (res.ok) {

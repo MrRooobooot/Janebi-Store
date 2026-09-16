@@ -97,12 +97,10 @@ export function useCheckoutForm() {
     };
 
     try {
-      const token = localStorage.getItem('token');
       const res = await authFetch('/api/orders', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
         },
         body: JSON.stringify({
           recipient: orderPayload.recipient,
@@ -144,7 +142,6 @@ export function useCheckoutForm() {
             method: 'POST',
             headers: { 
               'Content-Type': 'application/json',
-              ...(token ? { 'Authorization': `Bearer ${token}` } : {})
             },
             body: JSON.stringify({ orderId: createdOrder.id })
           });

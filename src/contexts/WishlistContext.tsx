@@ -25,8 +25,6 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
   
   React.useEffect(() => {
     if (!isLoggedIn) return;
-    const token = localStorage.getItem('token');
-    if (!token) return;
     // Merge guest wishlist: server POST is idempotent (dedupe by productId),
     // then the authoritative server list replaces local state. Guest items
     // are no longer silently dropped on login.
@@ -34,12 +32,12 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
     const pushGuest = guestIds.map(id =>
       authFetch('/api/wishlist', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ productId: id })
       }).catch(err => console.error('Failed to merge guest wishlist item', err))
     );
     Promise.all(pushGuest)
-      .then(() => authFetch('/api/wishlist', { headers: { 'Authorization': `Bearer ${token}` } }))
+      .then(() => authFetch('/api/wishlist', { headers: {} }))
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -62,11 +60,10 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
       });
       
       if (isLoggedIn) {
-        const token = localStorage.getItem('token');
         try {
           await authFetch(`/api/wishlist/${product.id}`, {
             method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${token}` }
+            headers: {}
           });
         } catch (err) {
           console.error('Failed to sync remove from wishlist', err);
@@ -81,11 +78,10 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
       });
       
       if (isLoggedIn) {
-        const token = localStorage.getItem('token');
         try {
           await authFetch('/api/wishlist', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ productId: product.id })
           });
         } catch (err) {

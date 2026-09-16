@@ -159,12 +159,10 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
       userId: user?.id,
     };
 
-    const token = localStorage.getItem('token');
     authFetch(`/api/products/${productId}/reviews`, {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
-        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
       },
       body: JSON.stringify(payload),
     })

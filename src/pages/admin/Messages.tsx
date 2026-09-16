@@ -46,9 +46,8 @@ export default function AdminMessages() {
   // requested (status=archived or status=all).
   const fetchMessages = async (status: StatusFilter = 'all') => {
     try {
-      const token = localStorage.getItem('token');
       const res = await authFetch(`/api/admin/contact-messages?status=${status}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: {}
       });
       if (res.ok) {
         const data = await res.json();
@@ -69,12 +68,10 @@ export default function AdminMessages() {
 
   const handleUpdateStatus = async (id: string, newStatus: 'unread' | 'read' | 'resolved' | 'archived') => {
     try {
-      const token = localStorage.getItem('token');
       const res = await authFetch(`/api/admin/contact-messages/${id}/status`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ status: newStatus })
       });
@@ -107,10 +104,9 @@ export default function AdminMessages() {
     const prev = messages;
     setMessages(prevMsgs => prevMsgs.map(m => (m.status === 'unread' ? { ...m, status: 'read' as const } : m)));
     try {
-      const token = localStorage.getItem('token');
       const res = await authFetch('/api/admin/messages/read-all', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({})
       });
       if (res.ok) {
@@ -140,10 +136,9 @@ export default function AdminMessages() {
     const prev = messages;
     setMessages(prevMsgs => prevMsgs.filter(m => !selectedIds.has(m.id)));
     try {
-      const token = localStorage.getItem('token');
       const res = await authFetch('/api/admin/messages/bulk-delete', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ids })
       });
       if (res.ok) {

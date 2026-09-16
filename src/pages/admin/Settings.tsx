@@ -103,9 +103,8 @@ export default function AdminSettings() {
 
   const fetchSettings = async () => {
     try {
-      const token = localStorage.getItem('token');
       const res = await authFetch('/api/admin/settings', {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: {}
       });
       if (res.ok) {
         const data = await res.json();
@@ -123,12 +122,10 @@ export default function AdminSettings() {
     e.preventDefault();
     setSaving(true);
     try {
-      const token = localStorage.getItem('token');
       const res = await authFetch('/api/admin/settings', {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(settings)
       });

@@ -41,7 +41,6 @@ const faTime = (iso: string) => {
 };
 
 export default function AuditLogs() {
-  const token = localStorage.getItem('token');
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -54,7 +53,7 @@ export default function AuditLogs() {
       try {
         setLoading(true);
         const res = await authFetch(`/api/admin/audit-logs?page=${page}&limit=${PAGE_SIZE}`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: {}
         });
         if (!res.ok) throw new Error();
         const data = await res.json();
@@ -68,7 +67,7 @@ export default function AuditLogs() {
       }
     };
     load();
-  }, [page, token]);
+  }, [page]);
 
   const q = search.toLowerCase().trim();
   const filtered = q
