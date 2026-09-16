@@ -260,3 +260,12 @@ Purge پس از آخرین گیت (قاعدهٔ جدید): ۳۴ کاربر + ۹ 
 
 **دو ایراد vision رد شد (آرتیفکت اسکرین‌شات fullPage بود، نه باگ):** «نوار پایین روی کارت‌ها افتاده» و «سرریز متن در کارت‌های شگفت‌انگیز» با اندازه‌گیری جداگانه بررسی شد — `coveredByNav=1` در لحظهٔ اسکرول (رفتار طبیعی نوار شناور) و `compactCards: []` (هیچ کارتی کلیپ نمی‌شود)؛ فاصله‌گذار انتهای صفحه هم درست است (`footerBottom -80px`).
 **گیت:** `npm run verify` → ۴۴۵ پاس / ۵ اسکیپ، `SEC-01 PASS`, `SEC-03 PASS`. دیپلوی OK + IndexNow ۲۰۰.
+
+## کنسول prod: سیل خطای Service Worker + بلاک CSP نماد اعتماد (۱۴۰۵/۰۶/۲۵، live)
+| # | نشانه در کنسول | ریشهٔ واقعی | فیکس | اثبات |
+|---|----------------|-------------|------|-------|
+| ۱ | `sw.js:114 TypeError: Failed to execute 'clone' on 'Response': Response body is already used` — صدها بار، `Uncaught (in promise)` | `networkResponse.clone()` **داخل کالبک غیرهمزمانِ** `caches.open(API_CACHE_NAME).then(cache => …)` ارزیابی می‌شد؛ یعنی پس از آنکه پاسخ به صفحه تحویل داده و بدنه‌اش مصرف شده بود | کلون **همزمان** پیش از `return networkResponse` (`const copy = networkResponse.clone()`)، محدودکردن کش به درخواست‌های هم‌مبدأ (`url.origin === self.location.origin`)، و `catch` روی `cache.put` تا خطای کش هرگز به‌صورت صفحه‌ای ظاهر نشود؛ نسخهٔ کش‌ها به `v1.2.0` (پاک‌سازی خودکار کش‌های کهنه در `activate`) | `node scripts/probes/sw-and-csp-verify-0916.mjs` روی prod — Chromium و WebKit: `swState: active`، `caches: janebi-static-v1.2.0 + janebi-api-v1.2.0`، `cloneErrors: []`, `totalErrors: 0` → **PASS** |
+| ۲ | `Connecting to https://trustseal.enamad.ir/logo.aspx… violates Content Security Policy directive: "connect-src …"` + `Fetch API cannot load …` | `connect-src` هدر CSP میزبان نماد اعتماد را نداشت (فقط درگاه‌ها و Google AI) و تایل اعتماد آن را با fetch بارگذاری می‌کند | افزودن `https://trustseal.enamad.ir` به `connectSrc` در `server/app.ts` | هدر زندهٔ prod: `connect-src 'self' … https://trustseal.enamad.ir`؛ پروب: `cspErrors: []` |
+| ۳ | `POST /api/orders 401 (Unauthorized)` هنگام تسویه | **باگ نیست** — ثبت سفارش مهمان پشتیبانی نمی‌شود و مسیر ۴۰۱ در `useCheckoutForm` مدیریت شده: توست فارسی «برای ثبت سفارش ابتدا وارد حساب خود شوید» + هدایت به `/login` (بدون نشت متن خام سرور) | — (بررسی کد: `src/hooks/useCheckoutForm.ts:120-124`) | ۴۰۱ خام در تب Network باقی می‌ماند (قابل‌حذف نیست، رفتار مرورگر است) اما تجربهٔ کاربر فارسی و هدایت‌شده است |
+
+**گیت:** `npm run verify` → ۴۴۵ پاس / ۵ اسکیپ، `SEC-01 PASS`، `SEC-03 PASS`. دیپلوی OK + IndexNow ۲۰۰.

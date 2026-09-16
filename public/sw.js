@@ -1,5 +1,5 @@
-const CACHE_NAME = 'janebi-static-v1.1.0';
-const API_CACHE_NAME = 'janebi-api-v1.1.0';
+const CACHE_NAME = 'janebi-static-v1.2.0';
+const API_CACHE_NAME = 'janebi-api-v1.2.0';
 
 const PRECACHE_ASSETS = [
   '/',
@@ -110,8 +110,15 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(request)
       .then((networkResponse) => {
-        if (networkResponse && networkResponse.status === 200 && request.method === 'GET') {
-          caches.open(API_CACHE_NAME).then((cache) => cache.put(request, networkResponse.clone()));
+        // Clone SYNCHRONOUSLY, before the response is handed to the page: calling
+        // .clone() inside the async caches.open() callback throws
+        // "Response body is already used" once the page has started reading it.
+        const sameOrigin = url.origin === self.location.origin;
+        if (sameOrigin && networkResponse && networkResponse.status === 200 && request.method === 'GET') {
+          const copy = networkResponse.clone();
+          caches.open(API_CACHE_NAME)
+            .then((cache) => cache.put(request, copy))
+            .catch(() => {}); // a full/unavailable cache store must never surface as a page error
         }
         return networkResponse;
       })

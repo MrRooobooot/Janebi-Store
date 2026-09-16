@@ -111,7 +111,7 @@ app.use(
             styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
             fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
             imgSrc: ["'self'", "data:", "https:", "http:"],
-            connectSrc: ["'self'", "https://api.zarinpal.com", "https://payment.zarinpal.com", "https://sandbox.zarinpal.com", "https://generativelanguage.googleapis.com"],
+            connectSrc: ["'self'", "https://api.zarinpal.com", "https://payment.zarinpal.com", "https://sandbox.zarinpal.com", "https://generativelanguage.googleapis.com", "https://trustseal.enamad.ir"],
             // CSP violation observability: browsers POST violations here.
             // report-uri (legacy directive) is emitted only when CSP_REPORT_URI
             // is configured in the environment — no placeholder URL in code.
