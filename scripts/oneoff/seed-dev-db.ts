@@ -1,11 +1,14 @@
-import { db } from '../db/index.js';
-import * as schema from '../db/schema.js';
+// DEV ONLY — wipe-and-seed a LOCAL database with the demo catalogue.
+// Never run against prod: the boot seeder is opt-in for exactly this reason
+// (SEED_DEMO_DATA=1). Real inventory: scripts/data/ingest-real-products.py.
+import { db } from '../../server/db/index.js';
+import * as schema from '../../server/db/schema.js';
 import { 
   ALL_PRODUCTS, 
   REVIEWS_STORE,
   VALID_COUPONS,
   ALL_BRANDS
-} from './seed-data.js';
+} from '../../server/data/seed-data.js';
 
 async function seed() {
   console.log('🌱 Seeding database...');

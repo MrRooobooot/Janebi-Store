@@ -22,8 +22,14 @@ async function ensureDatabaseInitialized() {
 
     // Check if products exist, otherwise seed
     const existingProducts = await db.select().from(schema.products).limit(1);
-    if (existingProducts.length === 0) {
-      console.log('🌱 Seeding fresh database...');
+    // HARD RULE: demo data is OPT-IN. Booting on an empty catalogue used to
+    // silently insert the fake seed catalogue (ALL_PRODUCTS / REVIEWS_STORE /
+    // VALID_COUPONS — the «کالای تست» family with invented prices and coupons):
+    // a wiped volume or a fresh staging box came up serving fake products as if
+    // they were inventory. Real catalogue import: scripts/data/ingest-real-products.py;
+    // local demo data: SEED_DEMO_DATA=1.
+    if (existingProducts.length === 0 && process.env.SEED_DEMO_DATA === "1") {
+      console.log('🌱 Seeding fresh database (SEED_DEMO_DATA=1)...');
       for (const p of ALL_PRODUCTS) {
         await db.insert(schema.products).values({
           id: p.id,
@@ -81,6 +87,12 @@ async function ensureDatabaseInitialized() {
         }).onConflictDoNothing();
       }
       console.log('✅ Initial database seed completed!');
+    } else if (existingProducts.length === 0) {
+      console.warn(
+        '⚠️ Product catalogue is EMPTY and SEED_DEMO_DATA is not "1" — the store will serve an empty catalogue. ' +
+        'Import the real inventory (scripts/data/ingest-real-products.py inside the container) or set ' +
+        'SEED_DEMO_DATA=1 for local demo data.'
+      );
     }
   } catch (err) {
     console.error('Database initialization warning/error:', err);

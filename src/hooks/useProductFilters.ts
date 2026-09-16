@@ -23,9 +23,6 @@ export const PRICE_PRESETS: PricePreset[] = [
 const FILTER_CACHE_TTL_MS = 60_000; // 1 minute
 const clientFilterCache = new Map<string, { products: Product[]; total: number; totalPages: number; fetchedAt: number }>();
 
-export function invalidateFilterCache() {
-  clientFilterCache.clear();
-}
 
 export function useProductFilters() {
   const [searchParams, setSearchParams] = useSearchParams();
