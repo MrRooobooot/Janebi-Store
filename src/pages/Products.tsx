@@ -244,7 +244,7 @@ export default function Products() {
                 <button
                   onClick={() => setPage(Math.max(1, page - 1))}
                   disabled={page === 1}
-                  className="px-4 py-2.5 rounded-xl border border-gray-200 dark:border-[var(--color-border-dark)] disabled:opacity-40 hover:bg-[var(--color-cta)]/10 dark:hover:bg-gray-800 text-xs font-bold flex items-center gap-1 transition-all cursor-pointer disabled:cursor-not-allowed text-gray-700 dark:text-gray-300"
+                  className="min-h-11 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-[var(--color-border-dark)] disabled:opacity-40 hover:bg-[var(--color-cta)]/10 dark:hover:bg-gray-800 text-xs font-bold flex items-center gap-1 transition-all cursor-pointer disabled:cursor-not-allowed text-gray-700 dark:text-gray-300"
                 >
                   <ChevronRight className="h-4 w-4" />
                   <span>صفحه قبلی</span>
@@ -255,7 +255,7 @@ export default function Products() {
                     <button
                       key={i + 1}
                       onClick={() => setPage(i + 1)}
-                      className={`w-10 h-10 rounded-xl flex items-center justify-center text-xs font-extrabold transition-all cursor-pointer ${
+                      className={`w-11 h-11 rounded-xl flex items-center justify-center text-[13px] font-extrabold transition-all cursor-pointer ${
                         page === i + 1
                           ? 'bg-[var(--color-cta)] text-white ring-2 ring-[var(--color-cta)]/30'
                           : 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-[var(--color-border-dark)] hover:border-[var(--color-cta)]/50 text-gray-700 dark:text-gray-300'
@@ -269,7 +269,7 @@ export default function Products() {
                 <button
                   onClick={() => setPage(Math.min(totalPages, page + 1))}
                   disabled={page === totalPages}
-                  className="px-4 py-2.5 rounded-xl border border-gray-200 dark:border-[var(--color-border-dark)] disabled:opacity-40 hover:bg-[var(--color-cta)]/10 dark:hover:bg-gray-800 text-xs font-bold flex items-center gap-1 transition-all cursor-pointer disabled:cursor-not-allowed text-gray-700 dark:text-gray-300"
+                  className="min-h-11 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-[var(--color-border-dark)] disabled:opacity-40 hover:bg-[var(--color-cta)]/10 dark:hover:bg-gray-800 text-xs font-bold flex items-center gap-1 transition-all cursor-pointer disabled:cursor-not-allowed text-gray-700 dark:text-gray-300"
                 >
                   <span>صفحه بعدی</span>
                   <ChevronLeft className="h-4 w-4" />

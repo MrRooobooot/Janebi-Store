@@ -82,7 +82,7 @@ export default function Header() {
       
       {/* Top Announcement Bar — Strict Overflow Control (hidden when admin/bot disables it) */}
       {settings.announcementBarEnabled !== 'false' && (
-      <div className="bg-slate-100/90 dark:bg-[#060910]/95 text-slate-700 dark:text-slate-300 text-xs py-1.5 px-3 sm:px-4 border-b border-slate-200/70 dark:border-white/[0.06] w-full overflow-hidden transition-colors">
+      <div className="bg-slate-100/90 dark:bg-[#060910]/95 text-slate-700 dark:text-slate-300 text-xs py-1 sm:py-1.5 px-3 sm:px-4 border-b border-slate-200/70 dark:border-white/[0.06] w-full overflow-hidden transition-colors">
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 text-[11px] font-medium text-[var(--color-cta)] min-w-0">
             <Sparkles className="h-3.5 w-3.5 shrink-0 motion-safe:animate-pulse" />
@@ -116,7 +116,7 @@ export default function Header() {
 
       {/* Main Navbar */}
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 w-full relative z-30">
-        <div className="flex items-center justify-between h-16 sm:h-18 gap-2 sm:gap-4">
+        <div className="flex items-center justify-between h-14 sm:h-18 gap-2 sm:gap-4">
             
           {/* Logo & Mobile Menu Toggle */}
           <div className="shrink-0 flex items-center gap-2 sm:gap-3">
@@ -234,10 +234,6 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Mobile Search — always visible compact bar (user: «نوار جستجو داریم آیا نیاز هست؟») */}
-        <div className="md:hidden pb-2.5 -mt-1">
-          <HeaderSearch />
-        </div>
 
         {/* Secondary Category Navigation (Desktop) */}
         <nav className="hidden lg:flex items-center gap-6 py-2.5 border-t border-slate-100 dark:border-white/[0.06] text-xs font-medium text-slate-600 dark:text-slate-300 relative z-20">

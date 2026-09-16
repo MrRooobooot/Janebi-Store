@@ -153,7 +153,7 @@ export default function DynamicBreadcrumbs() {
       />
       <nav
         aria-label="مسیر راهنما"
-        className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 mb-6 overflow-x-auto whitespace-nowrap hide-scrollbar print:hidden dir-rtl py-1 px-1"
+        className="flex items-center gap-1.5 text-[13px] text-gray-500 dark:text-gray-400 mb-4 sm:mb-6 overflow-x-auto whitespace-nowrap hide-scrollbar print:hidden dir-rtl py-1 px-1"
       >
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
@@ -163,7 +163,7 @@ export default function DynamicBreadcrumbs() {
               {index === 0 ? (
                 <Link
                   to={item.href || '/'}
-                  className="inline-flex items-center gap-1 text-gray-500 dark:text-gray-400 hover:text-[var(--color-emphasis-text)] transition-colors font-medium"
+                  className="inline-flex items-center gap-1 min-h-11 py-2 text-gray-500 dark:text-gray-400 hover:text-[var(--color-emphasis-text)] transition-colors font-medium"
                   title="خانه"
                 >
                   <Home className="h-3.5 w-3.5" />
@@ -172,7 +172,7 @@ export default function DynamicBreadcrumbs() {
               ) : item.href ? (
                 <Link
                   to={item.href}
-                  className="hover:text-[var(--color-emphasis-text)] transition-colors font-medium text-gray-600 dark:text-gray-300"
+                  className="inline-flex items-center min-h-11 py-2 hover:text-[var(--color-emphasis-text)] transition-colors font-medium text-gray-600 dark:text-gray-300"
                 >
                   {item.label}
                 </Link>

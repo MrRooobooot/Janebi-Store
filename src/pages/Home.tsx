@@ -437,7 +437,7 @@ export default function Home() {
 
       {/* 4. Value Propositions Bar */}
       <section className="w-full">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+        <div className="hidden sm:grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
           {valueProps.map((item, i) => {
             const Icon = item.icon;
             return (
@@ -531,11 +531,11 @@ export default function Home() {
             onMouseMove={handleCatMouseMove}
             onMouseUp={handleCatMouseUp}
             onMouseLeave={handleCatMouseUp}
-            className="flex gap-3 sm:gap-4 overflow-x-auto pb-3 -mx-4 px-4 sm:mx-0 sm:px-0 scroll-smooth hide-scrollbar select-none cursor-grab active:cursor-grabbing snap-x"
+            className="flex gap-3 sm:gap-4 overflow-x-auto pb-3 scroll-smooth hide-scrollbar select-none cursor-grab active:cursor-grabbing snap-x"
             style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
           >
             {categories.map((cat, idx) => (
-              <div key={`mobile-${cat.slug}-${idx}`} className="shrink-0 w-28 sm:w-36 snap-start">
+              <div key={`mobile-${cat.slug}-${idx}`} className={`shrink-0 snap-start ${categories.length < 3 ? 'w-full sm:w-64' : 'w-28 sm:w-36'}`}>
                 {renderCategoryCard(cat, idx)}
               </div>
             ))}
@@ -566,7 +566,7 @@ export default function Home() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
                 aria-pressed={activeTab === tab.id}
-                className={`shrink-0 snap-start inline-flex items-center px-3.5 min-h-[36px] sm:min-h-[38px] rounded-full text-xs font-black transition-all duration-200 border ${
+                className={`shrink-0 snap-start inline-flex items-center px-4 sm:px-3.5 min-h-11 sm:min-h-[38px] rounded-full text-[13px] sm:text-xs font-black transition-all duration-200 border ${
                   activeTab === tab.id
                     ? 'bg-[var(--color-cta)] border-[var(--color-cta)] text-white shadow-xs shadow-[var(--color-cta)]/30'
                     : 'border-zinc-200 dark:border-zinc-700/70 text-[var(--color-text-muted-light)] dark:text-[var(--color-text-muted-dark)] hover:text-[var(--color-text-main-light)] dark:hover:text-[var(--color-text-main-dark)] hover:border-[var(--color-cta)]/40 bg-white dark:bg-white/[0.04]'

@@ -48,12 +48,12 @@ export default function ProductSortHeader({
   setInPageQuery,
 }: ProductSortHeaderProps) {
   return (
-    <div className="sticky top-20 z-20 bg-[var(--color-surface-light)]/95 dark:bg-[var(--color-surface-dark)]/95 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 transition-all">
+    <div className="sticky top-[5.5rem] sm:top-20 z-20 bg-[var(--color-surface-light)]/95 dark:bg-[var(--color-surface-dark)]/95 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 transition-all">
       {/* Mobile filter toggle & item counts */}
       <div className="flex items-center justify-between sm:justify-start gap-4">
         <button
           onClick={() => setMobileFilterOpen(true)}
-          className="lg:hidden flex items-center gap-2 bg-slate-100 dark:bg-white/[0.06] hover:bg-slate-200 dark:hover:bg-white/[0.1] px-4 py-2.5 rounded-xl text-xs font-bold text-slate-800 dark:text-slate-200 transition-colors cursor-pointer"
+          className="lg:hidden flex items-center gap-2 min-h-11 bg-slate-100 dark:bg-white/[0.06] hover:bg-slate-200 dark:hover:bg-white/[0.1] px-4 py-2.5 rounded-xl text-[13px] font-bold text-slate-800 dark:text-slate-200 transition-colors cursor-pointer"
         >
           <SlidersHorizontal className="h-4 w-4 text-[var(--color-emphasis-text)]" />
           <span>فیلترها</span>
@@ -83,7 +83,7 @@ export default function ProductSortHeader({
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
             aria-label="ترتیب نمایش محصولات"
-            className="w-full appearance-none bg-white dark:bg-[#0e1629] border border-slate-200/90 dark:border-white/[0.08] rounded-xl py-2.5 px-4 pr-3 pl-9 text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-cta)]/50 transition-all cursor-pointer shadow-xs"
+            className="w-full appearance-none bg-white dark:bg-[#0e1629] border border-slate-200/90 dark:border-white/[0.08] rounded-xl min-h-11 py-2.5 px-4 pr-3 pl-9 text-[13px] font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-cta)]/50 transition-all cursor-pointer shadow-xs"
           >
             <option value="default">پیش‌فرض (محبوب‌ترین)</option>
             <option value="price-asc">ارزان‌ترین</option>

@@ -524,10 +524,10 @@ export default function ProductDetail() {
           </div>
         </div>
         <div className="bg-[var(--color-surface-light)]/85 dark:bg-[var(--color-surface-dark)]/85 backdrop-blur-xl rounded-3xl p-6 sm:p-8 lg:p-10 shadow-sm border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
-          <div className="flex gap-4 sm:gap-8 border-b border-gray-200 dark:border-[var(--color-border-dark)] mb-8 overflow-x-auto pb-px">
+          <div className="flex gap-4 sm:gap-8 border-b border-gray-200 dark:border-[var(--color-border-dark)] mb-6 sm:mb-8 overflow-x-auto scroll-px-4 px-1 pb-px">
             <button
               onClick={() => setActiveTab('description')}
-              className={`pb-4 font-bold text-sm sm:text-base border-b-2 transition-all whitespace-nowrap relative ${
+              className={`min-h-11 flex items-center px-0.5 pb-4 font-bold text-sm sm:text-base border-b-2 transition-all whitespace-nowrap relative ${
                 activeTab === 'description'
                   ? 'text-[var(--color-emphasis-text)] border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/30 font-black'
                   : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-800 dark:hover:text-gray-200'
@@ -537,7 +537,7 @@ export default function ProductDetail() {
             </button>
             <button
               onClick={() => setActiveTab('specs')}
-              className={`pb-4 font-bold text-sm sm:text-base border-b-2 transition-all whitespace-nowrap relative ${
+              className={`min-h-11 flex items-center px-0.5 pb-4 font-bold text-sm sm:text-base border-b-2 transition-all whitespace-nowrap relative ${
                 activeTab === 'specs'
                   ? 'text-[var(--color-emphasis-text)] border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/30 font-black'
                   : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-800 dark:hover:text-gray-200'
@@ -547,7 +547,7 @@ export default function ProductDetail() {
             </button>
             <button
               onClick={() => setActiveTab('reviews')}
-              className={`pb-4 font-bold text-sm sm:text-base border-b-2 transition-all whitespace-nowrap relative ${
+              className={`min-h-11 flex items-center px-0.5 pb-4 font-bold text-sm sm:text-base border-b-2 transition-all whitespace-nowrap relative ${
                 activeTab === 'reviews'
                   ? 'text-[var(--color-emphasis-text)] border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/30 font-black'
                   : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-800 dark:hover:text-gray-200'

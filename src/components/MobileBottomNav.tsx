@@ -51,7 +51,7 @@ export default function MobileBottomNav() {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-white/90 dark:bg-[#0c1220]/90 backdrop-blur-xl border-t border-slate-200/80 dark:border-white/[0.08] shadow-[0_-4px_20px_rgba(0,0,0,0.06)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.4)] px-2 py-1.5 transition-colors duration-300">
+    <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-white/95 dark:bg-[#0c1220]/95 backdrop-blur-xl border-t border-slate-200/80 dark:border-white/[0.08] shadow-[0_-4px_20px_rgba(0,0,0,0.06)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.4)] px-2 pt-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))] transition-colors duration-300">
       <div className="flex items-center justify-around max-w-md mx-auto">
         {navItems.map((item) => {
           const isActive = item.exact
@@ -64,7 +64,7 @@ export default function MobileBottomNav() {
               key={item.path}
               to={item.path}
               aria-label={item.label}
-              className={`relative flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-300 min-touch-target ${
+              className={`relative flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all duration-300 min-touch-target ${
                 isActive
                   ? 'text-[var(--color-emphasis-text)] font-bold'
                   : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-[var(--color-surface-light)]/[0.04]'
@@ -90,7 +90,7 @@ export default function MobileBottomNav() {
                   </motion.span>
                 )}
               </div>
-              <span className="text-[10px] mt-0.5 tracking-tight z-10">{item.label}</span>
+              <span className="text-[11px] mt-0.5 tracking-tight z-10">{item.label}</span>
               {isActive && (
                 <motion.div
                   layoutId="bottomNavIndicator"

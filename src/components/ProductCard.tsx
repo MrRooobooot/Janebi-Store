@@ -21,7 +21,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
   // Compact (dense rows like the deals strip): same design language, 4:3 tile and
   // tighter padding so the price + CTA still land inside the first phone screen.
   const compact = variant === 'compact';
-  const cardPad = compact ? 'p-2.5 sm:p-3.5' : 'p-3 sm:p-4 pb-3.5 sm:pb-4';
+  const cardPad = compact ? 'p-2.5 sm:p-3.5' : 'p-2.5 sm:p-4 pb-3 sm:pb-4';
   const tileAspect = compact ? 'aspect-[4/3] sm:aspect-square' : 'aspect-square';
   // R2-09: reset timer is cleared on unmount.
   const addedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -47,7 +47,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
     <div className={`linear-card bg-white dark:bg-[#0e1629] rounded-2xl border border-slate-200/80 dark:border-white/[0.08] ${cardPad} transition-all duration-300 relative flex flex-col h-full group select-none hover:-translate-y-0.5 hover:shadow-[var(--shadow-elevation-2)] overflow-hidden`}>
       
       {/* 1. Header Badges & Quick Action Floating Buttons */}
-      <div className="flex items-center justify-between gap-2 mb-2.5 relative z-10">
+      <div className="flex items-center justify-between gap-2 mb-2 sm:mb-2.5 relative z-10">
           <div className="min-w-0 flex-1">
             {outOfStock ? (
               <span className="bg-slate-100 dark:bg-white/[0.06] text-slate-500 dark:text-slate-400 text-[11px] font-black px-2 py-0.5 rounded-full border border-slate-200 dark:border-white/[0.08] inline-block">
@@ -58,7 +58,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
                 {toPersianDigits(product.discount)}٪ تخفیف
               </span>
             ) : (
-              <span className="block font-bold text-[11px] text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-white/[0.04] px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-white/[0.06] whitespace-nowrap overflow-hidden text-ellipsis">
+              <span className="hidden sm:block font-bold text-[11px] text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-white/[0.04] px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-white/[0.06] whitespace-nowrap overflow-hidden text-ellipsis">
                 {product.brand || 'اورجینال'}
               </span>
             )}
@@ -71,7 +71,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
               type="button"
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist(product); }}
               aria-label={inWishlist ? "حذف از لیست علاقه‌مندی‌ها" : "افزودن به لیست علاقه‌مندی‌ها"}
-              className={`w-8 h-8 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
+              className={`w-11 h-11 sm:w-8 sm:h-8 rounded-xl sm:rounded-lg flex items-center justify-center transition-all cursor-pointer ${
                 inWishlist 
                   ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-500 border border-rose-200 dark:border-rose-800' 
                   : 'bg-slate-50 dark:bg-white/[0.04] text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 border border-slate-200/60 dark:border-white/[0.06]'
@@ -84,7 +84,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
               type="button"
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleCompare(product); }}
               aria-label={inCompare ? "حذف از مقایسه" : "افزودن به مقایسه"}
-              className={`w-8 h-8 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
+              className={`hidden sm:flex w-8 h-8 rounded-lg items-center justify-center transition-all cursor-pointer ${
                 inCompare 
                   ? 'bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/60 text-[var(--color-emphasis-text)] border border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/40' 
                   : 'bg-slate-50 dark:bg-white/[0.04] text-slate-400 hover:text-[var(--color-emphasis-text)] hover:bg-[var(--color-cta)]/10 dark:hover:bg-[var(--color-cta)]/30 border border-slate-200/60 dark:border-white/[0.06]'
@@ -100,7 +100,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
 
         {/* 2. Visual Product Image Container */}
         <Link to={`/product/${product.id}`} className="block group-hover:opacity-95 transition-opacity">
-          <div className={`relative ${tileAspect} w-full rounded-2xl bg-white dark:bg-[var(--color-tile-dark)] border border-slate-200/70 dark:border-white/[0.09] p-3 sm:p-4 flex items-center justify-center overflow-hidden mb-2.5 group-hover:border-[var(--color-border-light-hover)] dark:group-hover:border-white/[0.12] transition-colors`}>
+          <div className={`relative ${tileAspect} w-full rounded-2xl bg-white dark:bg-[var(--color-tile-dark)] border border-slate-200/70 dark:border-white/[0.09] p-2 sm:p-4 flex items-center justify-center overflow-hidden mb-2 sm:mb-2.5 group-hover:border-[var(--color-border-light-hover)] dark:group-hover:border-white/[0.12] transition-colors`}>
             
             {/* Ambient Radial Accent */}
             <div className="absolute inset-0 bg-radial from-[var(--color-cta)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -115,7 +115,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
             />
 
             {/* Low stock badge */}
-            {typeof product.stockQuantity === 'number' && product.stockQuantity > 0 && product.stockQuantity <= 3 && (
+            {typeof product.stockQuantity === 'number' && product.stockQuantity === 1 && (
               <span className="absolute bottom-2 right-2 bg-[var(--color-accent-surface)]/90 backdrop-blur-xs text-white text-[9px] font-black px-2 py-0.5 rounded-md shadow-xs">
                 تنها {toPersianDigits(product.stockQuantity)} عدد
               </span>
@@ -123,7 +123,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
           </div>
 
           {variant === 'full' && (
-          <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 mb-1 px-0.5">
+          <div className="hidden sm:flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 mb-1 px-0.5">
             <span className="font-bold text-[11px] text-[var(--color-emphasis-text)] truncate min-w-0 flex-1">
               {product.category}
             </span>
@@ -156,12 +156,12 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
           )}
 
           {/* 4. Product Title — text-wrap balance kills single-word orphan lines («با» alone) */}
-          <h3 className="font-black text-[13px] sm:text-[15px] text-slate-900 dark:text-slate-100 line-clamp-2 leading-relaxed h-11 sm:h-12 flex items-start group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors mb-1.5 [text-wrap:balance]">
+          <h3 className="font-black text-[13px] sm:text-[15px] text-slate-900 dark:text-slate-100 line-clamp-2 leading-snug sm:leading-relaxed h-10 sm:h-12 flex items-start group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors mb-1.5 [text-wrap:balance]">
             {product.title}
           </h3>
 
           {variant === 'full' && (
-          <div className="h-5 flex items-center text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate">
+          <div className="hidden sm:flex h-5 items-center text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate">
             {product.warranty ? (
               <div className="flex items-center gap-1 truncate">
                 <ShieldCheck className="h-3 w-3 text-emerald-500 shrink-0" />
@@ -192,10 +192,10 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
                 ·
               </span>
             )}
-            <div className="text-[13px] sm:text-[15px] font-black text-[var(--color-emphasis-text)] tracking-tight leading-tight whitespace-nowrap">
+            <div className="text-[14px] sm:text-[15px] font-black text-[var(--color-emphasis-text)] tracking-tight leading-tight whitespace-nowrap">
               {formatPrice(product.price).replace(' تومان', '')}
             </div>
-            <span className="text-[9px] font-bold text-slate-500 dark:text-slate-400 leading-tight">تومان</span>
+            <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 leading-tight">تومان</span>
           </div>
 
           {/* Primary Action Button */}

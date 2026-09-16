@@ -51,7 +51,7 @@ export default function HeroSlideContent({ slide, products = [] }: { slide: Hero
             <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
           </Link>
 
-          <div className="hidden sm:flex text-xs font-black px-4 py-2.5 rounded-2xl border bg-slate-100/80 text-slate-700 border-slate-200 dark:bg-white/[0.04] dark:text-slate-300 dark:border-white/[0.08] items-center gap-2">
+          <div className="hidden sm:flex min-h-11 text-xs font-black px-4 py-2.5 rounded-2xl border bg-slate-100/80 text-slate-700 border-slate-200 dark:bg-white/[0.04] dark:text-slate-300 dark:border-white/[0.08] items-center gap-2">
             <Award className="h-4 w-4 shrink-0 text-[var(--color-emphasis-text)] dark:text-inherit" />
             <span>{normalizePersianTypography(slide.badge)}</span>
           </div>

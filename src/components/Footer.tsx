@@ -110,7 +110,7 @@ export default function Footer() {
             <nav className="flex flex-col items-start gap-2.5 text-xs text-zinc-600 dark:text-zinc-400" aria-label="لینک‌های فوتر">
               <Link
                 to="/profile?tab=orders"
-                className="inline-flex items-center gap-2 font-bold hover:text-[var(--color-emphasis-text)] transition-colors"
+                className="inline-flex items-center gap-2 min-h-11 py-2 font-bold hover:text-[var(--color-emphasis-text)] transition-colors"
               >
                 <PackageSearch className="h-4 w-4 text-[var(--color-emphasis-text)] shrink-0" />
                 پیگیری سفارش
@@ -136,7 +136,7 @@ export default function Footer() {
               <button 
                 type="submit" 
                 aria-label="ارسال عضویت در خبرنامه"
-                className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] text-white px-4 rounded-l-2xl flex items-center justify-center transition-colors cursor-pointer shrink-0"
+                className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] text-white px-4 min-h-11 rounded-l-2xl flex items-center justify-center transition-colors cursor-pointer shrink-0"
               >
                 <Send className="h-4 w-4" />
               </button>
