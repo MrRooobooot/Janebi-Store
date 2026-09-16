@@ -46,7 +46,7 @@
   - `server/routes/products.ts` (Category/Brand/Price/Rating filtration, reviews recompute).
   - `server/routes/cart.ts` (Stock availability guard, max 10 quantity limit).
   - `server/routes/orders.ts` (Atomic `db.transaction`, stock decrements, VIP points unwind on cancel).
-  - `server/routes/admin.ts` (Protected CRUD, metrics, role promotion, status lifecycle).
+  - `server/routes/admin.ts` (entry point: router-wide `authenticate` + `requireAdmin`, then mounts 11 sub-routers under `server/routes/admin/` — `auditLogs`, `stats`, `users`, `products`, `orders`, `coupons`, `messages`, `reviews`, `newsletter`, `settings`, `backup`, plus `shared.ts` for the owner guard / pagination / audit writer).
   - `server/routes/coupons.ts` (Percentage / fixed discounts, minimum cart threshold).
 
 ### B. Frontend Architecture (`src/`)
@@ -165,6 +165,9 @@ Full evidence + remediation list: `PROJECT_AUDIT.md`. Highest-priority debts:
   - Server static route `/images` registered in both Express (`server/app.ts`) and production server (`server/index.ts`) guaranteeing instant live serving of runtime uploaded images.
 - **Proactive Event-Driven Notifications (Model 2):**
   - Typed domain event bus `server/services/events.ts` (`order:paid`, `stock:low`, `review:created`, `contact:created`).
+  - Bot modules: `server/bot/bale.ts` (entry: `startBaleBot` handlers + re-exports) with shared pieces in
+    `server/bot/bale/` — `constants.ts`, `types.ts`, `session.ts` (store + sweeper + formatters + audit),
+    `media.ts` (Bale photo download), `catalog.ts` (categories/status/review approval), `keyboards.ts` (19 inline keyboards).
   - Bot notifier subscriber `server/bot/notifier.ts`: non-blocking `setImmediate` dispatch, multi-admin broadcast with `Promise.allSettled`, HTML-escaped content (`escapeHtml`) preventing Bale entity parse crashes, and 30-min inventory alert cooldown.
   - Interactive notification buttons: instant order processing (`o:s:<id>:processing`), quick +5 stock refill (`p:s:<id>:5`), review approve/reject (`rv:app:<id>`, `rv:rej:<id>`), contact message read/archive (`cm:read:<id>`, `cm:arc:<id>`).
 - **Bale Bot API compliance:** All `callback_data` under 64 bytes (unit tested in `tests/unit/bale-bot.test.ts` and `tests/unit/event-notifier.test.ts`), strict instant `answerCallbackQuery` dispatch to eliminate client spinner hangs, Markdown-compliant spacing, in-place message updates (`editMessageText`).
