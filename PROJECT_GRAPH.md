@@ -1,9 +1,10 @@
 # ARCHITECTURE & PROJECT GRAPH — JANEBI ARENA
 
 > **Autonomous Engineering Knowledge Base & Live System Map**
-> **Last Verified & Updated:** 2026-09-06 (Audit remediation deploy — commit `02ef15b`: soft-404 SEO-004, guest cart/wishlist merge, live-price compare, honest ChatWidget, admin orders pagination)
-> **Status:** Live & Production Ready (48 test suites, 353 passing tests)
+> **Last Verified & Updated:** 2026-09-16 (security rounds SEC-H1..H6 + repo tidy: CORS/X-Forwarded-Host trust removed, nginx API-cache poisoning closed, health telemetry gated, CSP `http:` image source dropped, JWT localStorage mirror deleted → cookie-only sessions)
+> **Status:** Live & Production Ready (58 test suites, 447 passing tests; served `BUILD_INFO` is the deployment truth)
 > **PRD Reference:** `AGENTS.md` | `PROJECT_AUDIT.md` | `TASKS.md`
+> **Repo layout:** scripts grouped by purpose → `scripts/README.md`; docs index → `docs/README.md` (dated one-off reports live in `docs/archive/`).
 
 ---
 
@@ -124,7 +125,7 @@ Full evidence + remediation list: `PROJECT_AUDIT.md`. Highest-priority debts:
 
 ## 6. Ops
 
-- **DB backup (2026-09-01):** `npm run db:backup` → `scripts/backup-db.mjs` uses better-sqlite3 `VACUUM INTO` (consistent under WAL) to write `backups/janebi-<timestamp>.db` (override dir with `BACKUP_DIR`, db with `DATABASE_URL`); keeps the last 7, prunes older, exits non-zero on failure. `backups/` is gitignored.
+- **DB backup (2026-09-01):** `npm run db:backup` → `scripts/ops/backup-db.mjs` uses better-sqlite3 `VACUUM INTO` (consistent under WAL) to write `backups/janebi-<timestamp>.db` (override dir with `BACKUP_DIR`, db with `DATABASE_URL`); keeps the last 7, prunes older, exits non-zero on failure. `backups/` is gitignored.
 
 ## Ops (2026-09-01): OTP disabled in prod (503, no SMS provider — wire Kavenegar/Ghasedak to re-enable). DB backup: `npm run db:backup` → backups/*.db, keeps last 7.
 
@@ -210,7 +211,7 @@ surface of prod (curl/openssl; source read only to confirm root cause).
   static mount served the compiled backend and its map. No secret literals in the bundle
   (all secrets via `process.env`), but the full route table/auth/validation logic was exposed.
   **Fix:** one guard middleware in `server/app.ts` (before every static mount) →
-  `/(\.(cjs|map)$/i)` ⇒ 404. Regression probe `scripts/probes/static-exposure.sh` boots a real
+  `/(\.(cjs|map)$/i)` ⇒ 404. Regression probe `scripts/gate/static-exposure.sh` boots a real
   production server on an isolated DB and is wired into `npm run verify` as **step 4**.
   Live: both 404, legit `/assets/*.js` + `/manifest.webmanifest` still 200.
 - **SEC-02 HIGH — IP rate limiting fully bypassable via client-supplied `X-Forwarded-For`.**
@@ -242,11 +243,11 @@ Closes the two Advisory items of the 0914 audit + adds a drift guard for SEC-02.
   `'sha256-…'` in `script-src`; no per-request HTML transform, no extra request,
   no CWV cost. Live header:
   `script-src 'self' 'sha256-knevCq+AQOF1vXhoY3xoLTrtVdGBZOb9BHSRkCe1FH8='; script-src-attr 'none'`.
-- **Two new probes.** `scripts/probes/csp-inline.sh` (**gate step 5**) boots a real
+- **Two new probes.** `scripts/gate/csp-inline.sh` (**gate step 5**) boots a real
   production server on an isolated DB and fails if the header and the served HTML
   disagree (any inline hash missing), if `'unsafe-inline'`/`'self'` regress, if
   `script-src-attr` stops being `none`, or if `security.txt` ≠ 200.
-  `scripts/probes/csp-live.mjs` (chromium **and** webkit, prod) instruments
+  `scripts/audit/csp-live.mjs` (chromium **and** webkit, prod) instruments
   `securitypolicyviolation` before any page script, pre-seeds `theme=dark`, then
   asserts zero violations, that the inline bootstrap **actually executed**
   (`documentElement.classList.contains('dark')`), and that the SPA mounted —
@@ -257,7 +258,7 @@ Closes the two Advisory items of the 0914 audit + adds a drift guard for SEC-02.
   to `dist/`, served by an explicit route: `express.static`'s `dotfiles:"ignore"` 404s any
   dot-directory, and `res.sendFile()` inherits the same rule from `send` — so the route
   reads + `res.send()` instead (`sendFile` on `/.well-known/*` returns a bare `404 Not Found`).
-- **`scripts/probes/nginx-drift.sh` — SEC-02 drift guard (deliberately NOT in the gate: the
+- **`scripts/ops/nginx-drift.sh` — SEC-02 drift guard (deliberately NOT in the gate: the
   gate must not depend on SSH).** Compares the live VPS `nginx -T` against the invariant
   (every proxy location overwrites `X-Forwarded-For $remote_addr`, zero
   `proxy_add_x_forwarded_for`) and adds a behavioural leg (7 rapid rotating-XFF login calls

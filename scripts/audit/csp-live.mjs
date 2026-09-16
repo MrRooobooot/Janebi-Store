@@ -1,5 +1,5 @@
 // csp-live.mjs — live browser proof for SEC-03 (prod).
-// Usage: node scripts/probes/csp-live.mjs [https://janebiarena.ir]
+// Usage: node scripts/audit/csp-live.mjs [https://janebiarena.ir]
 // For each engine: instrument securitypolicyviolation BEFORE any page script,
 // pre-seed theme=dark, then assert (a) zero script-src violations, (b) the inline
 // anti-FOUC bootstrap actually EXECUTED (dark class applied), (c) the SPA mounted.

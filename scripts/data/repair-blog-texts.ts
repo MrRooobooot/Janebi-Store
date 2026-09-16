@@ -6,8 +6,8 @@
  *
  * Run: SEED_BLOG_SKIP=1 npx tsx scripts/repair-blog-texts.ts
  */
-import { db } from '../server/db/index.js';
-import { blogPosts } from '../server/db/schema.js';
+import { db } from '../../server/db/index.js';
+import { blogPosts } from '../../server/db/schema.js';
 import { eq } from 'drizzle-orm';
 import { POSTS } from './seed-blog.js';
 

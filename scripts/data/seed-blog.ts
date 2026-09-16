@@ -12,8 +12,8 @@
  *
  * Run: npx tsx scripts/seed-blog.ts
  */
-import { db } from '../server/db/index.js';
-import { blogPosts } from '../server/db/schema.js';
+import { db } from '../../server/db/index.js';
+import { blogPosts } from '../../server/db/schema.js';
 
 export const POSTS: (typeof blogPosts.$inferInsert)[] = [
   {

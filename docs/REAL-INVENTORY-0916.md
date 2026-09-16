@@ -17,7 +17,7 @@
 | عکس واقعی | ۲۵ مدل: دانلود عکس همان مدل، نرمال‌سازی به webp ≤200KB (600–1200px) در `public/images/products/ear-<code>.webp`، self-host | `images=25 skipped=0`؛ QA هیوریستیک (گوشهٔ سفید استودیویی، نسبت سوژه، ≥۵۰۰px) → `flags: []` |
 | سینک دارایی | کپی در `dist/images/products/` و `public/images/products/` روی VPS (nginx root = `dist`) | `ls | wc -l = 25` در هر دو مسیر |
 | اتصال عکس به کالا | `PUT /api/admin/products/:id {image}` | `ok: 25/25` (status 200) |
-| ایندکس‌گذاری | `node scripts/indexnow.mjs` | `sitemap: 213 URLs` → `indexnow -> 200 OK` |
+| ایندکس‌گذاری | `node scripts/ops/indexnow.mjs` | `sitemap: 213 URLs` → `indexnow -> 200 OK` |
 
 ## ۳) اثبات زندهٔ prod
 - `GET /api/products?limit=1000` ⇒ **۱۶۶** رکورد (۱۳۸ − ۹ + ۳۷)، دستهٔ هولدر **۳۷**، `brand = ارلدام`، `stockQuantity = 2`, صفر باقی‌ماندهٔ `JB-54xx`/`HLD-MAG-01`.

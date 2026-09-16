@@ -36,7 +36,7 @@
 - Gate: tsc clean، 344/344، npm run verify ALL PASS، hermes verify ok (runtime boot 200). Commits 2c2b6c4 / efe2216 / 2002ea5.
 
 ## 2026-09-15 (r39 rotation) — Post 16 (Baseus Adaman 20000/65W) + BlogPosting prerender + reader UX — COMMITTED, deploy blocked (SSH down)
-- Post 16 «پاوربانک بیسوس Adaman ۲۰۰۰۰ با خروجی ۶۵ وات» (brasresi-powerbank-baseus-adaman-20000-65w) به scripts/seed-blog.ts اضافه شد — بر اساس محصول واقعی id 7 (SKU PB-BS-65W). SEED_BLOG_ONLY filter اضافه شد برای seed نقطه‌ای (ران موازی پست خودش را دارد).
+- Post 16 «پاوربانک بیسوس Adaman ۲۰۰۰۰ با خروجی ۶۵ وات» (brasresi-powerbank-baseus-adaman-20000-65w) به scripts/data/seed-blog.ts اضافه شد — بر اساس محصول واقعی id 7 (SKU PB-BS-65W). SEED_BLOG_ONLY filter اضافه شد برای seed نقطه‌ای (ران موازی پست خودش را دارد).
 - Server prerender BlogPosting JSON-LD برای /blog/:slug (blogPostingJsonLdFor در server/lib/breadcrumbs.ts؛ builder مشترک src/lib/blogJsonLd.ts؛ honesty gate: slug نامشخص/غیرمنتشر → بدون injection).
 - Reader modal UX: Escape-close + body scroll-lock.
 - Gate npm run verify ALL GREEN؛ jsxDEV=0. Commit be76f19 pushed.
@@ -149,7 +149,7 @@
 - Also landed: SMS.ir OTP dispatch cluster (9c3ffe2). Deploy OK, live bundle Dj3Salu_, jsxDEV=0, /blog 200. Gate: 329 tests.
 
 ## 2026-09-01 — Blog Post 8 + Blog listing polish (01a58a3, SHIPPED live)
-- scripts/seed-blog.ts: post 8 «راهنمای خرید کابل شارژ» (rahnamaye-kharid-kabel-sharzh) — real editorial content, no stubs.
+- scripts/data/seed-blog.ts: post 8 «راهنمای خرید کابل شارژ» (rahnamaye-kharid-kabel-sharzh) — real editorial content, no stubs.
 - src/pages/static/Blog.tsx: Persian-digit reading-time badge from real content length, hover lift with prefers-reduced-motion, 44px touch targets + Persian aria-labels.
 - Gate: npm run verify ALL PASS (45 suites/341 tests); artifact audit jsxDEV=0, /Users/=0.
 - Deploy: deploy.sh with /tmp/janebi-deploy.lock; prod seed via esbuild bundle (--external:better-sqlite3 --external:pg) → docker cp → node in-container (8 exists, 1 inserted).

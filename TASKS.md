@@ -22,7 +22,7 @@
 - [ ] import کاتالوگ واقعی + جایگزینی ۱۳۸ کالای تستی (با بکاپ + تراکنش + گزارش تغییرات)
 - [ ] فیلد `costPrice` (و `barcode`) در schema + پنل ادمین + ستون حاشیه و «زیر کف»
 - [ ] پاک‌سازی برندهای تکراری: `Baseus/بیسوس` و `سامسونگ/Samsung`
-- [ ] دسته‌بندی قیمتی خودکار هر ردیف: **هم‌ترازکن (زیر ۱۵٪) · مذاکره (۱۵–۴۰٪) · حذف/تعویض (بالای ۴۰٪) · پک** با `scripts/price-watch.mjs`
+- [ ] دسته‌بندی قیمتی خودکار هر ردیف: **هم‌ترازکن (زیر ۱۵٪) · مذاکره (۱۵–۴۰٪) · حذف/تعویض (بالای ۴۰٪) · پک** با `scripts/data/price-watch.mjs`
 - [ ] فید ترب (نیاز به فرمت پنل ترب) · قیمت باشگاه (login-only) · کران روزانهٔ price-watch با هشدار بله
 
 **شاهد فعلی بازار:** `docs/PRICE-POSITION-REPORT-0914.md` (میانهٔ فاصله +۲۴٫۹٪ روی ۴۳ SKU برنددار خودکار-سنجیده‌شده)
@@ -32,7 +32,7 @@
 
 ### Round 2026-09-13c — بازبینی کد پنل ادمین: ۴ باگ واقعی فیکس + دیپلوی (b4ed0f8)
 
-- [x] متد: بازبینی استاتیک (admin.ts ۱۰۲۴ خط / ۲۸ endpoint + ۱۱ صفحه) + **اثبات تجربی** روی sandbox `:3978` (`scripts/probes/proof-admin-bugs.sh`).
+- [x] متد: بازبینی استاتیک (admin.ts ۱۰۲۴ خط / ۲۸ endpoint + ۱۱ صفحه) + **اثبات تجربی** روی sandbox `:3978` (`scripts/ops/proof-admin-bugs.sh`).
 - [x] **B1 (بحرانی)** `DELETE /reviews/:id` امتیاز را بازمحاسبه نمی‌کرد → نظر ۱★ حذف شد و ویترین همان `3.0/2` ماند (درست `5.0/1`) = امتیاز ساختگی + JSON-LD. فیکس: بازمحاسبه + invalidate کش‌ها + audit. بازآزمون ✅
 - [x] **B2 (بالا)** `DELETE /products/:id` روی محصول سفارش‌شده → `500 FOREIGN KEY constraint failed` با متن خام SQL. فیکس: `409 + PRODUCT_IN_ORDERS` با پیام فارسی راهنما، بدون نشت `error.message`. بازآزمون ✅
 - [x] **B3 (بالا)** `orders/bulk-delete` بدون بازگردانی موجودی/امتیاز حذف می‌کرد (استوک ۵۰ ماند، باید ۵۲). فیکس: restock + بازگشت خرج‌شده + پس‌گرفت clamp‌شدهٔ COD در همان تراکنش؛ برابری با مسیر cancel تکی اثبات شد. ✅
@@ -40,7 +40,7 @@
 - [x] تست رگرسیون: ۳ invariant در `tests/api/admin-hardening.test.ts`؛ گیت `npm run verify` = **409 passed / 5 skipped**؛ دیپلوی + اثبات آرتیفکت سرو‌شده.
 - [x] **R1 محافظت حساب مالک** — `OWNER_USER_ID` (env) + گارد `403 OWNER_PROTECTED` روی role/password/points + cloaking در `GET /users`؛ سیم‌کشی env/example/deploy.sh؛ اثبات زندهٔ prod: غیرمالک → ۴۰۳×۳ و مالک در لیست نیست، مالک → می‌بیند؛ حالت مالک دست‌نخورده.
 - [x] **R2 صفحه‌بندی** — `?page=&limit=` (سقف ۵۰۰) + همیشه `X-Total-Count` روی ۵ لیست؛ بدون پارامتر = لیست کامل (کاپ پیش‌فرض = truncation خاموش، رد شد)؛ فیلتر status پیام‌ها در SQL. اثبات prod: `page=1&limit=1` + `X-Total-Count: 8`.
-- [x] **R3 بسته شد** (۱۴۰۵/۰۶/۲۲): `users.created_at` (epoch ms) به اسکیما هر دو دیالکت + migration `0012_users_created_at.sql`؛ `ORDER BY COALESCE(created_at,0) DESC`؛ ثبت `createdAt` در register و OTP؛ اسکریپت `scripts/backfill-user-created-at.cjs` (بازحل دقیق روز از متن جلالی ذخیره‌شده، بدون جعل). روی prod: ستون + journal تأیید، ۲/۳ ردیف بازحل شد (`۱۴۰۵/۶/۱۴` → ۲۰۲۶-۰۹-۰۵)، ردیف مالک با placeholder «۱ فروردین ۱۴۰۵» عمداً `NULL` و آخر لیست. جزئیات: `docs/ADMIN-CODE-REVIEW-2026-09-13.md` §۲/R3.
+- [x] **R3 بسته شد** (۱۴۰۵/۰۶/۲۲): `users.created_at` (epoch ms) به اسکیما هر دو دیالکت + migration `0012_users_created_at.sql`؛ `ORDER BY COALESCE(created_at,0) DESC`؛ ثبت `createdAt` در register و OTP؛ اسکریپت `scripts/data/backfill-user-created-at.cjs` (بازحل دقیق روز از متن جلالی ذخیره‌شده، بدون جعل). روی prod: ستون + journal تأیید، ۲/۳ ردیف بازحل شد (`۱۴۰۵/۶/۱۴` → ۲۰۲۶-۰۹-۰۵)، ردیف مالک با placeholder «۱ فروردین ۱۴۰۵» عمداً `NULL` و آخر لیست. جزئیات: `docs/ADMIN-CODE-REVIEW-2026-09-13.md` §۲/R3.
 
 ### Round 2026-09-13b — Rotation F: checkout/payment micro-flow (SHIPPED, live 57d7ad3)
 
@@ -96,7 +96,7 @@
 
 ### Standing Automation — janebi-design-guardian (cron `7e0cad4fea09`)
 - Created 2026-09-11 night at user request («تا فردا بهت میگم قطعش کنی»): every 3h (`0 */3 * * *`), workdir Janebi-Store, skills janebi-arena-production-readiness + surgical-refactor-playbook, deliver origin.
-- Mission per run: boot local prod (DISABLE_CSP_UPGRADE_INSECURE=1) → `node scripts/design-audit.mjs` (8 combos) → rotate hand-audit over /, /products, /blog, /offers, /brands, /cart, /login (2/run) → fix TOP 1–3 root-causes (index.css shims / dark: pairs) → gate (tsc, 8/8, verify) → commit+push+deploy (lock-respecting) → TASKS.md round entry.
+- Mission per run: boot local prod (DISABLE_CSP_UPGRADE_INSECURE=1) → `node scripts/audit/design-audit.mjs` (8 combos) → rotate hand-audit over /, /products, /blog, /offers, /brands, /cart, /login (2/run) → fix TOP 1–3 root-causes (index.css shims / dark: pairs) → gate (tsc, 8/8, verify) → commit+push+deploy (lock-respecting) → TASKS.md round entry.
 - No-findings runs: db:backup + VPS backup check, report clean, no invented work. Deploy double-fail → git revert + BLOCKED tag.
 - **USER MUST ASK TO PAUSE/REMOVE** (`cronjob_manage action=pause/remove job_id=7e0cad4fea09`) — not self-terminating.
 
@@ -106,7 +106,7 @@
 - [x] ProductCard: خونریزی دکمه خرید از کپسول (bleed) با `mt-auto` فوتر پین‌شده + `overflow-hidden` ریشه‌ای حل شد؛ tile عکس از slate سرد به `--color-tile` گرم (هم‌خانواده canvas)؛ baseline قیمت/CTA.
 - [x] Products هدر: باند hero از گرادیان محو به باند رز-روشن یکدست (`--color-band-tint`)؛ badge دسته از tint کم‌کنتراست به CTA پر با متن سفید؛ متن توضیح `slate-700`/`slate-300` — کنتراست محاسبه‌شده **9.69:1** (بود ~۳:۱).
 - [x] Sidebar: clearance چیپ FAB چت (`pb-28`) — تداخل «هولدر و نگهدارنده» با FAB رفع؛ count های خاکستری کم‌کنتراست → slate-600/300 (≥4.5:1).
-- [x] ابزار اثرپذیری دائمی: `scripts/design-audit.mjs` — ادعاهای layout را با Playwright می‌سنجد (bleed=0، baselineΔ≤2px، fab-overlap، contrast≥4.5، consoleErr same-host=0) روی ۴ ترکیب موتور×ویوپورت. نتیجه: **4/4 PASS**.
+- [x] ابزار اثرپذیری دائمی: `scripts/audit/design-audit.mjs` — ادعاهای layout را با Playwright می‌سنجد (bleed=0، baselineΔ≤2px، fab-overlap، contrast≥4.5، consoleErr same-host=0) روی ۴ ترکیب موتور×ویوپورت. نتیجه: **4/4 PASS**.
 - [x] ۲ ردیف تستی جدید DB («کالای تست اینواریانت موجودی» با test.jpg — بقا از seed قبلی) پس از FK-census صفر حذف شد (نویز 404 console).
 - [x] گیت: tsc تمیز، 406/411 (56 سوییت)، build OK. دیپلوی: health FAIL گذرا در اسکریپت (بوت ۱۶ثانیه‌ای هنوز warm نبود) — health واقعی 200 ok، باندل `index-CvsBLwkc.js` sha256 == محلی، توکن `band-tint` در CSS سرو‌شده.
 - Next راندهای بعدی: همین الگو روی Home hero/بخش‌ها + Footer/Checkout؛ بعد admin pages.
@@ -133,7 +133,7 @@
 - [x] Post 16 نوشته و به seed اضافه شد: «پاوربانک بیسوس Adaman ۲۰۰۰۰ با خروجی ۶۵ وات» (id: brasresi-powerbank-baseus-adaman-20000-65w) — بر اساس محصول واقعی فروشگاه (product id 7، SKU PB-BS-65W، image /products/pb-7.svg). Zero-fabrication: همه مشخصات از /api/products/7.
 - [x] SEO: prerender سمت سرور BlogPosting JSON-LD برای /blog/:slug (server/lib/breadcrumbs.ts → blogPostingJsonLdFor + اتصال در server/index.ts prod branch). Unknown/unpublished slug → بدون injection (honesty gate).
 - [x] UI/UX: مودال مقاله — Escape برای بستن + قفل اسکرول بک‌گراند (src/pages/static/Blog.tsx).
-- [x] scripts/seed-blog.ts: فیلتر SEED_BLOG_ONLY=<id> برای seed نقطه‌ای (جلوگیری از seed پستِ ران موازی).
+- [x] scripts/data/seed-blog.ts: فیلتر SEED_BLOG_ONLY=<id> برای seed نقطه‌ای (جلوگیری از seed پستِ ران موازی).
 - [x] Gate: npm run verify 100% green؛ grep -c jsxDEV dist/assets/index-*.js = 0. Commit be76f19 + push.
 - [x] DEPLOY UNBLOCKED: SSH برگشت (2026-09-XX probe OK)، پست ۱۶ زنده (/api/blog شامل brasresi-adaman)، پارتی باندل index-D8BhX27m.js == محلی، BlogPosting JSON-LD سمت سرور روی /blog/:slug تأیید شد. r39 کامل SHIPPED.
 - [!] تداخل ران موازی: ران همزمان دیگری پست «باتری در سرما و گرما» (rahnamaye-battery-sarma-garma) را در seed-file به‌عنوان «پست ۱۶» کامیت کرده ولی هنوز seed/deploy نکرده — با فیلتر SEED_BLOG_ONLY پست آن ران در این دیپلوی seed نمی‌شود.
@@ -147,7 +147,7 @@
 
 ### Round 2026-09-01c (r37) — Blog Post 14 + Corrupted-Text Repair + Reading Progress (SHIPPED, live)
 - [x] پست چهاردهم «چند وات شارژر برای گوشی شما کافی است؟ راهنمای واقعی PD، QC و شارژ سریع» (rahnamaye-vate-sharzhe-divari، commit 42f136d) — محتوای تحریریه واقعی، سید ایمپوتنت prod. زنده: /api/blog=14، در sitemap داینامیک.
-- [x] تعمیر P0: پاراگراف‌های خراب/به‌هم‌ریخته در ۷ پست زنده (fandaki، gols-doorbin، paye-negahdarande، shishe-gherat، powerbank، kabel، asrar) — seed اصلاح شد و scripts/repair-blog-texts.ts (commit eaa539d) بدنه/excerpt را از seed اصلاح‌شده آپدیت کرد: 7/7 repaired، live bad-marker scan = 0.
+- [x] تعمیر P0: پاراگراف‌های خراب/به‌هم‌ریخته در ۷ پست زنده (fandaki، gols-doorbin، paye-negahdarande، shishe-gherat، powerbank، kabel، asrar) — seed اصلاح شد و scripts/data/repair-blog-texts.ts (commit eaa539d) بدنه/excerpt را از seed اصلاح‌شده آپدیت کرد: 7/7 repaired، live bad-marker scan = 0.
 - [x] UI: نوار پیشرفت مطالعه در مودال مقاله (Blog.tsx) — sticky، dual-theme، role=progressbar، motion-reduce، reset هنگام تعویض مقاله. گیت verify سبز (ALL GATES PASSED)، jsxDEV=0، دیپلوی با لاک، chunk زنده Blog-wHzWFrzX.js شامل progressbar، freshness 20260913a در index.html زنده.
 - [x] نکته عملیاتی: هنگام ssh/HTTP timeout گذرا روی VPS (چند دقیقه)، صبر و تست مجدد قبل از هر اقدام — سرور خودش برگشت (load 0.01) و repair اجرا شد. Next: پست ۱۵ + روتشن UI/SEO.
 
@@ -156,7 +156,7 @@
 - [x] پست نهم «پایه نگهدارنده موبایل خودرو» (rahnamaye-entekhab-paye-negahdarande-khodro، commit 82973d8) — محتوای تحریریه واقعی (سگردان/داشبورد/CD-Slot، مگنت Mag-Safe، شارژر فندکی PD)، تصویر /products/hld-13.svg. سید ایمپوتنت prod (esbuild bundle → docker cp → node درون کانتینر؛ 8×exists، 1 inserted). زنده: /api/blog=9، health ok. گیت verify سبز. دیپلوی با lock (این راند: فقط seed، بدون تغییر باندل). Next: پست ۱۰ + روتشن UI/SEO.
 
 ### Round 2026-09-01b — Blog Post 8 + Blog Listing Polish (SHIPPED, live)
-- [x] پست هشتم «راهنمای خرید کابل شارژ» (rahnamaye-kharid-kabel-sharzh، commit 01a58a3) — scripts/seed-blog.ts، محتوای تحریریه واقعی (USB-C/Lightning/کابل تقلبی). سید ایمپوتنت prod (esbuild bundle --external:better-sqlite3 --external:pg → docker cp → node درون کانتینر؛ 8×exists، 1 inserted). زنده: /api/blog=8، sitemap شامل slug.
+- [x] پست هشتم «راهنمای خرید کابل شارژ» (rahnamaye-kharid-kabel-sharzh، commit 01a58a3) — scripts/data/seed-blog.ts، محتوای تحریریه واقعی (USB-C/Lightning/کابل تقلبی). سید ایمپوتنت prod (esbuild bundle --external:better-sqlite3 --external:pg → docker cp → node درون کانتینر؛ 8×exists، 1 inserted). زنده: /api/blog=8، sitemap شامل slug.
 - [x] پولیش لیست وبلاگ (src/pages/static/Blog.tsx): بج زمان مطالعه ارقام فارسی از محتوای واقعی، hover lift با motion-reduce، touch targets ≥44px. گیت verify سبز (341/341)، jsxDEV=0، دیپلوی با lock؛ باندل زنده index-D6DVro4s.js == محلی. Next: UI polish round بعدی، پست ۹.
 
 ### Round 2026-09-06 — Blog Post 7 + Related Posts (SHIPPED, live)
@@ -337,7 +337,7 @@ Key findings (P0 first):
 ### OTP Dead-Feature Removal + DB Backup (2026-09-01, QA PASS)
 - [x] OTP login/reset UI hidden (dead feature, no SMS provider); endpoints hard-503 in prod — live verified: `POST /api/auth/otp/send` → 503 «سرویس پیامکی فعال نیست»
 - [x] JSON-LD `</script>` escape in ProductDetail (\u003c/\u003e/\u0026)
-- [x] `scripts/backup-db.mjs` (`npm run db:backup`) — VACUUM INTO, keeps last 7
+- [x] `scripts/ops/backup-db.mjs` (`npm run db:backup`) — VACUUM INTO, keeps last 7
 - Commits 741b1b5 + 30ef18f, deployed, live probes 200. QA: .hermes/reports/qa-2026-09-01-otp-hide.md
 
 ### P2 UI cluster (2026-09-01, QA PASS)

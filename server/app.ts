@@ -82,7 +82,7 @@ app.use(requestIdMiddleware);
 // script in the shipped shell is the anti-FOUC dark-mode bootstrap in
 // index.html (ld+json blocks are inert under CSP and need no hash). Its exact
 // bytes are hashed at boot and pinned as 'sha256-…'; rebuilding the shell
-// recomputes the hash, and scripts/probes/csp-inline.sh fails the gate on any
+// recomputes the hash, and scripts/gate/csp-inline.sh fails the gate on any
 // drift between the served HTML and the header.
 const inlineScriptHashes = (() => {
   for (const candidate of ["dist/index.html", "index.html"]) {
@@ -351,7 +351,7 @@ app.get("/api/health", async (req, res) => {
   const startedAt = Date.now();
   // SEC-H2: the detailed block (db size, memory, uptime, node version) is
   // operator telemetry that only helps an attacker fingerprint the runtime.
-  // It is served to in-host probes (deploy health check + scripts/vps-monitor.py
+  // It is served to in-host probes (deploy health check + scripts/ops/vps-monitor.py
   // curl http://127.0.0.1:3000/api/health, which never traverse nginx, hence no
   // X-Forwarded-For) and stays hidden from public internet traffic.
   const viaProxy = Boolean(req.headers["x-forwarded-for"]);

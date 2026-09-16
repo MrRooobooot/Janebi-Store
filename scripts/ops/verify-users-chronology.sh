@@ -30,10 +30,10 @@ body() {
 # The backfill script must exist at /tmp on whichever host runs the body.
 if docker info >/dev/null 2>&1; then
   echo "(mode: local docker)"
-  cp -f scripts/backfill-user-created-at.cjs /tmp/backfill-user-created-at.cjs
+  cp -f scripts/data/backfill-user-created-at.cjs /tmp/backfill-user-created-at.cjs
   body
 else
   echo "(mode: ssh $REMOTE)"
-  scp -q scripts/backfill-user-created-at.cjs "$REMOTE:/tmp/backfill-user-created-at.cjs"
+  scp -q scripts/data/backfill-user-created-at.cjs "$REMOTE:/tmp/backfill-user-created-at.cjs"
   ssh -o ConnectTimeout=8 -o BatchMode=yes "$REMOTE" "C=$C; $(declare -f body); body"
 fi

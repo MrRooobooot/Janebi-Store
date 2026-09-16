@@ -109,9 +109,9 @@ ssh $SSH_OPTS "$REMOTE" "
 # deploy is picked up without waiting for a crawl. Account-free (proof of
 # ownership is public/<key>.txt); Google ignores IndexNow and still needs the
 # Search Console sitemap. Non-fatal: an SEO ping must never fail a deploy.
-if [ -f scripts/indexnow.mjs ] && [ "$IS_STAGING" != true ]; then
+if [ -f scripts/ops/indexnow.mjs ] && [ "$IS_STAGING" != true ]; then
   echo "🔔 Notifying IndexNow (Bing/Yandex)..."
-  node scripts/indexnow.mjs 2>&1 | tail -2 || echo "⚠️ IndexNow ping skipped"
+  node scripts/ops/indexnow.mjs 2>&1 | tail -2 || echo "⚠️ IndexNow ping skipped"
 fi
 
 echo "✅ Deploy completed successfully."

@@ -1,7 +1,7 @@
 // IndexNow push: Bing/Yandex/Seznam accept an instant URL notification without any
 // account — the site proves ownership by hosting /<key>.txt. Google does not use
 // IndexNow (it needs Search Console), so this complements the sitemap, never replaces it.
-// Usage: node scripts/indexnow.mjs [--dry]
+// Usage: node scripts/ops/indexnow.mjs [--dry]
 const HOST = "janebiarena.ir";
 const KEY = "c276fa18a698331a170b989421aab2f6";
 const KEY_LOCATION = `https://${HOST}/${KEY}.txt`;

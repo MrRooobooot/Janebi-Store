@@ -17,7 +17,7 @@ Method: raw curl/openssl probes against prod; source read only to confirm root c
   route table, auth flow and validation schemas were disclosed.
 - Fix: single guard middleware in `server/app.ts` before every static mount —
   any `*.cjs` / `*.map` path → 404. Regression probe
-  `scripts/probes/static-exposure.sh` wired into `npm run verify` (step 4).
+  `scripts/gate/static-exposure.sh` wired into `npm run verify` (step 4).
 
 ### SEC-02 — HIGH — IP rate limiting bypassable via client-supplied X-Forwarded-For
 - nginx used `proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for`
