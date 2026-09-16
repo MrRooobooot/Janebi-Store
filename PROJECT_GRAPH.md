@@ -8,6 +8,35 @@
 
 ---
 
+## 0. Current State — Structure, Performance & Hygiene (2026-09-16)
+
+**Structure.** `server/routes/admin.ts` (51 lines) is an entry point: router-wide
+`authenticate` + `requireAdmin` then 11 sub-routers in `server/routes/admin/`.
+`server/bot/bale.ts` keeps the `startBaleBot` handler monolith and imports its
+shared pieces from `server/bot/bale/` (constants, types, session, media, catalog,
+keyboards). Route bodies were sliced verbatim in both cases; only wiring differs.
+
+**Performance.** `drizzle/sqlite/0013_hot_path_indexes.sql` (journal 14) added the
+hot-path indexes proven by `EXPLAIN QUERY PLAN` on prod: `products(category)`,
+`products(brand)`, `products(price)`, `orders(status, created_at)`. Before: the
+category filter was a full `SCAN products` and a price-ordered page used a TEMP
+B-TREE; after: `SEARCH … USING COVERING INDEX`. Catalogue search is still
+`LIKE '%…%'` (no index can serve it) — an FTS5 table is the upgrade path once the
+catalogue outgrows a few hundred rows.
+
+**Hygiene.** `scripts/` is grouped by purpose (`gate/ audit/ ops/ data/ oneoff/`,
+index in `scripts/README.md`); dated one-off reports live in `docs/archive/`
+(index in `docs/README.md`); test tiers are indexed in `tests/README.md`.
+Demo catalogue seeding is opt-in (`SEED_DEMO_DATA=1`) — no boot path may
+fabricate products, reviews or coupons. `bale-worker/` is an unshipped worker
+variant (see its README).
+
+**Security (same day).** CORS/X-Forwarded-Host trust removed (the header yielded a
+credentialed `Access-Control-Allow-Origin` for any origin and poisoned nginx's
+15-second API cache), health telemetry gated to in-host callers, CSP `http:` image
+source dropped, JWT localStorage mirror deleted (cookie-only browser sessions),
+nginx version banner off, sshd MaxAuthTries 3.
+
 ## 1. High-Level System Architecture & Flow
 
 ```

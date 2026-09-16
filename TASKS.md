@@ -384,3 +384,15 @@ Key findings (P0 first):
 - [x] Blog post 11 (پایه رومیزی موبایل) + copy-link button in article modal — live 2026-09-11 round
 - [x] Tag chips + JSON-LD keywords — live
 - Next: post 11 + rotating UI/SEO round
+
+### Round 2026-09-16 — بستهٔ تمیزکاری، بهینه‌سازی و رفع باگ (SHIPPED + DEPLOYED)
+
+- [x] **ساختار**: `admin.ts` ۱۱۷۳ → ۵۱ خط (۱۱ زیرروتر + `shared.ts`)، `bale.ts` ۲۳۰۳ → ۱۸۳۶ خط (۶ ماژول؛ مونولیت هندلرها دست‌نخورده). برابری مسیرها اثبات شد (۳۰ route قبل = ۳۰ بعد).
+- [x] **scripts/**: تفکیک به `gate/ audit/ ops/ data/ oneoff/` (۴۳ انتقال، ۵۰ پروب اسکرچ حذف) + `scripts/README.md`.
+- [x] **docs/**: `archive/` برای گزارش‌های تاریخ‌دار + `docs/README.md`؛ نقش اسناد تعریف شد (TASKS = کار باز، CHANGELOG = تغییرات لندشده).
+- [x] **tests/README.md**: ۵۴ سوئیت / ۴۲۵ assertion به تفکیک tier + قواعدی که هرکدام یک ران هزینه دادند.
+- [x] **مین بوت**: seed کاتالوگ جعلی opt-in شد (`SEED_DEMO_DATA=1`)؛ بدون فلگ فقط هشدار + فروشگاه خالی.
+- [x] **کارایی DB**: مایگریشن `0013` (ایندکس `products(category|brand|price)` + `orders(status, created_at)`) که نوشته شده بود ولی کامیت/دیپلوی نشده بود → اعمال شد. EXPLAIN قبل/بعد: `SCAN products` → `SEARCH … USING COVERING INDEX`؛ فیلتر دستهٔ prod ۰٫۰۴۲s → ۰٫۰۱۰s.
+- [x] **تست‌های قدیمی**: سه تست هدر که از روزها قبل قرمز بودند (کنترل‌ها به منوی همبرگری منتقل شده بود) با اثباتِ pre-existing بودن (worktree روی `4b5e9f1`) بازنویسی شدند → `real-user.spec.ts` **۸۶/۸۶ PASS** (Chromium + WebKit).
+- [x] **پاک‌سازی محلی**: `bale-worker/node_modules` (۲۶۳MB)، `test-results`، `playwright-report*`، DB‌های اسکرچ و `.serena`.
+- BuildInfo زنده در زمان تحویل: `7e70e2e`.
