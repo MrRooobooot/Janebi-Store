@@ -156,6 +156,61 @@ router.post("/refresh", async (req, res) => {
   }
 });
 
+// Session probe — the SPA's boot call. It runs the same cookie verification and
+// rotation as /refresh, but answers 200 {authenticated:false} for every "no
+// session" case instead of 401: anonymous visitors must not log a console error
+// on boot, and it deliberately stays OFF the strict refresh limiter (20/min/IP)
+// because carrier-grade NAT shares one IP across thousands of shoppers — a
+// per-page-load probe under that cap would lock real users out.
+// Fast path first: a still-valid access cookie authorizes without re-signing.
+router.post("/session", async (req, res) => {
+  try {
+    const cookies = parseCookies(req);
+
+    if (cookies.accessToken) {
+      try {
+        const decoded = jwt.verify(cookies.accessToken, env.JWT_ACCESS_SECRET) as any;
+        if (decoded?.userId) {
+          const user = await db.query.users.findFirst({ where: eq(users.id, decoded.userId) });
+          if (user) {
+            const { password: _a, ...userWithoutPassword } = user;
+            return res.json({
+              authenticated: true,
+              user: { ...userWithoutPassword, mustChangePassword: Boolean(userWithoutPassword.mustChangePassword) },
+            });
+          }
+        }
+      } catch {
+        /* expired/invalid access cookie → fall through to rotation */
+      }
+    }
+
+    const refreshToken = cookies.refreshToken;
+    if (!refreshToken) return res.json({ authenticated: false });
+
+    const decoded = jwt.verify(refreshToken, env.JWT_REFRESH_SECRET) as any;
+    if (!decoded?.userId) return res.json({ authenticated: false });
+
+    const user = await db.query.users.findFirst({ where: eq(users.id, decoded.userId) });
+    if (!user) return res.json({ authenticated: false });
+
+    if (typeof decoded.tokenVersion === "number" && decoded.tokenVersion !== getTokenVersion(user.id)) {
+      clearAuthCookies(res, env.NODE_ENV === "production");
+      return res.json({ authenticated: false });
+    }
+
+    const tokens = generateTokens(user.id);
+    setAuthCookies(res, tokens.accessToken, tokens.refreshToken, env.NODE_ENV === "production");
+    const { password: _, ...userWithoutPassword } = user;
+    return res.json({
+      authenticated: true,
+      user: { ...userWithoutPassword, mustChangePassword: Boolean(userWithoutPassword.mustChangePassword) },
+    });
+  } catch {
+    return res.json({ authenticated: false });
+  }
+});
+
 router.post("/logout", (req, res) => {
   // R3-02: revoke the refresh token for this user, if any cookie exists.
   try {

@@ -50,6 +50,36 @@ describe('HttpOnly Cookies & In-Memory Caching Verification', () => {
     expect(res.body.refreshToken).toBeDefined();
   });
 
+  // SEC-H6: the SPA boots by probing /api/auth/session. It must never 401 —
+  // a guest visit would otherwise log a console error, and the probe runs on
+  // every page load (the strict refresh limiter would then lock out users
+  // sharing a carrier-NAT IP).
+  it('answers 200 authenticated:false for an anonymous /api/auth/session probe', async () => {
+    const res = await request(app).post('/api/auth/session');
+    expect(res.status).toBe(200);
+    expect(res.body.authenticated).toBe(false);
+    expect(res.body.user).toBeUndefined();
+  });
+
+  it('answers 200 authenticated:true (with the user) for a cookied /api/auth/session probe', async () => {
+    const res = await request(app)
+      .post('/api/auth/session')
+      .set('Cookie', `accessToken=${accessToken}`);
+    expect(res.status).toBe(200);
+    expect(res.body.authenticated).toBe(true);
+    expect(res.body.user.phone).toBe(testPhone);
+    expect(res.body.user.password).toBeUndefined();
+  });
+
+  it('rotates the session from the refresh cookie when the access cookie is gone', async () => {
+    const res = await request(app)
+      .post('/api/auth/session')
+      .set('Cookie', `refreshToken=${refreshToken}`);
+    expect(res.status).toBe(200);
+    expect(res.body.authenticated).toBe(true);
+    expect(res.headers['set-cookie'] || '').toContain('accessToken=');
+  });
+
   it('serves cached responses with X-Cache HIT for products and categories', async () => {
     appCache.invalidate();
 

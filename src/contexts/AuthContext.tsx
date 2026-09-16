@@ -62,33 +62,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const checkAuth = async () => {
     try {
-      // Authenticate with the HttpOnly access cookie only (credentials:
-      // "include"); the mirrored localStorage token is gone by design.
-      {
-        const res = await fetch("/api/auth/me", { credentials: "include" });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.user) {
-            setUser(data.user);
-            return;
-          }
-        }
-      }
-
-      // Try automatic token refresh via HttpOnly refresh cookie. The cookie is
-      // HttpOnly so document.cookie can never reveal it — always attempt once;
-      // a 401 here simply means logged out.
-      {
-        const refreshRes = await fetch("/api/auth/refresh", {
-          method: "POST",
-          credentials: "include"
-        });
-        if (refreshRes.ok) {
-          const refreshData = await refreshRes.json();
-          if (refreshData.user) {
-            setUser(refreshData.user);
-            return;
-          }
+      // Boot probe = POST /api/auth/session: 200 {authenticated:false} for
+      // anonymous visitors (no console 401 on a guest visit, unlike probing
+      // /api/auth/me) and, for a live session, the user plus rotated HttpOnly
+      // cookies. Nothing here is script-readable.
+      const refreshRes = await fetch("/api/auth/session", {
+        method: "POST",
+        credentials: "include"
+      });
+      if (refreshRes.ok) {
+        const refreshData = await refreshRes.json();
+        if (refreshData.user) {
+          setUser(refreshData.user);
+          return;
         }
       }
 

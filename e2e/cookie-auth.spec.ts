@@ -18,6 +18,15 @@ async function uiLogin(page: Page, phone: string, password: string, nameHint: st
 }
 
 test.describe('cookie-only session', () => {
+  test('a guest boot stores nothing and logs no auth error', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
+    await page.goto('/', { waitUntil: 'networkidle' });
+    expect(errors.filter((e) => /401|Unauthorized/i.test(e))).toEqual([]);
+    const ls = await page.evaluate(() => Object.keys(localStorage).filter((k) => /token/i.test(k)));
+    expect(ls).toEqual([]);
+  });
+
   test('login leaves NO script-readable credential (no localStorage JWT, no token cookie)', async ({ page }) => {
     const phone = rndPhone();
     const reg = await page.request.post('/api/auth/register', {
