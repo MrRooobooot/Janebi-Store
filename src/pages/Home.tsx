@@ -104,7 +104,8 @@ export default function Home() {
     return () => clearInterval(timer);
   }, []);
 
-  const heroSlides = useMemo(() => [
+  const heroSlides = useMemo(() => {
+    const allSlides = [
     {
       id: 1,
       tag: settings.heroSlide1Tag || STORE_SETTINGS_DEFAULTS.heroSlide1Tag,
@@ -138,7 +139,26 @@ export default function Home() {
       image: settings.heroSlide3Image || '/products/cbl-1.svg',
       borderColor: 'border-purple-500/40 dark:border-purple-500/30',
     },
-  ], [settings]);
+    ];
+    // Never advertise a category the store has no stock in: slides whose CTA targets an
+    // empty category are dropped (falling back to the first slide if all are unavailable).
+    const liveCategories = new Set(categories.map((c) => c.title));
+    const available = allSlides.filter((s) => {
+      const m = String(s.buttonLink).match(/[?&]category=([^&]+)/);
+      return !m || liveCategories.has(decodeURIComponent(m[1]));
+    });
+    return available.length ? available : [allSlides[0]];
+  }, [settings, categories]);
+
+  useEffect(() => {
+    if (activeSlide >= heroSlides.length) setActiveSlide(0);
+  }, [heroSlides.length, activeSlide]);
+
+  // Real catalogue cards shown inside the hero (never placeholder/demo art)
+  const heroProducts = useMemo(
+    () => products.filter((p) => (p.stockQuantity ?? 1) > 0).slice(0, 3),
+    [products]
+  );
 
   // Auto slide — paused entirely when the user prefers reduced motion
   useEffect(() => {
@@ -270,7 +290,7 @@ export default function Home() {
                 className="hero-slide-content relative z-10 w-full col-start-1 row-start-1 transition-opacity duration-300 motion-reduce:transition-none motion-reduce:duration-0"
                 style={{ opacity: idx === activeSlide ? 1 : 0, pointerEvents: idx === activeSlide ? 'auto' : 'none', visibility: idx === activeSlide ? 'visible' : 'hidden' }}
               >
-                <HeroSlideContent slide={slide} />
+                <HeroSlideContent slide={slide} products={heroProducts} />
               </div>
             ))}
           </div>
@@ -285,8 +305,9 @@ export default function Home() {
               }
             }}
           >
-            <HeroSlideContent slide={currentSlide} />
+            <HeroSlideContent slide={currentSlide} products={heroProducts} />
             {/* Mobile slide indicators — tap targets + swipe affordance (user: «امکان عوض کردن باشه») */}
+            {heroSlides.length > 1 && (
             <div className="flex items-center justify-center gap-2 mt-4" role="tablist" aria-label="اسلایدهای صفحه اصلی">
               {heroSlides.map((slide, idx) => (
                 <button
@@ -301,8 +322,10 @@ export default function Home() {
                 </button>
               ))}
             </div>
+            )}
           </div>
-          {/* Navigation Arrows for PC Mouse & Mobile Tap */}
+          {/* Navigation Arrows for PC Mouse & Mobile Tap — hidden when a single available slide exists */}
+          {heroSlides.length > 1 && (<>
           <button
             type="button"
             onClick={() => setActiveSlide((prev) => (prev === 0 ? heroSlides.length - 1 : prev - 1))}
@@ -319,9 +342,11 @@ export default function Home() {
           >
             <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
+          </>)}
 
           {/* Slide indicators — phones auto-rotate every 6s and swipe, the dots row is sm+ only
               (on a 390px card the dots collided with the CTA/text edges) */}
+          {heroSlides.length > 1 && (
           <div className="hidden sm:flex items-center justify-center gap-2 relative z-10 mt-6 pt-3 border-t border-zinc-200/80 dark:border-zinc-800/80" role="tablist" aria-label="اسلایدهای صفحه اصلی">
             {heroSlides.map((slide, idx) => (
               <button
@@ -342,6 +367,7 @@ export default function Home() {
               </button>
             ))}
           </div>
+          )}
         </div>
       </section>
 

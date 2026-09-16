@@ -38,7 +38,7 @@ export const STORE_SETTINGS_DEFAULTS: Record<string, string> = {
   announcement: 'ارسال رایگان برای تمامی سفارش‌های بالای ۲ میلیون تومان | کد تخفیف: WELCOME10',
   heroSlide1Title: 'هولدرهای مگنتی خودرو و پایه‌های رومیزی ضدلغزش',
   heroSlide1Subtitle: 'هولدرهای آهنربایی قدرتمند N52 سازگار با مگ‌سیف آیفون و انواع گوشی‌ها، مناسب رانندگی شهری و اسنپ بدون لغزش و تکان',
-  heroSlide1Link: '/products?category=هولدر و پایه',
+  heroSlide1Link: '/products?category=هولدر و نگهدارنده',
   heroSlide1Badge: 'فروش تکی و عمده کارتنی',
   heroSlide2Title: 'قاب‌های مگ‌سیف و گلس‌های سوپردی فول‌چسب',
   heroSlide2Subtitle: 'تنوع بیش از ۵۰۰ مدل کاور سیلیکونی پاک‌کنی، قاب‌های ضدضربه و گلس‌های نشکن برای انواع مدل‌های آیفون، سامسونگ و شیائومی',
