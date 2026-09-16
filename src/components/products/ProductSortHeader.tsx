@@ -80,6 +80,8 @@ export default function ProductSortHeader({
         </span>
         <div className="relative w-full sm:w-48">
           <select
+            id="sort-select"
+            name="sort"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
             aria-label="ترتیب نمایش محصولات"

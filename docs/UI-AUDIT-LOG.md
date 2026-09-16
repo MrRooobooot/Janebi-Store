@@ -269,3 +269,22 @@ Purge پس از آخرین گیت (قاعدهٔ جدید): ۳۴ کاربر + ۹ 
 | ۳ | `POST /api/orders 401 (Unauthorized)` هنگام تسویه | **باگ نیست** — ثبت سفارش مهمان پشتیبانی نمی‌شود و مسیر ۴۰۱ در `useCheckoutForm` مدیریت شده: توست فارسی «برای ثبت سفارش ابتدا وارد حساب خود شوید» + هدایت به `/login` (بدون نشت متن خام سرور) | — (بررسی کد: `src/hooks/useCheckoutForm.ts:120-124`) | ۴۰۱ خام در تب Network باقی می‌ماند (قابل‌حذف نیست، رفتار مرورگر است) اما تجربهٔ کاربر فارسی و هدایت‌شده است |
 
 **گیت:** `npm run verify` → ۴۴۵ پاس / ۵ اسکیپ، `SEC-01 PASS`، `SEC-03 PASS`. دیپلوی OK + IndexNow ۲۰۰.
+
+## فرم‌ها: id/name/label — گزارش DevTools Accessibility (۱۴۰۵/۰۶/۲۵، live)
+**ورودی:** گزارش Lighthouse/DevTools کاربر: ۱۹ فیلد بدون `id`/`name` و ۲۳ فیلد بدون `<label>` مرتبط.
+**ابزار:** پروب `form-a11y-audit-0916.mjs` — ۱۶ مسیر عمومی + سبد شبت‌سازی‌شده، شمارش فیلدهای نقض‌کننده پیش و پس از فیکس (Chromium).
+
+| وضعیت | تعداد فیلد نقض‌کننده (۱۶ مسیر) |
+|-------|-------------------------------|
+| قبل | **۷۰** در ۱۶ مسیر (هر مسیر جزء wishlist/compare فقط هدر+فوتر هم نقض داشت) |
+| بعد | **۰** — `{}` در خروجی JSON پروب |
+
+**تغییرات (۱۴ فایل):**
+- `HeaderSearch` (۱۶ صفحه): `id=header-search` + `name=q` + `aria-label`.
+- `Footer` خبرنامه: `id/name=newsletter-email` + `autoComplete=email` + `label sr-only`.
+- `AuthModal`: `auth-phone` (`autoComplete=username`)، `auth-password` (`current-password`)، `auth-password-confirm` (`new-password`)؛ `autoComplete` تکراری حذف شد.
+- `CheckoutRecipientForm`: هر ۹ فیلد `id/name/autoComplete` درست (name/tel/address-level2/street-address/postal-code) + `htmlFor` روی لیبل‌های ازپیش‌موجود (بدون تغییر ظاهر).
+- `Login`/`Register`/`Contact`/`Home hero`/`VipClubBanner`/`CartSummaryCard`/`ProductFilterSidebar`/`Brands`/profile tabs: همان الگو؛ لیبل‌های visible با `htmlFor` وصل شدند، فیلدهای بی‌لیبل `aria-label` گرفتند.
+- توکن‌های autocomplete استاندارد (`username`, `current-password`, `new-password`, `tel`, `street-address`, `postal-code`, `email`, `one-time-code`) — autofill مرورگر حالا کار می‌کند.
+
+**گیت:** `npm run verify` → ۴۴۵ پاس / ۵ اسکیپ، `SEC-01 PASS`، `SEC-03 PASS`. دیپلوی OK.

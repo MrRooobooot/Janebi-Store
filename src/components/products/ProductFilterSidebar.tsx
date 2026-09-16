@@ -71,11 +71,14 @@ export default function ProductFilterSidebar({
     <div className="space-y-7 text-right">
       {/* Search inside filters */}
       <div className="relative group">
-        <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">
+        <label htmlFor="filter-inpage-search" className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">
           جستجو در نتایج
         </label>
         <div className="relative">
           <input
+              id="filter-inpage-search"
+              name="inPageQuery"
+              autoComplete="off"
             type="text"
             value={inPageQuery}
             onChange={(e) => setInPageQuery(e.target.value)}
@@ -226,6 +229,10 @@ export default function ProductFilterSidebar({
               از قیمت
             </label>
             <input
+                id="filter-price-min"
+                name="priceMin"
+                aria-label="حداقل قیمت"
+                inputMode="numeric"
               type="number"
               dir="ltr"
               value={minPrice}
@@ -239,6 +246,10 @@ export default function ProductFilterSidebar({
               تا قیمت
             </label>
             <input
+                id="filter-price-max"
+                name="priceMax"
+                aria-label="حداکثر قیمت"
+                inputMode="numeric"
               type="number"
               dir="ltr"
               value={maxPrice}

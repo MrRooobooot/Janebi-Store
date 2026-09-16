@@ -236,13 +236,15 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
               </label>
               <div className="relative">
                 <input
+                  id="auth-phone"
+                  name="phone"
+                  autoComplete="username"
                   type="tel"
                   dir="ltr"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="09123456789"
                   className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3 px-4 pl-10 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline-none focus:border-[var(--color-cta)]/30 focus:ring-2 focus:ring-[var(--color-cta)]/20 transition-all"
-                  autoComplete="username"
                   required
                 />
                 <Phone className="h-4 w-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />

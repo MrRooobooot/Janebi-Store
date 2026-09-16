@@ -212,6 +212,10 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
       <form onSubmit={handleSubmit} className="relative z-30">
         <div className="relative flex items-center">
           <input
+              id="header-search"
+            aria-label="جست‌وجوی محصول، برند یا مدل"
+              name="q"
+              autoComplete="off"
             ref={inputRef}
             type="text"
             value={query}

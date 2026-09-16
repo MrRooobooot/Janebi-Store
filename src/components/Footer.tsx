@@ -125,8 +125,12 @@ export default function Footer() {
               <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">از جدیدترین تخفیف‌ها، پکیج‌ها و کدهای تخفیف اختصاصی باخبر شوید.</p>
             </div>
             <form onSubmit={handleSubscribe} className="flex w-full mt-4">
+              <label htmlFor="newsletter-email" className="sr-only">ایمیل خبرنامه</label>
               <input 
-                type="email" 
+                id="newsletter-email"
+                name="newsletter-email"
+                type="email"
+                autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="آدرس ایمیل شما..." 

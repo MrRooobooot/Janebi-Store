@@ -126,7 +126,7 @@ export default function Contact() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">نام و نام خانوادگی *</label>
+                <label htmlFor="contact-name" className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">نام و نام خانوادگی *</label>
                 <input 
                   type="text" 
                   value={formData.name} 
@@ -134,10 +134,13 @@ export default function Contact() {
                   placeholder="مثلاً: علی محمدی"
                   className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30 dark:focus:border-[var(--color-cta)]/30 transition-colors" 
                   required 
+                id="contact-name"
+                name="contactName"
+                autoComplete="name"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">شماره تماس یا ایمیل *</label>
+                <label htmlFor="contact-info" className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">شماره تماس یا ایمیل *</label>
                 <input 
                   type="text" 
                   dir="ltr"
@@ -146,24 +149,32 @@ export default function Contact() {
                   placeholder="09123456789"
                   className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm font-mono text-left text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30 dark:focus:border-[var(--color-cta)]/30 transition-colors" 
                   required 
+                id="contact-info"
+                name="contactInfo"
+                autoComplete="off"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">موضوع پیام</label>
+              <label htmlFor="contact-subject" className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">موضوع پیام</label>
               <input 
                 type="text" 
                 value={formData.subject} 
                 onChange={e => setFormData({...formData, subject: e.target.value})} 
                 placeholder="مثلاً: پیگیری سفارش، مشاوره خرید..."
                 className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30 dark:focus:border-[var(--color-cta)]/30 transition-colors" 
+              id="contact-subject"
+              name="contactSubject"
+              autoComplete="off"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">متن پیام *</label>
+              <label htmlFor="contact-message" className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">متن پیام *</label>
               <textarea 
+                id="contact-message"
+                name="contactMessage"
                 rows={5} 
                 value={formData.message} 
                 onChange={e => setFormData({...formData, message: e.target.value})} 

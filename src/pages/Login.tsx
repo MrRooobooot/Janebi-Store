@@ -246,7 +246,7 @@ export default function Login() {
           className="space-y-4"
         >
           <div>
-            <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
+            <label htmlFor="login-phone" className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
               شماره موبایل *
             </label>
             <div className="relative">
@@ -259,6 +259,8 @@ export default function Login() {
                 className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3.5 px-4 pl-10 text-center tracking-[0.3em] text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:tracking-normal placeholder:text-gray-400 focus:outline-none focus:border-[var(--color-cta)]/30 focus:ring-2 focus:ring-[var(--color-cta)]/20 transition-all"
                 autoComplete="username"
                 required
+              id="login-phone"
+              name="phone"
               />
               <Phone className="h-4 w-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>
@@ -285,7 +287,8 @@ export default function Login() {
                 </div>
                 <div className="flex gap-2">
                   <div className="relative flex-1">
-                    <input
+                    <label htmlFor="login-otp" className="sr-only">کد تأیید</label>
+<input
                       type="text"
                       dir="ltr"
                       maxLength={5}
@@ -296,6 +299,8 @@ export default function Login() {
                       autoComplete="one-time-code"
                       inputMode="numeric"
                       enterKeyHint="done"
+                    id="login-otp"
+                    name="otp"
                     />
                     <KeyRound className="h-4 w-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   </div>
@@ -330,7 +335,7 @@ export default function Login() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
+                <label htmlFor="login-confirm-password" className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
                   تکرار رمز عبور جدید *
                 </label>
                 <div className="relative">
@@ -342,6 +347,9 @@ export default function Login() {
                     placeholder="تکرار رمز جدید"
                     className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3.5 px-4 pl-10 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-400 focus:outline-none focus:border-[var(--color-cta)]/30 focus:ring-2 focus:ring-[var(--color-cta)]/20 transition-all"
                     required
+                  id="login-confirm-password"
+                  name="passwordConfirm"
+                  autoComplete="new-password"
                   />
                   <Lock className="h-4 w-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
@@ -349,7 +357,7 @@ export default function Login() {
             </>
           ) : mode === "password" ? (
             <div>
-              <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
+              <label htmlFor="login-password" className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
                 رمز عبور *
               </label>
               <div className="relative">
@@ -362,6 +370,8 @@ export default function Login() {
                   className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3.5 px-4 pl-10 pr-10 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-400 focus:outline-none focus:border-[var(--color-cta)]/30 focus:ring-2 focus:ring-[var(--color-cta)]/20 transition-all"
                   autoComplete="current-password"
                   required
+                id="login-password"
+                name="password"
                 />
                 <Lock className="h-4 w-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <button

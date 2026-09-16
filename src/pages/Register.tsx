@@ -77,7 +77,7 @@ export default function Register() {
 
         <form onSubmit={handleSubmit} noValidate className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
+            <label htmlFor="register-name" className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
               نام و نام خانوادگی *
             </label>
             <div className="relative">
@@ -88,13 +88,16 @@ export default function Register() {
                 placeholder="مثلا: علی رضایی"
                 className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-3 px-4 pr-10 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30"
                 required
+              id="register-name"
+              name="name"
+              autoComplete="name"
               />
               <User className="h-4 w-4 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2" />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
+            <label htmlFor="register-phone" className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
               شماره موبایل *
             </label>
             <div className="relative">
@@ -106,13 +109,16 @@ export default function Register() {
                 placeholder="09123456789"
                 className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3.5 px-4 pl-10 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-400 focus:outline-none focus:border-[var(--color-cta)]/30 focus:ring-2 focus:ring-[var(--color-cta)]/20 transition-all"
                 required
+              id="register-phone"
+              name="phone"
+              autoComplete="username"
               />
               <Phone className="h-4 w-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
+            <label htmlFor="register-password" className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
               رمز عبور *
             </label>
             <div className="relative">
@@ -124,6 +130,9 @@ export default function Register() {
                 placeholder="••••••••"
                 className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3.5 px-4 pl-10 pr-10 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-400 focus:outline-none focus:border-[var(--color-cta)]/30 focus:ring-2 focus:ring-[var(--color-cta)]/20 transition-all"
                 required
+              id="register-password"
+              name="password"
+              autoComplete="new-password"
               />
               <Lock className="h-4 w-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <button
@@ -138,7 +147,7 @@ export default function Register() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
+            <label htmlFor="register-confirm-password" className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
               تکرار رمز عبور *
             </label>
             <div className="relative">
@@ -150,13 +159,18 @@ export default function Register() {
                 placeholder="••••••••"
                 className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3.5 px-4 pl-10 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-400 focus:outline-none focus:border-[var(--color-cta)]/30 focus:ring-2 focus:ring-[var(--color-cta)]/20 transition-all"
                 required
+              id="register-confirm-password"
+              name="passwordConfirm"
+              autoComplete="new-password"
               />
               <Lock className="h-4 w-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>
           </div>
 
-          <label className="flex items-center gap-2 cursor-pointer text-xs text-gray-600 dark:text-gray-400 font-medium pt-2">
+          <label htmlFor="register-terms" className="flex items-center gap-2 cursor-pointer text-xs text-gray-600 dark:text-gray-400 font-medium pt-2">
             <input
+              id="register-terms"
+              name="terms"
               type="checkbox"
               checked={agreeTerms}
               onChange={(e) => setAgreeTerms(e.target.checked)}

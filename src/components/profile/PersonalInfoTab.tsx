@@ -136,6 +136,9 @@ export default function PersonalInfoTab() {
               </label>
               <div className="relative">
                 <input
+                  id="profile-phone"
+                  name="phone"
+                  autoComplete="tel"
                   type="tel"
                   dir="ltr"
                   value={phone}

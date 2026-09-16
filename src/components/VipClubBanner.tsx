@@ -116,6 +116,10 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
             <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 bg-[var(--color-surface-light)]/15 backdrop-blur-md p-2 rounded-2xl border border-white/25">
               <div className="relative grow">
                 <input
+                  id="vip-phone"
+                  name="vipPhone"
+                  autoComplete="tel"
+                  aria-label="شماره موبایل برای عضویت در باشگاه"
                   type="text"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}

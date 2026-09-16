@@ -93,6 +93,10 @@ export default function Brands() {
       <div className="bg-[var(--color-surface-light)] dark:bg-gray-800/80 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700/60 p-4 shadow-xs">
         <div className="relative w-full sm:w-80">
           <input
+              id="brand-search"
+              name="brandSearch"
+              autoComplete="off"
+              aria-label="جست‌وجوی برند"
             type="text"
             placeholder="جستجوی برند (مثلاً: انکر، اپل، بیسوس)..."
             value={searchQuery}

@@ -53,7 +53,9 @@ export default function CartSummaryCard({
         <div className="flex gap-2">
           <div className="relative flex-1">
             <input
-              id="coupon-code-input"
+                id="coupon-code-input"
+              name="couponCode"
+              autoComplete="off"
               type="text"
               dir="ltr"
               value={couponInput}

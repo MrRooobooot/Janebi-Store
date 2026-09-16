@@ -303,6 +303,9 @@ export default function AddressBookTab() {
                     شماره موبایل گیرنده *
                   </label>
                   <input
+                    id="address-phone"
+                    name="phone"
+                    autoComplete="tel"
                     type="tel"
                     dir="ltr"
                     value={phone}
