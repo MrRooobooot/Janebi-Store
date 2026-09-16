@@ -70,3 +70,14 @@ ssh ubuntu@janebiarena.ir 'docker cp /tmp/import-holders.cjs janebi-store:/app/ 
 | اثبات رندر | پروب `post-purge-0916.mjs` Chromium+WebKit: `/`, `/products`, صفحهٔ دسته = ۲۰۰، `broken: 0`, `pageerrors: 0`؛ `/products` و دسته هر کدام ۲۰ کارت در صفحهٔ اول (۳۸ کالا = ۲ صفحه) |
 
 **تصمیم باز (نیازمند نظر کاربر):** حذف کامل آن ۲ کالای تستی مستلزم حذف آیتم‌های سفارش‌های **لغو‌شده**ی متناظر است (تاریخچهٔ سفارش مخدوش می‌شود)؛ راه استاندارد، افزودن پرچم `isActive/hidden` به اسکیما + فیلتر در API و پنل ادمین است تا کالا بدون حذف رکورد از ویترین خارج شود.
+
+### ۷.۱) حذف کامل ۲ کالای بازمانده (۱۴۰۵/۰۶/۲۵)
+
+کاربر دو URL زندهٔ آن‌ها را فرستاد ⇒ حذف کامل انجام شد (کاربر سفارش‌ها بررسی و بی‌خطر بودند: هر دو سفارش **لغو‌شده** و متعلق به حساب خود مالک `usr-admin-aidin`، هیچ مشتری واقعی درگیر نیست).
+
+- Dry-run پیش از حذف: ۲ محصول + ۲ `order_items` + ۱ `cart_items` + ۳ `product_features` (صفر wishlist/review).
+- اجرا در **یک تراکنش** با ترتیب FK-safe (وابسته‌ها قبل از محصول)، سپس `PRAGMA integrity_check` و `foreign_key_check`.
+- نتیجه: `removed {orderItems:2, cartItems:1, features:3, products:2}` · `productsRemaining: 38` · `integrity: ok` · `fkViolations: 0`.
+- بکاپ کامل ردیف‌های حذف‌شده: `.hermes/imports/legacy-removal-backup-20260916.json` (بازگردانی ممکن).
+- اثبات زنده: `/api/products/14` و `/api/products/5588` ⇒ **۴۰۴** (و همین‌طور صفحهٔ SPA `/product/<id>`) · کاتالوگ `38` و همه در «هولدر و نگهدارنده» · `/api/categories` فقط یک دسته · sitemap `73` · IndexNow `200 OK` · پروب Chromium+WebKit روی `/`, `/products`, دسته: `broken: 0`, `pageerror: 0`.
+- **یافتهٔ UX باز:** CTA اسلاید دوم هیرو (`heroSlide2ButtonText` در `src/lib/constants.ts`) به دستهٔ «قاب و محافظ صفحه» اشاره می‌کند که اکنون خالی است (۰ کالا) — نیازمند تغییر به دستهٔ موجود یا مخفی‌سازی اسلاید تا رسیدن موجودی آن بخش.
