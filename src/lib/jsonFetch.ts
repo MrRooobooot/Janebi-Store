@@ -4,7 +4,7 @@
 // Exemptions (keep raw fetch): ProductDetail (AbortController + JSON-LD),
 // AuthContext/Login/ForcedPasswordChange (auth state machine), useProductFilters
 // list fetch (reads X-Total-Count response headers).
-export class ApiError extends Error {
+class ApiError extends Error {
   status: number;
   constructor(message: string, status: number) {
     super(message);
