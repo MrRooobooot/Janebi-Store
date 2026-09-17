@@ -61,3 +61,4 @@ const bad = Object.values(out).some(
     Object.values(b.routes).some((r) => typeof r === 'string' && (/NAV FAIL|EMPTY|TOKEN-KEYS|COOKIE-LEAK|ERROR-TEXT/.test(r)))
 );
 console.log(bad ? 'SMOKE: PROBLEMS FOUND' : 'SMOKE: CLEAN (all routes rendered, no console errors, no stored JWT)');
+process.exitCode = bad ? 1 : 0;
