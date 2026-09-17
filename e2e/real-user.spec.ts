@@ -17,13 +17,16 @@ function collectErrors(page: Page) {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(`pageerror: ${e.message}`));
   page.on('console', (m) => {
-    if (m.type() === 'error') errors.push(`console: ${m.text()}`);
+    // Resource errors omit their URL in text; preserve attribution.
+    const url = m.location().url;
+    if (m.type() === 'error' && !url.startsWith('https://trustseal.enamad.ir/')) {
+      errors.push(`console: ${m.text()} ${url}`);
+    }
   });
   page.on('requestfailed', (r) => {
-    // cancelled = in-flight fetch aborted by navigation (normal SPA behavior,
-    // WebKit reports these aggressively); favicon noise ignored.
     const ft = r.failure()?.errorText || '';
     if (/favicon|cancelled|ERR_ABORTED|aborted/i.test(r.url() + ft)) return;
+    if (r.url().startsWith('https://trustseal.enamad.ir/')) return;
     errors.push(`reqfail: ${r.url()} ${ft}`);
   });
   return errors;
