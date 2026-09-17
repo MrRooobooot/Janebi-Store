@@ -750,7 +750,16 @@ test.describe('Admin panel — real CRUD clicks', () => {
     await page.getByRole('button', { name: /ارسال پیام/ }).click();
     await expect(page.getByText(/با موفقیت ثبت شد/)).toBeVisible({ timeout: 12000 });
 
+    // This test starts unauthenticated; finish login sync before hard navigation.
+    const accountSync = Promise.all(['/api/cart', '/api/wishlist'].map(path =>
+      page.waitForResponse(r => new URL(r.url()).pathname === path && r.request().method() === 'GET')
+        .then(async r => {
+          expect(r.ok(), `${path}: ${r.status()}`).toBeTruthy();
+          expect(await r.finished()).toBeNull();
+        })
+    ));
     await uiLogin(page, ADMIN_PHONE, ADMIN_PASS, 'ادمین تست');
+    await accountSync;
     await page.goto('/admin/messages');
     await expect(page.getByText(/پیام‌های تماس و پشتیبانی/).first()).toBeVisible({ timeout: 10000 });
     await expect(page.getByText(marker).first()).toBeVisible({ timeout: 10000 });

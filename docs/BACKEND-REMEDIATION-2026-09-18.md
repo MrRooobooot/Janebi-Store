@@ -12,7 +12,7 @@
 - `npm run verify`: 473 passed / 5 optional PG skipped, 60 files; TypeScript/build/SEC-01/SEC-03 passed. Log: `/tmp/janebi-final-verify.log`.
 - Dedicated PG positive run: `/tmp/janebi-pg-positive.log`; negative configured-connection control: `/tmp/janebi-pg-negative.log`.
 - Payment dual-engine run: `/tmp/janebi-payment-attributed.log`, 2 passed.
-- Full browser run outcome is recorded separately after completion; targeted success does not establish full-suite success.
+- First full attributed browser run: 82 passed / 1 WebKit failure / 3 not run. The admin-message test hard-navigated immediately after login, while account sync was pending (trace cart/wishlist status -1, followed by 200 after navigation). An initial shared `uiLogin` wait introduced a logout-test timeout (already-authenticated users do not trigger a fresh login transition); it was reverted. Only the initially-guest admin-message test now waits for successful completed cart/wishlist GETs before hard navigation. Targeted message + logout checks: 4 passed across Chromium/WebKit (`/tmp/janebi-scoped-sync.log`). This is test synchronization, not a certified fix of all possible application races. Full rerun after the scoped fix: **86 passed / 0 failed / 0 flaky across Chromium+WebKit in 4.6m** (`/tmp/janebi-e2e-scoped-final.log`).
 - Runtime change committed in `c6c7790`; production deployment and served hash are separate evidence, not implied by push.
 
 ## Dead-code scope and limits

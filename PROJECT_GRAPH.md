@@ -10,7 +10,9 @@
 
 ## 0. Current State — Structure, Performance & Hygiene (2026-09-16)
 
-**Test validity audit (2026-09-17).** Full gate: 450 pass / 5 PG skips (58 files).
+**Backend remediation (2026-09-18).** Vitest now uses isolated in-memory SQLite; destructive persistent-DB teardown removed. Consolidated gate: 473 pass / 5 optional PG skips (60 files). Dedicated disposable PostgreSQL engine suite: 5 pass after 14 migrations; not application-checkout parity. Exact price assertions reject previously surviving mutations. `jsonFetch` reads failure bodies once. Payment E2E passes both engines; external Enamad 501 attributed by trace and excluded by origin, not status. Full attributed browser run after scoped sync fix: **86/86 passed, 0 flaky, Chromium+WebKit**. Deployment verified separately below. See `docs/BACKEND-REMEDIATION-2026-09-18.md`.
+
+**Historical test validity audit (2026-09-17).** Full gate: 450 pass / 5 PG skips (58 files).
 Two price-display mutations survived all 35 related utility tests; digit-mapping
 mutation was caught by 4. Guest smoke exit propagation fixed and verified with
 an empty local page (failure exit 1) and live dual-engine positive control.
