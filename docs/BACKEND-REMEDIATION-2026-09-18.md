@@ -5,7 +5,10 @@
 - Added real-route order regression tests: exact server-side totals, coupon/VIP accounting, rollback, stock restoration, repeated cancellation and admin shipping/status persistence. SQLite tests invoke application routers, not copied algorithms.
 - Exact price assertions now reject both previously surviving isolated mutations. Production `formatPrice` did not need alteration.
 - `jsonFetch`: consume failed response JSON once; preserve backend `error` or `message`. Real local HTTP negative tests failed before the change, passed afterward (3 tests).
-- PG suite is explicitly optional without PG_DATABASE_URL. Configured connection/migration failures now fail instead of silently skipping; connection-string secrets are not logged. A disposable localhost PG cluster applied 14 migrations and passed all 5 engine tests. These are NOT proof of application checkout parity on PostgreSQL.
+- PG suite is explicitly optional without PG_DATABASE_URL. Configured connection/migration failures now fail instead of silently skipping; connection-string secrets are not logged. A disposable localhost PG cluster applied 14 migrations and passed all 5 engine tests.
+- **PG application parity (2026-09-18, proven):** the 8 order-integrity router tests, 6 rollback tests and 2 payment-callback tests all pass on an isolated disposable PostgreSQL cluster (`/tmp/janebi-pg-parity.log`, `/tmp/janebi-pg-parity2.log`, `/tmp/janebi-pay-cb-pg.log`). The real Express routers, transactions and Drizzle code run against PG — not copied algorithms.
+- **Payment gateway liveness (2026-09-18, verified on prod container):** Zarinpal request probe returned HTTP 200 / code 100 in 454 ms; Saman `sep.shaparak.ir/MobilePG/MobilePayment` answered HTTP 200 (8,349-byte payment page). Liveness ≠ a completed real settlement.
+- **SMS pipeline (2026-09-18, verified on prod container):** SMS.ir `/v1/send/verify` with the real order template returned HTTP 200 / status 1 «موقف» — API key, template 937005 and parameter names are accepted end-to-end. This is provider acceptance of a probe message, not proof of handset delivery.
 - Browser console errors now retain their source URL. Payment E2E trace attributed HTTP 501 to `https://trustseal.enamad.ir/logo.aspx`, not store/payment APIs. Only that external origin is excluded at collection; no blanket 501 exclusion. Targeted payment test passed Chromium and WebKit without retries.
 
 ## Evidence
@@ -19,4 +22,4 @@
 Knip reported 30 candidate files, 1 dependency, 2 exports and 2 types. Operational scripts, service worker, Drizzle CLI config and dynamic pino transport are not dead just because Knip cannot resolve their entry points. Removed only disconnected global setup/teardown after empty graph/current Serena reference checks; removed the temporary PG bootstrap script after use. No blind bulk deletion. Remaining export/type candidates are not evidence of runtime defects.
 
 ## Still not certified
-External banking settlement, SMS delivery, complete PostgreSQL application parity, all operator workflows and previously documented ops defects are not certified by these tests. No claim of zero bugs or zero remaining dead code.
+Real banking settlement (an actual card payment through Zarinpal/Saman), handset delivery of SMS, and all operator workflows are not certified by these tests. No claim of zero bugs or zero remaining dead code.
