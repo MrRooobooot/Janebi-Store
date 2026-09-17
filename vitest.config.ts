@@ -5,15 +5,14 @@ export default defineConfig({
     fileParallelism: false,
     environment: 'node',
     exclude: ['**/node_modules/**', '**/dist/**', '**/e2e/**'],
-    // Fixture rows the suites insert into the shared dev DB are removed after the
-    // whole run (see tests/global-teardown.ts) — residue otherwise breaks the
-    // next design-audit run with err:N on 404 test images.
-    globalSetup: ['./tests/global-setup.ts'],
+    // Each isolated test file gets a fresh SQLite connection, never the dev DB.
     // Tests must never dispatch real SMS: force the OTP provider gate off so
     // /api/auth/otp/send uses the in-process simulator (debugCode) instead of
     // hitting the live SMS.ir API with fake test phones (intermittent 502s).
     env: {
       NODE_ENV: 'test',
+      DATABASE_URL: ':memory:',
+      TEST_DIALECT: 'sqlite',
       SMS_API_KEY: '',
       SMS_PROVIDER: '',
       SMS_TEMPLATE_ID: '',

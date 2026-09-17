@@ -8,7 +8,8 @@ echo "======================================================"
 echo "▶ 1. Strict TypeScript Type-Checking..."
 npx tsc --noEmit
 
-echo "▶ 2. Automated Unit & Integration Tests (Vitest)..."
+echo "▶ 2. Isolated Unit & Integration Tests (Vitest)..."
+npx tsx scripts/audit/test-vitest-isolation.ts
 npx vitest run --reporter=verbose
 
 echo "▶ 3. Production Build (Vite Client + Esbuild Server)..."

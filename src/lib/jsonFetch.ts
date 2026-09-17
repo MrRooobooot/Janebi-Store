@@ -13,8 +13,9 @@ export class ApiError extends Error {
 }
 
 async function parseError(res: Response): Promise<string> {
-  const data = (await res.json().catch(() => null)) as { error?: string } | null;
-  return data?.error || `خطای سرور (${res.status})`;
+  const data = await res.json().catch(() => null);
+  const message = data?.error ?? data?.message;
+  return typeof message === 'string' && message ? message : `خطای سرور (${res.status})`;
 }
 
 export async function jsonFetch<T = unknown>(url: string, init?: RequestInit): Promise<T> {
@@ -25,9 +26,8 @@ export async function jsonFetch<T = unknown>(url: string, init?: RequestInit): P
       ...(init?.headers ?? {}),
     },
   });
-  const data: unknown = await res.json().catch(() => null);
   if (!res.ok) throw new ApiError(await parseError(res), res.status);
-  return data as T;
+  return (await res.json()) as T;
 }
 
 export async function getJson<T = unknown>(url: string): Promise<T> {

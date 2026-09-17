@@ -5,8 +5,9 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import * as pgSchema from '../../server/db/schema.pg.js';
 import { eq, sql, inArray, and } from 'drizzle-orm';
 
-describe('Phase 2 — Live PostgreSQL Engine & Concurrency Verification', () => {
-  const connectionString = process.env.PG_DATABASE_URL || `postgres://${process.env.USER || 'aidin'}@localhost:5432/janebi_verify`;
+// Optional only when unconfigured. A configured PG run must fail on setup errors.
+describe.skipIf(!process.env.PG_DATABASE_URL)('PostgreSQL engine primitives (not application checkout coverage)', () => {
+  const connectionString = process.env.PG_DATABASE_URL;
   let pool: pkg.Pool;
   let db: ReturnType<typeof drizzle>;
   let isPgAvailable = false;
@@ -70,8 +71,9 @@ describe('Phase 2 — Live PostgreSQL Engine & Concurrency Verification', () => 
       }).returning();
       rollbackProductId = p3.id;
     } catch (err) {
-      console.warn('⚠️ PostgreSQL not available at ' + connectionString + ', skipping live PG tests.');
       isPgAvailable = false;
+      await pool?.end();
+      throw err;
     }
   });
 

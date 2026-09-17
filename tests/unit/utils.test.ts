@@ -70,8 +70,19 @@ describe('Utility Functions Unit Tests', () => {
     expect(isValidIranianMobile('')).toBe(false);
   });
 
-  it('formatPrice formats amount with Persian locale and تومان', () => {
-    expect(formatPrice(50000)).toContain('تومان');
+  it.each([
+    [0, '۰ تومان'],
+    [10, '۱۰ تومان'],
+    [50000, '۵۰٬۰۰۰ تومان'],
+    [1234567890, '۱٬۲۳۴٬۵۶۷٬۸۹۰ تومان'],
+    ['۱۲۳۴۵', '۱۲٬۳۴۵ تومان'],
+    ['١٢٣٤٥', '۱۲٬۳۴۵ تومان'],
+    [null, '۰ تومان'],
+    [undefined, '۰ تومان'],
+    ['', '۰ تومان'],
+    ['invalid', '۰ تومان'],
+  ])('formatPrice(%s) preserves the exact amount', (input, expected) => {
+    expect(formatPrice(input)).toBe(expected);
   });
 });
 
