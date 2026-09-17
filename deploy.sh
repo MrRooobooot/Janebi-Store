@@ -42,6 +42,11 @@ rsync -avz -e "ssh $SSH_OPTS" --delete "$DIST_DIR/" "$REMOTE:$APP_DIR/dist/" 2>&
 echo "📤 Syncing schema & config..."
 rsync -avz -e "ssh $SSH_OPTS" --delete "$DRIZZLE_DIR/" "$REMOTE:$APP_DIR/drizzle/" 2>&1 | tail -3
 rsync -avz -e "ssh $SSH_OPTS" ./package.json ./docker-compose*.yml "$REMOTE:$APP_DIR/" 2>&1 | tail -3
+# Host-side ops tooling (cron: backup-verify.sh, vps-monitor.py, install-cron.sh).
+# Without this the VPS keeps running whatever old copy it has — the failure mode
+# that let a renamed monitor script go unnoticed.
+echo "📤 Syncing scripts/ops/..."
+rsync -avz -e "ssh $SSH_OPTS" --delete ./scripts/ops/ "$REMOTE:$APP_DIR/scripts/ops/" 2>&1 | tail -2
 # Ship SMS_* config to VPS .env — MERGE-SAFE: never overwrite prod secrets.
 # For each SMS_* key present locally, append it to the remote .env ONLY if the
 # key is missing there. Existing remote lines (APP_URL, JWT secrets, Zarinpal

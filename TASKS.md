@@ -396,3 +396,4 @@ Key findings (P0 first):
 - [x] **تست‌های قدیمی**: سه تست هدر که از روزها قبل قرمز بودند (کنترل‌ها به منوی همبرگری منتقل شده بود) با اثباتِ pre-existing بودن (worktree روی `4b5e9f1`) بازنویسی شدند → `real-user.spec.ts` **۸۶/۸۶ PASS** (Chromium + WebKit).
 - [x] **پاک‌سازی محلی**: `bale-worker/node_modules` (۲۶۳MB)، `test-results`، `playwright-report*`، DB‌های اسکرچ و `.serena`.
 - BuildInfo زنده در زمان تحویل: `7e70e2e`.
+- [x] **بکاپ و پایش (۱۴۰۵/۰۶/۲۶)**: کران روزانهٔ `scripts/ops/backup-verify.sh` (اسنپ‌شات + `integrity_check` + `foreign_key_check` + خواندن واقعی ردیف‌ها + آپلود سند به بله، نگهداری ۷ نسخه) و کران ۵ دقیقه‌ای `scripts/ops/vps-monitor.py` (health، کانتینر/RestartCount، دیسک، نرخ 5xx، عمر بکاپ، خطای مرگ‌بار لاگ) با هشدار بله + پیام بازگشت به سلامت. مسیرهای کران از ریپو نصب می‌شوند (`install-cron.sh`) چون کران میزبان در گیت نیست و جابه‌جایی یک اسکریپت یک‌بار پایش را بی‌صدا کشته بود.

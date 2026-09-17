@@ -34,7 +34,9 @@ in `oneoff/` (kept for provenance, not for reuse).
 ## ops/
 - `backup-db.mjs` — `VACUUM INTO` backup (WAL-safe), keeps last 7; `npm run db:backup`.
 - `indexnow.mjs` — IndexNow ping (Bing/Yandex/Seznam); called at the end of `deploy.sh`.
-- `vps-monitor.py` — cron health/disk/container check (`HEALTH_URL` defaults to `127.0.0.1:3000/api/health`).
+- `backup-verify.sh` — daily DB snapshot + restore proof (`integrity_check`, `foreign_key_check`, real row read) + off-box upload to Bale + retention; alerts on any failure.
+- `install-cron.sh` — idempotent installer for the two managed cron entries (backup 02:30, monitor every 5 min) pointing at repo paths.
+- `vps-monitor.py` — 5-minute cron checks (health, containers + RestartCount, disk, 5xx rate, backup age, fatal log markers) with Bale alerts, per-incident dedupe and a 6-hourly reminder.
 - `snap-db.py` — fresh DB snapshot out of the running container.
 - `nginx-drift.sh` — compare live nginx conf with `deploy/nginx-*.conf` (deliberately NOT in the gate).
 - `audit-boot.sh` — boot a local audit instance on an isolated port/DB.

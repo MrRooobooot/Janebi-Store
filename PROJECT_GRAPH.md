@@ -31,6 +31,30 @@ Demo catalogue seeding is opt-in (`SEED_DEMO_DATA=1`) — no boot path may
 fabricate products, reviews or coupons. `bale-worker/` is an unshipped worker
 variant (see its README).
 
+**Ops wiring (2026-09-17).** The DB is the only irreversible asset, so the VPS now
+runs two managed cron entries, installed from the repo (`scripts/ops/install-cron.sh`
+rewrites the block every run — host cron is NOT in git, and a moved script path
+once killed monitoring silently):
+
+```
+30 2 * * *  ~/Janebi-Store/scripts/ops/backup-verify.sh        # snapshot + restore test + Bale upload
+*/5 * * * *  python3 ~/Janebi-Store/scripts/ops/vps-monitor.py  # alerts to Bale
+```
+
+`backup-verify.sh` snapshots inside the container (`better-sqlite3 .backup()`,
+WAL-consistent), then **proves the copy is usable**: ≥50 KiB, `PRAGMA
+integrity_check = ok`, `foreign_key_check` empty, and a real read of the copy
+(`products/users/orders/tables` counts). It uploads the file to both admin chats
+on Bale (`sendDocument`; pin attempted, best-effort — private chats reject pinning)
+and alerts on any failed step, so a backup cannot die quietly. Retention: newest 7
+DB + 7 `.env` copies (the `.env` is deliberately NOT uploaded — it holds secrets).
+
+`vps-monitor.py` alerts to Bale (plain text: Bale 500s on `parse_mode`) on: app
+health, container state/`RestartCount`, disk ≥85%, ≥10× 5xx in 5 min from the nginx
+access log, backup older than 30 h, and fatal container-log markers. A state file
+gives one alert per incident + a 6-hourly reminder + a "recovered" message, so the
+5-minute cron cannot spam.
+
 **Security (same day).** CORS/X-Forwarded-Host trust removed (the header yielded a
 credentialed `Access-Control-Allow-Origin` for any origin and poisoned nginx's
 15-second API cache), health telemetry gated to in-host callers, CSP `http:` image
