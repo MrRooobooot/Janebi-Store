@@ -2,13 +2,33 @@
 
 > **Autonomous Engineering Knowledge Base & Live System Map**
 > **Last Verified & Updated:** 2026-09-16 (security rounds SEC-H1..H6 + repo tidy: CORS/X-Forwarded-Host trust removed, nginx API-cache poisoning closed, health telemetry gated, CSP `http:` image source dropped, JWT localStorage mirror deleted → cookie-only sessions)
-> **Status:** Live & Production Ready (58 test suites, 447 passing tests; served `BUILD_INFO` is the deployment truth)
+> **Status:** Live; operational safeguards need remediation (read-only audit 2026-09-17: `docs/OPS-CONFIG-AUDIT-2026-09-17.md`). Historical gate: 58 suites / 447 passing tests, not rerun by this audit; served `BUILD_INFO` is the deployment truth.
 > **PRD Reference:** `AGENTS.md` | `PROJECT_AUDIT.md` | `TASKS.md`
 > **Repo layout:** scripts grouped by purpose → `scripts/README.md`; docs index → `docs/README.md` (dated one-off reports live in `docs/archive/`).
 
 ---
 
 ## 0. Current State — Structure, Performance & Hygiene (2026-09-16)
+
+**Test validity audit (2026-09-17).** Full gate: 450 pass / 5 PG skips (58 files).
+Two price-display mutations survived all 35 related utility tests; digit-mapping
+mutation was caught by 4. Guest smoke exit propagation fixed and verified with
+an empty local page (failure exit 1) and live dual-engine positive control.
+Full E2E attempt failed and was stopped; isolated home WebKit reruns passed,
+so full-suite stability remains unverified. See `docs/TEST-VALIDITY-AUDIT-2026-09-17.md`.
+
+**Read-only ops audit (2026-09-17, supersedes older operational assurances).**
+Served `BUILD_INFO=c25a69e`; 24-hour nginx status parsing found 0 HTTP 5xx;
+latest backup independently passes integrity/FK checks (38 products, 3 users,
+1 order). Root disk is 82% used. `.env` and DB backups were readable by
+`www-data`; live permission fix (`.env` 0600, backup directory 0700) blocked
+both reads while preserving operator access. Open defects: running Docker log
+limits are absent despite daemon config on disk; cron logs lack rotation;
+monitor timestamp comparison and failed-alert retry are incorrect; backup
+upload failure can still end with `backup OK`. No application deployment.
+Details and scope limits:
+`docs/OPS-CONFIG-AUDIT-2026-09-17.md`. Earlier claims that backup/monitor failures
+cannot be silent are superseded; historical test counts are not a fresh gate.
 
 **Structure.** `server/routes/admin.ts` (51 lines) is an entry point: router-wide
 `authenticate` + `requireAdmin` then 11 sub-routers in `server/routes/admin/`.
