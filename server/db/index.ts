@@ -382,6 +382,18 @@ export const pool = poolInstance;
 export const sqlite = sqliteInstance;
 export const db: BetterSQLite3Database<typeof sqliteSchema> = dbInstance;
 
+// FTS5 feature detection (SQLite path only). The products search route falls back to
+// LIKE when FTS5 is unavailable (e.g. a better-sqlite3 build compiled without FTS5).
+export const fts5Available: boolean = (() => {
+  if (!sqliteInstance) return false;
+  try {
+    sqliteInstance.exec("SELECT 1 FROM products_fts LIMIT 1");
+    return true;
+  } catch {
+    return false;
+  }
+})();
+
 // Await this before touching the database (server bootstrap does).
 export function dbReady(): Promise<void> {
   return migrationsReady;

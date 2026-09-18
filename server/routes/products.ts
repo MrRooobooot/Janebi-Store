@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { validate } from "../middleware/validate.js";
 import { productQuerySchema, numericIdParamSchema, reviewSubmitSchema } from "../validators/index.js";
-import { db } from "../db/index.js";
+import { db, sqlite, fts5Available } from "../db/index.js";
 import { products, reviews } from "../db/schema.js";
 import { eq, or, and, SQL, gte, lte, gt, inArray, desc, asc, sql } from "drizzle-orm";
 import { likeWithEscape, containsLikePattern } from "../utils/like";
@@ -10,6 +10,40 @@ import { appCache } from "../utils/cache.js";
 import { storeEvents } from "../services/events.js";
 
 const router = Router();
+
+/**
+ * FTS5 search: prefix-match every whitespace-separated token across
+ * title/brand/category. "کابل سامسونگ" → `کابل* سامسونگ*`. Query params are
+ * parameterized (the MATCH arg is bound, tokens are sanitized to strip
+ * FTS5 query syntax so user input can never inject operators).
+ */
+function ftsSearchCondition(search: string): SQL | null {
+  if (!fts5Available || !sqlite) return null;
+  const tokens = String(search)
+    .trim()
+    .split(/\s+/)
+    .slice(0, 6)
+    .map((t) => t.replace(/["*()^:{}[\]-]/g, "").trim())
+    .filter(Boolean)
+    .map((t) => `"${t}"*`)
+    .join(" ");
+  if (!tokens) return null;
+  try {
+    const ids = sqlite
+      .prepare(
+        `SELECT product_id FROM products_fts WHERE products_fts MATCH ? LIMIT 400`
+      )
+      .all(tokens) as { product_id: number }[];
+    if (ids.length === 0) {
+      // Match-nothing sentinel: preserve "no results" semantics.
+      return sql`1 = 0`;
+    }
+    return inArray(products.id, ids.map((r) => r.product_id));
+  } catch (err) {
+    console.warn("FTS5 search failed, falling back to LIKE:", (err as Error).message);
+    return null;
+  }
+}
 
 router.get("/", validate(productQuerySchema), async (req, res) => {
   const cacheKey = `products:${JSON.stringify(req.query)}`;
@@ -34,12 +68,17 @@ router.get("/", validate(productQuerySchema), async (req, res) => {
   }
   
   if (search) {
-    const s = containsLikePattern(String(search));
-    conditions.push(or(
-      likeWithEscape(products.title, s),
-      likeWithEscape(products.category, s),
-      likeWithEscape(products.brand, s)
-    )!);
+    const fts = ftsSearchCondition(String(search));
+    if (fts) {
+      conditions.push(fts);
+    } else {
+      const s = containsLikePattern(String(search));
+      conditions.push(or(
+        likeWithEscape(products.title, s),
+        likeWithEscape(products.category, s),
+        likeWithEscape(products.brand, s)
+      )!);
+    }
   }
   
   if (brands) {
