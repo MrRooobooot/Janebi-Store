@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'motion/react';
 import { Mail, Gift, Sparkles, CheckCircle2, Check, Copy } from 'lucide-react';
 import { useToast } from '../contexts/ToastContext';
 import { jsonFetch } from '../lib/jsonFetch';
@@ -66,12 +65,8 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
   };
 
   return (
-    <motion.section 
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
-      className="relative rounded-3xl text-white [background:linear-gradient(135deg,#e11d48,#be123c)] p-6 sm:p-10 md:p-12 overflow-hidden shadow-xl"
+    <section
+      className="reveal-in-view relative rounded-3xl text-white [background:linear-gradient(135deg,#e11d48,#be123c)] p-6 sm:p-10 md:p-12 overflow-hidden shadow-xl"
     >
       {/* Background Decorative Blur circles */}
       <div className="absolute -top-24 -right-24 w-72 h-72 bg-[var(--color-surface-light)]/10 rounded-full blur-3xl pointer-events-none" />
@@ -92,10 +87,8 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
 
         <div className="w-full lg:w-96 max-w-full">
           {submitted ? (
-            <motion.div 
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="bg-black/25 backdrop-blur-md p-6 rounded-2xl border border-white/30 text-center text-white"
+            <div
+              className="pop-in bg-black/25 backdrop-blur-md p-6 rounded-2xl border border-white/30 text-center text-white"
             >
               <CheckCircle2 className="h-12 w-12 text-green-300 mx-auto mb-3" />
               <h3 className="font-extrabold text-lg mb-1">عضویت با موفقیت انجام شد!</h3>
@@ -111,7 +104,7 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
                   {copied ? <Check className="h-4 w-4 text-green-300" /> : <Copy className="h-4 w-4 text-white/80" />}
                 </button>
               )}
-            </motion.div>
+            </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 bg-[var(--color-surface-light)]/15 backdrop-blur-md p-2 rounded-2xl border border-white/25">
               <div className="relative grow">
@@ -142,6 +135,6 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
           )}
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }

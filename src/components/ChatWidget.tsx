@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MessageCircle, X, Send, Bot, Sparkles, User, RefreshCw, ChevronDown } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_FEES } from '../lib/constants';
 import { useStoreSettings } from '../hooks/useStoreSettings';
 
@@ -110,14 +109,9 @@ export default function ChatWidget() {
 
   return (
     <div className={`fixed ${isProductDetail ? 'bottom-[148px] sm:bottom-6' : 'bottom-32 sm:bottom-6'} right-3 sm:right-6 z-50 print:hidden flex flex-col items-end transition-all duration-300`}>
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
-            className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl shadow-2xl border border-gray-200 dark:border-[var(--color-border-dark)] w-[92vw] sm:w-96 h-[32rem] flex flex-col overflow-hidden mb-4 transition-colors"
+      {isOpen && (
+          <div
+            className="dropdown-in bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl shadow-2xl border border-gray-200 dark:border-[var(--color-border-dark)] w-[92vw] sm:w-96 h-[32rem] flex flex-col overflow-hidden mb-4 transition-colors"
           >
             {/* Header */}
             <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border-b border-gray-200 dark:border-[var(--color-border-dark)] text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] p-4 flex items-center justify-between">
@@ -200,21 +194,18 @@ export default function ChatWidget() {
                 <Send className="h-4 w-4" />
               </button>
             </form>
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
 
       {!isOpen && (
-        <motion.button 
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+        <button
           onClick={() => setIsOpen(true)}
           aria-label="باز کردن راهنمای خرید"
-          className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] text-white border border-transparent shadow-lg shadow-[var(--color-cta)]/25 w-11 h-11 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all relative group cursor-pointer"
+          className="hover:scale-105 active:scale-95 transition-transform bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] text-white border border-transparent shadow-lg shadow-[var(--color-cta)]/25 w-11 h-11 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-colors relative group cursor-pointer"
         >
           <MessageCircle className="h-6 w-6" />
           <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-500 border-2 border-white dark:border-gray-900 rounded-full"></span>
-        </motion.button>
+        </button>
       )}
     </div>
   );

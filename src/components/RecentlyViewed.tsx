@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { History, Trash2, ChevronLeft, Sparkles } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
 import ProductCard from './ProductCard';
 import {
   getRecentlyViewed,
@@ -49,13 +48,7 @@ export default function RecentlyViewed({
   }
 
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
-      className="mt-12 text-right"
-    >
+    <section className="reveal-in-view mt-12 text-right">
       {/* Header */}
       <div className="flex items-center justify-between mb-6 pb-3 border-b border-gray-200/70 dark:border-[var(--color-border-dark)]">
         <div className="flex items-center gap-2.5">
@@ -85,13 +78,11 @@ export default function RecentlyViewed({
       </div>
 
       {/* Grid */}
-      <AnimatePresence>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
-          {items.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      </AnimatePresence>
-    </motion.section>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
+        {items.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
+    </section>
   );
 }

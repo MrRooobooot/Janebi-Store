@@ -25,12 +25,23 @@ export default defineConfig(({mode}) => {
         output: {
           manualChunks(id) {
             if (id.includes('node_modules')) {
-              if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
+              // react-dom + react/jsx-runtime must resolve to vendor-react —
+              // framer-motion imports react/jsx-runtime, and if jsx-runtime lands in
+              // the motion chunk the whole motion engine becomes an EAGER dep
+              // (rolldown chunking artifact: eager index statically imports it).
+              if (
+                id.includes('react-dom') ||
+                id.includes('react-router-dom') ||
+                id.includes('jsx-runtime') ||
+                id.includes('jsxDEV') ||
+                /node_modules\/(react|react-dom|scheduler)\//.test(id)
+              ) {
                 return 'vendor-react';
               }
-              if (id.includes('motion')) {
-                return 'vendor-motion';
-              }
+              // motion/framer NOT pinned to its own chunk: pinning makes the shared
+              // jsx-runtime live in the motion chunk, dragging 130KB motion engine
+              // into the eager payload. Without a manual chunk, rolldown puts motion
+              // code only into the lazy chunks that import it.
               if (id.includes('lucide-react')) {
                 return 'vendor-icons';
               }

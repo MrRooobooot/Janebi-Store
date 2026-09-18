@@ -5,7 +5,6 @@ import {
 } from 'lucide-react';
 import { getCategoryIcon } from '../lib/categoryIcons';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'motion/react';
 import { SearchItemSkeleton } from './Skeletons';
 import { getJson } from '../lib/jsonFetch';
 
@@ -270,14 +269,9 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
       </form>
 
       {/* Real-time Suggestions Dropdown */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 8, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 8, scale: 0.98 }}
-            transition={{ duration: 0.18, ease: 'easeOut' }}
-            className="absolute right-0 left-0 mt-2 bg-[var(--color-surface-light)]/98 dark:bg-[var(--color-surface-dark)]/98 backdrop-blur-2xl rounded-3xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-2xl overflow-hidden z-50 divide-y divide-gray-100 dark:divide-gray-800/60 max-h-[75vh] flex flex-col"
+      {isOpen && (
+          <div
+            className="dropdown-in absolute right-0 left-0 mt-2 bg-[var(--color-surface-light)]/98 dark:bg-[var(--color-surface-dark)]/98 backdrop-blur-2xl rounded-3xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-2xl overflow-hidden z-50 divide-y divide-gray-100 dark:divide-gray-800/60 max-h-[75vh] flex flex-col"
           >
             {/* Case 1: Query is entered and has results */}
             {query.trim().length > 0 && results.length > 0 && (
@@ -482,9 +476,8 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
                 </div>
               </div>
             )}
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
     </div>
   );
 }

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { X, User, Phone, Lock, Eye, EyeOff, LogIn, UserPlus, Sparkles, ArrowLeft, Loader2 } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
@@ -131,31 +130,22 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
   };
 
   const modalContent = (
-    <AnimatePresence>
-      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-        {/* Backdrop */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          onClick={onClose}
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm"
-        />
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+      {/* Backdrop */}
+      <div
+        onClick={onClose}
+        className="fade-in fixed inset-0 bg-black/60 backdrop-blur-sm"
+      />
 
-        {/* Modal Card */}
-        <motion.div
-          initial={{ scale: 0.92, opacity: 0, y: 15 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0.92, opacity: 0, y: 15 }}
-          transition={{ type: 'spring', damping: 26, stiffness: 320 }}
-          role="dialog"
-          aria-modal="true"
-          aria-label={mode === 'login' ? 'ورود به حساب کاربری' : 'ایجاد حساب کاربری جدید'}
-          tabIndex={-1}
-          ref={dialogRef}
-          className="relative w-full max-w-md bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 sm:p-8 shadow-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-right z-10 overflow-hidden my-auto max-h-[90vh] flex flex-col focus:outline-none"
-        >
+      {/* Modal Card */}
+      <div
+        className="dropdown-in relative w-full max-w-md bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 sm:p-8 shadow-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-right z-10 overflow-hidden my-auto max-h-[90vh] flex flex-col focus:outline-none"
+        role="dialog"
+        aria-modal="true"
+        aria-label={mode === 'login' ? 'ورود به حساب کاربری' : 'ایجاد حساب کاربری جدید'}
+        tabIndex={-1}
+        ref={dialogRef}
+      >
           {/* Decorative subtle glows */}
           <div className="absolute -top-12 -left-12 w-40 h-40 bg-[var(--color-cta)]/15 rounded-full blur-2xl pointer-events-none" />
           <div className="absolute -bottom-12 -right-12 w-40 h-40 bg-[var(--color-cta)]/10 rounded-full blur-2xl pointer-events-none" />
@@ -312,9 +302,8 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
               <span>با ثبت‌نام، از تخفیف‌های ویژه مشتریان بهره‌مند می‌شوید.</span>
             )}
           </div>
-        </motion.div>
       </div>
-    </AnimatePresence>
+    </div>
   );
 
   return createPortal(modalContent, document.body);

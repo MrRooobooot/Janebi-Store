@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
 import { ShoppingBag, ShoppingCart, X, Trash2, ArrowLeft, Plus, Minus, Sparkles, Percent } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../contexts/CartContext';
@@ -58,29 +57,22 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const progressPercent = Math.min(100, Math.round((cartTotal / FREE_SHIPPING_THRESHOLD) * 100));
 
   return (
-    <AnimatePresence>
+    <>
       {isOpen && (
         <div className="fixed inset-0 z-50 overflow-hidden" role="dialog" aria-modal="true" aria-labelledby="cart-drawer-title">
           {/* Backdrop Blur Overlay */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+          <div
             onClick={onClose}
-            className="absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
+            className="fade-in absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
             aria-hidden="true"
           />
 
           {/* Drawer Slide Position (Left side in Persian RTL for clean slide-over) */}
           <div className="fixed inset-y-0 left-0 max-w-full flex pl-0 sm:pl-10">
-            <motion.div
+            <div
               ref={drawerRef}
               tabIndex={-1}
-              initial={{ x: '-100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '-100%' }}
-              transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-              className="w-screen max-w-md bg-white dark:bg-[var(--color-surface-dark)] text-zinc-900 dark:text-zinc-100 shadow-2xl border-r border-zinc-200/80 dark:border-white/[0.08] flex flex-col justify-between outline-none"
+              className="drawer-slide-in w-screen max-w-md bg-white dark:bg-[var(--color-surface-dark)] text-zinc-900 dark:text-zinc-100 shadow-2xl border-r border-zinc-200/80 dark:border-white/[0.08] flex flex-col justify-between outline-none"
             >
               {/* Drawer Header */}
               <div className="p-4 sm:p-5 border-b border-zinc-100 dark:border-white/[0.06] flex items-center justify-between">
@@ -254,10 +246,10 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                   </div>
                 </div>
               )}
-            </motion.div>
+            </div>
           </div>
         </div>
       )}
-    </AnimatePresence>
+    </>
   );
 }

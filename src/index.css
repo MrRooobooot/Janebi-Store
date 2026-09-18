@@ -444,6 +444,50 @@ textarea::placeholder {
   .hero-slide-content { animation: none; }
 }
 
+/* ── CSS-first Motion (replaces motion/react in eager-tree components) ── */
+/* Scroll-into-view reveal (RecentlyViewed / VipClubBanner sections) */
+@keyframes reveal-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.reveal-in-view {
+  animation: reveal-in 0.5s ease-out both;
+}
+/* Mount pop (badges, icons, success cards) */
+@keyframes pop-in-kf {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.pop-in {
+  animation: pop-in-kf 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+/* Dropdown/dialog mount (HeaderSearch suggestions, ChatWidget panel) */
+@keyframes dropdown-in-kf {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.dropdown-in {
+  animation: dropdown-in-kf 0.18s ease-out both;
+}
+/* Cart drawer slide-over (RTL: slides from left) + backdrop fade */
+@keyframes drawer-in-kf {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+.drawer-slide-in {
+  animation: drawer-in-kf 0.32s cubic-bezier(0.3, 1, 0.36, 1) both;
+}
+@keyframes fade-in-kf {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.fade-in {
+  animation: fade-in-kf 0.2s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-in-view, .pop-in, .dropdown-in, .drawer-slide-in, .fade-in { animation: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .logo-carousel-track { animation: none; }
   .linear-card, .linear-card:hover { transition: none; transform: none; }

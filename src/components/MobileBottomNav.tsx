@@ -5,7 +5,6 @@ import { useWishlist } from '../contexts/WishlistContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { motion } from 'motion/react';
 import { toPersianDigits } from '../lib/utils';
 
 export default function MobileBottomNav() {
@@ -73,31 +72,27 @@ export default function MobileBottomNav() {
               }`}
             >
               {isActive && (
-                <motion.div
-                  layoutId="bottomNavBackground"
+                <span
+                  aria-hidden="true"
                   className="absolute inset-0 bg-primary-50 dark:bg-primary-950/40 rounded-xl"
-                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                 />
               )}
 
               <div className="relative flex items-center justify-center p-1 z-10">
                 <Icon className={`h-5 w-5 transition-transform duration-300 ${isActive ? 'scale-110 drop-shadow-md' : ''}`} />
                 {item.badge !== undefined && item.badge > 0 && (
-                  <motion.span
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute -top-1.5 -right-2 text-[10px] font-black h-4 min-w-4 px-1 rounded-full flex items-center justify-center shadow-xs bg-primary-600 text-white"
+                  <span
+                    className="pop-in absolute -top-1.5 -right-2 text-[10px] font-black h-4 min-w-4 px-1 rounded-full flex items-center justify-center shadow-xs bg-primary-600 text-white"
                   >
                     {toPersianDigits(item.badge)}
-                  </motion.span>
+                  </span>
                 )}
               </div>
               <span className="text-[11px] mt-0.5 tracking-tight z-10">{item.label}</span>
               {isActive && (
-                <motion.div
-                  layoutId="bottomNavIndicator"
+                <span
+                  aria-hidden="true"
                   className="absolute bottom-0 w-6 h-0.5 bg-primary-600 rounded-full shadow-[0_0_8px_rgba(225,29,72,0.8)]"
-                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                 />
               )}
             </Link>
@@ -135,31 +130,27 @@ export default function MobileBottomNav() {
               }`}
             >
               {isActive && (
-                <motion.div
-                  layoutId="bottomNavBackground"
+                <span
+                  aria-hidden="true"
                   className="absolute inset-0 bg-primary-50 dark:bg-primary-950/40 rounded-xl"
-                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                 />
               )}
               
               <div className="relative flex items-center justify-center p-1 z-10">
                 <Icon className={`h-5 w-5 transition-transform duration-300 ${isActive ? 'scale-110 drop-shadow-md' : ''}`} />
                 {item.badge !== undefined && item.badge > 0 && (
-                  <motion.span
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute -top-1.5 -right-2 text-[10px] font-black h-4 min-w-4 px-1 rounded-full flex items-center justify-center shadow-xs bg-primary-600 text-white"
+                  <span
+                    className="pop-in absolute -top-1.5 -right-2 text-[10px] font-black h-4 min-w-4 px-1 rounded-full flex items-center justify-center shadow-xs bg-primary-600 text-white"
                   >
                     {toPersianDigits(item.badge)}
-                  </motion.span>
+                  </span>
                 )}
               </div>
               <span className="text-[11px] mt-0.5 tracking-tight z-10">{item.label}</span>
               {isActive && (
-                <motion.div
-                  layoutId="bottomNavIndicator"
+                <span
+                  aria-hidden="true"
                   className="absolute bottom-0 w-6 h-0.5 bg-primary-600 rounded-full shadow-[0_0_8px_rgba(225,29,72,0.8)]"
-                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                 />
               )}
             </Link>

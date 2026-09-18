@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useReducedMotion } from 'motion/react';
 
 interface EmptyStateProps {
   icon: React.ReactNode;
@@ -12,26 +11,22 @@ interface EmptyStateProps {
   className?: string;
 }
 
-export default function EmptyState({ 
-  icon, 
-  title, 
-  description, 
-  actionText, 
-  actionLink, 
+export default function EmptyState({
+  icon,
+  title,
+  description,
+  actionText,
+  actionLink,
   onActionClick,
   className = "linear-card bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-light)]/[0.025] rounded-3xl p-8 sm:p-12 shadow-sm border border-zinc-200/80 dark:border-white/[0.08] min-h-[45vh]"
 }: EmptyStateProps) {
-  const shouldReduceMotion = useReducedMotion();
   return (
     <div className={`${className} flex flex-col items-center justify-center text-center transition-colors select-none`}>
-      <motion.div
-        initial={shouldReduceMotion ? false : { scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={shouldReduceMotion ? { duration: 0 } : { type: 'spring', stiffness: 200, damping: 15 }}
-        className="w-20 h-20 sm:w-24 sm:h-24 bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/30 text-[var(--color-emphasis-text)] rounded-2xl sm:rounded-3xl flex items-center justify-center mb-6 border border-[var(--color-cta)]/80 dark:border-[var(--color-cta)]/40 shadow-inner"
+      <div
+        className="pop-in w-20 h-20 sm:w-24 sm:h-24 bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/30 text-[var(--color-emphasis-text)] rounded-2xl sm:rounded-3xl flex items-center justify-center mb-6 border border-[var(--color-cta)]/80 dark:border-[var(--color-cta)]/40 shadow-inner"
       >
         {icon}
-      </motion.div>
+      </div>
       <h2 className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-white mb-3 tracking-tight">{title}</h2>
       <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-8 max-w-md mx-auto leading-relaxed font-medium">{description}</p>
       
