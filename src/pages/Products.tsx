@@ -81,10 +81,10 @@ export default function Products() {
                 <Sparkles className="h-3.5 w-3.5" />
                 <span>دسته‌بندی انتخاب‌شده</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mb-2">
+              <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mb-2">
                 خرید {selectedCategory}
               </h1>
-              <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 font-medium">
+              <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium">
                 {toPersianDigits(realCount)} محصول اورجینال در دسته «{selectedCategory}» با ضمانت اصالت، گارانتی تعویض فیزیکی و ارسال سریع
               </p>
             </>
@@ -94,10 +94,10 @@ export default function Products() {
                 <Sparkles className="h-3.5 w-3.5" />
                 <span>کاتالوگ کامل جانبی آرنا</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mb-2">
+              <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mb-2">
                 فروشگاه تجهیزات و لوازم جانبی اورجینال
               </h1>
-              <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 font-medium">
+              <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium">
                 بررسی، مقایسه تخصصی و خرید مستقیم انواع قاب، گلس، شارژر فست، کابل و پاوربانک با گارانتی تعویض فیزیکی
               </p>
             </>

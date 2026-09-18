@@ -71,7 +71,7 @@ export default function Brands() {
       className="space-y-8 text-right"
     >
       {/* Hero Header */}
-      <div className="relative rounded-3xl bg-gradient-to-r from-gray-950 via-slate-900 to-gray-900 text-white p-6 sm:p-10 overflow-hidden shadow-xl border border-gray-800">
+      <div className="relative rounded-3xl bg-gradient-to-r from-gray-950 via-gray-900 to-gray-900 text-white p-6 sm:p-10 overflow-hidden shadow-xl border border-gray-800">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--color-cta)]/10 rounded-full blur-3xl pointer-events-none" />
         
         <div className="relative z-10 max-w-2xl">

@@ -72,7 +72,7 @@ export default function CartSummaryCard({
                   : 'border-slate-200/90 dark:border-white/[0.08] focus:border-[var(--color-cta)]'
               }`}
             />
-            <Tag className="h-4 w-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Tag className="h-4 w-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
           <button
             type="submit"
@@ -123,7 +123,7 @@ export default function CartSummaryCard({
       </form>
 
       {/* Breakdown */}
-      <div className="space-y-3.5 pt-2 text-xs font-bold text-gray-600 dark:text-gray-400">
+      <div className="space-y-3.5 pt-2 text-xs font-bold text-slate-600 dark:text-slate-400">
         <div className="flex justify-between items-center">
           <span>جمع کل اقلام سبد</span>
           <span className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-sm">
@@ -171,7 +171,7 @@ export default function CartSummaryCard({
         <ArrowLeft className="h-5 w-5 group-hover:translate-x-[-3px] transition-transform" />
       </Link>
 
-      <div className="flex items-center justify-center gap-2 text-[11px] font-bold text-gray-400 pt-2 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
+      <div className="flex items-center justify-center gap-2 text-[11px] font-bold text-slate-400 pt-2 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
         <ShieldCheck className="h-4 w-4 text-emerald-500" />
         <span>پرداخت امن و رمزنگاری‌شده بانکی</span>
       </div>

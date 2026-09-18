@@ -234,7 +234,7 @@ export default function ProductDetail() {
                         setSelectedImageIndex((prev) => (prev === 0 ? galleryImages.length - 1 : prev - 1));
                       }}
                       aria-label="تصویر قبلی"
-                      className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black text-zinc-800 dark:text-zinc-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer opacity-80 hover:opacity-100"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black text-gray-800 dark:text-gray-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer opacity-80 hover:opacity-100"
                     >
                       <ChevronRight className="h-4 w-4" />
                     </button>
@@ -245,7 +245,7 @@ export default function ProductDetail() {
                         setSelectedImageIndex((prev) => (prev + 1) % galleryImages.length);
                       }}
                       aria-label="تصویر بعدی"
-                      className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black text-zinc-800 dark:text-zinc-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer opacity-80 hover:opacity-100"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black text-gray-800 dark:text-gray-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer opacity-80 hover:opacity-100"
                     >
                       <ChevronLeft className="h-4 w-4" />
                     </button>
@@ -348,7 +348,7 @@ export default function ProductDetail() {
 
                 {/* Rating & SKU Bar */}
                 <div className="flex flex-wrap items-center gap-4 mb-6 pb-6 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-xs sm:text-sm">
-                  <div className={`flex items-center gap-1 ${!hasRating ? 'text-gray-400' : (product.rating ?? 0) >= 4 ? 'text-emerald-500' : (product.rating ?? 0) < 2 ? 'text-amber-400' : 'text-zinc-500 dark:text-zinc-400'}`}>
+                  <div className={`flex items-center gap-1 ${!hasRating ? 'text-gray-400' : (product.rating ?? 0) >= 4 ? 'text-emerald-500' : (product.rating ?? 0) < 2 ? 'text-amber-400' : 'text-gray-500 dark:text-gray-400'}`}>
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}

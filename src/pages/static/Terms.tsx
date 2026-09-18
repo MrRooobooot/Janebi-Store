@@ -10,7 +10,7 @@ export default function Terms() {
       transition={{ duration: 0.4 }}
       className="space-y-8"
     >
-      <div className="bg-gradient-to-r from-slate-900 to-gray-800 text-white rounded-3xl p-8 sm:p-10 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-3xl p-8 sm:p-10 relative overflow-hidden">
         <div className="relative z-10 max-w-xl">
           <span className="inline-flex items-center gap-1.5 bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] border border-[var(--color-cta)]/30 text-xs font-bold px-3 py-1 rounded-full mb-3">
             <ShieldAlert className="h-3.5 w-3.5" /> قوانین و مقررات رسمی

@@ -323,7 +323,7 @@ export default function Home() {
                   aria-label={`اسلاید ${toPersianDigits(idx + 1)}`}
                   className="h-6 min-w-6 px-1 flex items-center justify-center cursor-pointer"
                 >
-                  <span className={`block h-2 rounded-full transition-all duration-300 motion-reduce:transition-none ${activeSlide === idx ? 'w-6 bg-primary-600 dark:bg-primary-400 shadow-sm shadow-primary-500/40' : 'w-2 bg-zinc-300 dark:bg-zinc-600'}`} />
+                  <span className={`block h-2 rounded-full transition-all duration-300 motion-reduce:transition-none ${activeSlide === idx ? 'w-6 bg-primary-600 dark:bg-primary-400 shadow-sm shadow-primary-500/40' : 'w-2 bg-slate-300 dark:bg-slate-600'}`} />
                 </button>
               ))}
             </div>
@@ -335,7 +335,7 @@ export default function Home() {
             type="button"
             onClick={() => setActiveSlide((prev) => (prev === 0 ? heroSlides.length - 1 : prev - 1))}
             aria-label="اسلاید قبلی"
-            className="hidden sm:flex absolute right-2 lg:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black/90 border border-zinc-200/80 dark:border-white/10 text-zinc-800 dark:text-zinc-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer"
+            className="hidden sm:flex absolute right-2 lg:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black/90 border border-slate-200/80 dark:border-white/10 text-slate-800 dark:text-slate-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer"
           >
             <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
@@ -343,7 +343,7 @@ export default function Home() {
             type="button"
             onClick={() => setActiveSlide((prev) => (prev + 1) % heroSlides.length)}
             aria-label="اسلاید بعدی"
-            className="hidden sm:flex absolute left-2 lg:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black/90 border border-zinc-200/80 dark:border-white/10 text-zinc-800 dark:text-zinc-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer"
+            className="hidden sm:flex absolute left-2 lg:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black/90 border border-slate-200/80 dark:border-white/10 text-slate-800 dark:text-slate-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer"
           >
             <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
@@ -352,7 +352,7 @@ export default function Home() {
           {/* Slide indicators — phones auto-rotate every 6s and swipe, the dots row is sm+ only
               (on a 390px card the dots collided with the CTA/text edges) */}
           {heroSlides.length > 1 && (
-          <div className="hidden sm:flex items-center justify-center gap-2 relative z-10 mt-6 pt-3 border-t border-zinc-200/80 dark:border-zinc-800/80" role="tablist" aria-label="اسلایدهای صفحه اصلی">
+          <div className="hidden sm:flex items-center justify-center gap-2 relative z-10 mt-6 pt-3 border-t border-slate-200/80 dark:border-slate-800/80" role="tablist" aria-label="اسلایدهای صفحه اصلی">
             {heroSlides.map((slide, idx) => (
               <button
                 key={slide.id}
@@ -366,7 +366,7 @@ export default function Home() {
                   className={`block h-2.5 rounded-full transition-all duration-300 motion-reduce:transition-none ${
                     activeSlide === idx
                       ? 'w-8 bg-primary-600 dark:bg-primary-400 shadow-md shadow-primary-500/50'
-                      : 'w-2.5 bg-zinc-400 dark:bg-zinc-600'
+                      : 'w-2.5 bg-slate-400 dark:bg-slate-600'
                   }`}
                 />
               </button>
@@ -430,7 +430,7 @@ export default function Home() {
                 <ProductCard key={p.id} product={p} variant="compact" />
               ))
             ) : (
-              <div className="col-span-full py-8 text-center text-sm font-medium text-zinc-500 dark:text-zinc-300">
+              <div className="col-span-full py-8 text-center text-sm font-medium text-slate-500 dark:text-slate-300">
                 در حال حاضر تمام شگفت‌انگیزها به پایان رسیده‌اند.
               </div>
             )}
@@ -467,8 +467,8 @@ export default function Home() {
       <section className="w-full">
         <div className="flex items-center justify-between mb-4 sm:mb-6">
           <div>
-            <h2 className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-white">دسته‌بندی‌های تخصصی</h2>
-            <p className="text-xs text-zinc-600 dark:text-zinc-300 mt-0.5">انتخاب تجهیزات بر اساس دسته‌بندی</p>
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">دسته‌بندی‌های تخصصی</h2>
+            <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5">انتخاب تجهیزات بر اساس دسته‌بندی</p>
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
@@ -479,7 +479,7 @@ export default function Home() {
                 onClick={() => scrollCats('prev')}
                 disabled={!canScrollPrev}
                 aria-label="دسته‌بندی‌های قبلی"
-                className="min-touch-target w-9 h-9 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-zinc-700 dark:text-zinc-200 hover:text-[var(--color-emphasis-text)] hover:border-[var(--color-cta)]/40 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs"
+                className="min-touch-target w-9 h-9 rounded-xl border border-slate-200 dark:border-slate-800 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-slate-700 dark:text-slate-200 hover:text-[var(--color-emphasis-text)] hover:border-[var(--color-cta)]/40 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs"
               >
                 <ChevronRight className="h-4 w-4" />
               </button>
@@ -488,7 +488,7 @@ export default function Home() {
                 onClick={() => scrollCats('next')}
                 disabled={!canScrollNext}
                 aria-label="دسته‌بندی‌های بعدی"
-                className="min-touch-target w-9 h-9 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-zinc-700 dark:text-zinc-200 hover:text-[var(--color-emphasis-text)] hover:border-[var(--color-cta)]/40 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs"
+                className="min-touch-target w-9 h-9 rounded-xl border border-slate-200 dark:border-slate-800 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-slate-700 dark:text-slate-200 hover:text-[var(--color-emphasis-text)] hover:border-[var(--color-cta)]/40 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
@@ -555,7 +555,7 @@ export default function Home() {
             <div className="p-2 rounded-xl bg-primary-50 dark:bg-primary-950/40 border border-primary-200/60 dark:border-primary-900/50">
               <TrendingUp className="h-4 w-4 text-[var(--color-emphasis-text)]" />
             </div>
-            <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white whitespace-nowrap">کالاهای برگزیده بازار</h2>
+            <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white whitespace-nowrap">کالاهای برگزیده بازار</h2>
           </div>
 
           {/* Core Category Tabs — pill chips (modern segmented style, no dated underline scoop) */}
@@ -574,7 +574,7 @@ export default function Home() {
                 className={`shrink-0 snap-start inline-flex items-center px-4 sm:px-3.5 min-h-11 sm:min-h-[38px] rounded-full text-[13px] sm:text-xs font-black transition-all duration-200 border ${
                   activeTab === tab.id
                     ? 'bg-[var(--color-cta)] border-[var(--color-cta)] text-white shadow-xs shadow-[var(--color-cta)]/30'
-                    : 'border-zinc-200 dark:border-zinc-700/70 text-[var(--color-text-muted-light)] dark:text-[var(--color-text-muted-dark)] hover:text-[var(--color-text-main-light)] dark:hover:text-[var(--color-text-main-dark)] hover:border-[var(--color-cta)]/40 bg-white dark:bg-white/[0.04]'
+                    : 'border-slate-200 dark:border-slate-700/70 text-[var(--color-text-muted-light)] dark:text-[var(--color-text-muted-dark)] hover:text-[var(--color-text-main-light)] dark:hover:text-[var(--color-text-main-dark)] hover:border-[var(--color-cta)]/40 bg-white dark:bg-white/[0.04]'
                 }`}
               >
                 {tab.label}
@@ -589,7 +589,7 @@ export default function Home() {
             Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)
           ) : loadError ? (
             <div className="col-span-full py-12 text-center">
-              <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4">خطا در بارگذاری محصولات. اتصال اینترنت خود را بررسی کنید.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">خطا در بارگذاری محصولات. اتصال اینترنت خود را بررسی کنید.</p>
               <button
                 onClick={() => setReloadKey((k) => k + 1)}
                 className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-black px-6 py-2.5 rounded-xl transition-colors"

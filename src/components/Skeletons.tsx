@@ -97,13 +97,13 @@ export function SearchItemSkeleton() {
   return (
     <div className="p-2.5 rounded-2xl border border-transparent flex items-center justify-between animate-pulse">
       <div className="flex items-center gap-3.5 w-full">
-        <div className="w-12 h-12 bg-gray-200 dark:bg-gray-800 rounded-xl shrink-0"></div>
+        <div className="w-12 h-12 bg-zinc-200 dark:bg-zinc-800 rounded-xl shrink-0"></div>
         <div className="space-y-2 flex-1">
-          <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-md w-3/4"></div>
-          <div className="h-3 bg-gray-200 dark:bg-gray-800 rounded-md w-1/2"></div>
+          <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded-md w-3/4"></div>
+          <div className="h-3 bg-zinc-200 dark:bg-zinc-800 rounded-md w-1/2"></div>
         </div>
       </div>
-      <div className="w-16 h-5 bg-gray-200 dark:bg-gray-800 rounded-md shrink-0"></div>
+      <div className="w-16 h-5 bg-zinc-200 dark:bg-zinc-800 rounded-md shrink-0"></div>
     </div>
   );
 }
@@ -116,16 +116,16 @@ export function ReviewSkeleton() {
     <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-5 sm:p-6 space-y-3 animate-pulse">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800"></div>
+          <div className="w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-800"></div>
           <div className="space-y-1.5">
-            <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-md w-28"></div>
-            <div className="h-3 bg-gray-200 dark:bg-gray-800 rounded-md w-16"></div>
+            <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded-md w-28"></div>
+            <div className="h-3 bg-zinc-200 dark:bg-zinc-800 rounded-md w-16"></div>
           </div>
         </div>
-        <div className="w-12 h-6 bg-gray-200 dark:bg-gray-800 rounded-xl"></div>
+        <div className="w-12 h-6 bg-zinc-200 dark:bg-zinc-800 rounded-xl"></div>
       </div>
-      <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-md w-1/3"></div>
-      <div className="h-10 bg-gray-200 dark:bg-gray-800 rounded-md w-full"></div>
+      <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded-md w-1/3"></div>
+      <div className="h-10 bg-zinc-200 dark:bg-zinc-800 rounded-md w-full"></div>
     </div>
   );
 }

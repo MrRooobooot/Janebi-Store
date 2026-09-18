@@ -321,7 +321,7 @@ export default function AdminSettings() {
 
           {/* اسلاید ۲ */}
           <div className="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 space-y-3">
-            <span className="text-xs font-black text-zinc-700 dark:text-zinc-300">اسلاید شماره ۲ (قاب و کاور)</span>
+            <span className="text-xs font-black text-gray-700 dark:text-gray-300">اسلاید شماره ۲ (قاب و کاور)</span>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <input
                 type="text"

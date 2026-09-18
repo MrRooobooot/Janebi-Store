@@ -149,7 +149,7 @@ export default function AuditLogs() {
                             <summary className="truncate cursor-pointer list-none text-gray-600 dark:text-gray-300 hover:text-primary-500 transition-colors">
                               {JSON.stringify(log.meta)}
                             </summary>
-                            <pre className="mt-1 max-h-40 overflow-auto rounded-lg bg-gray-100 dark:bg-slate-800 p-2 text-[10px] leading-relaxed whitespace-pre-wrap break-all">{JSON.stringify(log.meta, null, 2)}</pre>
+                            <pre className="mt-1 max-h-40 overflow-auto rounded-lg bg-gray-100 dark:bg-gray-800 p-2 text-[10px] leading-relaxed whitespace-pre-wrap break-all">{JSON.stringify(log.meta, null, 2)}</pre>
                           </details>
                         ) : '—'}
                       </td>

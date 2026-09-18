@@ -86,7 +86,7 @@ export default function Header() {
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 text-[11px] font-medium text-[var(--color-cta)] min-w-0">
             <Sparkles className="h-3.5 w-3.5 shrink-0 motion-safe:animate-pulse" />
-            <span className="text-zinc-800 dark:text-zinc-200 line-clamp-2 sm:line-clamp-none sm:truncate font-semibold">
+            <span className="text-slate-800 dark:text-slate-200 line-clamp-2 sm:line-clamp-none sm:truncate font-semibold">
               {settings.announcement.split('کد تخفیف:').length === 2 ? (
                 <>
                   {settings.announcement.split('کد تخفیف:')[0]}کد تخفیف:{' '}
@@ -97,7 +97,7 @@ export default function Header() {
               ) : settings.announcement}
             </span>
           </div>
-          <div className="hidden md:flex items-center gap-4 text-[11px] text-zinc-600 dark:text-zinc-400 font-medium shrink-0">
+          <div className="hidden md:flex items-center gap-4 text-[11px] text-slate-600 dark:text-slate-400 font-medium shrink-0">
             <span className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 font-bold">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -105,9 +105,9 @@ export default function Header() {
               </span>
               پشتیبانی آنلاین — پاسخ‌گوییم
             </span>
-            <span className="h-3 w-px bg-zinc-300 dark:bg-zinc-700" />
-            <span>تلفن پشتیبانی: <span dir="ltr" className="font-bold tabular-nums text-zinc-700 dark:text-zinc-300">{toPersianDigits(settings.phone)}</span></span>
-            <span className="h-3 w-px bg-zinc-300 dark:bg-zinc-700" />
+            <span className="h-3 w-px bg-slate-300 dark:bg-slate-700" />
+            <span>تلفن پشتیبانی: <span dir="ltr" className="font-bold tabular-nums text-slate-700 dark:text-slate-300">{toPersianDigits(settings.phone)}</span></span>
+            <span className="h-3 w-px bg-slate-300 dark:bg-slate-700" />
             <span>ساعت کاری: {toPersianDigits(settings.supportHours)}</span>
           </div>
         </div>
@@ -267,7 +267,7 @@ export default function Header() {
                 key={link.to}
                 to={link.to}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 hover:bg-[var(--color-cta)]/10 dark:hover:bg-[var(--color-cta)]/30 hover:text-[var(--color-emphasis-text)] text-zinc-800 dark:text-zinc-200 text-center ${
+                className={`p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-[var(--color-cta)]/10 dark:hover:bg-[var(--color-cta)]/30 hover:text-[var(--color-emphasis-text)] text-slate-800 dark:text-slate-200 text-center ${
                   // odd item count: last link spans both columns (no orphan slot)
                   navLinks.length % 2 === 1 && i === navLinks.length - 1 ? 'col-span-2' : ''
                 }`}
@@ -280,16 +280,16 @@ export default function Header() {
           <button
             type="button"
             onClick={toggleTheme}
-            className="w-full flex items-center justify-between p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 text-xs font-medium text-zinc-800 dark:text-zinc-200"
+            className="w-full flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 text-xs font-medium text-slate-800 dark:text-slate-200"
           >
             <span className="flex items-center gap-2">
               {isDarkMode ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4 text-slate-600" />}
               {isDarkMode ? "حالت روز (روشن)" : "حالت شب (تاریک)"}
             </span>
-            <span className="text-[11px] text-zinc-500 dark:text-zinc-400">{isDarkMode ? "روشن" : "تاریک"}</span>
+            <span className="text-[11px] text-slate-500 dark:text-slate-400">{isDarkMode ? "روشن" : "تاریک"}</span>
           </button>
 
-          <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 flex justify-between text-xs text-zinc-600 dark:text-zinc-400">
+          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex justify-between text-xs text-slate-600 dark:text-slate-400">
             <Link to="/wishlist" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-1.5 p-2">
               <Heart className="h-4 w-4 text-rose-500" />
               علاقه‌مندی‌ها ({toPersianDigits(wishlist.length)})

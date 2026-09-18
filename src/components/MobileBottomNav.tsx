@@ -51,7 +51,7 @@ export default function MobileBottomNav() {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-white/95 dark:bg-[var(--color-surface-header-dark)]/95 backdrop-blur-xl border-t border-slate-200/80 dark:border-white/[0.08] shadow-[0_-4px_20px_rgba(0,0,0,0.06)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.4)] px-2 pt-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))] transition-colors duration-300">
+    <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-white/95 dark:bg-[var(--color-surface-header-dark)]/95 backdrop-blur-xl border-t border-zinc-200/80 dark:border-white/[0.08] shadow-[0_-4px_20px_rgba(0,0,0,0.06)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.4)] px-2 pt-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))] transition-colors duration-300">
       <div className="flex items-center justify-around max-w-md mx-auto">
         {navItems.map((item) => {
           const isActive = item.exact
