@@ -82,15 +82,15 @@ export default function Header() {
       
       {/* Top Announcement Bar — Strict Overflow Control (hidden when admin/bot disables it) */}
       {settings.announcementBarEnabled !== 'false' && (
-      <div className="bg-slate-100/90 dark:bg-[#060910]/95 text-slate-700 dark:text-slate-300 text-xs py-1 sm:py-1.5 px-3 sm:px-4 border-b border-slate-200/70 dark:border-white/[0.06] w-full overflow-hidden transition-colors">
+      <div className="bg-slate-100/90 dark:bg-[var(--color-surface-topbar-dark)]/95 text-slate-700 dark:text-slate-300 text-[13px] sm:text-xs py-1 sm:py-1.5 px-3 sm:px-4 border-b border-slate-200/70 dark:border-white/[0.06] w-full overflow-hidden transition-colors">
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5 text-[11px] font-medium text-[var(--color-cta)] min-w-0">
+          <div className="flex items-center gap-1.5 text-[12px] sm:text-[11px] font-medium text-[var(--color-cta)] min-w-0">
             <Sparkles className="h-3.5 w-3.5 shrink-0 motion-safe:animate-pulse" />
             <span className="text-slate-800 dark:text-slate-200 line-clamp-2 sm:line-clamp-none sm:truncate font-semibold">
               {settings.announcement.split('کد تخفیف:').length === 2 ? (
                 <>
                   {settings.announcement.split('کد تخفیف:')[0]}کد تخفیف:{' '}
-                  <span dir="ltr" className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] font-black text-[10px] align-middle">
+                  <span dir="ltr" className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] font-black text-[11px] sm:text-[10px] align-middle">
                     {settings.announcement.split('کد تخفیف:')[1].trim()}
                   </span>
                 </>
