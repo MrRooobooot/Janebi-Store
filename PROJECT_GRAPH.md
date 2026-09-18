@@ -17,7 +17,14 @@ contained LIVE product ids (2..12): those PDPs 301'd to /products. Purged; new g
 per page**: home now has one `sr-only` h1 OUTSIDE the hero carousel (slide titles = `<p>`,
 rotation-safe); PDP h1 verified live (it always existed — earlier probe hit a 301'd id).
 (3) **Token mirror law enforced**: 30 hardcoded dark-surface hexes (#0e1629/#0c1220/#0d121c/
-#070b14/#121c33) in 11 TSX files replaced with `var(--color-surface-*)`. (4b) **UX round (commit 861d328 — deployed & live-verified):** theme toggle added to
+#070b14/#121c33) in 11 TSX files replaced with `var(--color-surface-*)`. (4c) **H2 rhythm (commit ed57892 — deployed & live-verified):** all home section H2s
+unified to `text-lg sm:text-2xl` (18px mobile / 24px desktop) — deals, categories,
+trending, latest-reviews. Probe: desktop home H2 = 24px×4 uniform (VipClub banner 36px
+by design, it is a display headline). Remaining P3 backlog (deliberate, needs user
+decision): typed `src/design/tokens.ts` UI kit; vendor-motion chunk (130KB, eager via
+Layout tree — CSS-able uses: HeaderSearch dropdown, ChatWidget, CartDrawer, BottomNav
+layoutId, 2× whileInView fades).
+(4b) **UX round (commit 861d328 — deployed & live-verified):** theme toggle added to
 MobileBottomNav center slot (was buried in hamburger drawer — user-discoverable now);
 announcement bar mobile text 10/11px → 11/12px (readability floor); topbar hex → token.
 Focus-ring probe (Tab sweep, both themes): global `:focus-visible` rose ring renders on
