@@ -45,7 +45,7 @@ export default function LatestReviews() {
         <div className="flex items-center gap-2">
           <MessageSquareQuote className="h-5 w-5 text-[var(--color-emphasis-text)]" />
           <div>
-            <h2 id="latest-reviews-heading" className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white">
+            <h2 id="latest-reviews-heading" className="text-lg sm:text-2xl font-black text-zinc-900 dark:text-white">
               نظرات مشتریان
             </h2>
             <p className="text-xs text-zinc-600 dark:text-zinc-300 mt-0.5">

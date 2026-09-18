@@ -467,7 +467,7 @@ export default function Home() {
       <section className="w-full">
         <div className="flex items-center justify-between mb-4 sm:mb-6">
           <div>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">دسته‌بندی‌های تخصصی</h2>
+            <h2 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white">دسته‌بندی‌های تخصصی</h2>
             <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5">انتخاب تجهیزات بر اساس دسته‌بندی</p>
           </div>
 
@@ -555,7 +555,7 @@ export default function Home() {
             <div className="p-2 rounded-xl bg-primary-50 dark:bg-primary-950/40 border border-primary-200/60 dark:border-primary-900/50">
               <TrendingUp className="h-4 w-4 text-[var(--color-emphasis-text)]" />
             </div>
-            <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white whitespace-nowrap">کالاهای برگزیده بازار</h2>
+            <h2 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white whitespace-nowrap">کالاهای برگزیده بازار</h2>
           </div>
 
           {/* Core Category Tabs — pill chips (modern segmented style, no dated underline scoop) */}
