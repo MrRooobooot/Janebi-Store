@@ -277,6 +277,9 @@ export default function Home() {
       
       {/* 1. Hero Showcase Section */}
       <section className="w-full box-border">
+        {/* Single page h1 — lives OUTSIDE the carousel: one h1 on every breakpoint,
+            rotation-safe (slide titles are plain <p>), SEO + a11y clean. */}
+        <h1 className="sr-only">فروشگاه لوازم جانبی موبایل و تبلت | جانبی آرنا</h1>
         <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-white via-slate-50 to-rose-50/30 dark:from-[#0e1629] dark:via-[#0c1220] dark:to-[#070b14] border border-slate-200/90 dark:border-white/[0.08] shadow-lg dark:shadow-2xl p-3 sm:p-7 lg:p-6 transition-colors duration-500 min-h-0 sm:min-h-[400px] lg:min-h-[340px] flex flex-col justify-between">
           {/* Ambient Dot Grid (dual-theme, non-hardcoded) */}
           <div className="absolute inset-0 bg-[radial-gradient(var(--color-border-light)_1px,transparent_1px)] dark:bg-[radial-gradient(var(--color-border-dark)_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none opacity-60" />
@@ -305,6 +308,8 @@ export default function Home() {
               }
             }}
           >
+            {/* Mobile rail: the desktop rail owns the single h1 (same currentSlide text);
+                this copy renders as <p>. */}
             <HeroSlideContent slide={currentSlide} products={heroProducts} />
             {/* Mobile slide indicators — tap targets + swipe affordance (user: «امکان عوض کردن باشه») */}
             {heroSlides.length > 1 && (

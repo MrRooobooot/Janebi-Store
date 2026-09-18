@@ -9,7 +9,7 @@
 //  - 0 same-host console errors
 import { chromium, webkit } from '@playwright/test';
 
-const BASE = 'http://127.0.0.1:3977';
+const BASE = 'http://127.0.0.1:3000';
 const HEADERS = { 'x-forwarded-proto': 'http' };
 
 async function audit(browser, engine, viewport, isDesktop, theme, path = '/products') {

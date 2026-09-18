@@ -1,21 +1,9 @@
-// 301 map for every product removed during the 2026-09-16 catalogue cleanup
-// (test catalogue + placeholder holders). Google still had these /product/<id> URLs
-// indexed, so they 301 to the catalogue hub instead of dying as 404s.
-// Regenerate with .hermes/imports/legacy-redirects.py after any product deletion.
+// 301 map for removed product ids (catalogue cleanup 2026-09-16 + later purges).
+// Google still has these /product/<id> URLs indexed, so they 301 to the catalogue
+// hub instead of dying as 404s. LIVE product ids must NEVER appear here — that
+// would 301 real PDPs to /products (guard test: tests/unit/legacy-redirects.test.ts).
+// Regenerate after any product deletion; entries for live ids are invalid by definition.
 export const LEGACY_PRODUCT_REDIRECTS: Record<number, string> = {
-  2: "/products",
-  3: "/products",
-  4: "/products",
-  5: "/products",
-  6: "/products",
-  7: "/products",
-  8: "/products",
-  9: "/products",
-  10: "/products",
-  11: "/products",
-  12: "/products",
-  13: "/products",
-  14: "/products",
   5466: "/products",
   5467: "/products",
   5468: "/products",

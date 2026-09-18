@@ -22,7 +22,7 @@ interface HeroSlide {
 
 type HeroProduct = Pick<Product, 'id' | 'title' | 'price' | 'image' | 'brand'>;
 
-export default function HeroSlideContent({ slide, products = [] }: { slide: HeroSlide; products?: HeroProduct[] }) {
+export default function HeroSlideContent({ slide, products = [], headingLevel = 'p' }: { slide: HeroSlide; products?: HeroProduct[]; headingLevel?: 'h1' | 'p' }) {
   const cards = products.slice(0, 3);
 
   return (
@@ -34,9 +34,17 @@ export default function HeroSlideContent({ slide, products = [] }: { slide: Hero
           <span>{normalizePersianTypography(slide.tag)}</span>
         </div>
 
-        <h1 className="text-[22px] sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white leading-[1.35] sm:leading-[1.15] tracking-tight">
-          {normalizePersianTypography(slide.title)}
-        </h1>
+        {headingLevel === 'h1' ? (
+          // Exactly ONE call site per page renders h1 (see Home.tsx); every other
+          // slide copy renders as a styled <p> — no duplicate-h1 outline break.
+          <h1 className="text-[22px] sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white leading-[1.35] sm:leading-[1.15] tracking-tight">
+            {normalizePersianTypography(slide.title)}
+          </h1>
+        ) : (
+          <p className="text-[22px] sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white leading-[1.35] sm:leading-[1.15] tracking-tight">
+            {normalizePersianTypography(slide.title)}
+          </p>
+        )}
 
         <p className="text-[13px] sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed font-normal line-clamp-2 sm:line-clamp-none">
           {normalizePersianTypography(slide.subtitle)}
