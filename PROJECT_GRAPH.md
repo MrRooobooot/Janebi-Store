@@ -17,7 +17,26 @@ contained LIVE product ids (2..12): those PDPs 301'd to /products. Purged; new g
 per page**: home now has one `sr-only` h1 OUTSIDE the hero carousel (slide titles = `<p>`,
 rotation-safe); PDP h1 verified live (it always existed — earlier probe hit a 301'd id).
 (3) **Token mirror law enforced**: 30 hardcoded dark-surface hexes (#0e1629/#0c1220/#0d121c/
-#070b14/#121c33) in 11 TSX files replaced with `var(--color-surface-*)`. (4c) **H2 rhythm (commit ed57892 — deployed & live-verified):** all home section H2s
+#070b14/#121c33) in 11 TSX files replaced with `var(--color-surface-*)`. (4d) **Perf round (2026-09-18 late, commits 205225f/2a0708a — deployed & live-verified):**
+(1) **motion/react eliminated from the eager tree** — 7 components (HeaderSearch dropdown,
+ChatWidget panel, CartDrawer slide, MobileBottomNav pill/badges, RecentlyViewed +
+VipClubBanner reveals, EmptyState) now use CSS keyframes (`.dropdown-in/.pop-in/
+.drawer-slide-in/.fade-in/.reveal-in-view` in index.css, reduced-motion aware). The
+`vendor-motion` manualChunk was REMOVED: pinning it made rolldown place the shared
+jsx-runtime in the motion chunk, forcing the whole 130KB engine into the eager payload
+(verified: index statically imported vendor-motion). After: motion loads only in lazy
+chunks (PDP etc.); eager JS 551KB → 413KB raw (−25%). Functional sweep (2 engines):
+search dropdown / chat panel / cart drawer all open. (2) **FTS5 catalogue search** —
+migration 0014 (`drizzle/sqlite/0014_products_fts.sql`): virtual table + insert/update/
+delete triggers + backfill; route feature-detects FTS5 (`fts5Available` in db/index.ts)
+with sanitized prefix-MATCH (`"tok"*` per token, LIKE fallback); 6 unit tests. Prod
+verified: «ارلدام» 20 hits, «مگنتی» 1, multi-token «ارلدام مدل» 20 — the initial false
+alarm («کابل» → 0) was a correct empty result: prod catalogue has no کابل product.
+(3) **Cache layer = deliberately NOT added (YAGNI):** the stack already has in-memory
+appCache (60s TTL + invalidation on admin mutations, order events), browser
+Cache-Control (30–60s), and nginx 15s API cache; measured TTFB 0.53–0.66s is
+network-dominated (app latency ~1ms per /api/health).
+(4c) **H2 rhythm (commit ed57892 — deployed & live-verified):** all home section H2s
 unified to `text-lg sm:text-2xl` (18px mobile / 24px desktop) — deals, categories,
 trending, latest-reviews. Probe: desktop home H2 = 24px×4 uniform (VipClub banner 36px
 by design, it is a display headline). Remaining P3 backlog (deliberate, needs user
