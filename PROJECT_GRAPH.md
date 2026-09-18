@@ -10,6 +10,18 @@
 
 ## 0. Current State — Structure, Performance & Hygiene (2026-09-16)
 
+**Design-quality round (2026-09-18, commits 99dfb2b/955938c/312efe6 — deployed & live-verified).**
+From the honest design audit: (1) **P0 SEO bug found & fixed** — `LEGACY_PRODUCT_REDIRECTS`
+contained LIVE product ids (2..12): those PDPs 301'd to /products. Purged; new guard test
+`tests/unit/legacy-redirects.test.ts` (map ids must never intersect the seed). (2) **Single h1
+per page**: home now has one `sr-only` h1 OUTSIDE the hero carousel (slide titles = `<p>`,
+rotation-safe); PDP h1 verified live (it always existed — earlier probe hit a 301'd id).
+(3) **Token mirror law enforced**: 30 hardcoded dark-surface hexes (#0e1629/#0c1220/#0d121c/
+#070b14/#121c33) in 11 TSX files replaced with `var(--color-surface-*)`. (4) **Neutral family
+unified per file**: gray/zinc/slate tri-mix in 16 files → single majority family each (186
+class replacements). Gates: tsc clean, 476/481 tests, design-audit 16/16 PASS, live sweep
+(2 engines × 4 pages): h1=1 (except /cart), 0 broken imgs, 0 console/HTTP errors.
+
 **Backend remediation (2026-09-18).** Vitest now uses isolated in-memory SQLite; destructive persistent-DB teardown removed. Consolidated gate: 475 pass / 5 optional PG skips (61 files, incl. payment-callback regression). **PG application parity proven:** all 16 real-router order/rollback/payment-callback tests pass on an isolated disposable PostgreSQL cluster. Payment gateways liveness-verified on prod (Zarinpal code 100, 454 ms; Saman 200); SMS.ir template path accepted (status 1). Exact price assertions reject previously surviving mutations. `jsonFetch` reads failure bodies once. Payment E2E passes both engines; external Enamad 501 attributed by trace and excluded by origin, not status. Full attributed browser run after scoped sync fix: **86/86 passed, 0 flaky, Chromium+WebKit**. Deployment verified separately below. See `docs/BACKEND-REMEDIATION-2026-09-18.md`.
 
 **Historical test validity audit (2026-09-17).** Full gate: 450 pass / 5 PG skips (58 files).
