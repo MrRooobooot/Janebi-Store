@@ -17,7 +17,13 @@ contained LIVE product ids (2..12): those PDPs 301'd to /products. Purged; new g
 per page**: home now has one `sr-only` h1 OUTSIDE the hero carousel (slide titles = `<p>`,
 rotation-safe); PDP h1 verified live (it always existed — earlier probe hit a 301'd id).
 (3) **Token mirror law enforced**: 30 hardcoded dark-surface hexes (#0e1629/#0c1220/#0d121c/
-#070b14/#121c33) in 11 TSX files replaced with `var(--color-surface-*)`. (4) **Neutral family
+#070b14/#121c33) in 11 TSX files replaced with `var(--color-surface-*)`. (4b) **UX round (commit 861d328 — deployed & live-verified):** theme toggle added to
+MobileBottomNav center slot (was buried in hamburger drawer — user-discoverable now);
+announcement bar mobile text 10/11px → 11/12px (readability floor); topbar hex → token.
+Focus-ring probe (Tab sweep, both themes): global `:focus-visible` rose ring renders on
+every interactive element — the audit's "weak focus coverage" claim was a false positive
+(rules are global in index.css, not per-component).
+(4) **Neutral family
 unified per file**: gray/zinc/slate tri-mix in 16 files → single majority family each (186
 class replacements). Gates: tsc clean, 476/481 tests, design-audit 16/16 PASS, live sweep
 (2 engines × 4 pages): h1=1 (except /cart), 0 broken imgs, 0 console/HTTP errors.
