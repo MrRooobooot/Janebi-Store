@@ -77,7 +77,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="bg-white/90 dark:bg-[#0c1220]/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-white/[0.08] shadow-[0_1px_3px_rgba(0,0,0,0.04)] dark:shadow-[0_1px_3px_rgba(0,0,0,0.3)] sticky top-0 z-40 transition-colors duration-200 w-full">
+    <header className="bg-white/90 dark:bg-[var(--color-surface-header-dark)]/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-white/[0.08] shadow-[0_1px_3px_rgba(0,0,0,0.04)] dark:shadow-[0_1px_3px_rgba(0,0,0,0.3)] sticky top-0 z-40 transition-colors duration-200 w-full">
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
       
       {/* Top Announcement Bar — Strict Overflow Control (hidden when admin/bot disables it) */}
@@ -155,7 +155,7 @@ export default function Header() {
               <div className="relative">
                 <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-primary-600 text-white text-[9px] font-black min-w-4 h-4 px-0.5 rounded-full flex items-center justify-center border-2 border-white dark:border-[#0c1220] shadow-xs">
+                  <span className="absolute -top-2 -right-2 bg-primary-600 text-white text-[9px] font-black min-w-4 h-4 px-0.5 rounded-full flex items-center justify-center border-2 border-white dark:border-[var(--color-surface-header-dark)] shadow-xs">
                     {toPersianDigits(cartCount)}
                   </span>
                 )}
@@ -179,7 +179,7 @@ export default function Header() {
 
                 {userDropdownOpen && (
                   <div 
-                    className="absolute left-0 mt-2 w-48 bg-white dark:bg-[#0e1629] rounded-2xl shadow-xl border border-slate-200/80 dark:border-white/[0.08] py-2 z-50 animate-in fade-in zoom-in-95 duration-100"
+                    className="absolute left-0 mt-2 w-48 bg-white dark:bg-[var(--color-surface-dark)] rounded-2xl shadow-xl border border-slate-200/80 dark:border-white/[0.08] py-2 z-50 animate-in fade-in zoom-in-95 duration-100"
                     onMouseLeave={() => setUserDropdownOpen(false)}
                   >
                     <div className="px-4 py-2 border-b border-slate-100 dark:border-white/[0.06]">

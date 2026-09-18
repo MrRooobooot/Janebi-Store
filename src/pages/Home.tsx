@@ -257,7 +257,7 @@ export default function Home() {
             e.stopPropagation();
           }
         }}
-        className="w-full h-full min-h-[140px] sm:min-h-[148px] relative flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl bg-white dark:bg-[#0e1629] border border-slate-200/90 dark:border-white/[0.08] hover:border-primary-300 dark:hover:border-primary-500/40 hover:shadow-md transition-all duration-200 group text-center shadow-xs select-none min-touch-target"
+        className="w-full h-full min-h-[140px] sm:min-h-[148px] relative flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl bg-white dark:bg-[var(--color-surface-dark)] border border-slate-200/90 dark:border-white/[0.08] hover:border-primary-300 dark:hover:border-primary-500/40 hover:shadow-md transition-all duration-200 group text-center shadow-xs select-none min-touch-target"
       >
         <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-100 dark:bg-white/[0.04] flex items-center justify-center text-slate-700 dark:text-slate-200 group-hover:bg-[var(--color-cta)] group-hover:text-white transition-all duration-200 mb-2.5 group-hover:scale-105 shadow-xs shrink-0">
           <Icon className="h-5 w-5 sm:h-6 sm:w-6 stroke-[1.8]" />
@@ -280,7 +280,7 @@ export default function Home() {
         {/* Single page h1 — lives OUTSIDE the carousel: one h1 on every breakpoint,
             rotation-safe (slide titles are plain <p>), SEO + a11y clean. */}
         <h1 className="sr-only">فروشگاه لوازم جانبی موبایل و تبلت | جانبی آرنا</h1>
-        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-white via-slate-50 to-rose-50/30 dark:from-[#0e1629] dark:via-[#0c1220] dark:to-[#070b14] border border-slate-200/90 dark:border-white/[0.08] shadow-lg dark:shadow-2xl p-3 sm:p-7 lg:p-6 transition-colors duration-500 min-h-0 sm:min-h-[400px] lg:min-h-[340px] flex flex-col justify-between">
+        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-white via-slate-50 to-rose-50/30 dark:from-[var(--color-surface-dark)] dark:via-[var(--color-surface-header-dark)] dark:to-[var(--color-surface-footer-dark)] border border-slate-200/90 dark:border-white/[0.08] shadow-lg dark:shadow-2xl p-3 sm:p-7 lg:p-6 transition-colors duration-500 min-h-0 sm:min-h-[400px] lg:min-h-[340px] flex flex-col justify-between">
           {/* Ambient Dot Grid (dual-theme, non-hardcoded) */}
           <div className="absolute inset-0 bg-[radial-gradient(var(--color-border-light)_1px,transparent_1px)] dark:bg-[radial-gradient(var(--color-border-dark)_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none opacity-60" />
 
@@ -378,7 +378,7 @@ export default function Home() {
 
       {/* 2. Amazing Deals Section — product-first fold */}
       <section className="w-full">
-        <div className="bg-gradient-to-br from-rose-50/40 via-white to-slate-50 dark:from-[#0e1629] dark:via-[#0c1220] dark:to-[#070b14] rounded-3xl p-2.5 sm:p-8 text-slate-900 dark:text-white border border-rose-200/70 dark:border-white/[0.08] shadow-lg dark:shadow-2xl relative overflow-hidden transition-colors">
+        <div className="bg-gradient-to-br from-rose-50/40 via-white to-slate-50 dark:from-[var(--color-surface-dark)] dark:via-[var(--color-surface-header-dark)] dark:to-[var(--color-surface-footer-dark)] rounded-3xl p-2.5 sm:p-8 text-slate-900 dark:text-white border border-rose-200/70 dark:border-white/[0.08] shadow-lg dark:shadow-2xl relative overflow-hidden transition-colors">
           
           {/* Section Header */}
           <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 mb-2 sm:mb-6 pb-2 sm:pb-4 border-b border-rose-100 dark:border-white/[0.06]">
@@ -393,7 +393,7 @@ export default function Home() {
             </div>
 
             {/* Countdown Clock */}
-            <div className="self-start sm:self-auto sm:bg-white/80 sm:dark:bg-[#121c33] sm:border sm:border-slate-200/80 sm:dark:border-white/[0.08] sm:px-3.5 sm:py-1.5 sm:rounded-2xl text-xs font-bold sm:shadow-xs shrink-0">
+            <div className="self-start sm:self-auto sm:bg-white/80 sm:dark:bg-[var(--color-surface-elevated-dark)] sm:border sm:border-slate-200/80 sm:dark:border-white/[0.08] sm:px-3.5 sm:py-1.5 sm:rounded-2xl text-xs font-bold sm:shadow-xs shrink-0">
               <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-[var(--color-emphasis-text)] shrink-0" />
               <span className="hidden sm:inline text-slate-700 dark:text-slate-300">فرصت باقی‌مانده:</span>
@@ -448,7 +448,7 @@ export default function Home() {
             return (
               <div 
                 key={i} 
-                className="flex items-center gap-3.5 p-4 rounded-2xl bg-white dark:bg-[#0e1629] border border-slate-200/80 dark:border-white/[0.07] shadow-xs hover:border-slate-300 dark:hover:border-white/[0.15] transition-all"
+                className="flex items-center gap-3.5 p-4 rounded-2xl bg-white dark:bg-[var(--color-surface-dark)] border border-slate-200/80 dark:border-white/[0.07] shadow-xs hover:border-slate-300 dark:hover:border-white/[0.15] transition-all"
               >
                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border ${item.color}`}>
                   <Icon className="h-6 w-6 stroke-[2]" />
@@ -479,7 +479,7 @@ export default function Home() {
                 onClick={() => scrollCats('prev')}
                 disabled={!canScrollPrev}
                 aria-label="دسته‌بندی‌های قبلی"
-                className="min-touch-target w-9 h-9 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-[var(--color-surface-light)] dark:bg-[#0d121c] text-zinc-700 dark:text-zinc-200 hover:text-[var(--color-emphasis-text)] hover:border-[var(--color-cta)]/40 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs"
+                className="min-touch-target w-9 h-9 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-zinc-700 dark:text-zinc-200 hover:text-[var(--color-emphasis-text)] hover:border-[var(--color-cta)]/40 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs"
               >
                 <ChevronRight className="h-4 w-4" />
               </button>
@@ -488,7 +488,7 @@ export default function Home() {
                 onClick={() => scrollCats('next')}
                 disabled={!canScrollNext}
                 aria-label="دسته‌بندی‌های بعدی"
-                className="min-touch-target w-9 h-9 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-[var(--color-surface-light)] dark:bg-[#0d121c] text-zinc-700 dark:text-zinc-200 hover:text-[var(--color-emphasis-text)] hover:border-[var(--color-cta)]/40 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs"
+                className="min-touch-target w-9 h-9 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-zinc-700 dark:text-zinc-200 hover:text-[var(--color-emphasis-text)] hover:border-[var(--color-cta)]/40 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>

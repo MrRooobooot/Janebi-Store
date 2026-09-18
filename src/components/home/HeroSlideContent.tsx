@@ -119,7 +119,7 @@ export default function HeroSlideContent({ slide, products = [], headingLevel = 
             </div>
           </div>
         ) : (
-          <div className="relative w-24 h-24 sm:w-56 sm:h-56 rounded-2xl sm:rounded-3xl p-0 sm:p-5 bg-transparent sm:bg-white/90 dark:sm:bg-[#121c33]/80 border-0 sm:border border-slate-200/80 dark:border-white/[0.08] sm:backdrop-blur-md flex items-center justify-center sm:shadow-md dark:sm:shadow-2xl hero-visual-tile mx-auto">
+          <div className="relative w-24 h-24 sm:w-56 sm:h-56 rounded-2xl sm:rounded-3xl p-0 sm:p-5 bg-transparent sm:bg-white/90 dark:sm:bg-[var(--color-surface-elevated-dark)]/80 border-0 sm:border border-slate-200/80 dark:border-white/[0.08] sm:backdrop-blur-md flex items-center justify-center sm:shadow-md dark:sm:shadow-2xl hero-visual-tile mx-auto">
             <PictureImage
               src={slide.image}
               alt={normalizePersianTypography(slide.title)}

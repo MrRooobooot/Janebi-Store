@@ -83,7 +83,7 @@ export default function ProductFilterSidebar({
             value={inPageQuery}
             onChange={(e) => setInPageQuery(e.target.value)}
             placeholder="نام، مدل یا برند..."
-            className="w-full bg-white dark:bg-[#0e1629] border border-slate-200/80 dark:border-white/[0.08] rounded-xl py-2.5 px-4 pr-10 text-xs font-medium text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-[var(--color-cta)]/60 focus:ring-2 focus:ring-[var(--color-cta)]/10 transition-all shadow-xs"
+            className="w-full bg-white dark:bg-[var(--color-surface-dark)] border border-slate-200/80 dark:border-white/[0.08] rounded-xl py-2.5 px-4 pr-10 text-xs font-medium text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-[var(--color-cta)]/60 focus:ring-2 focus:ring-[var(--color-cta)]/10 transition-all shadow-xs"
           />
           <Search className="h-4 w-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 transition-colors group-hover:text-[var(--color-emphasis-text)]" />
           {inPageQuery && (

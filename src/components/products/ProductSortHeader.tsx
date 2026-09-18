@@ -85,7 +85,7 @@ export default function ProductSortHeader({
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
             aria-label="ترتیب نمایش محصولات"
-            className="w-full appearance-none bg-white dark:bg-[#0e1629] border border-slate-200/90 dark:border-white/[0.08] rounded-xl min-h-11 py-2.5 px-4 pr-3 pl-9 text-[13px] font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-cta)]/50 transition-all cursor-pointer shadow-xs"
+            className="w-full appearance-none bg-white dark:bg-[var(--color-surface-dark)] border border-slate-200/90 dark:border-white/[0.08] rounded-xl min-h-11 py-2.5 px-4 pr-3 pl-9 text-[13px] font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-[var(--color-cta)]/50 transition-all cursor-pointer shadow-xs"
           >
             <option value="default">پیش‌فرض (محبوب‌ترین)</option>
             <option value="price-asc">ارزان‌ترین</option>

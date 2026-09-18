@@ -80,7 +80,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-              className="w-screen max-w-md bg-white dark:bg-[#0e1629] text-slate-900 dark:text-slate-100 shadow-2xl border-r border-slate-200/80 dark:border-white/[0.08] flex flex-col justify-between outline-none"
+              className="w-screen max-w-md bg-white dark:bg-[var(--color-surface-dark)] text-slate-900 dark:text-slate-100 shadow-2xl border-r border-slate-200/80 dark:border-white/[0.08] flex flex-col justify-between outline-none"
             >
               {/* Drawer Header */}
               <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-white/[0.06] flex items-center justify-between">

@@ -44,7 +44,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
   };
 
   return (
-    <div className={`linear-card bg-white dark:bg-[#0e1629] rounded-2xl border border-slate-200/80 dark:border-white/[0.08] ${cardPad} transition-all duration-300 relative flex flex-col h-full group select-none hover:-translate-y-0.5 hover:shadow-[var(--shadow-elevation-2)] overflow-hidden`}>
+    <div className={`linear-card bg-white dark:bg-[var(--color-surface-dark)] rounded-2xl border border-slate-200/80 dark:border-white/[0.08] ${cardPad} transition-all duration-300 relative flex flex-col h-full group select-none hover:-translate-y-0.5 hover:shadow-[var(--shadow-elevation-2)] overflow-hidden`}>
       
       {/* 1. Header Badges & Quick Action Floating Buttons */}
       <div className="flex items-center justify-between gap-2 mb-2 sm:mb-2.5 relative z-10">

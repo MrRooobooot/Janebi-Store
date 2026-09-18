@@ -66,7 +66,7 @@ export default function CartSummaryCard({
               placeholder="مثلا: OFF20"
               aria-invalid={Boolean(couponError)}
               aria-describedby={couponError ? 'coupon-error-message' : appliedDiscount > 0 ? 'coupon-success-message' : undefined}
-              className={`w-full bg-white dark:bg-[#0e1629] border rounded-xl py-2.5 px-3.5 text-left font-mono text-xs font-bold text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none uppercase tracking-wider transition-colors ${
+              className={`w-full bg-white dark:bg-[var(--color-surface-dark)] border rounded-xl py-2.5 px-3.5 text-left font-mono text-xs font-bold text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none uppercase tracking-wider transition-colors ${
                 couponError
                   ? 'border-red-400 dark:border-red-600 focus:border-red-500'
                   : 'border-slate-200/90 dark:border-white/[0.08] focus:border-[var(--color-cta)]'

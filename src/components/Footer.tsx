@@ -37,11 +37,11 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-slate-50/90 dark:bg-[#070b14]/95 border-t border-slate-200/80 dark:border-white/[0.08] mt-16 transition-colors duration-300 w-full overflow-hidden">
+    <footer className="bg-slate-50/90 dark:bg-[var(--color-surface-footer-dark)]/95 border-t border-slate-200/80 dark:border-white/[0.08] mt-16 transition-colors duration-300 w-full overflow-hidden">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Value Propositions */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-12 border-b border-slate-200/80 dark:border-white/[0.08] pb-12">
-          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-white dark:bg-[#0e1629] border border-slate-200/80 dark:border-white/[0.07] transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-slate-300 dark:hover:border-white/[0.15]">
+          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-white dark:bg-[var(--color-surface-dark)] border border-slate-200/80 dark:border-white/[0.07] transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-slate-300 dark:hover:border-white/[0.15]">
             <div className="p-2.5 rounded-xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] shrink-0">
               <Truck className="h-6 w-6" strokeWidth={2} />
             </div>
@@ -51,7 +51,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-white dark:bg-[#0e1629] border border-slate-200/80 dark:border-white/[0.07] transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-slate-300 dark:hover:border-white/[0.15]">
+          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-white dark:bg-[var(--color-surface-dark)] border border-slate-200/80 dark:border-white/[0.07] transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-slate-300 dark:hover:border-white/[0.15]">
             <div className="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 shrink-0">
               <HeadphonesIcon className="h-6 w-6" strokeWidth={2} />
             </div>
@@ -61,7 +61,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-white dark:bg-[#0e1629] border border-slate-200/80 dark:border-white/[0.07] transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-slate-300 dark:hover:border-white/[0.15]">
+          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-white dark:bg-[var(--color-surface-dark)] border border-slate-200/80 dark:border-white/[0.07] transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-slate-300 dark:hover:border-white/[0.15]">
             <div className="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 shrink-0">
               <Shield className="h-6 w-6" strokeWidth={2} />
             </div>
@@ -71,7 +71,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-white dark:bg-[#0e1629] border border-slate-200/80 dark:border-white/[0.07] transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-slate-300 dark:hover:border-white/[0.15]">
+          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-white dark:bg-[var(--color-surface-dark)] border border-slate-200/80 dark:border-white/[0.07] transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-slate-300 dark:hover:border-white/[0.15]">
             <div className="p-2.5 rounded-xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] shrink-0">
               <CheckCircle className="h-6 w-6" strokeWidth={2} />
             </div>
@@ -85,7 +85,7 @@ export default function Footer() {
         {/* Newsletter & Info & Trust Seal Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 mb-10">
           {/* About & Contact Info */}
-          <div className="lg:col-span-4 space-y-4 text-right flex flex-col justify-between p-5 rounded-2xl bg-white dark:bg-[#0e1629] border border-slate-200/80 dark:border-white/[0.07] shadow-xs">
+          <div className="lg:col-span-4 space-y-4 text-right flex flex-col justify-between p-5 rounded-2xl bg-white dark:bg-[var(--color-surface-dark)] border border-slate-200/80 dark:border-white/[0.07] shadow-xs">
             <div className="space-y-2">
               <Logo size="sm" />
               <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
@@ -105,7 +105,7 @@ export default function Footer() {
           </div>
 
           {/* Links column (§2.7 / §9): quick customer links incl. order tracking */}
-          <div className="lg:col-span-3 space-y-3 text-right p-5 rounded-2xl bg-white dark:bg-[#0e1629] border border-slate-200/80 dark:border-white/[0.07] shadow-xs">
+          <div className="lg:col-span-3 space-y-3 text-right p-5 rounded-2xl bg-white dark:bg-[var(--color-surface-dark)] border border-slate-200/80 dark:border-white/[0.07] shadow-xs">
             <h3 className="text-sm font-black text-zinc-900 dark:text-zinc-100">دسترسی سریع</h3>
             <nav className="flex flex-col items-start gap-2.5 text-xs text-zinc-600 dark:text-zinc-400" aria-label="لینک‌های فوتر">
               <Link
@@ -148,7 +148,7 @@ export default function Footer() {
           </div>
 
           {/* Enamad Trust Seal Badge - Responsive Card */}
-          <div className="md:col-span-2 lg:col-span-3 flex flex-col items-center justify-center p-5 rounded-2xl bg-white dark:bg-[#0e1629] border border-slate-200/80 dark:border-white/[0.07] shadow-xs text-center">
+          <div className="md:col-span-2 lg:col-span-3 flex flex-col items-center justify-center p-5 rounded-2xl bg-white dark:bg-[var(--color-surface-dark)] border border-slate-200/80 dark:border-white/[0.07] shadow-xs text-center">
             <span className="text-xs font-black text-slate-800 dark:text-slate-200 mb-3 flex items-center gap-1.5">
               <Award className="h-4 w-4 text-[var(--color-emphasis-text)]" />
               نماد اعتماد الکترونیکی
