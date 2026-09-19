@@ -8,7 +8,13 @@
 
 ---
 
-## 0. Current State — Structure, Performance & Hygiene (2026-09-16)
+## Real inventory: MCdodo cables (2026-09-19, commit b450c8d — DB-only, no deploy)
+- 7 Mcdodo Lightning cables added to prod via admin API (in-container short-lived owner JWT): ids 5633–5639, SKUs CA-5261/3581/3580/7271/7270/2261/2260, prices 875k/635k/545k/475k/475k/410k/335k تومان, category «کابل و سیم», stock 10. Full ledger: `docs/REAL-INVENTORY-2026-09-19.md`.
+- Prod catalogue now **45 products, 2 categories** («کابل و سیم» + «هولدر و نگهدارنده»). Pre-write backup: `/home/ubuntu/backups/janebi-pre-mcdodo-20260919-190933.db`.
+- Images sourced from exact-model marketplace listings, store-watermarked candidates rejected via vision QA, normalized square white-canvas WebP ≤54 KB, shipped to BOTH `public/images/products/` and `dist/images/products/`. Per-asset curl 200 ×7.
+- Verified: X-Total-Count 45, per-SKU price compare clean, PDP/API/img 200 ×7, FTS «مک‌دودو»→7, dual-engine visible-image probe (chromium+webkit) 7/7 (`scripts/audit/mcdodo-live-probe.mjs` — visible-only filter; hidden 40×40 thumbs and below-fold lazy imgs MUST be excluded from naturalWidth assertions).
+
+
 
 **Design-quality round (2026-09-18, commits 99dfb2b/955938c/312efe6 — deployed & live-verified).**
 From the honest design audit: (1) **P0 SEO bug found & fixed** — `LEGACY_PRODUCT_REDIRECTS`
