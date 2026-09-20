@@ -154,11 +154,22 @@ export default function Home() {
     if (activeSlide >= heroSlides.length) setActiveSlide(0);
   }, [heroSlides.length, activeSlide]);
 
-  // Real catalogue cards shown inside the hero (never placeholder/demo art)
-  const heroProducts = useMemo(
-    () => products.filter((p) => (p.stockQuantity ?? 1) > 0).slice(0, 3),
-    [products]
-  );
+  // Real catalogue cards shown inside the hero (never placeholder/demo art).
+  // Slide-scoped: a slide advertising category X must not display cards of a
+  // different category (holders slide was showing cable cards) — match the
+  // CTA's ?category= param against the product's category; fall back to
+  // in-stock first-3 only when the slide has no category link.
+  const heroProductsBySlide = useMemo(() => {
+    const inStock = products.filter((p) => (p.stockQuantity ?? 1) > 0);
+    const matchFor = (link: string) => {
+      const m = String(link).match(/[?&]category=([^&]+)/);
+      if (!m) return inStock.slice(0, 3);
+      const cat = decodeURIComponent(m[1]);
+      const scoped = inStock.filter((p) => p.category === cat);
+      return (scoped.length ? scoped : inStock).slice(0, 3);
+    };
+    return new Map(heroSlides.map((s) => [s.id, matchFor(s.buttonLink)]));
+  }, [products, heroSlides]);
 
   // Auto slide — paused entirely when the user prefers reduced motion
   useEffect(() => {
@@ -172,6 +183,7 @@ export default function Home() {
   }, [heroSlides.length]);
 
   const currentSlide = heroSlides[activeSlide];
+  const heroProducts = heroProductsBySlide.get(currentSlide?.id) ?? [];
 
   useEffect(() => {
     let cancelled = false;
