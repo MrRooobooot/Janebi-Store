@@ -178,7 +178,7 @@ export default function Home() {
     setLoading(true);
     setLoadError(false);
     Promise.all([
-      getJson('/api/products'),
+      getJson('/api/products?limit=1000'),
       getJson('/api/categories'),
     ]).then(([prods, cats]) => {
       if (cancelled) return;
