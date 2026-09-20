@@ -34,7 +34,7 @@ test.describe('Storefront Pages & Core Flows', () => {
       await addToCartBtn.click();
       // Expect feedback or cart badge update
       await expect(
-        page.getByText(/به سبد افزوده شد/i).or(page.locator('header [class*="cart"]').first())
+        page.getByText(/به سبد افزوده شد/i).or(page.locator('header [class*="cart"]').first()).first()
       ).toBeVisible();
     }
   });

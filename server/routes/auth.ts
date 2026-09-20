@@ -174,9 +174,14 @@ router.post("/session", async (req, res) => {
           const user = await db.query.users.findFirst({ where: eq(users.id, decoded.userId) });
           if (user) {
             const { password: _a, ...userWithoutPassword } = user;
+            const userAddresses = await db.query.addresses.findMany({ where: eq(addresses.userId, user.id) });
             return res.json({
               authenticated: true,
-              user: { ...userWithoutPassword, mustChangePassword: Boolean(userWithoutPassword.mustChangePassword) },
+              user: {
+                ...userWithoutPassword,
+                mustChangePassword: Boolean(userWithoutPassword.mustChangePassword),
+                addresses: userAddresses,
+              },
             });
           }
         }
@@ -202,9 +207,14 @@ router.post("/session", async (req, res) => {
     const tokens = generateTokens(user.id);
     setAuthCookies(res, tokens.accessToken, tokens.refreshToken, env.NODE_ENV === "production");
     const { password: _, ...userWithoutPassword } = user;
+    const userAddresses = await db.query.addresses.findMany({ where: eq(addresses.userId, user.id) });
     return res.json({
       authenticated: true,
-      user: { ...userWithoutPassword, mustChangePassword: Boolean(userWithoutPassword.mustChangePassword) },
+      user: {
+        ...userWithoutPassword,
+        mustChangePassword: Boolean(userWithoutPassword.mustChangePassword),
+        addresses: userAddresses,
+      },
     });
   } catch {
     return res.json({ authenticated: false });

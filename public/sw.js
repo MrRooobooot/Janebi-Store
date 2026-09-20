@@ -1,5 +1,5 @@
 const CACHE_NAME = 'janebi-static-v1.2.0';
-const API_CACHE_NAME = 'janebi-api-v1.2.0';
+const API_CACHE_NAME = 'janebi-api-v1.2.1';
 
 const PRECACHE_ASSETS = [
   '/',
@@ -72,7 +72,12 @@ self.addEventListener('fetch', (event) => {
   }
 
   // 2. Read-only Public API Endpoints (Products / Categories): Stale-While-Revalidate
-  if (url.pathname.startsWith('/api/products') || url.pathname.startsWith('/api/categories')) {
+  // Per-product subresources like /api/products/:id/reviews are NOT read-only: SWR
+  // here handed the pre-write body to the refetch that runs right after a POST, so a
+  // submitted review only showed up after a full reload. Those fall through to the
+  // network-first branch below.
+  const isDynamicSubresource = url.pathname.includes('/reviews');
+  if (!isDynamicSubresource && (url.pathname.startsWith('/api/products') || url.pathname.startsWith('/api/categories'))) {
     event.respondWith(
       caches.open(API_CACHE_NAME).then(async (cache) => {
         const cachedResponse = await cache.match(request);

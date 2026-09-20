@@ -3,13 +3,14 @@ import crypto from 'crypto';
 
 /**
  * REAL-USER E2E config.
- * - e2e/global-setup.ts copies the dev DB to an isolated scratch DB and seeds
- *   a known admin (runs ONCE before all workers).
+ * - e2e/prepare-db.mjs snapshots the dev DB to an isolated scratch DB and seeds a
+ *   known admin. It runs as part of the webServer command, NOT in globalSetup:
+ *   Playwright starts webServer before globalSetup, so preparing the DB there
+ *   unlinked the file out from under the running server (see prepare-db.mjs).
  * - Starts the dev server against the copy on port 3210.
  */
 
 export default defineConfig({
-  globalSetup: './e2e/global-setup.ts',
   testDir: './e2e',
   testMatch: process.env.E2E_MATCH || 'real-user.spec.ts',
   timeout: 90 * 1000,
@@ -29,7 +30,7 @@ export default defineConfig({
     { name: 'webkit', use: { ...devices['Desktop Safari'] } },
   ],
   webServer: {
-    command: 'npm run dev',
+    command: 'node e2e/prepare-db.mjs && npm run dev',
     url: 'http://localhost:3210',
     reuseExistingServer: false,
     timeout: 120 * 1000,

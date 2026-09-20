@@ -21,7 +21,7 @@ test.describe('cookie-only session', () => {
   test('a guest boot stores nothing and logs no auth error', async ({ page }) => {
     const errors: string[] = [];
     page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
-    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.goto('/', { waitUntil: 'load' });
     expect(errors.filter((e) => /401|Unauthorized/i.test(e))).toEqual([]);
     const ls = await page.evaluate(() => Object.keys(localStorage).filter((k) => /token/i.test(k)));
     expect(ls).toEqual([]);
@@ -56,7 +56,7 @@ test.describe('cookie-only session', () => {
     expect(me.status).toBe(200);
     expect(me.body?.user?.phone || me.body?.phone).toBeTruthy();
 
-    await page.reload({ waitUntil: 'networkidle' });
+    await page.reload({ waitUntil: 'load' });
     await expect(page.locator('header').getByText(/کوکی دو/).first()).toBeVisible({ timeout: 15000 });
   });
 

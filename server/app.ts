@@ -191,6 +191,16 @@ const limiter = rateLimit({
 });
 app.use("/api/", limiter);
 
+// API responses default to no-store. Without an explicit Cache-Control Chromium
+// heuristically cached a pre-write 200 and served it for the refetch that runs
+// right after a POST (a submitted review / saved address only showed up after a
+// manual reload). Endpoints that genuinely want caching override this below with
+// their own res.setHeader("Cache-Control", ...).
+app.use("/api/", (_req, res, next) => {
+  res.setHeader("Cache-Control", "no-store");
+  next();
+});
+
 // Rate limiting - Stricter Auth Endpoints (Brute-force protection)
 const authLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute window

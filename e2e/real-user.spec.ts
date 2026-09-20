@@ -98,19 +98,19 @@ test.beforeEach(async ({ browser }) => {
     '/checkout', '/profile', '/about', '/contact', '/faq', '/privacy', '/terms', '/brands',
     '/blog', '/offers', '/new-products', '/newsletter', '/force-change-password', '/no-such-page'];
   for (const r of routes) {
-    await page.goto(r, { waitUntil: 'networkidle', timeout: 30000 }).catch(() => {});
+    await page.goto(r, { waitUntil: 'load', timeout: 30000 }).catch(() => {});
   }
   // product detail + admin pages need data/auth to render their chunks
   const pres = await page.request.get('/api/products?limit=1');
   const items = await pres.json();
-  if (items[0]) await page.goto(`/products/${items[0].id}`, { waitUntil: 'networkidle', timeout: 30000 }).catch(() => {});
+  if (items[0]) await page.goto(`/products/${items[0].id}`, { waitUntil: 'load', timeout: 30000 }).catch(() => {});
   const login = await page.request.post('/api/auth/login', { data: { phone: ADMIN_PHONE, password: ADMIN_PASS } });
   if (login.ok()) {
     const { accessToken } = await login.json();
     await page.evaluate((t) => localStorage.setItem('token', t), accessToken);
     for (const r of ['/admin', '/admin/products', '/admin/orders', '/admin/coupons', '/admin/settings',
       '/admin/users', '/admin/reviews', '/admin/messages', '/admin/newsletter', '/admin/audit-logs', '/admin/blog']) {
-      await page.goto(r, { waitUntil: 'networkidle', timeout: 30000 }).catch(() => {});
+      await page.goto(r, { waitUntil: 'load', timeout: 30000 }).catch(() => {});
     }
   }
   await page.close();
@@ -125,7 +125,9 @@ test.describe('Home page — real clicks', () => {
     await expect(page.locator('header')).toBeVisible();
     await expect(page.locator('footer')).toBeVisible();
 
-    const dots = page.locator('[aria-label="اسلایدهای صفحه اصلی"] button');
+    // Two tablists share this aria-label (mobile + `hidden sm:flex` desktop variant),
+    // so the bare selector resolves to the hidden one's dots. Pin the visible tablist.
+    const dots = page.locator('[aria-label="اسلایدهای صفحه اصلی"]:visible button');
     if ((await dots.count()) >= 2) {
       await dots.nth(1).click();
       await page.waitForTimeout(400);

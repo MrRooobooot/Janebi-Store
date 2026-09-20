@@ -158,3 +158,75 @@ The store category structure is CLOSED/FIXED — exactly the user-approved list.
 - Brands, device models, and technical specs are Attributes/Filters — NEVER categories.
 - A product matching no existing category → report to the user first. Creating a category for it is forbidden.
 - Any proposed category change goes to the user BEFORE implementation.
+
+---
+
+## 6. Fast verification loop
+
+```bash
+npx vitest run --changed HEAD      # diff-scoped first pass — measured 1.1s vs 38s for the full suite
+npm run verify                     # full adversarial gate — the ONLY completion authority
+npx tsc --noEmit                   # typecheck alone, 1.8s (TypeScript 7 native compiler)
+```
+
+Run the scoped pass while iterating; run `npm run verify` before claiming anything is done. A scoped
+green is a signal, never evidence of completion.
+
+## 7. Code-intelligence pipeline (use before reading files)
+
+```bash
+~/.local/bin/codebase-memory-mcp cli --json search_graph '{"project":"Users-aidin-Desktop-Janebi-Store","query":"…"}'
+~/.local/bin/codebase-memory-mcp cli --json trace_path   '{"project":"Users-aidin-Desktop-Janebi-Store","…"}'
+~/.local/bin/codebase-memory-mcp cli --json get_architecture '{"project":"Users-aidin-Desktop-Janebi-Store"}'
+ast-grep -p '<pattern>' --lang ts server src      # structural; skips comments and strings
+```
+
+Graph first (macro), Serena/LSP for named symbols (micro), `ast-grep` for patterns, `read_file` only
+where all three are silent. The graph CLI works outside MCP and returns `symbol → file:line` with
+scores in ~3.3s.
+
+**Scope rule:** LSP surgery (`find_referencing_symbols`, `replace_symbol_body`) applies to **named
+symbols only**. Anonymous route handlers and inline callbacks have no LSP symbol — there the valid
+path is graph Route-node isolation (a `Route` with no consumer edges) plus a grep zero-consumer
+proof, then `patch`. Never force LSP where no symbol exists; never patch a named symbol without the
+reference check.
+
+## 8. Operational traps (paid for — do not re-learn)
+
+- **Project graph:** consult `PROJECT_GRAPH.md` first on any feature/debug turn; update it after
+  non-trivial tasks or schema/endpoint changes.
+- **Persistent dev DB + tests = residue:** any suite that inserts fixtures repopulates
+  `data/janebi.db` on every gate run, so a purge done *before* the final `npm run verify` is undone
+  by it (16 users / 33 «کالای تست» products reappear → the next design audit's `err:N` 404s read as
+  UI bugs). Purge LAST, then verify counts and `integrity_check`.
+- **Vitest parallel flake:** rerun the file in isolation; green + untouched files → contention.
+- **Peer/self reports are stale by the time you read them:** re-ground on HEAD, prod `BUILD_INFO`
+  and live DB counts before confirming a batch is closed.
+- **Subagent contracts:** JSON first; a retry restates the evidence. One child per repo+round, ONE
+  stamp per round. Verify claims yourself (git log + gate + curl the SERVED artifact).
+  `delegate_task` timeout ≠ failure → `action=list`. Goals must be literals.
+- **Bulk sed of stamps:** rewrite assertion MESSAGES; flip negative stale-guards; grep
+  `!index|!includes`. **Cache-bust grep is per-asset:** exact `file?v=X`, curl each changed asset.
+  **Escape drift in seeds:** literal `\n` vs real newline → verify the live API.
+- **Deploy:** lock `/tmp/janebi-deploy.lock`; never commit build artifacts; `docker cp` needs an
+  ABSOLUTE path; blog seed = esbuild bundle → scp → docker cp → node in-container.
+- **Migrations:** PRAGMA-verify prod post-deploy. An empty catch is a bug class.
+- **Blog id-vs-slug (recurring KeyError):** `/api/blog` items have NO `slug` key — key on `id`
+  (`i.get('slug') or i.get('id')`); briefs must carry the DB id from `seed-blog.ts`, never the
+  title-slug from commit messages. A bundled seed smoke-run from `/tmp` fails on the
+  better-sqlite3 external — verify via the esbuild output, not require-from-tmp.
+- **Shared-tree siblings:** re-read shared files (TASKS / CHANGELOG / tests) right before each patch;
+  version asserts track the LATEST sibling bump. Hotspot: `scripts/seed-blog.ts` (a supervisor child
+  and the orchestrator cron edit it in overlapping rounds).
+- **DOM probes:** try/catch per section; reset ALL filters; scripts via a written file; QA FAIL only
+  on direct evidence.
+- **`tsx -e` traps:** `npx tsx -e 'await …'` fails (CJS, no top-level await); importing
+  `scripts/seed-blog.ts` RUNS `main()` as a side effect — verify via a temp `.ts`, sync import,
+  delete after.
+- **Environment:** `browser_exec` is unusable on this Mac (needs Chromium as default browser) — after
+  2 failures use Playwright via the project venv in the terminal. Never `find` across the whole home
+  (~420s). `web_search` 403s → `web_extract` / delegate. Raw-IP curl blocked → delegate the QA child.
+  SSH outage: 2 retries then a BLOCKED report (TCP open + ssh refused = fail2ban/sshd, needs the VPS
+  console). Oversized inline shell one-liners are blocklisted → write a script file, run it, delete it.
+- **Memory writes:** batch atomically; `replace` `old_text` must match the CURRENT entry; an
+  over-limit rejection lists `current_entries` — prune and add in the SAME retry batch.

@@ -48,7 +48,7 @@ async function uiLogin(page: Page, phone: string, password: string, nameHint: st
   await page.locator('input[type="tel"]').fill(phone);
   await page.locator('input[type="password"]').fill(password);
   await page.locator('main').getByRole('button', { name: /ورود به حساب/ }).click();
-  await expect(page.locator('header').getByText(new RegExp(nameHint)).first()).toBeVisible({ timeout: 12000 });
+  if (nameHint) await expect(page.locator('header').getByText(new RegExp(nameHint)).first()).toBeVisible({ timeout: 12000 });
 }
 
 async function adminToken(page: Page) {
@@ -84,18 +84,18 @@ test.beforeEach(async ({ browser }) => {
   const routes = ['/', '/products', '/cart', '/login', '/register', '/wishlist', '/compare',
     '/checkout', '/profile', '/about', '/contact', '/faq', '/blog', '/offers', '/brands'];
   for (const r of routes) {
-    await page.goto(r, { waitUntil: 'networkidle', timeout: 30000 }).catch(() => {});
+    await page.goto(r, { waitUntil: 'load', timeout: 30000 }).catch(() => {});
   }
   const pres = await page.request.get('/api/products?limit=1');
   const items = await pres.json();
-  if (items[0]) await page.goto(`/products/${items[0].id}`, { waitUntil: 'networkidle', timeout: 30000 }).catch(() => {});
+  if (items[0]) await page.goto(`/products/${items[0].id}`, { waitUntil: 'load', timeout: 30000 }).catch(() => {});
   const login = await page.request.post('/api/auth/login', { data: { phone: ADMIN_PHONE, password: ADMIN_PASS } });
   if (login.ok()) {
     const { accessToken } = await login.json();
     await page.evaluate((t) => localStorage.setItem('token', t), accessToken);
     for (const r of ['/admin', '/admin/products', '/admin/orders', '/admin/coupons', '/admin/settings',
       '/admin/users', '/admin/reviews', '/admin/messages', '/admin/newsletter', '/admin/blog']) {
-      await page.goto(r, { waitUntil: 'networkidle', timeout: 30000 }).catch(() => {});
+      await page.goto(r, { waitUntil: 'load', timeout: 30000 }).catch(() => {});
     }
   }
   await page.close();
@@ -312,7 +312,7 @@ test('autocomplete: suggestions render, click navigates to product; recent searc
   const errors = collectErrors(page);
   await page.goto('/');
 
-  const input = page.getByPlaceholder('جست‌وجوی محصول، برند یا مدل گوشی...');
+  const input = page.getByPlaceholder(/جست‌وجوی محصول/).first();
   await input.click();
   await input.fill('سامسونگ');
   const firstOption = page.getByRole('option').first();
@@ -322,9 +322,9 @@ test('autocomplete: suggestions render, click navigates to product; recent searc
 
   // recent searches section appears when reopening with empty query
   await page.goto('/');
-  await page.getByPlaceholder('جست‌وجوی محصول، برند یا مدل گوشی...').click();
-  await page.getByPlaceholder('جست‌وجوی محصول، برند یا مدل گوشی...').fill('س');
-  await page.getByPlaceholder('جست‌وجوی محصول، برند یا مدل گوشی...').fill('');
+  await page.getByPlaceholder(/جست‌وجوی محصول/).first().click();
+  await page.getByPlaceholder(/جست‌وجوی محصول/).first().fill('س');
+  await page.getByPlaceholder(/جست‌وجوی محصول/).first().fill('');
   await expect(page.getByText('جستجوهای اخیر')).toBeVisible({ timeout: 8000 });
   await assertNoErrors(errors);
 });
@@ -422,7 +422,9 @@ test('stock cap: adding beyond stock must not keep phantom qty after reload', as
   await page.goto('/cart');
   await page.reload();
   await expect(page.locator('main').getByText(/۱|۲|۳|۴|۵|۶|۷|۸|۹/).first()).toBeVisible({ timeout: 10000 });
-  const qty = await page.request.get('/api/cart', { headers: { Authorization: `Bearer ${await page.evaluate(() => localStorage.getItem('token'))}` } });
+  // page.request shares the browser context's cookie jar: auth is HttpOnly-cookie
+  // based, localStorage holds no token (so a manual Bearer header 401s → empty cart).
+  const qty = await page.request.get('/api/cart');
   const cart = await qty.json();
   const line = Array.isArray(cart) ? cart.find((c: any) => c.id === p.id) : null;
   expect(line, 'cart line exists').toBeTruthy();
@@ -717,6 +719,11 @@ test('Admin blog: create post → visible on /blog → article opens → unpubli
 test('Admin newsletter: empty list → export shows warning, no download', async ({ page }) => {
   const errors = collectErrors(page);
   await uiLogin(page, ADMIN_PHONE, ADMIN_PASS, 'ادمین تست');
+  // shared e2e DB: the parallel subscriber test (below) may have inserted rows
+  // already, so the "empty list" precondition must be re-established here.
+  const ndb = new Database('data/janebi.e2e.db');
+  ndb.prepare('DELETE FROM newsletter_subscribers').run();
+  ndb.close();
   await page.goto('/admin/newsletter');
   await expect(page.getByText(/اعضای خبرنامه/).first()).toBeVisible({ timeout: 10000 });
 
@@ -816,7 +823,9 @@ test('Force-change-password: gated admin cannot reach panel until password set',
   ).run(id, 'ادمین اجباری QA', '09390000077', hash, 'admin', 0, 1);
   db.close();
 
-  await uiLogin(page, '09390000077', 'FirstLogin@1', 'ادمین اجباری QA');
+  // gated admin lands on /force-change-password, where the storefront header does
+  // not render the account name — assert the URL (below) instead of the header.
+  await uiLogin(page, '09390000077', 'FirstLogin@1', '');
   // login must land on the forced screen (Login.tsx reads the flag from the
   // login RESULT and navigates to /force-change-password), not /profile
   await expect(page).toHaveURL(/force-change-password/, { timeout: 10000 });
