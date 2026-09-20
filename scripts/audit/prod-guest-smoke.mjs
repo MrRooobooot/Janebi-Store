@@ -29,7 +29,7 @@ for (const [name, engine] of [['chromium', chromium], ['webkit', webkit]]) {
   });
   const per = {};
   for (const route of ROUTES) {
-    await page.goto(BASE + route, { waitUntil: 'networkidle', timeout: 45000 }).catch((e) => {
+    await page.goto(BASE + route, { waitUntil: 'load', timeout: 45000 }).catch((e) => {
       per[route] = 'NAV FAIL ' + e.message.split('\n')[0];
     });
     await page.waitForTimeout(400);
