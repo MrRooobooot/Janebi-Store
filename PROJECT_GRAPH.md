@@ -14,7 +14,12 @@
 - Images sourced from exact-model marketplace listings, store-watermarked candidates rejected via vision QA, normalized square white-canvas WebP ≤54 KB, shipped to BOTH `public/images/products/` and `dist/images/products/`. Per-asset curl 200 ×7.
 - Verified: X-Total-Count 45, per-SKU price compare clean, PDP/API/img 200 ×7, FTS «مک‌دودو»→7, dual-engine visible-image probe (chromium+webkit) 7/7 (`scripts/audit/mcdodo-live-probe.mjs` — visible-only filter; hidden 40×40 thumbs and below-fold lazy imgs MUST be excluded from naturalWidth assertions).
 
-
+## Homepage cable-section round (2026-09-19, settings via admin API + commit 1c07024 — deployed & live-verified)
+- **Bug found:** hero slide 3 (cables) never rendered — DB setting `heroSlide3Link=/products?category=کابل` pointed at the STALE category title; live category is «کابل و سیم». Home's empty-category slide filter (`heroSlides` useMemo) auto-dropped it, so the store hero advertised only holders. Slide 2 (قاب و کاور) drops the same way — correct behavior (no dead CTA), it returns automatically when that category gets stock.
+- **Fix (DB settings, no code):** `PUT /api/admin/settings` in-container (owner JWT) → `heroSlide3Link=/products?category=کابل و سیم`, real product hero image `/images/products/ca-5261.webp`, new Persian copy «کابل‌های اورجینال مک‌دودو (MCdodo)». Cache busted by the admin route.
+- **Code fix (commit 1c07024):** `Home.tsx` fetched `/api/products` unpaginated (default page size 20) for the «کالاهای برگزیده» tabs — cables happened to fit exactly (13+7); any catalogue growth would silently hide products from tabs. Now `?limit=1000` (same pattern as the admin panel fix). Gate: tsc + vitest + build + SEC probes ALL PASS.
+- **Deploy:** deploy.sh OK, `index-DawWr3o3.js` served contains `limit=1000`, IndexNow 200 (81 URLs).
+- **Verified live, both engines:** hero rotates holders↔cables slides; cable slide CTA → `/products?category=کابل و سیم` renders «خرید کابل و سیم» h1 + 7 product cards; card click → PDP `/product/5639`; 0 broken visible imgs; 0 page errors. webkit `innerText` hides `visibility:hidden` offscreen slide text — assert hero slide content with `textContent` or by sampling the visible slide over one rotation (~12s), not a single `body.innerText.includes()`.
 
 **Design-quality round (2026-09-18, commits 99dfb2b/955938c/312efe6 — deployed & live-verified).**
 From the honest design audit: (1) **P0 SEO bug found & fixed** — `LEGACY_PRODUCT_REDIRECTS`
