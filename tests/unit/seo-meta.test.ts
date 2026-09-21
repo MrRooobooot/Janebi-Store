@@ -73,10 +73,30 @@ describe("routeMetaForRequest fallbacks", () => {
     expect(html).toContain('<link rel="preload" as="image" href="https://janebiarena.ir/images/products/p-5884.jpg" fetchpriority="high" />');
   });
 
-  it("returns category metadata for category listing", async () => {
-    // DB is stubbed in unit env? routeMetaForCategory requires db — assert it does not throw and returns shape or null
-    const result = await routeMetaForRequest("/products", new URLSearchParams("category=پاوربانک"));
-    expect(result === null || typeof result!.title === "string").toBe(true);
+  it("canonicalises a real category page to itself — never to the hub or the homepage", async () => {
+    const cat = "دستهٔ آزمون سئو";
+    await db.insert(products).values({
+      id: 991001, title: "SEO category probe", category: cat, price: 1000,
+      image: "/products/cpr-14.svg", brand: "probe", stockQuantity: 1,
+    });
+    const res = await routeMetaForRequest("/products", new URLSearchParams({ category: cat }));
+    expect(res?.ogUrl).toBe(`https://janebiarena.ir/products?category=${encodeURIComponent(cat)}`);
+    expect(res?.title).toContain(cat);
+  });
+
+  it("canonicalises sort/page variants of a category to the plain category URL", async () => {
+    // sort/page are client-side view state, not separate pages
+    const cat = "دستهٔ آزمون سئو";
+    const res = await routeMetaForRequest(
+      "/products",
+      new URLSearchParams({ category: cat, sort: "price-asc", page: "2" })
+    );
+    expect(res?.ogUrl).toBe(`https://janebiarena.ir/products?category=${encodeURIComponent(cat)}`);
+  });
+
+  it("falls back to the hub canonical for a stale category name (never the homepage shell)", async () => {
+    const res = await routeMetaForRequest("/products", new URLSearchParams({ category: "دستهٔ ناموجود" }));
+    expect(res?.ogUrl).toBe("https://janebiarena.ir/products");
   });
 });
 

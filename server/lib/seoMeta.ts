@@ -1,4 +1,4 @@
-import { eq, sql } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db } from "../db/index.js";
 import { blogPosts, products } from "../db/schema.js";
 
@@ -173,18 +173,33 @@ async function routeMetaFor(pathname: string): Promise<RouteMeta | null> {
   }
 }
 
-/** Category variant: caller passes the decoded `category` query value (may be absent). */
+/** /products hub — also the canonical target for every filtered/sorted variant of it. */
+const PRODUCTS_HUB_META: RouteMeta = {
+  title: "خرید لوازم جانبی موبایل | جانبی آرنا",
+  description:
+    "لیست کامل محصولات جانبی آرنا: شارژر، پاوربانک، هندزفری، کابل و لوازم جانبی موبایل با قیمت روز و ارسال سریع.",
+  ogType: "website",
+  ogUrl: "https://janebiarena.ir/products",
+};
+
+/** Category landing page: `/products?category=<name>`.
+ *
+ * The filtered URL is its own canonical. It used to point at the hub, which made Google
+ * file every category under "Alternate page with proper canonical tag" — a category page
+ * could never rank for its own name. A stale/unknown category name must fall back to the
+ * hub, not to the shell's homepage canonical, which produced
+ * "Duplicate without user-selected canonical" pages attributed to the homepage.
+ * The sitemap lists the %20-encoded form, so the canonical is encoded the same way.
+ */
 async function routeMetaForCategory(category: string | null): Promise<RouteMeta | null> {
   if (!category) return null;
   try {
     const row = await db
-      .select({ category: products.category, n: sql<number>`count(*)` })
+      .select({ category: products.category })
       .from(products)
-      .where(eq(products.category, category))
-      .groupBy(products.category)
+      .where(and(eq(products.category, category), eq(products.isActive, 1)))
       .limit(1);
     if (!row[0]) return null;
-    const url = `https://janebiarena.ir/products`; // hub: filtered variant must not compete with itself
     return {
       title: `خرید ${category} | جانبی آرنا`,
       description: normalizeDescription(
@@ -192,7 +207,7 @@ async function routeMetaForCategory(category: string | null): Promise<RouteMeta 
         `خرید انواع ${category} با بهترین قیمت، ضمانت اصالت و ارسال سریع از فروشگاه جانبی آرنا.`
       ),
       ogType: "website",
-      ogUrl: url,
+      ogUrl: `https://janebiarena.ir/products?category=${encodeURIComponent(category)}`,
     };
   } catch {
     return null;
@@ -203,15 +218,9 @@ async function routeMetaForCategory(category: string | null): Promise<RouteMeta 
 export async function routeMetaForRequest(pathname: string, query: URLSearchParams): Promise<RouteMeta | null> {
   if (pathname === "/products" || pathname === "/products/") {
     const cat = query.get("category");
-    if (cat) return routeMetaForCategory(cat);
+    if (cat) return (await routeMetaForCategory(cat)) ?? PRODUCTS_HUB_META;
     // SEO: the /products hub must not inherit the homepage shell canonical (r47 gap).
-    return {
-      title: "خرید لوازم جانبی موبایل | جانبی آرنا",
-      description:
-        "لیست کامل محصولات جانبی آرنا: شارژر، پاوربانک، هندزفری، کابل و لوازم جانبی موبایل با قیمت روز و ارسال سریع.",
-      ogType: "website",
-      ogUrl: "https://janebiarena.ir/products",
-    };
+    return PRODUCTS_HUB_META;
   }
   return routeMetaFor(pathname);
 }

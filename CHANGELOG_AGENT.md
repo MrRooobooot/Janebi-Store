@@ -190,3 +190,23 @@
 - `GET /api/admin/orders` optional `?page&limit&status` server pagination (back-compat full list).
 - Dead code: BrandShowcase.tsx (orphan since 247d4c3), 8 qa-*.cjs reports, intra-file-only exports un-exported.
 - Deploy: ship whole `server/lib`+`src/lib` dirs (VPS tree had drifted → mid-deploy build failures). Full `force-recreate` + image→host dist sync + restart cleared stale-container header mismatch. Gate: tsc clean, 375/53 tests, verify ALL PASS.
+
+## 2026-09-21 (b) — GSC coverage: category canonicals were pointing at the wrong page — FIXED, live-verified
+- **Defect (proved live):** `/products?category=<name>` — the two category landing pages that the sitemap
+  submits — declared `canonical=https://janebiarena.ir/products`, so Google filed both under
+  "Alternate page with proper canonical tag" (506 group) and neither could rank for its own name.
+  Any *unmatched* category value (stale/dash form) fell through to the shell canonical
+  `https://janebiarena.ir/` → "Duplicate without user-selected canonical" (219 group) attributed to home.
+- **Fix (`server/lib/seoMeta.ts`):** the filtered URL is its own canonical
+  (`/products?category=<encodeURIComponent>`, encoded exactly like the sitemap); `sort`/`page` variants
+  canonicalise to the plain category URL; an unmatched category falls back to the **hub** meta
+  (`PRODUCTS_HUB_META`), never the homepage. Category must also have at least one active product.
+- **Proof:** `npm run verify` EXIT=0 (63 suites / 490 tests, +3 canonical tests in
+  `tests/unit/seo-meta.test.ts`); deployed; live probe — category → self canonical, `+sort&page` →
+  plain category, stale → `/products`, hub/product/utm unchanged, `?search=` still `noindex, follow`.
+- **Still open (not fixable from the repo):** Googlebot's shell has an empty `#root` and no `<noscript>`
+  (6KB HTML, title + JSON-LD only) — the likely driver of "Crawled – currently not indexed" (134) and the
+  256/1972 index ratio. Clean fix = build-time prerender of the 81 sitemap URLs (app uses `createRoot`,
+  so no hydration risk). The 678 "Excluded by noindex" / 122 404 / 32 robots-blocked groups need the
+  per-group URL export from GSC to attribute; the domain's legacy WordPress footprint
+  (robots.txt still lists `/wp-content/`, `/themes/`) is the likely bulk.
