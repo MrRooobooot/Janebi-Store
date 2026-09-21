@@ -420,3 +420,10 @@ Closes the two Advisory items of the 0914 audit + adds a drift guard for SEC-02.
 - گیت: `npm run verify` EXIT=0 (۵۷ فایل، ۴۲۴ pass / ۵ skip)، probe4+probe5 PASS؛ `nginx -T` زنده: `XFF-remote_addr=4 append=0`؛ `/server.cjs` و `.map` ۴۰۴. هیچ تغییری روی prod داده نشد.
 
 **درس عملیاتی این دور** (ثبت در skill `hermes-project-tracking`): کارت با `skills=[...]` باید اسکیلی را نام ببرد که روی **پروفایل assignee** نصب است؛ اسکیل ناموجود → `hermes --skill <x>` → `Error: Unknown skill(s)` و worker در ثانیهٔ اول exit 1 (dispatcher فقط «worker crashed» نشان میدهد). و مدل `default` (`openrouter/glm-5.3-flash` از گیتوی 127.0.0.1:20128) الان ۴۰۴ «No active credentials for provider: openrouter» میدهد → هر spawn پروفایل default، judge در goal-mode، و decompose کارتهای triage با همین علت میمیرد.
+
+### فیلدهای انباری + مخفی‌سازی کالا — کارت `is_active/cost_price/barcode` (2026-09-21)
+- **داده:** `products` + `cost_price integer` · `barcode text` · `is_active integer NOT NULL DEFAULT 1` + `idx_products_active` (مایگریشن `0015_products_cost_barcode_active.sql` در هر دو دیالکت؛ افزایشی).
+- **قاعدهٔ امنیتی:** `costPrice`/`barcode`/`isActive` **فقط** از `GET /api/admin/products` برمی‌گردند؛ هر مسیر عمومی (`products` لیست+جزئیات، `cart` GET، `wishlist`) با drizzle `columns: {…: false}` آن‌ها را حذف می‌کند. هر مسیر عمومی جدیدی که `query.products` می‌زند باید همین استثنا را داشته باشد، وگرنه قیمت خرید به فروشگاه نشت می‌کند.
+- **`is_active=0`** = خارج از لیست عمومی، ۴۰۴ در جزئیات، رد در سبد خرید، خارج از `sitemap.xml` و شمارش دسته/برند؛ ردیف برای تاریخچهٔ سفارش (`order_items` snapshot) و پنل ادمین باقی می‌ماند.
+- **پنل:** `/admin/products` از `GET /api/admin/products?limit=1000` می‌خواند (سقف `ADMIN_LIST_CAP`)؛ ستون «حاشیه سود» با کف ۱۰٪ (`MIN_MARGIN_PCT` در `Products.tsx`).
+- **قفل تست:** `tests/api/products-admin-fields.test.ts` (۶ تست).

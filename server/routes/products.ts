@@ -62,6 +62,10 @@ router.get("/", validate(productQuerySchema), async (req, res) => {
   const { category, search, limit, brands, minPrice, maxPrice, inStock, hasDiscount, sort, page } = req.query as any;
   
   const conditions: SQL[] = [];
+
+  // Soft-hide: is_active=0 keeps a product out of every public listing while the
+  // row survives for order history (order_items FK). Only the admin list shows it.
+  conditions.push(eq(products.isActive, 1));
   
   if (category && category !== "همه") {
     conditions.push(eq(products.category, category));
@@ -143,6 +147,9 @@ router.get("/", validate(productQuerySchema), async (req, res) => {
     limit: pageSize,
     offset,
     orderBy,
+    // costPrice is wholesale and barcode is a supplier-reconciliation field:
+    // neither belongs in a public response (isActive is admin-only too).
+    columns: { costPrice: false, barcode: false, isActive: false },
     with: {
       features: true
     }
@@ -303,7 +310,10 @@ router.get("/:id", validate(numericIdParamSchema), async (req, res) => {
   }
   
   const product = await db.query.products.findFirst({
-    where: eq(products.id, id),
+    where: and(eq(products.id, id), eq(products.isActive, 1)),
+    // costPrice is wholesale and barcode is a supplier-reconciliation field:
+    // neither belongs in a public response (isActive is admin-only too).
+    columns: { costPrice: false, barcode: false, isActive: false },
     with: {
       features: true
     }

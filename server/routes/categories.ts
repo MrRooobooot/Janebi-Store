@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { db } from "../db/index.js";
 import { products } from "../db/schema.js";
-import { sql } from "drizzle-orm";
+import { sql, eq } from "drizzle-orm";
 import { appCache } from "../utils/cache.js";
 
 const router = Router();
@@ -23,6 +23,7 @@ router.get("/", async (req, res) => {
       image: sql<string>`min(${products.image})`,
     })
     .from(products)
+    .where(eq(products.isActive, 1))
     .groupBy(products.category);
 
   const result = rows.map((r, i) => ({

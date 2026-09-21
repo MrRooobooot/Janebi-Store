@@ -18,7 +18,8 @@ router.get('/', async (req: AuthRequest, res) => {
     const items = await db.query.cartItems.findMany({
       where: eq(cartItems.userId, userId),
       with: {
-        product: true
+        // Wholesale/admin-only fields never reach a customer response.
+        product: { columns: { costPrice: false, barcode: false, isActive: false } }
       }
     });
     
@@ -41,11 +42,11 @@ router.post('/', validate(cartItemSchema), async (req: AuthRequest, res) => {
   const { productId, quantity = 1 } = req.body;
 
   try {
-    // Product must exist, be in stock, and not exceed available stock.
+    // Product must exist, be visible in the storefront, and not exceed available stock.
     const product = await db.query.products.findFirst({
       where: eq(products.id, productId)
     });
-    if (!product) {
+    if (!product || product.isActive !== 1) {
       return res.status(404).json({ message: 'محصول یافت نشد' });
     }
     if (product.stockQuantity <= 0) {

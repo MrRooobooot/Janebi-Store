@@ -15,6 +15,9 @@ export interface Product {
   reviewsCount?: number;
   stockQuantity?: number;
   sku?: string;
+  costPrice?: number | null;
+  barcode?: string | null;
+  isActive?: number;
 }
 
 export interface CartItem extends Product {

@@ -1,5 +1,5 @@
 import { authFetch } from '../../lib/api';
-import { jsonFetch, getJson } from '../../lib/jsonFetch';
+import { jsonFetch } from '../../lib/jsonFetch';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -12,6 +12,11 @@ import {
 import PageHeader from '../../components/admin/PageHeader';
 import { Product } from '../../types';
 import { toEnglishDigits, toPersianDigits, formatPrice } from '../../lib/utils';
+
+// Gross-margin floor: a row whose margin % falls below this is flagged «زیر کف»
+// in the table so loss-making lines are visible without opening each product.
+// ponytail: one global floor — move to settings when suppliers get per-category floors.
+const MIN_MARGIN_PCT = 10;
 
 const CATEGORY_DEFAULT_IMAGES: Record<string, string> = {
   'هولدر و پایه': '/products/hld-13.svg',
@@ -93,6 +98,9 @@ export default function AdminProducts() {
     description: '',
     stockQuantity: '15',
     sku: '',
+    costPrice: '',
+    barcode: '',
+    isActive: '1',
     features: [] as string[]
   });
 
@@ -119,11 +127,14 @@ export default function AdminProducts() {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      // limit=1000: the default /api/products page size is 20 — the admin
-      // catalogue must see every product, not just the first page.
-      // no-store: the public list is served with Cache-Control max-age=30;
-      // after create/delete the browser must NOT replay the stale cached list.
-      const data = await getJson<Product[]>('/api/products?limit=1000');
+      // limit=1000: the default page size is 20 — the admin catalogue must see
+      // every product, not just the first page.
+      // /api/admin/products is the authed list: it carries costPrice/barcode/
+      // isActive, which the public /api/products deliberately omits.
+      // no-store: after create/delete the browser must NOT replay a stale list.
+      const res = await authFetch('/api/admin/products?limit=1000', { cache: 'no-store' });
+      if (!res.ok) throw new Error(`خطای سرور (${res.status})`);
+      const data = (await res.json()) as Product[];
       setProducts(data);
     } catch (err) {
       addToast(err instanceof Error ? err.message : 'خطا در ارتباط با سرور', 'error');
@@ -237,8 +248,11 @@ export default function AdminProducts() {
         warranty: product.warranty || '۷ روز مهلت تست',
         description: product.description || '',
         stockQuantity: product.stockQuantity ? product.stockQuantity.toString() : '10',
-        sku: (product as any).sku || '',
-        features: (product as any).features ?? []
+        sku: product.sku || '',
+        features: product.features ?? [],
+        costPrice: product.costPrice != null ? product.costPrice.toString() : '',
+        barcode: product.barcode || '',
+        isActive: product.isActive === 0 ? '0' : '1'
       });
     } else {
       setEditingProduct(null);
@@ -255,6 +269,9 @@ export default function AdminProducts() {
         description: '',
         stockQuantity: '15',
         sku: '',
+        costPrice: '',
+        barcode: '',
+        isActive: '1',
         features: []
       });
     }
@@ -268,6 +285,8 @@ export default function AdminProducts() {
     const origNum = parseInt(toEnglishDigits(formData.originalPrice).replace(/[^0-9]/g, ''), 10) || priceNum;
     const discNum = parseInt(toEnglishDigits(formData.discount).replace(/[^0-9]/g, ''), 10) || 0;
     const stockNum = parseInt(toEnglishDigits(formData.stockQuantity).replace(/[^0-9]/g, ''), 10) || 0;
+    const costRaw = toEnglishDigits(formData.costPrice).replace(/[^0-9]/g, '');
+    const costNum = costRaw ? parseInt(costRaw, 10) : null;
 
     if (!priceNum || priceNum <= 0) {
       addToast('لطفا قیمت معتبر وارد کنید', 'error');
@@ -286,6 +305,9 @@ export default function AdminProducts() {
       description: formData.description.trim(),
       stockQuantity: stockNum,
       sku: formData.sku.trim() || undefined,
+      costPrice: costNum,
+      barcode: formData.barcode.trim() || null,
+      isActive: formData.isActive === '1' ? 1 : 0,
       features: (formData.features as string[]).map((f) => f.trim()).filter(Boolean)
     };
 
@@ -335,7 +357,7 @@ export default function AdminProducts() {
     const matchesSearch = !q || 
       p.title.toLowerCase().includes(q) || 
       p.brand.toLowerCase().includes(q) ||
-      ((p as any).sku && (p as any).sku.toLowerCase().includes(q));
+      (!!p.sku && p.sku.toLowerCase().includes(q));
     
     const matchesCategory = categoryFilter === 'all' || p.category === categoryFilter;
     
@@ -422,6 +444,7 @@ export default function AdminProducts() {
                 <th className="p-4">قیمت اصلی</th>
                 <th className="p-4">تخفیف</th>
                 <th className="p-4">قیمت نهایی فروش</th>
+                <th className="p-4">حاشیه سود</th>
                 <th className="p-4">موجودی انبار</th>
                 <th className="p-4 pl-6 text-center">عملیات</th>
               </tr>
@@ -429,14 +452,14 @@ export default function AdminProducts() {
             <tbody className="divide-y divide-gray-100 dark:divide-gray-700/60 text-xs">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="p-12 text-center text-gray-500">
+                  <td colSpan={8} className="p-12 text-center text-gray-500">
                     <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary-600 border-t-transparent mb-2" />
                     <p className="font-bold">در حال بارگذاری لیست محصولات...</p>
                   </td>
                 </tr>
               ) : filteredProducts.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="p-12 text-center text-gray-500">
+                  <td colSpan={8} className="p-12 text-center text-gray-500">
                     <Package className="h-12 w-12 mx-auto text-gray-400 dark:text-gray-600 mb-2 stroke-[1.5]" />
                     <p className="font-bold">هیچ محصولی با این مشخصات یافت نشد.</p>
                   </td>
@@ -464,9 +487,9 @@ export default function AdminProducts() {
                               <span className="inline-block px-2 py-0.5 rounded-md text-[10px] font-bold bg-primary-50 dark:bg-primary-950/40 text-primary-700 dark:text-primary-300 border border-primary-200/50 dark:border-primary-800/40">
                                 {p.category}
                               </span>
-                              {(p as any).sku && (
+                              {p.sku && (
                                 <span className="text-[10px] text-gray-600 dark:text-gray-400 font-mono">
-                                  SKU: {(p as any).sku}
+                                  SKU: {p.sku}
                                 </span>
                               )}
                             </div>
@@ -490,6 +513,31 @@ export default function AdminProducts() {
                       </td>
                       <td className="p-4 font-bold text-[var(--color-emphasis-text)] font-mono">
                         {formatPrice(p.price)}
+                      </td>
+                      <td className="p-4">
+                        {p.costPrice && p.price > 0 ? (
+                          (() => {
+                            const margin = p.price - p.costPrice;
+                            const pct = Math.round((margin / p.price) * 100);
+                            const belowFloor = pct < MIN_MARGIN_PCT;
+                            return (
+                              <div className="flex flex-col items-start gap-1">
+                                <span className="font-mono text-[11px]">{formatPrice(margin)}</span>
+                                <span
+                                  className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black border ${
+                                    belowFloor
+                                      ? 'text-rose-700 bg-rose-50 dark:bg-rose-900/20 border-rose-200/50 dark:border-rose-800/40'
+                                      : 'text-emerald-700 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200/50 dark:border-emerald-800/40'
+                                  }`}
+                                >
+                                  {toPersianDigits(pct)}٪{belowFloor ? ' · زیر کف' : ''}
+                                </span>
+                              </div>
+                            );
+                          })()
+                        ) : (
+                          <span className="text-gray-600 dark:text-gray-400 text-[11px]">-</span>
+                        )}
                       </td>
                       <td className="p-4">
                         {stockEditId === p.id ? (
@@ -710,6 +758,43 @@ export default function AdminProducts() {
                   />
                 </div>
               </div>
+
+              {/* Cost Price, Barcode & Storefront Visibility */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-800 dark:text-gray-200 mb-1.5">قیمت خرید (تومان)</label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    value={formData.costPrice}
+                    onChange={(e) => setFormData({ ...formData, costPrice: toEnglishDigits(e.target.value).replace(/[^0-9]/g, '') })}
+                    placeholder="مثال: ۶۵۰,۰۰۰"
+                    className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs font-mono text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-800 dark:text-gray-200 mb-1.5">بارکد (GTIN)</label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    value={formData.barcode}
+                    onChange={(e) => setFormData({ ...formData, barcode: toEnglishDigits(e.target.value) })}
+                    placeholder="مثال: ۶۲۶۴۰۱۲۳۴۵۶۷۸"
+                    className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs font-mono text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500 dir-ltr text-left"
+                  />
+                </div>
+              </div>
+
+              {/* Storefront Visibility */}
+              <label className="flex items-center gap-2.5 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={formData.isActive === '1'}
+                  onChange={(e) => setFormData({ ...formData, isActive: e.target.checked ? '1' : '0' })}
+                  className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-2 focus:ring-primary-500/20 cursor-pointer"
+                />
+                <span className="text-gray-800 dark:text-gray-200">نمایش در فروشگاه</span>
+              </label>
 
               {/* Visual Vector Asset Gallery Selector */}
               <div>

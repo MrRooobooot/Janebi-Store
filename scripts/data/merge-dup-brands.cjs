@@ -1,16 +1,22 @@
 #!/usr/bin/env node
 // One-shot idempotent: merge Latin/English brand values into the canonical Persian
-// brand name (store is RTL; seed faName = display brand; BrandLogo maps both forms).
+// brand name (the store is RTL; the seed faName is the display brand and BrandLogo
+// maps both forms). Re-running is a no-op once the Latin values are gone.
+//
+// Usage: node scripts/data/merge-dup-brands.cjs [path/to/janebi.db]
 const path = require('path');
-const dbPath = process.argv[2] || path.join(__dirname, '..', 'data', 'janebi.db');
+const dbPath = process.argv[2] || path.join(__dirname, '..', '..', 'data', 'janebi.db');
 const db = require('better-sqlite3')(dbPath);
+
 const MERGES = {
-  'Anker': 'انکر',
-  'Apple': 'اپل',
-  'Samsung': 'سامسونگ',
-  'Baseus': 'بیسوس',
-  'Xiaomi': 'شیائومی',
+  Anker: 'انکر',
+  Apple: 'اپل',
+  Samsung: 'سامسونگ',
+  Baseus: 'بیسوس',
+  Xiaomi: 'شیائومی',
 };
+
+const before = db.prepare('SELECT COUNT(DISTINCT brand) c FROM products').get().c;
 let total = 0;
 const tx = db.transaction(() => {
   for (const [en, fa] of Object.entries(MERGES)) {
@@ -20,5 +26,6 @@ const tx = db.transaction(() => {
   }
 });
 tx();
-const brands = db.prepare('SELECT COUNT(DISTINCT brand) c FROM products').get().c;
-console.log(`merged=${total} distinct-brands=${brands} db=${dbPath}`);
+const after = db.prepare('SELECT COUNT(DISTINCT brand) c FROM products').get().c;
+console.log(`merged=${total} distinct-brands ${before} → ${after} db=${dbPath}`);
+db.close();

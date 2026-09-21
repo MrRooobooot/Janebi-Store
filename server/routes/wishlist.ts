@@ -18,7 +18,8 @@ router.get('/', async (req: AuthRequest, res) => {
     const items = await db.query.wishlistItems.findMany({
       where: eq(wishlistItems.userId, userId),
       with: {
-        product: true
+        // Wholesale/admin-only fields never reach a customer response.
+        product: { columns: { costPrice: false, barcode: false, isActive: false } }
       }
     });
     

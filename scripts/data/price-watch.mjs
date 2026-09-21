@@ -20,6 +20,25 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 /** Torob renders counts in Persian digits ("در ۱۳۰ فروشگاه") — normalise first. */
 const fa2en = (v) => String(v).replace(/[۰-۹]/g, (d) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)));
 
+/**
+ * Price-position bucket for one SKU, from its delta vs the shop-weighted market
+ * band — the same four buckets the buying plan uses:
+ *   pack  → bundle/پک line, never price-matched 1:1 against a single unit
+ *   under → we sit BELOW the band (cheapest in market)
+ *   align → |delta| < 15%  → هم‌ترازکن (hold the price, keep the position)
+ *   talk  → 15–40% above   → مذاکره (ask the supplier / renegotiate)
+ *   drop  → >40% above     → حذف/تعویض (out of the band, replace or drop)
+ */
+function tierOf(deltaPct, title) {
+  if (typeof deltaPct !== "number") return null;
+  if (/(پک|پکیج|بسته|pack|bundle)/i.test(String(title))) return "pack";
+  if (deltaPct < 0) return "under";
+  const d = Math.abs(deltaPct);
+  if (d < 15) return "align";
+  if (d <= 40) return "talk";
+  return "drop";
+}
+
 /** Model codes in a Persian product title: alphanumerics with a digit, 3+ chars. */
 function modelCode(title) {
   const tokens = String(title).match(/[A-Za-z0-9][A-Za-z0-9-]{2,}/g) || [];
@@ -123,10 +142,19 @@ for (const p of targets) {
   await sleep(3000);
 }
 
+// Bucket every row (pack/under/align/talk/drop) so the report doubles as a
+// buying list: "هم‌تراز" holds, "مذاکره" goes back to the supplier, "حذف/تعویض"
+// is out of band. pack = bundle line, never matched 1:1 against a single unit.
+const TIER_FA = { pack: "پک", under: "زیر باند", align: "هم‌تراز", talk: "مذاکره", drop: "حذف/تعویض" };
+for (const r of out) r.tier = tierOf(r.deltaMainPct, r.title);
+const tierCounts = {};
+for (const r of out) if (r.tier) tierCounts[r.tier] = (tierCounts[r.tier] || 0) + 1;
+
 const jsonPath = argOf("--json") || "/tmp/price-watch.json";
 await import("node:fs").then((fs) => fs.writeFileSync(jsonPath, JSON.stringify(out, null, 1)));
 const scored = out.filter((r) => typeof r.deltaMainPct === "number" && typeof r.marketMain === "number").sort((a, b) => b.deltaMainPct - a.deltaMainPct);
 console.log(`\nchecked ${out.length} · matched ${scored.length}`);
+console.log("tier summary: " + Object.entries(tierCounts).map(([k, v]) => `${TIER_FA[k]}=${v}`).join(" · "));
 console.log("delta vs mainstream band (shop-weighted):");
 for (const r of scored.slice(0, 25)) {
   console.log(`  ${String(r.deltaMainPct).padStart(6)}% | ours ${r.our.toLocaleString("en-US").padStart(12)} | band ${r.marketMain.toLocaleString("en-US").padStart(12)} (${r.marketShops} shops) | ${r.brand} ${r.model} | ${r.title.slice(0, 42)}`);
@@ -136,9 +164,11 @@ const md = [
   "",
   `تاریخ اجرا: ${new Date().toISOString()} · SKU بررسی‌شده: ${out.length}`,
   "",
-  "| delta vs باند اصلی | قیمت ما | باند اصلی | فروشنده‌های باند | کمینهٔ ترب | اعتبار تطبیق | برند و مدل | کالا |",
-  "|---:|---:|---:|---:|---:|---|---|---|",
-  ...scored.map((r) => `| ${r.deltaMainPct}% | ${(r.our ?? 0).toLocaleString("en-US")} | ${(r.marketMain ?? 0).toLocaleString("en-US")} | ${r.marketShops} | ${(r.marketMin ?? 0).toLocaleString("en-US")} | ${r.confidence} | ${r.brand} ${r.model} | ${r.title} |`),
+  "**سبد خرید:** " + Object.entries(tierCounts).map(([k, v]) => `${TIER_FA[k]} = ${v}`).join(" · "),
+  "",
+  "| سبد | delta vs باند اصلی | قیمت ما | باند اصلی | فروشنده‌های باند | کمینهٔ ترب | اعتبار تطبیق | برند و مدل | کالا |",
+  "|---|---:|---:|---:|---:|---:|---|---|---|",
+  ...scored.map((r) => `| ${r.tier ? TIER_FA[r.tier] : "—"} | ${r.deltaMainPct}% | ${(r.our ?? 0).toLocaleString("en-US")} | ${(r.marketMain ?? 0).toLocaleString("en-US")} | ${r.marketShops} | ${(r.marketMin ?? 0).toLocaleString("en-US")} | ${r.confidence} | ${r.brand} ${r.model} | ${r.title} |`),
 ].join("\n");
 const mdPath = argOf("--md") || "/tmp/price-watch.md";
 await import("node:fs").then((fs) => fs.writeFileSync(mdPath, md));

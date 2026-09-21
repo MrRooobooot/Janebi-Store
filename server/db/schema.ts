@@ -42,7 +42,15 @@ export const products = sqliteTable('products', {
   rating: real('rating').default(0),
   reviewsCount: integer('reviewsCount').default(0),
   stockQuantity: integer('stockQuantity').default(10).notNull(),
-  sku: text('sku').unique()
+  sku: text('sku').unique(),
+  // Purchase price (admin-only: the public product routes exclude costPrice, so
+  // wholesale never leaks to the storefront). Null = unknown, not zero.
+  costPrice: integer('cost_price'),
+  // GTIN/EAN of the box — admin-only, used for supplier reconciliation.
+  barcode: text('barcode'),
+  // Soft-hide flag: keeps a product out of the storefront without deleting the
+  // row that order_items FK-references (order history must survive).
+  isActive: integer('is_active').default(1).notNull()
 });
 
 export const productFeatures = sqliteTable('product_features', {

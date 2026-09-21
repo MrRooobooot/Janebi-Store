@@ -6,19 +6,39 @@ import { Router } from 'express';
 import { db } from '../../db/index.js';
 import { products, orderItems, reviews, productFeatures, cartItems, wishlistItems } from '../../db/schema.js';
 import { appCache } from '../../utils/cache.js';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, desc } from 'drizzle-orm';
 import { validate } from '../../middleware/validate.js';
 import { productCreateSchema, productUpsertSchema } from '../../validators/index.js';
-import { logAudit } from './shared.js';
+import { logAudit, pageParams, setTotalCountHeader } from './shared.js';
 
 const router = Router();
 
 // ---------------------------------------------------------
 // PRODUCTS MANAGEMENT
 // ---------------------------------------------------------
+// GET /api/admin/products — the panel's catalogue read: same shape as the public
+// list (features flattened to string[]) PLUS the hidden rows and the admin-only
+// commercial fields (costPrice/barcode) that the public list strips.
+// ?limit= is capped at ADMIN_LIST_CAP by pageParams; no ?limit= → full list.
+router.get('/products', async (req, res) => {
+  try {
+    const { limit, offset } = pageParams(req);
+    const rows = await db.query.products.findMany({
+      orderBy: desc(products.id),
+      ...(limit ? { limit, offset } : {}),
+      with: { features: true },
+    });
+    await setTotalCountHeader(res, products);
+    res.json(rows.map((p) => ({ ...p, features: p.features.map((f) => f.feature) })));
+  } catch (error) {
+    console.error('Admin products list error:', error);
+    res.status(500).json({ message: 'خطای سرور در دریافت محصولات' });
+  }
+});
+
 router.post('/products', validate(productCreateSchema), async (req, res) => {
   try {
-    const { title, category, price, originalPrice, discount, image, brand, warranty, description, stockQuantity, sku, features } = req.body;
+    const { title, category, price, originalPrice, discount, image, brand, warranty, description, stockQuantity, sku, features, costPrice, barcode, isActive } = req.body;
 
     const [inserted] = await db.insert(products).values({
       title,
@@ -31,7 +51,10 @@ router.post('/products', validate(productCreateSchema), async (req, res) => {
       warranty: warranty || null,
       description: description || null,
       stockQuantity: stockQuantity !== undefined ? stockQuantity : 10,
-      sku: sku || `SKU-${Date.now()}`
+      sku: sku || `SKU-${Date.now()}`,
+      costPrice: costPrice ?? null,
+      barcode: barcode ?? null,
+      isActive: isActive ?? 1
     }).returning();
 
     if (inserted && Array.isArray(features)) {
@@ -58,7 +81,7 @@ router.post('/products', validate(productCreateSchema), async (req, res) => {
 router.put('/products/:id', validate(productUpsertSchema), async (req, res) => {
   try {
     const { id } = req.params as { id: string };
-    const { title, category, price, originalPrice, discount, image, brand, warranty, description, stockQuantity, sku, features } = req.body;
+    const { title, category, price, originalPrice, discount, image, brand, warranty, description, stockQuantity, sku, features, costPrice, barcode, isActive } = req.body;
 
     const [updated] = await db.update(products).set({
       ...(title !== undefined && { title }),
@@ -71,7 +94,10 @@ router.put('/products/:id', validate(productUpsertSchema), async (req, res) => {
       ...(warranty !== undefined && { warranty }),
       ...(description !== undefined && { description }),
       ...(stockQuantity !== undefined && { stockQuantity }),
-      ...(sku !== undefined && { sku })
+      ...(sku !== undefined && { sku }),
+      ...(costPrice !== undefined && { costPrice: costPrice ?? null }),
+      ...(barcode !== undefined && { barcode: barcode ?? null }),
+      ...(isActive !== undefined && { isActive })
     }).where(eq(products.id, parseInt(id))).returning();
 
     if (!updated) {

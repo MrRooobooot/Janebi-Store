@@ -89,10 +89,12 @@ router.get("/sitemap.xml", async (_req, res) => {
         .where(eq(blogPosts.published, true)),
       db
         .select({ id: products.id })
-        .from(products),
+        .from(products)
+        .where(eq(products.isActive, 1)),
       db
         .select({ category: products.category, count: sql<number>`count(*)` })
         .from(products)
+        .where(eq(products.isActive, 1))
         .groupBy(products.category),
     ]);
 

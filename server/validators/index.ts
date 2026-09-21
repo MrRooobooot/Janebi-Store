@@ -241,6 +241,14 @@ export const productUpsertSchema = z.object({
     description: z.string().nullish(),
     stockQuantity: optionalPrice.optional(),
     sku: z.string().min(1).optional(),
+    // Commercial fields — admin-only. `costPrice` is stripped from every public
+    // product read path (server/routes/products.ts) so wholesale never leaks.
+    costPrice: optionalPrice.nullish(),
+    barcode: z.string().max(24).nullish(),
+    isActive: z.preprocess(
+      (v) => (v === '' || v === null ? undefined : (typeof v === 'string' ? Number(v) : v)),
+      z.union([z.literal(0), z.literal(1)]).optional()
+    ),
     // Spec/feature pills shown on PDP + JSON-LD additionalProperty. '' entries
     // dropped server-side; cap 20 to bound textarea-abuse.
     features: z.array(z.string().min(1).max(120)).max(20).optional(),

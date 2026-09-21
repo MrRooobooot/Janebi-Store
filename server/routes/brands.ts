@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { db } from "../db/index.js";
 import { products } from "../db/schema.js";
-import { sql } from "drizzle-orm";
+import { sql, eq } from "drizzle-orm";
 // Brand metadata (faName, logo, desc) comes from the seed catalog; product
 // counts are computed LIVE from the DB — hardcoded counts (e.g. "42 محصول")
 // promised products that didn't exist, so brand links led to empty pages.
@@ -20,6 +20,7 @@ router.get("/", async (_req, res) => {
         cover: sql<string>`min(${products.image})`,
       })
       .from(products)
+      .where(eq(products.isActive, 1))
       .groupBy(products.brand);
 
     const live = new Map<string, { count: number; cover: string | null }>();

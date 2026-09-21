@@ -42,7 +42,12 @@ export const products = pgTable('products', {
   rating: real('rating').default(0),
   reviewsCount: integer('reviewsCount').default(0),
   stockQuantity: integer('stockQuantity').default(10).notNull(),
-  sku: text('sku').unique()
+  sku: text('sku').unique(),
+  // Parity with schema.ts (sqlite): purchase price + GTIN stay admin-only, and
+  // isActive soft-hides a product that order history still references.
+  costPrice: integer('cost_price'),
+  barcode: text('barcode'),
+  isActive: integer('is_active').default(1).notNull()
 });
 
 export const productFeatures = pgTable('product_features', {
