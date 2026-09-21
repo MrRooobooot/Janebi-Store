@@ -492,6 +492,11 @@ export default function AdminProducts() {
                                   SKU: {p.sku}
                                 </span>
                               )}
+                              {p.isActive === 0 && (
+                                <span className="inline-block px-2 py-0.5 rounded-md text-[10px] font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 border border-gray-300/60 dark:border-gray-700">
+                                  مخفی
+                                </span>
+                              )}
                             </div>
                           </div>
                         </div>
