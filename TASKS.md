@@ -189,8 +189,9 @@
 ### Round 2026-09-04 — RelatedProducts + ItemList JSON-LD (SHIPPED, deployed)
 - [x] بخش «محصولات مشابه» در ProductDetail (commit bb792d9): واکشی واقعی `/api/products?category=&limit=8`، حذف محصول جاری، ۴ کارت ProductCard، ItemList JSON-LD از داده واقعی، اعداد فارسی، آیکون Lucide، escape JSON-LD. `npm run verify` سبز، jsxDEV=0. دیپلوی شد؛ باندل زنده index-DbkyNQN3.js == محلی؛ chunk زنده ProductDetail شامل «محصولات مشابه». گزارش: .hermes/reports/related-products-seo-2026-09-04.md
 
-### Round 2026-09-03b — Reviews Pagination (TEAM-FRONTEND, SHIPPED, QA pending→next round)
+### Round 2026-09-03b — Reviews Pagination (TEAM-FRONTEND, SHIPPED, QA ✅ CLOSED 2026-09-21)
 - [x] GET product reviews paginated (?page&limit → {reviews,total,page,pages}, newest first, 6 new tests; ProductReviews.tsx Persian pagination). Commit 383f6cc, `npm run verify` green (44 suites/337 tests), deployed 2026-09-03 (live bundle index-2CuGcgTU.js == local), live endpoint verified {reviews:[],total:0,page:1,pages:1}.
+- [x] **QA بسته شد (۱۴۰۵/۰۶/۳۰):** `npx vitest run tests/api/reviews.test.ts` → **۱۴/۱۴ پاس** (تست `total=7, page=1, pages=3, limit=3` + ترتیب نزولی بین صفحات)؛ پروب زندهٔ prod روی `/api/products/5632/reviews` → شکل پاسخ `{reviews,total,page,pages,limit}`؛ ورودی‌های مرزی: `?limit=0` → fallback ۶، `?page=999` → کلمپ به ۱؛ کنترل UI (`صفحه X از Y` + قبلی/بعدی) فقط وقتی `pages>1` رندر می‌شود (`ProductReviews.tsx:681`). دادهٔ زندهٔ آن محصول صفر نظر دارد، پس صفحه‌بندی چندصفحه‌ای فقط با fixture تست اثبات شد.
 - [x] Prod DB residue check closed: 0 rows with image '/images/test.jpg' on VPS (in-container probe).
 - [x] QA PASS 2026-09-03 on image-perf/contrast-r7 cluster (.hermes/reports/qa-2026-09-03.md, 8/8 checks).
 - Next: JSON-LD BlogPosting live-check on detail pages, next design/SEO cluster.
