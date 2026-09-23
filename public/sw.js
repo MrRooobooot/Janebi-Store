@@ -1,4 +1,4 @@
-const CACHE_NAME = 'janebi-static-v1.2.0';
+const CACHE_NAME = 'janebi-static-v1.2.1';
 const API_CACHE_NAME = 'janebi-api-v1.2.1';
 
 const PRECACHE_ASSETS = [
