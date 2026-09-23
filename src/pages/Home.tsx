@@ -6,7 +6,6 @@ import FAQ from '../components/FAQ';
 import LatestReviews from '../components/LatestReviews';
 import RecentlyViewed from '../components/RecentlyViewed';
 import VipClubBanner from '../components/VipClubBanner';
-import HeroSlideContent, { HERO_ART } from '../components/home/HeroSlideContent';
 import {
   Sparkles, ArrowLeft, Smartphone, Truck, ShieldCheck, Headset, Flame, Star,
   Clock, TrendingUp, Award, CheckCircle2, ShieldAlert, PackageCheck, ChevronLeft, ChevronRight,
@@ -18,6 +17,10 @@ import { toPersianDigits, formatPrice, getAssetUrl, normalizePersianTypography }
 import { useStoreSettings } from '../hooks/useStoreSettings';
 import { STORE_SETTINGS_DEFAULTS } from '../lib/constants';
 import PictureImage from '../components/PictureImage';
+
+/** Path convention for full-bleed hero art — any other path (the bundled product SVGs used
+ *  as slide defaults) stays a contained illustration instead of being cropped to full bleed. */
+const HERO_ART = /^\/images\/hero\//;
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -275,65 +278,68 @@ export default function Home() {
         {/* Single page h1 — lives OUTSIDE the carousel: one h1 on every breakpoint,
             rotation-safe (slide titles are plain <p>), SEO + a11y clean. */}
         <h1 className="sr-only">فروشگاه لوازم جانبی موبایل و تبلت | جانبی آرنا</h1>
-        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-white via-slate-50 to-rose-50/30 dark:from-[var(--color-surface-dark)] dark:via-[var(--color-surface-header-dark)] dark:to-[var(--color-surface-footer-dark)] border border-slate-200/90 dark:border-white/[0.08] shadow-lg dark:shadow-2xl p-3 sm:p-7 lg:p-6 transition-colors duration-500 min-h-[340px] sm:min-h-[400px] lg:min-h-[380px] flex flex-col justify-between">
-          {/* Ambient Dot Grid (dual-theme, non-hardcoded) */}
+        <div
+          className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-white via-slate-50 to-rose-50/30 dark:from-[var(--color-surface-dark)] dark:via-[var(--color-surface-header-dark)] dark:to-[var(--color-surface-footer-dark)] border border-slate-200/90 dark:border-white/[0.08] shadow-lg dark:shadow-2xl transition-colors duration-500 aspect-[4/3] sm:aspect-[16/9] lg:aspect-[5/2] touch-pan-y"
+          onTouchStart={(e) => { mobileTouchX.current = e.touches[0].clientX; }}
+          onTouchEnd={(e) => {
+            const dx = e.changedTouches[0].clientX - mobileTouchX.current;
+            if (Math.abs(dx) > 48) {
+              setActiveSlide((prev) => (dx < 0 ? (prev + 1) % heroSlides.length : (prev === 0 ? heroSlides.length - 1 : prev - 1)));
+            }
+          }}
+        >
+          {/* Branded backdrop — shows through wherever a slide has no full-bleed art */}
           <div className="absolute inset-0 bg-[radial-gradient(var(--color-border-light)_1px,transparent_1px)] dark:bg-[radial-gradient(var(--color-border-dark)_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none opacity-60" />
 
-          {/* Full-bleed hero art — a direct child of the card so it bleeds past the card padding.
-              One layer per slide, crossfaded in step with the slide copy; the Ken Burns drift
-              restarts only on the active layer so the three stay in sync with the 6s rotation. */}
-          {heroSlides.map((slide, idx) => HERO_ART.test(slide.image) && (
-            <div
-              key={`hero-art-${slide.id}`}
-              aria-hidden="true"
-              className="absolute inset-0 transition-opacity duration-700 ease-out motion-reduce:transition-none"
-              style={{ opacity: idx === activeSlide ? 1 : 0 }}
+          {/* Image-only banner: one layer per slide, crossfaded on the 6s rotation, and the layer
+              itself is the link to its category — no copy, no catalogue cards on top. */}
+          {heroSlides.map((slide, idx) => (
+            <Link
+              key={slide.id}
+              to={slide.buttonLink}
+              aria-label={slide.title}
+              aria-hidden={idx !== activeSlide}
+              tabIndex={idx === activeSlide ? 0 : -1}
+              className="absolute inset-0 block transition-opacity duration-700 ease-out motion-reduce:transition-none"
+              style={{ opacity: idx === activeSlide ? 1 : 0, pointerEvents: idx === activeSlide ? 'auto' : 'none' }}
             >
-              <PictureImage
-                src={slide.image}
-                alt=""
-                width="1536"
-                height="1024"
-                priority={idx === 0}
-                className={`h-full w-full object-cover${idx === activeSlide ? ' hero-kenburns' : ''}`}
-              />
-            </div>
+              {HERO_ART.test(slide.image) ? (
+                <PictureImage
+                  src={slide.image}
+                  alt={slide.title}
+                  width="1536"
+                  height="1024"
+                  priority={idx === 0}
+                  className={`h-full w-full object-cover${idx === activeSlide ? ' hero-kenburns' : ''}`}
+                />
+              ) : (
+                /* Bundled product illustration default — contained, never cropped to full bleed */
+                <img src={slide.image} alt="" className="h-full w-full object-contain p-6 sm:p-10" />
+              )}
+            </Link>
           ))}
-          {/* Scrim — opaque behind the RTL text column (right), open over the art (left) */}
-          {heroSlides.some((slide) => HERO_ART.test(slide.image)) && (
-            <div className="absolute inset-0 bg-gradient-to-l from-white via-white/85 to-white/30 dark:from-[var(--color-surface-dark)] dark:via-[var(--color-surface-dark)]/85 dark:to-[var(--color-surface-dark)]/30" />
-          )}
 
-          {/* Slides stacked in one grid cell → container height = tallest slide; no CLS on slide change (user: «سایز باکس عوض میشه») */}
-          <div className="hidden sm:grid grid-cols-1">
-            {heroSlides.map((slide, idx) => (
-              <div
-                key={slide.id}
-                aria-hidden={idx !== activeSlide}
-                className="hero-slide-content relative z-10 w-full col-start-1 row-start-1 transition-opacity duration-700 motion-reduce:transition-none motion-reduce:duration-0"
-                style={{ opacity: idx === activeSlide ? 1 : 0, pointerEvents: idx === activeSlide ? 'auto' : 'none', visibility: idx === activeSlide ? 'visible' : 'hidden' }}
-              >
-                <HeroSlideContent slide={slide} />
-              </div>
-            ))}
-          </div>
-          {/* Mobile: single slide render (stacked hidden slides would break 390px flow height) */}
-          <div
-            className="sm:hidden touch-pan-y"
-            onTouchStart={(e) => { mobileTouchX.current = e.touches[0].clientX; }}
-            onTouchEnd={(e) => {
-              const dx = e.changedTouches[0].clientX - mobileTouchX.current;
-              if (Math.abs(dx) > 48) {
-                setActiveSlide((prev) => dx < 0 ? (prev + 1) % heroSlides.length : (prev === 0 ? heroSlides.length - 1 : prev - 1));
-              }
-            }}
-          >
-            {/* Mobile rail: the desktop rail owns the single h1 (same currentSlide text);
-                this copy renders as <p>. */}
-            <HeroSlideContent slide={currentSlide}  />
-            {/* Mobile slide indicators — tap targets + swipe affordance (user: «امکان عوض کردن باشه») */}
-            {heroSlides.length > 1 && (
-            <div className="flex items-center justify-center gap-2 mt-4" role="tablist" aria-label="اسلایدهای صفحه اصلی">
+          {/* The page h1 lives here: the banner itself carries no visible copy */}
+          <h1 className="sr-only">{normalizePersianTypography(currentSlide?.title ?? '')}</h1>
+
+          {heroSlides.length > 1 && (<>
+            <button
+              type="button"
+              onClick={() => setActiveSlide((prev) => (prev === 0 ? heroSlides.length - 1 : prev - 1))}
+              aria-label="اسلاید قبلی"
+              className="absolute right-2 lg:right-4 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/85 dark:bg-black/55 hover:bg-white dark:hover:bg-black/80 border border-white/70 dark:border-white/10 text-slate-800 dark:text-slate-100 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer"
+            >
+              <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveSlide((prev) => (prev + 1) % heroSlides.length)}
+              aria-label="اسلاید بعدی"
+              className="absolute left-2 lg:left-4 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/85 dark:bg-black/55 hover:bg-white dark:hover:bg-black/80 border border-white/70 dark:border-white/10 text-slate-800 dark:text-slate-100 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer"
+            >
+              <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
+            </button>
+            <div className="absolute bottom-3 left-0 right-0 z-20 flex items-center justify-center gap-2" role="tablist" aria-label="اسلایدهای صفحه اصلی">
               {heroSlides.map((slide, idx) => (
                 <button
                   key={slide.id}
@@ -343,56 +349,11 @@ export default function Home() {
                   aria-label={`اسلاید ${toPersianDigits(idx + 1)}`}
                   className="h-6 min-w-6 px-1 flex items-center justify-center cursor-pointer"
                 >
-                  <span className={`block h-2 rounded-full transition-all duration-300 motion-reduce:transition-none ${activeSlide === idx ? 'w-6 bg-primary-600 dark:bg-primary-400 shadow-sm shadow-primary-500/40' : 'w-2 bg-slate-300 dark:bg-slate-600'}`} />
+                  <span className={`block h-2 rounded-full shadow-[0_1px_4px_rgba(0,0,0,0.45)] transition-all duration-300 motion-reduce:transition-none ${activeSlide === idx ? 'w-7 bg-white' : 'w-2 bg-white/55'}`} />
                 </button>
               ))}
             </div>
-            )}
-          </div>
-          {/* Navigation Arrows for PC Mouse & Mobile Tap — hidden when a single available slide exists */}
-          {heroSlides.length > 1 && (<>
-          <button
-            type="button"
-            onClick={() => setActiveSlide((prev) => (prev === 0 ? heroSlides.length - 1 : prev - 1))}
-            aria-label="اسلاید قبلی"
-            className="hidden sm:flex absolute right-2 lg:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black/90 border border-slate-200/80 dark:border-white/10 text-slate-800 dark:text-slate-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer"
-          >
-            <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveSlide((prev) => (prev + 1) % heroSlides.length)}
-            aria-label="اسلاید بعدی"
-            className="hidden sm:flex absolute left-2 lg:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black/90 border border-slate-200/80 dark:border-white/10 text-slate-800 dark:text-slate-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer"
-          >
-            <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
-          </button>
           </>)}
-
-          {/* Slide indicators — phones auto-rotate every 6s and swipe, the dots row is sm+ only
-              (on a 390px card the dots collided with the CTA/text edges) */}
-          {heroSlides.length > 1 && (
-          <div className="hidden sm:flex items-center justify-center gap-2 relative z-10 mt-6 pt-3 border-t border-slate-200/80 dark:border-slate-800/80" role="tablist" aria-label="اسلایدهای صفحه اصلی">
-            {heroSlides.map((slide, idx) => (
-              <button
-                key={slide.id}
-                onClick={() => setActiveSlide(idx)}
-                role="tab"
-                aria-selected={activeSlide === idx}
-                aria-label={`اسلاید ${toPersianDigits(idx + 1)}`}
-                className="h-6 min-w-6 px-1 flex items-center justify-center cursor-pointer"
-              >
-                <span
-                  className={`block h-2.5 rounded-full transition-all duration-300 motion-reduce:transition-none ${
-                    activeSlide === idx
-                      ? 'w-8 bg-primary-600 dark:bg-primary-400 shadow-md shadow-primary-500/50'
-                      : 'w-2.5 bg-slate-400 dark:bg-slate-600'
-                  }`}
-                />
-              </button>
-            ))}
-          </div>
-          )}
         </div>
       </section>
 

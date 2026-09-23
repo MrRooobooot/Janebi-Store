@@ -432,18 +432,6 @@ textarea::placeholder {
   to { transform: translateX(calc(-50%)); }
 }
 
-/* ── Hero Slide Transition (crossfade + lift) ─────────────────── */
-@keyframes hero-slide-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.hero-slide-content {
-  animation: hero-slide-in 480ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-@media (prefers-reduced-motion: reduce) {
-  .hero-slide-content { animation: none; }
-}
-
 /* ── Hero art: slow Ken Burns drift (full-bleed hero images) ──── */
 @keyframes hero-kenburns {
   from { transform: scale(1.02) translate3d(0, 0, 0); }
