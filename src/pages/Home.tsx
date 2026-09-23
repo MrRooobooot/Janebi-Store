@@ -6,7 +6,7 @@ import FAQ from '../components/FAQ';
 import LatestReviews from '../components/LatestReviews';
 import RecentlyViewed from '../components/RecentlyViewed';
 import VipClubBanner from '../components/VipClubBanner';
-import HeroSlideContent from '../components/home/HeroSlideContent';
+import HeroSlideContent, { HERO_ART } from '../components/home/HeroSlideContent';
 import {
   Sparkles, ArrowLeft, Smartphone, Truck, ShieldCheck, Headset, Flame, Star,
   Clock, TrendingUp, Award, CheckCircle2, ShieldAlert, PackageCheck, ChevronLeft, ChevronRight,
@@ -154,22 +154,6 @@ export default function Home() {
     if (activeSlide >= heroSlides.length) setActiveSlide(0);
   }, [heroSlides.length, activeSlide]);
 
-  // Real catalogue cards shown inside the hero (never placeholder/demo art).
-  // Slide-scoped: a slide advertising category X must not display cards of a
-  // different category (holders slide was showing cable cards) — match the
-  // CTA's ?category= param against the product's category; fall back to
-  // in-stock first-3 only when the slide has no category link.
-  const heroProductsBySlide = useMemo(() => {
-    const inStock = products.filter((p) => (p.stockQuantity ?? 1) > 0);
-    const matchFor = (link: string) => {
-      const m = String(link).match(/[?&]category=([^&]+)/);
-      if (!m) return inStock.slice(0, 3);
-      const cat = decodeURIComponent(m[1]);
-      const scoped = inStock.filter((p) => p.category === cat);
-      return (scoped.length ? scoped : inStock).slice(0, 3);
-    };
-    return new Map(heroSlides.map((s) => [s.id, matchFor(s.buttonLink)]));
-  }, [products, heroSlides]);
 
   // Auto slide — paused entirely when the user prefers reduced motion
   useEffect(() => {
@@ -183,7 +167,6 @@ export default function Home() {
   }, [heroSlides.length]);
 
   const currentSlide = heroSlides[activeSlide];
-  const heroProducts = heroProductsBySlide.get(currentSlide?.id) ?? [];
 
   useEffect(() => {
     let cancelled = false;
@@ -292,9 +275,34 @@ export default function Home() {
         {/* Single page h1 — lives OUTSIDE the carousel: one h1 on every breakpoint,
             rotation-safe (slide titles are plain <p>), SEO + a11y clean. */}
         <h1 className="sr-only">فروشگاه لوازم جانبی موبایل و تبلت | جانبی آرنا</h1>
-        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-white via-slate-50 to-rose-50/30 dark:from-[var(--color-surface-dark)] dark:via-[var(--color-surface-header-dark)] dark:to-[var(--color-surface-footer-dark)] border border-slate-200/90 dark:border-white/[0.08] shadow-lg dark:shadow-2xl p-3 sm:p-7 lg:p-6 transition-colors duration-500 min-h-0 sm:min-h-[400px] lg:min-h-[340px] flex flex-col justify-between">
+        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-white via-slate-50 to-rose-50/30 dark:from-[var(--color-surface-dark)] dark:via-[var(--color-surface-header-dark)] dark:to-[var(--color-surface-footer-dark)] border border-slate-200/90 dark:border-white/[0.08] shadow-lg dark:shadow-2xl p-3 sm:p-7 lg:p-6 transition-colors duration-500 min-h-[340px] sm:min-h-[400px] lg:min-h-[380px] flex flex-col justify-between">
           {/* Ambient Dot Grid (dual-theme, non-hardcoded) */}
           <div className="absolute inset-0 bg-[radial-gradient(var(--color-border-light)_1px,transparent_1px)] dark:bg-[radial-gradient(var(--color-border-dark)_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none opacity-60" />
+
+          {/* Full-bleed hero art — a direct child of the card so it bleeds past the card padding.
+              One layer per slide, crossfaded in step with the slide copy; the Ken Burns drift
+              restarts only on the active layer so the three stay in sync with the 6s rotation. */}
+          {heroSlides.map((slide, idx) => HERO_ART.test(slide.image) && (
+            <div
+              key={`hero-art-${slide.id}`}
+              aria-hidden="true"
+              className="absolute inset-0 transition-opacity duration-700 ease-out motion-reduce:transition-none"
+              style={{ opacity: idx === activeSlide ? 1 : 0 }}
+            >
+              <PictureImage
+                src={slide.image}
+                alt=""
+                width="1536"
+                height="1024"
+                priority={idx === 0}
+                className={`h-full w-full object-cover${idx === activeSlide ? ' hero-kenburns' : ''}`}
+              />
+            </div>
+          ))}
+          {/* Scrim — opaque behind the RTL text column (right), open over the art (left) */}
+          {heroSlides.some((slide) => HERO_ART.test(slide.image)) && (
+            <div className="absolute inset-0 bg-gradient-to-l from-white via-white/85 to-white/30 dark:from-[var(--color-surface-dark)] dark:via-[var(--color-surface-dark)]/85 dark:to-[var(--color-surface-dark)]/30" />
+          )}
 
           {/* Slides stacked in one grid cell → container height = tallest slide; no CLS on slide change (user: «سایز باکس عوض میشه») */}
           <div className="hidden sm:grid grid-cols-1">
@@ -302,10 +310,10 @@ export default function Home() {
               <div
                 key={slide.id}
                 aria-hidden={idx !== activeSlide}
-                className="hero-slide-content relative z-10 w-full col-start-1 row-start-1 transition-opacity duration-300 motion-reduce:transition-none motion-reduce:duration-0"
+                className="hero-slide-content relative z-10 w-full col-start-1 row-start-1 transition-opacity duration-700 motion-reduce:transition-none motion-reduce:duration-0"
                 style={{ opacity: idx === activeSlide ? 1 : 0, pointerEvents: idx === activeSlide ? 'auto' : 'none', visibility: idx === activeSlide ? 'visible' : 'hidden' }}
               >
-                <HeroSlideContent slide={slide} products={heroProducts} />
+                <HeroSlideContent slide={slide} />
               </div>
             ))}
           </div>
@@ -322,7 +330,7 @@ export default function Home() {
           >
             {/* Mobile rail: the desktop rail owns the single h1 (same currentSlide text);
                 this copy renders as <p>. */}
-            <HeroSlideContent slide={currentSlide} products={heroProducts} />
+            <HeroSlideContent slide={currentSlide}  />
             {/* Mobile slide indicators — tap targets + swipe affordance (user: «امکان عوض کردن باشه») */}
             {heroSlides.length > 1 && (
             <div className="flex items-center justify-center gap-2 mt-4" role="tablist" aria-label="اسلایدهای صفحه اصلی">

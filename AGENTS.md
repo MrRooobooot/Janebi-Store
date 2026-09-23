@@ -228,5 +228,13 @@ reference check.
   (~420s). `web_search` 403s → `web_extract` / delegate. Raw-IP curl blocked → delegate the QA child.
   SSH outage: 2 retries then a BLOCKED report (TCP open + ssh refused = fail2ban/sshd, needs the VPS
   console). Oversized inline shell one-liners are blocklisted → write a script file, run it, delete it.
+- **Hero art (home):** the full-bleed image layer is a DIRECT child of the hero card in
+  `src/pages/Home.tsx` — it has to be, to bleed past the card padding (`HeroSlideContent` renders
+  only the text column). A slide goes full-bleed **only** when its image path starts with
+  `/images/hero/`; the bundled product SVGs keep the contained tile, so a product illustration is
+  never cropped up to full bleed. Files `public/images/hero/slide-{1,2,3}.webp` (1536×1024, subject
+  left / calm space right — the RTL text column sits on the right) wired via `store_settings`
+  keys `heroSlide1Image`…`heroSlide3Image`. 6s rotation, 700ms crossfade, Ken Burns on the active
+  layer only; rotation and drift both off under `prefers-reduced-motion`.
 - **Memory writes:** batch atomically; `replace` `old_text` must match the CURRENT entry; an
   over-limit rejection lists `current_entries` — prune and add in the SAME retry batch.

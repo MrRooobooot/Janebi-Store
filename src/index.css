@@ -444,6 +444,20 @@ textarea::placeholder {
   .hero-slide-content { animation: none; }
 }
 
+/* ── Hero art: slow Ken Burns drift (full-bleed hero images) ──── */
+@keyframes hero-kenburns {
+  from { transform: scale(1.02) translate3d(0, 0, 0); }
+  to   { transform: scale(1.09) translate3d(-1.2%, -0.8%, 0); }
+}
+.hero-kenburns {
+  animation: hero-kenburns 7s ease-out both;
+  transform-origin: 62% 50%;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-kenburns { animation: none; }
+}
+
 /* ── CSS-first Motion (replaces motion/react in eager-tree components) ── */
 /* Scroll-into-view reveal (RecentlyViewed / VipClubBanner sections) */
 @keyframes reveal-in {

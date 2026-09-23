@@ -1,13 +1,12 @@
-// Single hero slide: text column + visual column.
+// Single hero slide: full-bleed hero art with the text column overlaid on a scrim.
 // Extracted so Home can stack all slides in one grid cell (stable container height — no CLS on slide change).
-// The visual column shows REAL catalogue cards (photo/title/price from the live API) so the hero
-// never advertises products the store does not have; it falls back to a static asset tile only
-// when the catalogue is empty (e.g. API offline).
+// Hero art is raster and lives under /images/hero/ (3:2, .webp, subject left / calm space right);
+// any other image path — the bundled product SVGs used as defaults — still renders as a contained
+// tile, so a product illustration is never cropped up to full bleed.
 import { Link } from 'react-router-dom';
-import { Sparkles, ArrowLeft, Award, Package } from 'lucide-react';
+import { Sparkles, ArrowLeft, Award } from 'lucide-react';
 import PictureImage from '../PictureImage';
-import { normalizePersianTypography, formatPrice, toPersianDigits } from '../../lib/utils';
-import type { Product } from '../../types';
+import { normalizePersianTypography } from '../../lib/utils';
 
 interface HeroSlide {
   id: number;
@@ -20,10 +19,13 @@ interface HeroSlide {
   image: string;
 }
 
-type HeroProduct = Pick<Product, 'id' | 'title' | 'price' | 'image' | 'brand'>;
+/** Path convention for full-bleed hero art — anything else renders as a contained tile.
+ *  Home.tsx renders the full-bleed layer (it must be a direct child of the hero card to bleed
+ *  past the card padding); this component only renders the text column + tile fallback. */
+export const HERO_ART = /^\/images\/hero\//;
 
-export default function HeroSlideContent({ slide, products = [], headingLevel = 'p' }: { slide: HeroSlide; products?: HeroProduct[]; headingLevel?: 'h1' | 'p' }) {
-  const cards = products.slice(0, 3);
+export default function HeroSlideContent({ slide, headingLevel = 'p' }: { slide: HeroSlide; headingLevel?: 'h1' | 'p' }) {
+  const isHeroArt = HERO_ART.test(slide.image);
 
   return (
     <div className="relative z-10 w-full flex items-center gap-3 sm:gap-6 md:grid md:grid-cols-12 md:gap-8">
@@ -66,60 +68,10 @@ export default function HeroSlideContent({ slide, products = [], headingLevel = 
         </div>
       </div>
 
-      {/* Visual column — real product cards from the live catalogue */}
-      <div className="shrink-0 md:col-span-5 w-[92px] sm:w-auto sm:max-w-[320px] lg:max-w-[360px] sm:mx-auto md:mx-0">
-        {cards.length > 0 ? (
-          <div className="w-full">
-            <div className="mb-2 flex flex-wrap items-center gap-1.5">
-              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-900/50 px-2 py-0.5 text-[9px] sm:text-[10px] font-black text-emerald-700 dark:text-emerald-300">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                موجود در انبار
-              </span>
-              <span className="rounded-full bg-slate-100 dark:bg-white/[0.06] border border-slate-200 dark:border-white/[0.08] px-2 py-0.5 text-[9px] sm:text-[10px] font-black text-slate-600 dark:text-slate-300 tabular-nums">
-                {toPersianDigits(products.length)} کالا
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2.5">
-              {cards.map((p, idx) => (
-                <Link
-                  key={p.id}
-                  to={`/product/${p.id}`}
-                  aria-label={p.title}
-                  className={`${idx > 0 ? 'hidden sm:flex' : 'flex'} h-full flex-col gap-1 sm:gap-1.5 rounded-xl sm:rounded-2xl bg-white/95 dark:bg-white/[0.05] border border-slate-200/90 dark:border-white/[0.09] p-1.5 sm:p-2 shadow-xs hover:shadow-lg hover:border-primary-300 dark:hover:border-primary-700/60 transition-all duration-300 motion-reduce:transition-none group/card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-cta)]`}
-                >
-                  <div className="aspect-square w-full rounded-lg sm:rounded-xl bg-slate-50 dark:bg-white/[0.03] overflow-hidden flex items-center justify-center">
-                    <img
-                      src={p.image}
-                      alt={normalizePersianTypography(p.title)}
-                      loading={idx === 0 ? 'eager' : 'lazy'}
-                      decoding="async"
-                      width="160"
-                      height="160"
-                      className="w-full h-full object-contain group-hover/card:scale-105 transition-transform duration-300 motion-reduce:transition-none motion-reduce:group-hover/card:scale-100"
-                    />
-                  </div>
-                  <span className="text-[9px] sm:text-[11px] font-bold text-slate-700 dark:text-slate-200 leading-4 line-clamp-2 min-h-[16px] sm:min-h-[32px]">
-                    {normalizePersianTypography(p.title).replace(/([A-Za-z0-9])-([A-Za-z0-9])/g, '$1\u2011$2')}
-                  </span>
-                  <span className="mt-auto pt-0.5 text-[10px] sm:text-[12px] font-black text-slate-900 dark:text-white tabular-nums tracking-tight">
-                    {formatPrice(p.price)}
-                  </span>
-                </Link>
-              ))}
-
-              <Link
-                to="/products"
-                className="hidden sm:flex h-full flex-col items-center justify-center gap-1.5 rounded-2xl border border-dashed border-slate-300 dark:border-white/[0.14] bg-slate-50/70 dark:bg-white/[0.02] p-2 text-center hover:border-primary-400 dark:hover:border-primary-600 hover:bg-primary-50/60 dark:hover:bg-primary-950/20 transition-colors duration-300"
-              >
-                <Package className="h-5 w-5 text-[var(--color-emphasis-text)] dark:text-primary-400" />
-                <span className="text-[10px] font-black text-slate-600 dark:text-slate-300">مشاهده همهٔ کالاها</span>
-                <ArrowLeft className="h-3.5 w-3.5 text-slate-400" />
-              </Link>
-            </div>
-          </div>
-        ) : (
-          <div className="relative w-24 h-24 sm:w-56 sm:h-56 rounded-2xl sm:rounded-3xl p-0 sm:p-5 bg-transparent sm:bg-white/90 dark:sm:bg-[var(--color-surface-elevated-dark)]/80 border-0 sm:border border-slate-200/80 dark:border-white/[0.08] sm:backdrop-blur-md flex items-center justify-center sm:shadow-md dark:sm:shadow-2xl hero-visual-tile mx-auto">
+      {/* Fallback visual — only while the slide still points at bundled product art */}
+      {!isHeroArt && (
+        <div className="shrink-0 md:col-span-5 w-[92px] sm:w-auto sm:max-w-[320px] lg:max-w-[360px] sm:mx-auto md:mx-0">
+          <div className="relative w-24 h-24 sm:w-56 sm:h-56 rounded-2xl sm:rounded-3xl p-0 sm:p-5 bg-transparent sm:bg-white/90 dark:sm:bg-[var(--color-surface-elevated-dark)]/80 border-0 sm:border border-slate-200/80 dark:border-white/[0.08] sm:backdrop-blur-md flex items-center justify-center sm:shadow-md dark:sm:shadow-2xl mx-auto">
             <PictureImage
               src={slide.image}
               alt={normalizePersianTypography(slide.title)}
@@ -129,8 +81,8 @@ export default function HeroSlideContent({ slide, products = [], headingLevel = 
               className="w-full h-full object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.08)] dark:drop-shadow-[0_20px_30px_rgba(0,0,0,0.6)]"
             />
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
