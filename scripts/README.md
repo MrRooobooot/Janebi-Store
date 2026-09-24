@@ -16,6 +16,8 @@ in `oneoff/` (kept for provenance, not for reuse).
 ## gate/
 - `static-exposure.sh` — `/server.cjs` + `.map` must 404 while `/api/products` answers 200 (SEC-01).
 - `csp-inline.sh` — served shell's inline hash must match the pinned `script-src` hash, no `'unsafe-inline'`, `security.txt` 200 (SEC-03).
+- `ratelimit-live.mjs` — boots the real server on a scratch port (NODE_ENV=development, in-memory DB) and proves over HTTP what Vitest cannot see: the limiters are skipped under `NODE_ENV=test`. Asserts the auth limiter trips at 5/min with `RateLimit-Limit`/`Retry-After` + a JSON message, that 25 public reads stay 200 (no false positives), and that other routes keep serving while one route is limited.
+- Live prod API risk monitor lives in `ops/api-stats.mjs` (`npm run monitor:api`); it is NOT in this gate because it needs the network.
 
 ## audit/
 - `design-audit.mjs` — layout/contrast sweep across engines × viewports (bleed, baseline, FAB overlap, console errors).
@@ -39,6 +41,7 @@ in `oneoff/` (kept for provenance, not for reuse).
 - `vps-monitor.py` — 5-minute cron checks (health, containers + RestartCount, disk, 5xx rate, backup age, fatal log markers) with Bale alerts, per-incident dedupe and a 6-hourly reminder.
 - `snap-db.py` — fresh DB snapshot out of the running container.
 - `nginx-drift.sh` — compare live nginx conf with `deploy/nginx-*.conf` (deliberately NOT in the gate).
+- `api-stats.mjs` — read-only production API monitor (`npm run monitor:api`): samples the public endpoints, checks status/latency/contract, appends a trend line to `$TMPDIR/janebi-api-stats.jsonl`, exits 1 on 5xx / contract break / p95 over budget / an endpoint that 429s every sample. Never writes, never reads a private route.
 - `audit-boot.sh` — boot a local audit instance on an isolated port/DB.
 - `recover-and-harden.sh` — recovery runbook script (SSH outage / bad deploy).
 - `verify-owner-protection.sh`, `verify-users-chronology.sh` — owner-account and user-chronology invariants.

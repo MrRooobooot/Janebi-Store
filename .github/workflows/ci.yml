@@ -32,3 +32,8 @@ jobs:
 
       - name: Build Application (Frontend + Server)
         run: npm run build
+
+      - name: Security regression gates (SEC-01 static exposure, SEC-03 CSP)
+        run: |
+          bash scripts/gate/static-exposure.sh
+          bash scripts/gate/csp-inline.sh

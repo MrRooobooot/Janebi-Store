@@ -145,9 +145,11 @@ Janebi-Store/
 ## 5. Verification Commands
 
 ```bash
-npm run verify      # Consolidated adversarial quality gate (Typecheck + 353 Vitest tests + Full Build)
-npm run lint        # tsc --noEmit (strict TypeScript check)
-npm test            # vitest run (48 test suites)
+npm run verify      # Adversarial gate: typecheck + Vitest + build + scripts/gate SEC-01/SEC-03 (~2 min)
+npm run lint        # tsc --noEmit (strict via tsconfig "strict": true)
+npm test            # vitest run (64 suites / 495 tests; 5 PG tests skip unless PG_DATABASE_URL is set)
+npm run test:e2e    # Playwright real-user e2e — NOT part of `npm run verify`
+bash scripts/gate/test-gate-guards.sh   # regression guards for the SEC-01/SEC-03 gate scripts
 npm run build       # Vite client build + Esbuild server bundle
 npm start           # node dist/server.cjs (production start)
 ```
@@ -195,10 +197,10 @@ reference check.
 
 - **Project graph:** consult `PROJECT_GRAPH.md` first on any feature/debug turn; update it after
   non-trivial tasks or schema/endpoint changes.
-- **Persistent dev DB + tests = residue:** any suite that inserts fixtures repopulates
-  `data/janebi.db` on every gate run, so a purge done *before* the final `npm run verify` is undone
-  by it (16 users / 33 «کالای تست» products reappear → the next design audit's `err:N` 404s read as
-  UI bugs). Purge LAST, then verify counts and `integrity_check`.
+- **Persistent dev DB + tests = residue:** `vitest.config.ts` pins `DATABASE_URL=:memory:`, so
+  `npm run verify` does NOT touch `data/janebi.db` (verified 2026-09-24: db mtime unchanged across a
+  full verify run). Residue comes from e2e (`data/janebi.e2e.db`) and the live-prod `scripts/audit/*`
+  probes — not from the gate. Purge LAST, then verify counts and `integrity_check`.
 - **Vitest parallel flake:** rerun the file in isolation; green + untouched files → contention.
 - **Peer/self reports are stale by the time you read them:** re-ground on HEAD, prod `BUILD_INFO`
   and live DB counts before confirming a batch is closed.

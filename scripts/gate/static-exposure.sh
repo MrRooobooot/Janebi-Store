@@ -8,7 +8,7 @@ cd "$(dirname "$0")/../.."
 PORT=3979
 DIR=/tmp/static-exposure-probe
 rm -rf "$DIR" && mkdir -p "$DIR"
-kill "$(lsof -tiTCP:$PORT -sTCP:LISTEN)" 2>/dev/null
+lsof -tiTCP:$PORT -sTCP:LISTEN | xargs -r kill 2>/dev/null
 
 PORT=$PORT NODE_ENV=production DATABASE_URL="$DIR/probe.db" \
   JWT_ACCESS_SECRET="probe-access-secret-01" JWT_REFRESH_SECRET="probe-refresh-secret-01" \
@@ -21,6 +21,18 @@ for _ in $(seq 1 30); do
   curl -sf -o /dev/null "http://127.0.0.1:$PORT/api/health" && break
   sleep 0.5
 done
+
+# The readiness loop above is satisfied by ANY listener on this port, so it can
+# succeed against a stale server: our node may still be booting, may have died, or
+# may be alive-but-unbindable after EADDRINUSE — while an old process keeps the
+# socket. Assert the listener IS our process before trusting any probe.
+LISTENER=$(lsof -tiTCP:$PORT -sTCP:LISTEN 2>/dev/null | head -1)
+if [ "$LISTENER" != "$PID" ]; then
+  echo "FAIL  port $PORT is served by pid ${LISTENER:-<none>}, not our server ($PID)"
+  echo "      probes would hit a stale listener — kill it and re-run."
+  tail -20 "$DIR/server.log"
+  exit 1
+fi
 
 fail=0
 check() { # path expected_code

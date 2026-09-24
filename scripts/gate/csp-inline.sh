@@ -10,7 +10,7 @@ cd "$(dirname "$0")/../.."
 PORT=3980
 DIR=/tmp/csp-inline-probe
 rm -rf "$DIR" && mkdir -p "$DIR"
-kill "$(lsof -tiTCP:$PORT -sTCP:LISTEN)" 2>/dev/null
+lsof -tiTCP:$PORT -sTCP:LISTEN | xargs -r kill 2>/dev/null
 
 PORT=$PORT NODE_ENV=production DATABASE_URL="$DIR/probe.db" \
   JWT_ACCESS_SECRET="probe-access-secret-01" JWT_REFRESH_SECRET="probe-refresh-secret-01" \
@@ -23,6 +23,18 @@ for _ in $(seq 1 30); do
   curl -sf -o /dev/null "http://127.0.0.1:$PORT/api/health" && break
   sleep 0.5
 done
+
+# The readiness loop above is satisfied by ANY listener on this port, so it can
+# succeed against a stale server: our node may still be booting, may have died, or
+# may be alive-but-unbindable after EADDRINUSE — while an old process keeps the
+# socket. Assert the listener IS our process before trusting any probe.
+LISTENER=$(lsof -tiTCP:$PORT -sTCP:LISTEN 2>/dev/null | head -1)
+if [ "$LISTENER" != "$PID" ]; then
+  echo "FAIL  port $PORT is served by pid ${LISTENER:-<none>}, not our server ($PID)"
+  echo "      probes would hit a stale listener — kill it and re-run."
+  tail -20 "$DIR/server.log"
+  exit 1
+fi
 
 curl -sS -D "$DIR/headers.txt" -o "$DIR/shell.html" "http://127.0.0.1:$PORT/?cb=$RANDOM"
 curl -sS -o "$DIR/security.txt" -w '%{http_code}' "http://127.0.0.1:$PORT/.well-known/security.txt" > "$DIR/sec_code"
@@ -37,13 +49,18 @@ m = re.search(r"(?im)^content-security-policy:\s*(.+)$", headers)
 if not m:
     sys.exit("FAIL  no Content-Security-Policy header (NODE_ENV must be production)")
 csp = m.group(1)
-script_src = re.search(r"script-src([^;]*);", csp)
-script_src = script_src.group(1) if script_src else ""
-attr_src = re.search(r"script-src-attr([^;]*);?", csp)
 
 fail = []
+# Anchor on a directive boundary: a bare `script-src` search also matches
+# `script-src-attr`, and the emission order is helmet's, not ours.
+script_src_m = re.search(r"(?:^|;)\s*script-src(?!-)([^;]*);?", csp)
+attr_src = re.search(r"(?:^|;)\s*script-src-attr([^;]*);?", csp)
+script_src = script_src_m.group(1) if script_src_m else ""
+
 print("script-src:" + script_src)
 
+if not script_src:
+    fail.append("script-src directive missing from the CSP header")
 if "unsafe-inline" in script_src:
     fail.append("script-src still carries 'unsafe-inline'")
 if "'self'" not in script_src:
@@ -62,7 +79,9 @@ for body in inline:
     if h not in script_src:
         fail.append("inline script hash missing from script-src: %s" % h)
 
-if attr_src and "none" not in attr_src.group(1):
+if not attr_src:
+    fail.append("script-src-attr directive missing (want 'none') — inline event handlers would be unrestricted")
+elif "none" not in attr_src.group(1):
     fail.append("script-src-attr is no longer 'none'")
 
 sec_code = d.joinpath("sec_code").read_text().strip()
