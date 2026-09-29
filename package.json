@@ -7,6 +7,8 @@
     "dev": "PORT=${PORT:-3000} tsx server/index.ts",
     "verify": "bash scripts/verify-all.sh",
     "build": "vite build && esbuild server/index.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
+    "postbuild": "node scripts/ops/release-info.mjs",
+    "release": "bash scripts/ops/release.sh",
     "start": "node dist/server.cjs",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
