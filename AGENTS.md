@@ -126,6 +126,13 @@ Janebi-Store/
 - `POST /api/payment/request` — Request payment link (Zarinpal primary, Saman fallback)
 - `GET /api/payment/verify` — Verify banking switch transaction and finalize order
 
+**Payment-session TTL (single source of truth: `server/routes/payment.ts`)**
+- The payment expiry window is **45min anchored on `payment_requested_at`** (written in the same statement that stores a fresh authority). The order's `created_at` never bounds a payment session — an order may sit pending for hours before anyone clicks Pay.
+- A live session (`< 45min`) is returned unchanged (`reused:true`). Past 45min the dead authority is cleared and a **fresh** one is minted on the next Pay click; the order stays `pending_payment` (expired callbacks redirect with `status=expired`, they do not cancel).
+- Reaper (`reapAbandonedOrders`, every 5min) cancels only `pending_payment` orders with `ref_id IS NULL`: `payment_requested_at + 45min`, plus a 24h `created_at` window for carts that never reached a gateway.
+- Both cancel paths (verify + reaper) flip the status **conditionally first**, then restock/refund only if they won — a concurrent real verify always wins and a paid order is never cancelled or double-restocked. `vip_points_used` must be read **before** the flip zeroes it.
+- Prod DB `orders` column casing is mixed: `payment_requested_at`, `payment_amount`, `payment_url`, `vip_points_used`, `created_at`, `user_id` are snake_case; `refId`, `statusText`, `authority` are as-is. `order_items` uses `order_id`/`product_id`/`qty`. Read the schema (`pragma_table_info`) before writing ops probes.
+
 ### 4.5 Admin Panel APIs (requireAuth + requireAdmin)
 - `GET /api/admin/stats` — Dashboard sales, revenue, user, and order statistics
 - `GET /api/admin/orders` — Manage all orders with pagination & status filters
