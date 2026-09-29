@@ -23,6 +23,7 @@ import cartRoutes from "./routes/cart.js";
 import wishlistRoutes from "./routes/wishlist.js";
 import contactRoutes from "./routes/contact.js";
 import paymentRoutes from "./routes/payment.js";
+import { zarinpalStartPayUrl } from "./services/payment/ZarinpalAdapter.js";
 import settingsRoutes from "./routes/settings.js";
 import reviewsRoutes from "./routes/reviews.js";
 import blogRoutes from "./routes/blog.js";
@@ -342,6 +343,32 @@ app.get("/.well-known/security.txt", (_req, res) => {
     if (fs.existsSync(file)) return res.type("text/plain").send(fs.readFileSync(file, "utf8"));
   }
   res.status(404).end();
+});
+
+// Payment handoff. Zarinpal's StartPay page is served only to a request carrying a
+// Referer from a domain registered for the terminal; a link pasted into a fresh tab
+// (or reopened from history / an in-app browser) has none and gets
+// «دسترسی از این دامنه مجاز نمی باشد» — and a 302 does NOT supply one (verified in
+// WebKit + Chromium: the redirect hop forwards the original request's referrer,
+// which is empty). A document that navigates from our own origin does: the browser
+// then sends `https://janebiarena.ir/`. Hence /pay/<authority> is the customer link
+// returned by POST /api/payment/request; orders.paymentUrl keeps the raw gateway URL.
+const PAY_AUTHORITY_RE = /^[A-Za-z0-9]{8,64}$/; // gateway authorities only — no path, no scheme
+app.get("/pay/:authority", (req, res) => {
+  const authority = String(req.params.authority);
+  if (!PAY_AUTHORITY_RE.test(authority)) return res.status(400).type("text/plain").send("authority نامعتبر است");
+  const target = zarinpalStartPayUrl(authority);
+  res.set("Cache-Control", "no-store").set("X-Robots-Tag", "noindex");
+  // Inline script is blocked by our own CSP (script-src 'self'), so the hop is a
+  // meta refresh with a visible link fallback.
+  res.type("html").send(`<!doctype html><html lang="fa" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="refresh" content="0;url=${target}">
+<title>انتقال به درگاه پرداخت | جانبی آرنا</title></head>
+<body style="margin:0;display:flex;min-height:100vh;align-items:center;justify-content:center;background:#0b0b0f;color:#f5f5f5;font-family:system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif">
+<div style="text-align:center;padding:24px"><p style="font-size:1.05rem">در حال انتقال به درگاه پرداخت زرین‌پال…</p>
+<p style="opacity:.75;font-size:.9rem;margin-top:8px">اگر به‌صورت خودکار منتقل نشدید، <a style="color:#7dd3fc" href="${target}">اینجا کلیک کنید</a>.</p></div>
+</body></html>`);
 });
 
 // SEC-01: the production web root is `dist/` — the SAME dir esbuild writes

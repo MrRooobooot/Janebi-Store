@@ -1,6 +1,19 @@
 import { IPaymentGateway, PaymentRequestOptions, PaymentRequestResult, PaymentVerifyOptions, PaymentVerifyResult, GatewayProvider } from './types.js';
 import { env } from '../../env.js';
 
+// Zarinpal's StartPay page renders only when the request carries a Referer from a
+// domain registered for the merchant terminal; a pasted / history / in-app-browser
+// entry carries none and gets «دسترسی از این دامنه مجاز نمی باشد». `/pay/:authority`
+// (server/app.ts) hands the browser off from our own origin so the hop always does,
+// so both the adapter and that route must agree on the host: one source of truth here.
+export function zarinpalStartPayBase(): string {
+  return `${env.ZARINPAL_SANDBOX ? 'https://sandbox.zarinpal.com' : 'https://www.zarinpal.com'}/pg/StartPay/`;
+}
+
+export function zarinpalStartPayUrl(authority: string): string {
+  return `${zarinpalStartPayBase()}${authority}`;
+}
+
 export class ZarinpalAdapter implements IPaymentGateway {
   readonly provider: GatewayProvider = 'zarinpal';
   private merchantId: string;
@@ -17,7 +30,7 @@ export class ZarinpalAdapter implements IPaymentGateway {
     const baseDomain = this.sandbox ? 'https://sandbox.zarinpal.com' : 'https://payment.zarinpal.com';
     this.REQUEST_URL = `${baseDomain}/pg/v4/payment/request.json`;
     this.VERIFY_URL = `${baseDomain}/pg/v4/payment/verify.json`;
-    this.STARTPAY_URL = `${this.sandbox ? 'https://sandbox.zarinpal.com' : 'https://www.zarinpal.com'}/pg/StartPay/`;
+    this.STARTPAY_URL = zarinpalStartPayBase();
   }
 
   get isHealthy(): boolean {

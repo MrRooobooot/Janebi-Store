@@ -21,6 +21,18 @@ const CLAIM_POLL_MS = 150;
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+// Customer-facing payment link, on our own origin. Zarinpal renders StartPay only
+// for a Referer from a registered merchant domain; a pasted / history / in-app
+// entry carries none («دسترسی از این دامنه مجاز نمی باشد»), so `/pay/<authority>`
+// (server/app.ts) hands the browser off from here and the gateway hop always has one.
+// Only a real StartPay URL is rerouted — the dev/test self-verify shortcut
+// (`/api/payment/verify?…`) and legacy rows must stay navigable as stored.
+// `orders.paymentUrl` keeps the raw gateway URL; this is presentation only.
+export const payLinkFor = (paymentUrl: string, authority: string) =>
+  paymentUrl.startsWith('https://') && paymentUrl.includes('/pg/StartPay/')
+    ? `${env.APP_URL}/pay/${authority}`
+    : paymentUrl;
+
 router.post('/request', authenticate, async (req: AuthRequest, res) => {
   try {
     const userId = req.user.id as string;
@@ -67,7 +79,7 @@ router.post('/request', authenticate, async (req: AuthRequest, res) => {
       if (order.authority && !order.authority.startsWith(CLAIM_PREFIX)) {
         if (order.paymentUrl) {
           return res.status(200).json({
-            url: order.paymentUrl,
+            url: payLinkFor(order.paymentUrl, order.authority),
             provider: order.paymentProvider || 'zarinpal',
             reused: true
           });
@@ -147,7 +159,7 @@ router.post('/request', authenticate, async (req: AuthRequest, res) => {
       }
 
       return res.status(200).json({
-        url: paymentRequest.paymentUrl,
+        url: payLinkFor(paymentRequest.paymentUrl, paymentRequest.authority),
         provider: paymentRequest.provider
       });
     }
