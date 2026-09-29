@@ -96,3 +96,17 @@ export function getAssetUrl(path: string | null | undefined): string {
   }
   return path;
 }
+
+/**
+ * Order statuses in which money was actually captured. A cancelled order and an
+ * order still waiting for payment must never count as a purchase — summing every
+ * order in the list is what reported «۱٬۲۳۰٬۰۰۰ تومان خرید» to a customer who had
+ * never paid for anything.
+ */
+const PAID_ORDER_STATUSES = ['processing', 'shipped', 'delivered'];
+
+export function totalSpentOf(orders: { status: string; total: number }[]): number {
+  return orders
+    .filter((o) => PAID_ORDER_STATUSES.includes(o.status))
+    .reduce((sum, o) => sum + (o.total || 0), 0);
+}

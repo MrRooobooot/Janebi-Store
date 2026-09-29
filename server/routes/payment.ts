@@ -33,6 +33,14 @@ export const payLinkFor = (paymentUrl: string, authority: string) =>
     ? `${env.APP_URL}/pay/${authority}`
     : paymentUrl;
 
+// Payment-session lifetime. The gateway forgets an unused authority after
+// roughly 45–50 minutes (measured on live authorities), so the window is
+// anchored on the last **Pay click** — `payment_requested_at`, written in the
+// same statement that stores the authority — never on the order's creation:
+// an order may sit pending for hours before anyone clicks Pay and that must
+// not kill the order or its session.
+export const PAYMENT_SESSION_TTL_MS = 45 * 60 * 1000;
+
 router.post('/request', authenticate, async (req: AuthRequest, res) => {
   try {
     const userId = req.user.id as string;
@@ -74,24 +82,45 @@ router.post('/request', authenticate, async (req: AuthRequest, res) => {
         return res.status(400).json({ error: 'این سفارش در وضعیت قابل پرداخت نیست' });
       }
 
-      // A real session is already issued → return it unchanged. Re-minting here
+      // A live session is already issued → return it unchanged. Re-minting here
       // is exactly what orphaned the first payment (pay A, callback looks up B).
+      // "Live" means the session is still inside its window: past it the gateway
+      // has dropped the authority, so this click must mint a fresh one instead of
+      // handing the customer a dead link («شناسه پرداخت ... منقضی گردیده است»).
       if (order.authority && !order.authority.startsWith(CLAIM_PREFIX)) {
-        if (order.paymentUrl) {
+        const sessionAgeMs = order.paymentRequestedAt
+          ? Date.now() - Date.parse(order.paymentRequestedAt)
+          : Infinity;
+        const expired = !(sessionAgeMs < PAYMENT_SESSION_TTL_MS);
+
+        if (order.paymentUrl && !expired) {
           return res.status(200).json({
             url: payLinkFor(order.paymentUrl, order.authority),
             provider: order.paymentProvider || 'zarinpal',
             reused: true
           });
         }
-        // Session issued before payment_url existed: the URL cannot be rebuilt
-        // safely, so refuse rather than orphan it. The reaper releases the order.
-        // ponytail: no URL backfill for pre-migration rows — ceiling is "that
-        // customer waits for the 60min reap"; upgrade path is a resume helper on
-        // the adapter (authority → StartPay URL) once a legacy row actually bites.
-        return res.status(409).json({
-          error: 'برای این سفارش یک پرداخت در حال انجام است. لطفاً صفحه پرداخت بازشده را تکمیل کنید.'
-        });
+
+        // Expired authority, or a session stored before `payment_url` existed:
+        // clear it so the loop below claims and mints a fresh authority. Guarded
+        // on the exact authority we just read, so a concurrent verify/reaper that
+        // moved the order on is never overwritten — in that case stop instead of
+        // looping (the customer re-reads a different state next click).
+        const cleared = await db.update(orders)
+          .set({ authority: null, paymentAmount: null, paymentProvider: null, paymentUrl: null, paymentRequestedAt: null })
+          .where(and(
+            eq(orders.id, orderId),
+            eq(orders.status, 'pending_payment'),
+            eq(orders.authority, order.authority)
+          ))
+          .returning({ id: orders.id });
+
+        if (cleared.length === 0) {
+          return res.status(409).json({
+            error: 'وضعیت این سفارش هم‌زمان تغییر کرد. لطفاً صفحه را دوباره باز کنید.'
+          });
+        }
+        continue;
       }
 
       claimToken = `${CLAIM_PREFIX}${randomUUID()}`;
@@ -203,17 +232,51 @@ router.get('/verify', async (req, res) => {
       return res.redirect(`/checkout/callback?status=success&orderId=${order.id}&ref_id=${order.refId || ''}`);
     }
 
-    // Portable async transaction helper: works on both dialects.
     // Cancels the order, restocks items, and refunds any VIP points that were
     // spent at checkout so a failed payment never leaves the user out of pocket.
+    // The status flip comes FIRST and is conditional: a concurrent successful
+    // verify (which flips the same way) must win outright and can never be
+    // followed by a restock of its items.
     const restockOrder = async (tx: any, orderId: string) => {
+      // Read first: the flip below zeroes vip_points_used, and the refund needs
+      // the amount that was actually spent at checkout.
       const failedOrderList = await tx.select().from(orders).where(eq(orders.id, orderId));
       const failedOrder = failedOrderList[0];
-      await restockItemsAndRefundPoints(tx, orderId, failedOrder?.userId, failedOrder?.vipPointsUsed);
-      await tx.update(orders)
+      const cancelledRows = await tx.update(orders)
         .set({ status: 'cancelled', statusText: 'لغو شده (پرداخت ناموفق)', vipPointsUsed: 0 })
-        .where(eq(orders.id, orderId));
+        .where(and(eq(orders.id, orderId), eq(orders.status, 'pending_payment'), isNull(orders.refId)))
+        .returning({ id: orders.id });
+      if (!cancelledRows || cancelledRows.length === 0) return;
+      await restockItemsAndRefundPoints(tx, orderId, failedOrder?.userId, failedOrder?.vipPointsUsed);
     };
+
+    // A session the gateway (or our own TTL) has already dropped must not kill
+    // the order: clear the dead session and keep the order payable, so the next
+    // Pay click mints a fresh authority instead of forcing a new order.
+    // Only positive evidence counts — a row carrying no `payment_requested_at`
+    // (pre-migration, or a forged callback) keeps the old cancel path.
+    const sessionAgeMs = order.paymentRequestedAt
+      ? Date.now() - Date.parse(order.paymentRequestedAt)
+      : null;
+    const sessionExpired = sessionAgeMs !== null && sessionAgeMs >= PAYMENT_SESSION_TTL_MS;
+
+    const invalidateSession = async () => {
+      await db.update(orders)
+        .set({ authority: null, paymentAmount: null, paymentProvider: null, paymentUrl: null, paymentRequestedAt: null })
+        .where(and(eq(orders.id, order.id), eq(orders.status, 'pending_payment'), isNull(orders.refId)));
+    };
+
+    // Zarinpal -54 = «authority نامعتبر»: the gateway has no such session, so the
+    // order keeps its money path open. -51 (payment not found) is deliberately NOT
+    // here — it is also what a plain cancelled attempt returns on a live session,
+    // and that case stays a real failure (cancel + restock, pinned by phase1 tests).
+    const expiredCodes = new Set(['-54']);
+
+    const redirectExpired = () =>
+      res.redirect(
+        `/checkout/callback?status=expired&orderId=${order.id}&message=` +
+          encodeURIComponent('نشست پرداخت قبلی منقضی شد؛ می‌توانید همین سفارش را دوباره پرداخت کنید')
+      );
 
   // Shared success path: idempotency-guarded transition to `processing` +
   // VIP points earned by the order (single source of truth for both the
@@ -272,6 +335,13 @@ const markOrderPaid = async (tx: any, orderId: string, refId: string, provider: 
   };
 
     if (status !== 'OK') {
+      // Expired session → the order stays payable (a fresh Pay click re-mints).
+      // A genuine decline on a live session keeps the old behaviour: cancel + restock.
+      if (sessionExpired) {
+        await invalidateSession();
+        return redirectExpired();
+      }
+
       await db.transaction(async (tx) => {
         const currentOrderList = await tx.select().from(orders).where(eq(orders.id, order.id));
         const currentOrder = currentOrderList[0];
@@ -331,7 +401,14 @@ const markOrderPaid = async (tx: any, orderId: string, refId: string, provider: 
       return res.redirect(`/checkout/callback?status=success&orderId=${order.id}&ref_id=${refId}`);
     } else {
       console.error('Payment Verification Error:', verifyResult);
-      
+
+      // The gateway does not know this authority (or our window already closed):
+      // the session is dead, not the order — clear it and stay payable.
+      if (sessionExpired || expiredCodes.has(String(verifyResult.code))) {
+        await invalidateSession();
+        return redirectExpired();
+      }
+
       await db.transaction(async (tx) => {
         const currentOrderList = await tx.select().from(orders).where(eq(orders.id, order.id));
         const currentOrder = currentOrderList[0];
@@ -348,33 +425,62 @@ const markOrderPaid = async (tx: any, orderId: string, refId: string, provider: 
   }
 });
 
-// Reaper: cancel abandoned pending_payment orders and restock their items.
-// If a user never returns from the gateway, stock would stay deducted forever.
-// Interval 5min; orders older than 60min are cancelled. Runs in-process; the
-// transaction guard (`status === 'pending_payment'` re-check) makes it idempotent
-// against a concurrent real verify.
-const ABANDON_AFTER_MS = 60 * 60 * 1000;
+// Reaper: release stock from orders nobody is going to pay for.
+//
+// Two independent windows, and an order's creation time NEVER bounds its
+// payment session:
+//   • session window  — 45min from the last Pay click (`payment_requested_at`),
+//     the moment a fresh gateway authority was minted;
+//   • checkout window — 24h for an order that never reached a gateway at all
+//     (`payment_requested_at` still NULL), i.e. an abandoned cart that would
+//     otherwise hold stock forever.
+//
+// Both paths flip the status conditionally FIRST and restock only on a won flip,
+// on the same predicate a real verify flips on — so a payment that lands while
+// the reaper runs either wins the row (reaper backs off, no restock) or finds a
+// cancelled order (verify refuses to settle it). A paid order is untouchable:
+// the predicate requires status='pending_payment' AND ref_id IS NULL.
+const ABANDONED_CHECKOUT_MS = 24 * 60 * 60 * 1000;
+
+export const reapAbandonedOrders = async (now: number = Date.now()): Promise<string[]> => {
+  const candidates = await db
+    .select({ id: orders.id, createdAt: orders.createdAt, paymentRequestedAt: orders.paymentRequestedAt })
+    .from(orders)
+    .where(and(eq(orders.status, 'pending_payment'), isNull(orders.refId)));
+
+  const isStale = (row: (typeof candidates)[number]) => {
+    if (row.paymentRequestedAt) {
+      return now - Date.parse(row.paymentRequestedAt) >= PAYMENT_SESSION_TTL_MS;
+    }
+    // Legacy rows may lack created_at (column added 2026-08-31); ORD ids embed
+    // base36 creation time.
+    const createdMs = row.createdAt
+      ? Date.parse(row.createdAt)
+      : parseInt(String(row.id).replace('ORD-', ''), 36);
+    return Number.isFinite(createdMs) && now - createdMs >= ABANDONED_CHECKOUT_MS;
+  };
+
+  const cancelled: string[] = [];
+  for (const row of candidates) {
+    if (!isStale(row)) continue;
+    await db.transaction(async (tx: any) => {
+      // Read before flipping: the flip zeroes vip_points_used.
+      const current = (await tx.select().from(orders).where(eq(orders.id, row.id)))[0];
+      const won = await tx.update(orders)
+        .set({ status: 'cancelled', statusText: 'لغو شده (انصراف از پرداخت)', vipPointsUsed: 0 })
+        .where(and(eq(orders.id, row.id), eq(orders.status, 'pending_payment'), isNull(orders.refId)))
+        .returning({ id: orders.id });
+      if (!won || won.length === 0) return; // a verify/reaper got there first
+      await restockItemsAndRefundPoints(tx, row.id, current?.userId, current?.vipPointsUsed);
+    });
+    cancelled.push(row.id);
+  }
+  return cancelled;
+};
+
 setInterval(async () => {
   try {
-    const cutoff = new Date(Date.now() - ABANDON_AFTER_MS).toISOString();
-    // Legacy rows may lack created_at (column added 2026-08-31); treat NULL as
-    // "older than cutoff" only for orders whose id timestamp also predates the
-    // cutoff — ORD ids embed base36 creation time.
-    const stale = await db.select({ id: orders.id, createdAt: orders.createdAt }).from(orders)
-      .where(sql`${orders.status} = 'pending_payment' AND (${orders.createdAt} IS NULL OR ${orders.createdAt} < ${cutoff})`);
-    for (const { id, createdAt } of stale) {
-      if (!createdAt) {
-        const embeddedMs = parseInt(id.replace('ORD-', ''), 36);
-        if (!Number.isFinite(embeddedMs) || (Date.now() - embeddedMs) < ABANDON_AFTER_MS) continue;
-      }
-      await db.transaction(async (tx: any) => {
-        const current = await tx.select().from(orders).where(eq(orders.id, id));
-        if (!current[0] || current[0].status !== 'pending_payment') return;
-        await restockItemsAndRefundPoints(tx, id, current[0].userId, current[0].vipPointsUsed);
-        await tx.update(orders)
-          .set({ status: 'cancelled', statusText: 'لغو شده (انصراف از پرداخت)' })
-          .where(eq(orders.id, id));
-      });
+    for (const id of await reapAbandonedOrders()) {
       console.log(`[payment-reaper] cancelled abandoned order ${id}`);
     }
   } catch (err) {

@@ -2,7 +2,7 @@ import React from 'react';
 import { Package, MapPin, Heart, Gift, Clock, ShieldCheck, ArrowLeft, Sparkles } from 'lucide-react';
 import { UserProfile } from '../../contexts/AuthContext';
 import { Order } from '../../types';
-import { toPersianDigits, formatPrice } from '../../lib/utils';
+import { toPersianDigits, formatPrice, totalSpentOf } from '../../lib/utils';
 import { ProfileTabType } from './ProfileSidebar';
 
 interface DashboardOverviewTabProps {
@@ -18,7 +18,7 @@ export default function DashboardOverviewTab({
 }: DashboardOverviewTabProps) {
   const processingCount = orders.filter((o) => o.status === 'processing').length;
   const deliveredCount = orders.filter((o) => o.status === 'delivered').length;
-  const totalSpent = orders.reduce((acc, o) => acc + o.total, 0);
+  const totalSpent = totalSpentOf(orders);
 
   return (
     <div className="space-y-6 text-right">

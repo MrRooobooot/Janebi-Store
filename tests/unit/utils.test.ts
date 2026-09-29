@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { toPersianDigits, toEnglishDigits, normalizeIranianMobile, isValidIranianMobile, formatPrice } from '../../src/lib/utils';
+import { toPersianDigits, toEnglishDigits, normalizeIranianMobile, isValidIranianMobile, formatPrice, totalSpentOf } from '../../src/lib/utils';
 
 describe('Utility Functions Unit Tests', () => {
   it('toPersianDigits converts English numbers to Persian digits', () => {
@@ -86,3 +86,23 @@ describe('Utility Functions Unit Tests', () => {
   });
 });
 
+describe('totalSpentOf — only settled orders count as a purchase', () => {
+  it('ignores cancelled and unpaid orders', () => {
+    const orders = [
+      { status: 'cancelled', total: 385000 },
+      { status: 'pending_payment', total: 385000 },
+      { status: 'pending_payment', total: 460000 },
+    ];
+    expect(totalSpentOf(orders)).toBe(0); // was ۱٬۲۳۰٬۰۰۰ before this fix
+  });
+
+  it('sums captured orders across statuses', () => {
+    const orders = [
+      { status: 'processing', total: 150000 },
+      { status: 'shipped', total: 250000 },
+      { status: 'delivered', total: 100000 },
+      { status: 'cancelled', total: 999999 },
+    ];
+    expect(totalSpentOf(orders)).toBe(500000);
+  });
+});

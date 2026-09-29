@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { CheckCircle2, XCircle, ArrowRight, ShoppingBag } from 'lucide-react';
+import { CheckCircle2, XCircle, ArrowRight, ShoppingBag, Clock } from 'lucide-react';
 
 export default function CheckoutCallback() {
   const [searchParams] = useSearchParams();
@@ -13,6 +13,9 @@ export default function CheckoutCallback() {
   const message = searchParams.get('message');
 
   const isSuccess = status === 'success';
+  // Gateway session died (expired authority / our 45min window): the order is
+  // still payable, so this is a "retry" screen — not a payment failure.
+  const isExpired = status === 'expired';
 
   useEffect(() => {
     if (!status) {
@@ -35,6 +38,11 @@ export default function CheckoutCallback() {
               <div className="absolute inset-0 bg-emerald-500 blur-xl opacity-20 rounded-full"></div>
               <CheckCircle2 className="h-20 w-20 text-emerald-500 relative z-10" />
             </div>
+          ) : isExpired ? (
+            <div className="relative">
+              <div className="absolute inset-0 bg-amber-500 blur-xl opacity-20 rounded-full"></div>
+              <Clock className="h-20 w-20 text-amber-500 relative z-10" />
+            </div>
           ) : (
             <div className="relative">
               <div className="absolute inset-0 bg-red-500 blur-xl opacity-20 rounded-full"></div>
@@ -43,14 +51,16 @@ export default function CheckoutCallback() {
           )}
         </div>
 
-        <h1 className={`text-2xl font-black mb-2 ${isSuccess ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
-          {isSuccess ? 'پرداخت با موفقیت انجام شد' : 'پرداخت ناموفق بود'}
+        <h1 className={`text-2xl font-black mb-2 ${isSuccess ? 'text-emerald-600 dark:text-emerald-400' : isExpired ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
+          {isSuccess ? 'پرداخت با موفقیت انجام شد' : isExpired ? 'زمان پرداخت این سفارش به پایان رسید' : 'پرداخت ناموفق بود'}
         </h1>
         
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-8">
           {isSuccess 
             ? 'سفارش شما با موفقیت ثبت شد و در اسرع وقت پردازش خواهد شد.' 
-            : (message && /[\u0600-\u06FF]/.test(message)) ? message : 'متأسفانه در فرآیند پرداخت خطایی رخ داد یا پرداخت توسط شما لغو شد.'}
+            : isExpired
+              ? ((message && /[\u0600-\u06FF]/.test(message)) ? message : 'سفارش شما همچنان فعال است؛ می‌توانید همین سفارش را دوباره پرداخت کنید.')
+              : (message && /[\u0600-\u06FF]/.test(message)) ? message : 'متأسفانه در فرآیند پرداخت خطایی رخ داد یا پرداخت توسط شما لغو شد.'}
         </p>
 
         <div className="bg-[var(--color-canvas-light)] dark:bg-[var(--color-canvas-dark)] rounded-2xl p-4 mb-8 space-y-3 text-right">
@@ -74,7 +84,7 @@ export default function CheckoutCallback() {
             className="w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
           >
             <ShoppingBag className="h-5 w-5" />
-            مشاهده سفارشات من
+            {isExpired ? 'پرداخت دوباره از سفارش‌های من' : 'مشاهده سفارشات من'}
           </Link>
           
           <Link 
