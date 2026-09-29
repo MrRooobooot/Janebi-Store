@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import { db } from '../db/index.js';
 import { orders, orderItems, products, users } from '../db/schema.js';
-import { eq, sql, and } from 'drizzle-orm';
+import { eq, sql, and, or, isNull, like, lt } from 'drizzle-orm';
+import { randomUUID } from 'node:crypto';
 import { authenticate, AuthRequest } from '../middleware/auth.js';
 import { env } from '../env.js';
 import { paymentRouter } from '../services/payment/PaymentFailoverRouter.js';
@@ -9,6 +10,16 @@ import { restockItemsAndRefundPoints } from '../lib/orderLifecycle.js';
 import { storeEvents } from '../services/events.js';
 
 const router = Router();
+
+// F1 one-session-per-order lock. A claim token lives in `orders.authority` while
+// the gateway call is in flight; the prefix makes it impossible to confuse with a
+// real gateway authority (Zarinpal uses A…/DUMMY_AUTH_, Saman encodes SEP_).
+const CLAIM_PREFIX = 'PENDING:';
+const CLAIM_TTL_MS = 60_000; // older than this ⇒ the claiming process died
+const CLAIM_WAIT_MS = 10_000; // duplicate request waits this long for the winner
+const CLAIM_POLL_MS = 150;
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 router.post('/request', authenticate, async (req: AuthRequest, res) => {
   try {
@@ -19,48 +30,132 @@ router.post('/request', authenticate, async (req: AuthRequest, res) => {
       return res.status(400).json({ error: 'Order ID is required' });
     }
 
-    const orderList = await db.select().from(orders).where(eq(orders.id, orderId)).limit(1);
-    if (orderList.length === 0) {
-      return res.status(404).json({ error: 'Order not found' });
-    }
-
-    const order = orderList[0];
-
-    // Verify order ownership
-    if (order.userId !== userId) {
-      return res.status(403).json({ error: 'Unauthorized to pay for this order' });
-    }
-
-    // R1-01: only pending_payment orders may be sent to a gateway. Prevents
-    // paying twice for an order already processing/cancelled and stops a
-    // duplicate request from overwriting the stored authority mid-verify.
-    if (order.status !== 'pending_payment') {
-      return res.status(400).json({ error: 'این سفارش در وضعیت قابل پرداخت نیست' });
-    }
-
     // Use configured APP_URL or fallback safely to trusted forwarded headers
     const baseUrl = env.APP_URL || `${req.headers['x-forwarded-proto'] || req.protocol}://${req.headers.host}`;
     const callbackUrl = `${baseUrl.replace(/\/+$/, "")}/api/payment/verify`;
+    const deadline = Date.now() + CLAIM_WAIT_MS;
+    let claimToken = '';
+    let orderTotal = 0;
+    let orderMobile = '';
+
+    // R1-01 kept and extended (F1): only pending_payment orders may reach a
+    // gateway, AND at most one live gateway session may ever exist per order.
+    // The order row is the lock — a claim token is written into `authority` by a
+    // conditional UPDATE before the gateway call, so a second (or concurrent)
+    // request loses the race with 0 rows updated instead of minting a rival
+    // authority. The customer paying the first authority can then always be
+    // matched back to this order by the callback.
+    for (;;) {
+      const orderList = await db.select().from(orders).where(eq(orders.id, orderId)).limit(1);
+      if (orderList.length === 0) {
+        return res.status(404).json({ error: 'Order not found' });
+      }
+
+      const order = orderList[0];
+
+      // Verify order ownership
+      if (order.userId !== userId) {
+        return res.status(403).json({ error: 'Unauthorized to pay for this order' });
+      }
+
+      if (order.status !== 'pending_payment') {
+        return res.status(400).json({ error: 'این سفارش در وضعیت قابل پرداخت نیست' });
+      }
+
+      // A real session is already issued → return it unchanged. Re-minting here
+      // is exactly what orphaned the first payment (pay A, callback looks up B).
+      if (order.authority && !order.authority.startsWith(CLAIM_PREFIX)) {
+        if (order.paymentUrl) {
+          return res.status(200).json({
+            url: order.paymentUrl,
+            provider: order.paymentProvider || 'zarinpal',
+            reused: true
+          });
+        }
+        // Session issued before payment_url existed: the URL cannot be rebuilt
+        // safely, so refuse rather than orphan it. The reaper releases the order.
+        // ponytail: no URL backfill for pre-migration rows — ceiling is "that
+        // customer waits for the 60min reap"; upgrade path is a resume helper on
+        // the adapter (authority → StartPay URL) once a legacy row actually bites.
+        return res.status(409).json({
+          error: 'برای این سفارش یک پرداخت در حال انجام است. لطفاً صفحه پرداخت بازشده را تکمیل کنید.'
+        });
+      }
+
+      claimToken = `${CLAIM_PREFIX}${randomUUID()}`;
+      const staleBefore = new Date(Date.now() - CLAIM_TTL_MS).toISOString();
+      const claimed = await db.update(orders)
+        .set({ authority: claimToken, paymentRequestedAt: new Date().toISOString() })
+        .where(and(
+          eq(orders.id, orderId),
+          eq(orders.status, 'pending_payment'),
+          or(
+            isNull(orders.authority),
+            and(like(orders.authority, `${CLAIM_PREFIX}%`), lt(orders.paymentRequestedAt, staleBefore))
+          )
+        ))
+        .returning({ id: orders.id });
+
+      if (claimed.length > 0) {
+        orderTotal = order.total;
+        orderMobile = order.recipientPhone || req.user.phone;
+        break;
+      }
+
+      // Lost the race to a live claim: wait for the winner to publish its session,
+      // then reuse it. Only a genuinely stuck claim (beyond the deadline) fails.
+      if (Date.now() >= deadline) {
+        return res.status(409).json({
+          error: 'درخواست پرداخت دیگری برای این سفارش در جریان است. لطفاً چند لحظه بعد دوباره تلاش کنید.'
+        });
+      }
+      await sleep(CLAIM_POLL_MS);
+    }
 
     const paymentRequest = await paymentRouter.requestPaymentWithFailover({
       orderId,
-      amountTomans: order.total,
+      amountTomans: orderTotal,
       callbackUrl,
       description: `پرداخت سفارش ${orderId} - جانبی آرنا`,
-      mobile: order.recipientPhone || req.user.phone,
+      mobile: orderMobile,
       idempotencyKey: req.headers['idempotency-key'] as string
     });
 
     if (paymentRequest.success && paymentRequest.authority) {
-      await db.update(orders)
-        .set({ authority: paymentRequest.authority })
-        .where(eq(orders.id, orderId));
+      // F1/F3: persist the whole session in ONE conditional write. The claim
+      // token must still be ours and the order still payable — otherwise the
+      // reaper or a concurrent verify already took the order and this session
+      // must not be handed to the customer.
+      const stored = await db.update(orders)
+        .set({
+          authority: paymentRequest.authority,
+          paymentAmount: orderTotal,
+          paymentProvider: paymentRequest.provider,
+          paymentUrl: paymentRequest.paymentUrl,
+          paymentRequestedAt: new Date().toISOString()
+        })
+        .where(and(
+          eq(orders.id, orderId),
+          eq(orders.status, 'pending_payment'),
+          eq(orders.authority, claimToken)
+        ))
+        .returning({ id: orders.id });
+
+      if (stored.length === 0) {
+        console.warn(`[payment] order ${orderId} left pending_payment during the request — issued session discarded`);
+        return res.status(409).json({ error: 'این سفارش دیگر قابل پرداخت نیست' });
+      }
 
       return res.status(200).json({
         url: paymentRequest.paymentUrl,
         provider: paymentRequest.provider
       });
     }
+
+    // Gateway unreachable → release the claim so a retry can claim again.
+    await db.update(orders)
+      .set({ authority: null, paymentAmount: null, paymentProvider: null, paymentUrl: null, paymentRequestedAt: null })
+      .where(and(eq(orders.id, orderId), eq(orders.authority, claimToken)));
 
     return res.status(503).json({
       error: paymentRequest.error || 'خطا در برقراری ارتباط با درگاه‌های پرداخت'
@@ -194,10 +289,21 @@ const markOrderPaid = async (tx: any, orderId: string, refId: string, provider: 
     // Verify transaction through PaymentFailoverRouter.
     // R3-07: route by authority prefix ONLY — req.query.provider is
     // attacker-controlled and must never pick the gateway.
+    //
+    // F3: verify the amount that was actually requested. `orders.total` is
+    // mutable (admin edit) and must never be the number a callback is checked
+    // against — the payment request freezes it in `payment_amount`.
+    const requestedAmount = order.paymentAmount ?? order.total;
+    if (order.paymentAmount != null && order.paymentAmount !== order.total) {
+      console.warn(
+        `[payment] reconcile: order ${order.id} total changed after the payment request — requested=${order.paymentAmount} current=${order.total}`
+      );
+    }
+
     const verifyResult = await paymentRouter.verifyPayment({
       authority,
       status,
-      amountTomans: order.total,
+      amountTomans: requestedAmount,
       orderId: order.id
     });
 

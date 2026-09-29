@@ -77,7 +77,12 @@ export const orders = pgTable('orders', {
   recipientAddress: text('recipientAddress').notNull(),
   recipientPostalCode: text('recipientPostalCode'),
   authority: text('authority'),
-  refId: text('refId')
+  refId: text('refId'),
+  // F1/F3 money-path — parity with the sqlite schema (see schema.ts).
+  paymentAmount: integer('payment_amount'),
+  paymentProvider: text('payment_provider'),
+  paymentUrl: text('payment_url'),
+  paymentRequestedAt: text('payment_requested_at')
 });
 
 export const orderItems = pgTable('order_items', {
