@@ -92,7 +92,7 @@ wait_health || die "app did not come back healthy after the migration restart"
 rsh "docker exec -i $CONTAINER node -" < "$PROBE" | tee /tmp/janebi_predeploy_db_probe.txt
 
 step "4. atomic switch of ./dist + container recreate onto the new tree"
-OLD_REL="$(rsh "cat $APP/dist/BUILD_INFO 2>/dev/null || echo '{}'" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{try{process.stdout.write(JSON.parse(s).short||'unknown')}catch{process.stdout.write('unknown')}})")"
+OLD_REL="$(rsh "cat $APP/dist/BUILD_INFO 2>/dev/null || echo '{}'" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const t=s.trim();try{process.stdout.write(JSON.parse(t).short||'unknown')}catch{process.stdout.write(t.split(/\s+/)[0]||'unknown')}})")"
 echo "current_live_release=$OLD_REL"
 rsh "cd $APP && if [ -L dist ]; then echo \"dist is already a symlink -> \$(readlink dist)\"; else mkdir -p releases && mv dist releases/prev-$OLD_REL-dist && echo \"previous tree kept at releases/prev-$OLD_REL-dist\"; fi && ln -sfn releases/$SHORT/dist .dist.next && mv -Tf .dist.next dist && echo \"dist -> \$(readlink dist)\""
 T0="$(date +%s)"
