@@ -141,3 +141,22 @@ console.log(JSON.stringify(db.prepare(\"select id,status,total,payment_amount,pa
 اثبات Playwright (Chromium، زنده): کیس A/A2/D از `/pay` همیشه Referer می‌فرستد و gate را رد می‌کند؛ فقط paste مستقیم (B) بدون Referer است.
 
 **پلی‌بوک پشتیبانی:** به مشتری فقط `https://janebiarena.ir/pay/<authority>` بدهید، هرگز URL خام `pg/StartPay/...`. اگر گزارش خطای دامنه آمد، اول بپرسید لینک را کجا باز کرده (paste/تاریخچه = بدون Referer، طبیعی).
+
+## ۷. بازشکافی نهایی خطای دامنه — Safari واقعی (2026-10-02)
+
+ماتریس زنده (authority معتبر ۲۱:۱۵، TTL~۴۰ دقیقه):
+- Referer جینبی → 200 فرم کامل (2152b)
+- بدون Referer (urllib) → 400 «دسترسی از این دامنه» (826b)
+- سرصفحه hop /pay در لاگ سرور: ref=checkout همیشه موجود
+- WebKit headless با UA دقیق کاربر (Safari/27.0): referer@StartPay=janebiarena ✓
+
+یعنی: کد، hop، و زنجیره برای مرورگر عادی سالم‌اند. مرورگر واقعی کاربر Referer را
+قبل از رسیدن به زرین‌پال حذف می‌کند. مظنون‌ها (تنظیمات دستگاه کاربر):
+1. iCloud Private Relay (تنظیمات > Apple ID > iCloud > Private Relay)
+2. ناوبری خصوصی + «جلوگیری از ردیابی بین‌سایتی»
+3. افزونه‌ی حذف Referer / VPN لایه‌ی اپلیکیشن
+
+مستند رسمی: زرین‌پال کد خطای -18 = referrer mismatch با دامنه‌ی ثبت‌شده.
+
+اقدام: کاربر Private Relay را خاموش/ناوبری عادی کند و دوباره امتحان کند.
+اگر تکرار شد → تیکت به پشتیبانی زرین‌پال: «allow empty-referer StartPay».
