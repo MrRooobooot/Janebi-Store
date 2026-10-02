@@ -153,7 +153,7 @@ docker logs -f janebi-store
 
 - **آدرس پنل وب‌میل (فارسی و زیبا):** [https://janebiarena.ir/webmail](https://janebiarena.ir/webmail)
 - **نام کاربری:** `info` (یا `info@janebiarena.ir`)
-- **رمز عبور پیش‌فرض:** `@iDiN#135`
+- **رمز عبور:** در `SECRETS_MAP.md` محلی (gitignored) نگهداری می‌شود — در مخزن عمومی منتشر نمی‌شود.
 - **قابلیت تغییر رمز عبور:** از طریق منوی **«تنظیمات (Settings) > کلمه عبور (Password)»** داخل پنل وب‌میل به راحتی می‌توانید رمز عبور ایمیل را تغییر دهید.
 - **پروتکل‌ها:** IMAP (پورت `993` با SSL) / SMTP (پورت `587` با STARTTLS)
 - **هاست میل:** `mail.janebiarena.ir`
