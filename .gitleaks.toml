@@ -1,0 +1,30 @@
+# Gitleaks configuration — extends the default ruleset; nothing else is suppressed.
+#
+# The allowlist below covers exactly five findings from the initial full-history
+# scan (gitleaks 8.30.1, 2026-10-03), each manually reviewed and verified benign:
+#
+#   1-2. generic-api-key on client cache-name constants:
+#        public/sw.js                 -> const API_CACHE_NAME = 'janebi-api-v1.2.0'
+#        scripts/audit/sw-reviews-probe.mjs -> const STALE_API_CACHE = '...'
+#        (version strings, not credentials)
+#   3.   generic-api-key on scripts/indexnow.mjs -> IndexNow host key, which is
+#        published publicly by design (served at /<key>.txt for the protocol).
+#   4.   jwt x2 on .hermes/tmp/repro-profile.mjs (history only; expedient scratch
+#        file, untracked and gitignored since commit efcb78d) -> expired local
+#        test token.
+#
+# Scoping by commit (not by path) means any NEW leak in these same files is
+# still detected. Findings are attributed to the commit that introduced the
+# line, so revisited lines create fresh findings.
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Reviewed benign: cache-name constants, public IndexNow key, expired scratch JWT (2026-10-03)"
+commits = [
+  "f565c6df44050763691ce550e8835bad34bf3ec5",
+  "314160cf2fea03f7b1336ecf63782e1270615c01",
+  "fa8bba53eaadb54f11f4461af17a59d199f2d7b2",
+  "efafe67082240115ec4e0a7157df1aabcf3c6444",
+  "aca20d341b96550102c8bf285f43be19e0342e9b"
+]
