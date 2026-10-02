@@ -8,7 +8,8 @@
 # Appending ($proxy_add_x_forwarded_for) lets the client control req.ip, which
 # makes every IP rate limit bypassable.
 set -uo pipefail
-REMOTE="${REMOTE:-ubuntu@45.82.137.67}"
+[ -f "$(dirname "$0")/../../deploy.env" ] && . "$(dirname "$0")/../../deploy.env"
+REMOTE="${REMOTE:-ubuntu@${VPS_HOST:?set VPS_HOST via deploy.env or pass REMOTE=user@host}}"
 SSH_OPTS="-o BatchMode=yes -o ConnectTimeout=12 -o StrictHostKeyChecking=accept-new"
 
 # --from-file <path>: offline negative-control mode — run the same invariant check

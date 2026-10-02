@@ -46,7 +46,7 @@ Environment variables are strictly validated at server startup with Zod:
 ---
 
 ## 4. Reverse Proxy & SSL (Nginx)
-In production on the Ubuntu VPS (`45.82.137.67` / `janebiarena.ir`):
+In production on the Ubuntu VPS (`janebiarena.ir`; host value lives in the gitignored `deploy.env`):
 - Nginx terminates SSL/TLS.
 - Proxies requests matching `/api/` and page routes to `http://127.0.0.1:3000`.
 - Passes standard proxy headers (`X-Forwarded-For`, `X-Forwarded-Proto`, `X-Real-IP`).

@@ -60,7 +60,7 @@
 - Server prerender BlogPosting JSON-LD برای /blog/:slug (blogPostingJsonLdFor در server/lib/breadcrumbs.ts؛ builder مشترک src/lib/blogJsonLd.ts؛ honesty gate: slug نامشخص/غیرمنتشر → بدون injection).
 - Reader modal UX: Escape-close + body scroll-lock.
 - Gate npm run verify ALL GREEN؛ jsxDEV=0. Commit be76f19 pushed.
-- DEPLOY BLOCKED: ssh root@45.82.137.67 (port 22) → Connection refused برای ~۱۲ دقیقه (site/HTTPS سالم است 200). پس از بازگشت SSH: deploy.sh با /tmp/janebi-deploy.lock، سپس در کانتینر: SEED_BLOG_ONLY=brasresi-powerbank-baseus-adaman-20000-65w node scripts/seed-blog → انتظار /api/blog=16، چک JSON-LD prerender در HTML خام /blog/:slug.
+- DEPLOY BLOCKED: ssh root@<server-ip> (port 22) → Connection refused برای ~۱۲ دقیقه (site/HTTPS سالم است 200). پس از بازگشت SSH: deploy.sh با /tmp/janebi-deploy.lock، سپس در کانتینر: SEED_BLOG_ONLY=brasresi-powerbank-baseus-adaman-20000-65w node scripts/seed-blog → انتظار /api/blog=16، چک JSON-LD prerender در HTML خام /blog/:slug.
 
 ## 2026-09-11 (cron round) — Blog post 11 + article-modal UX
 - Blog post 11 «پایه رومیزی موبایل» seeded to prod (id: rahnamaye-entekhab-stand-rumizi-mobile) — /api/blog now 11 posts; page 200, sitemap updated.

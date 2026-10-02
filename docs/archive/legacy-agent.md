@@ -29,7 +29,7 @@
 | ORM | Drizzle 0.45 — dual-dialect | `server/db/schema.ts` (SQLite) / `schema.pg.ts` (PG) |
 | DB تست‌ها | SQLite (better-sqlite3) | wrapper در `server/db/index.ts` با promise-chain mutex |
 | DB پروداکشن | **SQLite در volume ./data** (واقعیت زنده) — PG container فقط idle | مهاجرت به PG در صورت نیاز به اسکیل بالا |
-| Deploy | VPS ubuntu@45.82.137.67 → `/home/ubuntu/Janebi-Store`، Docker Compose، nginx → 127.0.0.1:3000 | rsync-based؛ سرور git repo نیست |
+| Deploy | VPS ubuntu@<server-ip> → `/home/ubuntu/Janebi-Store`، Docker Compose، nginx → 127.0.0.1:3000 | rsync-based؛ سرور git repo نیست |
 | دامنه | https://janebiarena.ir | HTTPS + cert معتبر (تا Nov 2026) |
 
 ### اسکریپت‌ها
@@ -133,7 +133,7 @@
 - (هیچ باگ باز شناخته‌شده‌ای وجود ندارد — همه یافته‌های Audit فیکس و اثبات شدند)
 
 ## Deployment Status (2026-08-24)
-- سرور: ubuntu@45.82.137.67، مسیر ~/Janebi-Store (git repo نیست — rsync)
+- سرور: ubuntu@<server-ip>، مسیر ~/Janebi-Store (git repo نیست — rsync)
 - DB واقعی production: **SQLite** در volume ./data (PG idle)
 - NODE_ENV داخل کانتینر: production (compose هاردکد؛ `.env` سرور development نوشته که بی‌اثر است — گمراه‌کننده ولی مشکلساز نیست)
 - بکاپ‌ها: ~/backups/ (env-*.bak + janebi-consistent-*.db با integrity ok)

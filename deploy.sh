@@ -3,7 +3,9 @@
 # Usage: ./deploy.sh [--skip-build] [--staging]
 set -e
 
-REMOTE_HOST="${VPS_HOST:-45.82.137.67}"
+# Host from env or the gitignored deploy.env (no server IP in the repo).
+[ -f "$(dirname "$0")/deploy.env" ] && . "$(dirname "$0")/deploy.env"
+REMOTE_HOST="${VPS_HOST:?VPS_HOST not set — create deploy.env (gitignored) or export it}"
 REMOTE_USER="${VPS_USER:-ubuntu}"
 REMOTE="$REMOTE_USER@$REMOTE_HOST"
 APP_DIR="/home/ubuntu/Janebi-Store"

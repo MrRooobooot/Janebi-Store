@@ -147,6 +147,6 @@ echo "   • Docker restart → watch-script ۳ دقیقه بعد SSH رو بر�
 echo "   • fail2ban ban → بعد ۱۵ دقیقه آزاد میشه"
 echo "   • SSH crash → خودش restart میشه"
 echo ""
-echo "🔑 برای تست از خارج: ssh ubuntu@45.82.137.67"
+echo "🔑 برای تست از خارج: ssh ubuntu@<vps-host>  # host در deploy.env"
 echo ""
 echo "⚠️  تا ۳ دقیقه صبر کن تا watch-script اولی-fire بشه"

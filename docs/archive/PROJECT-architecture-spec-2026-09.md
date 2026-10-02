@@ -5,7 +5,7 @@ Janebi Arena is a modern, high-concurrency Iranian e-commerce platform built for
 
 - **Live URL:** https://janebiarena.ir
 - **Alternative:** https://www.janebiarena.ir
-- **Server Host IP:** 45.82.137.67 (Ubuntu 24.04 LTS)
+- **Server Host IP:** <server-ip> (Ubuntu 24.04 LTS; value lives in deploy.env)
 - **Repository:** https://github.com/Bnan7441/Janebi-Store (Private)
 
 ---

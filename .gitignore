@@ -61,6 +61,9 @@ public/images/products/*
 # Secret ops map (local only — never commit)
 SECRETS_MAP.md
 
+# Local deploy overrides (VPS_HOST, VPS_USER — never commit)
+deploy.env
+
 # Firebase legacy
 .firebase/
 .firebaserc
