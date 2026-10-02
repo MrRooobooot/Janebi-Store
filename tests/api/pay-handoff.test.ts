@@ -3,6 +3,7 @@ import request from '../setup/request.js';
 import { app } from '../../server/app.js';
 import { payLinkFor } from '../../server/routes/payment.js';
 import { env } from '../../server/env.js';
+import { zarinpalStartPayBase } from '../../server/services/payment/ZarinpalAdapter.js';
 
 // Measured on the live gateway (authority A…gooevxmr, 2026-09-29): StartPay answers
 // 200 + the payment form for a Referer of janebiarena.ir (apex, www, http, with a
@@ -10,7 +11,10 @@ import { env } from '../../server/env.js';
 // A 302 does not supply one (the redirect hop forwards the original request's empty
 // referrer); a document navigating from our own origin does. Hence this handoff page.
 const AUTH = 'A000000000000000000000000000gooevxmr';
-const TARGET = `https://www.zarinpal.com/pg/StartPay/${AUTH}`;
+// The StartPay host follows the environment — sandbox.zarinpal.com when
+// ZARINPAL_SANDBOX is on (CI default), www.zarinpal.com in production — and
+// ZarinpalAdapter is the single source of truth for that choice.
+const TARGET = `${zarinpalStartPayBase()}${AUTH}`;
 
 describe('payLinkFor — customer link stays on our origin', () => {
   it('reroutes a live StartPay URL through /pay/<authority>', () => {
