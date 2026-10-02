@@ -16,6 +16,7 @@
     "test:e2e": "playwright test --config=playwright.e2e.config.ts",
     "db:backup": "node scripts/ops/backup-db.mjs",
     "monitor:api": "node scripts/ops/api-stats.mjs",
+    "gen:llms": "node scripts/gen-llms.mjs",
     "gate:ratelimit": "node scripts/gate/ratelimit-live.mjs",
     "db:generate": "drizzle-kit generate",
     "db:generate:pg": "drizzle-kit generate --config=drizzle.pg.config.ts",
