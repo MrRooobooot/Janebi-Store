@@ -128,3 +128,16 @@ console.log(JSON.stringify(db.prepare(\"select id,status,total,payment_amount,pa
 - موجودی ۵۶۳۹ = ۹، امتیاز VIP افتاده، هیچ سفارش تکراری/یتیمی ساخته نشده (تعداد orders دقیقاً +۱)
 
 بعد از تأیید: سفارش پردازش‌شده را از پنل ادمین طبق روال عادی (ارسال/لغو واقعی خودتان) مدیریت کنید.
+
+## ۶. تشخیص «دسترسی از این دامنه مجاز نمی باشد» (2026-09-30)
+
+زیپ‌پال `Referer` را **قبل از** اعتبارسنجی authority چک می‌کند:
+
+| حالت | نتیجه |
+|---|---|
+| بدون Referer (paste/history/in-app) | «دسترسی از این دامنه» — حتی با authority معتبر |
+| با Referer `https://janebiarena.ir/` (حتی مسیر کامل `/pay/...`) | gate رد می‌شود؛ authority منقضی → «منقضی گردیده است» (پیام جدا) |
+
+اثبات Playwright (Chromium، زنده): کیس A/A2/D از `/pay` همیشه Referer می‌فرستد و gate را رد می‌کند؛ فقط paste مستقیم (B) بدون Referer است.
+
+**پلی‌بوک پشتیبانی:** به مشتری فقط `https://janebiarena.ir/pay/<authority>` بدهید، هرگز URL خام `pg/StartPay/...`. اگر گزارش خطای دامنه آمد، اول بپرسید لینک را کجا باز کرده (paste/تاریخچه = بدون Referer، طبیعی).
