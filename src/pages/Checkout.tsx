@@ -22,6 +22,7 @@ export default function Checkout() {
     shippingFee,
     finalPayable,
     submitting,
+    fieldErrors,
     handleCheckout,
   } = useCheckoutForm();
 
@@ -62,10 +63,10 @@ export default function Checkout() {
 
       <CheckoutStepsBar currentStep={2} />
 
-      <form onSubmit={handleCheckout} noValidate className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <form onSubmit={handleCheckout} noValidate className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pb-40 lg:pb-0">
         {/* Recipient details + Shipping & Payment Selection */}
         <div className="lg:col-span-8 space-y-8">
-          <CheckoutRecipientForm formData={formData} updateField={updateField} />
+          <CheckoutRecipientForm formData={formData} updateField={updateField} fieldErrors={fieldErrors} />
           <CheckoutShippingPaymentForm
             formData={formData}
             updateField={updateField}
@@ -85,6 +86,7 @@ export default function Checkout() {
             couponLabel={couponDetails?.label || appliedCoupon || undefined}
             submitting={submitting}
             isFreeShipping={isFreeShipping}
+            paymentMethod={formData.paymentMethod}
           />
         </div>
       </form>

@@ -265,6 +265,9 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
+              <p className="mt-1.5 text-[11px] font-medium text-gray-500 dark:text-gray-400">
+                {mode === 'login' ? 'حداقل ۴ کاراکتر' : 'حداقل ۶ کاراکتر'}
+              </p>
             </div>
 
             <button
@@ -296,7 +299,13 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                     رمز عبور خود را فراموش کرده‌اید؟
                   </Link>
                 </div>
-                <span>ورود شما به منزله پذیرش قوانین جانبی آرنا است.</span>
+                <span>
+                  ورود شما به منزله پذیرش{' '}
+                  <Link to="/terms" onClick={onClose} className="font-bold text-[var(--color-emphasis-text)] hover:underline">قوانین</Link>
+                  {' '}و{' '}
+                  <Link to="/privacy" onClick={onClose} className="font-bold text-[var(--color-emphasis-text)] hover:underline">حریم خصوصی</Link>
+                  {' '}جانبی آرنا است.
+                </span>
               </>
             ) : (
               <span>با ثبت‌نام، از تخفیف‌های ویژه مشتریان بهره‌مند می‌شوید.</span>

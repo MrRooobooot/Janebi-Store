@@ -108,7 +108,7 @@ export default function ChatWidget() {
   };
 
   return (
-    <div className={`fixed ${isProductDetail ? 'bottom-[148px] sm:bottom-6' : 'bottom-32 sm:bottom-6'} right-3 sm:right-6 z-50 print:hidden flex flex-col items-end transition-all duration-300`}>
+    <div className={`fixed left-3 sm:left-auto sm:right-6 z-50 print:hidden flex flex-col items-start sm:items-end transition-all duration-300 ${isProductDetail ? 'bottom-[148px] sm:bottom-6' : 'bottom-[5.75rem] sm:bottom-6'}`}>
       {isOpen && (
           <div
             className="dropdown-in bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl shadow-2xl border border-gray-200 dark:border-[var(--color-border-dark)] w-[92vw] sm:w-96 h-[32rem] flex flex-col overflow-hidden mb-4 transition-colors"
@@ -120,9 +120,8 @@ export default function ChatWidget() {
                   <Bot className="h-5 w-5 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)]" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-sm flex items-center gap-1.5">
+                  <h3 className="font-extrabold text-sm">
                     راهنمای خرید جانبی آرنا
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                   </h3>
                   <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">پاسخ خودکار به سوال‌های متداول</p>
                 </div>
@@ -200,11 +199,11 @@ export default function ChatWidget() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          aria-label="باز کردن راهنمای خرید"
-          className="hover:scale-105 active:scale-95 transition-transform bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] text-white border border-transparent shadow-lg shadow-[var(--color-cta)]/25 w-11 h-11 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-colors relative group cursor-pointer"
+          aria-label="پاسخ خودکار"
+          className="hover:scale-105 active:scale-95 transition-transform bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] text-white border border-transparent shadow-lg shadow-[var(--color-cta)]/25 w-11 h-11 sm:w-auto sm:h-12 sm:px-4 rounded-full flex items-center justify-center gap-2 transition-colors cursor-pointer"
         >
-          <MessageCircle className="h-6 w-6" />
-          <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-500 border-2 border-white dark:border-gray-900 rounded-full"></span>
+          <MessageCircle className="h-5 w-5 shrink-0" />
+          <span className="hidden sm:inline text-xs font-black">پاسخ خودکار</span>
         </button>
       )}
     </div>

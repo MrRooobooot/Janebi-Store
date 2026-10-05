@@ -110,3 +110,10 @@ export function totalSpentOf(orders: { status: string; total: number }[]): numbe
     .filter((o) => PAID_ORDER_STATUSES.includes(o.status))
     .reduce((sum, o) => sum + (o.total || 0), 0);
 }
+
+/** Post-login return path. Only same-origin storefront paths; never admin. */
+export function safeNextPath(raw: string | null | undefined, fallback = '/profile'): string {
+  if (!raw || !raw.startsWith('/') || raw.startsWith('//') || raw.startsWith('/\\')) return fallback;
+  if (raw === '/admin' || raw.startsWith('/admin/') || raw.startsWith('/admin?')) return fallback;
+  return raw;
+}

@@ -7,13 +7,13 @@ import LatestReviews from '../components/LatestReviews';
 import RecentlyViewed from '../components/RecentlyViewed';
 import VipClubBanner from '../components/VipClubBanner';
 import {
-  Sparkles, ArrowLeft, Smartphone, Truck, ShieldCheck, Headset, Flame, Star,
-  Clock, TrendingUp, Award, CheckCircle2, ShieldAlert, PackageCheck, ChevronLeft, ChevronRight,
+  ArrowLeft, Smartphone, Truck, ShieldCheck, Headset, Flame,
+  TrendingUp, PackageCheck, ChevronLeft, ChevronRight,
 } from 'lucide-react';
 import { getJson } from '../lib/jsonFetch';
 import { getCategoryIcon } from '../lib/categoryIcons';
 import { Product } from '../types';
-import { toPersianDigits, formatPrice, getAssetUrl, normalizePersianTypography } from '../lib/utils';
+import { toPersianDigits, normalizePersianTypography } from '../lib/utils';
 import { useStoreSettings } from '../hooks/useStoreSettings';
 import { STORE_SETTINGS_DEFAULTS } from '../lib/constants';
 import PictureImage from '../components/PictureImage';
@@ -26,7 +26,7 @@ export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'all' | 'holders' | 'cables' | 'cases' | 'protectors'>('all');
+  const [activeTab, setActiveTab] = useState('all');
   const catScrollRef = useRef<HTMLDivElement>(null);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(true);
@@ -86,26 +86,6 @@ export default function Home() {
   const handleCatMouseUp = () => {
     isDraggingCat.current = false;
   };
-
-  // Live countdown to midnight (daily deals cycle) — computed from real clock
-  const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
-
-  useEffect(() => {
-    const tick = () => {
-      const now = new Date();
-      const midnight = new Date(now);
-      midnight.setHours(24, 0, 0, 0);
-      const diff = Math.max(0, Math.floor((midnight.getTime() - now.getTime()) / 1000));
-      setTimeLeft({
-        hours: Math.floor(diff / 3600),
-        minutes: Math.floor((diff % 3600) / 60),
-        seconds: diff % 60,
-      });
-    };
-    tick();
-    const timer = setInterval(tick, 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   const heroSlides = useMemo(() => {
     const allSlides = [
@@ -197,23 +177,15 @@ export default function Home() {
   }, [reloadKey]);
 
   const dealProducts = useMemo(() => {
-    const discounted = products
-      .filter((p) => (p.discount || 0) > 0 && (p.stockQuantity || 0) > 0)
-      .sort((a, b) => (b.discount || 0) - (a.discount || 0));
-    if (discounted.length > 0) return discounted.slice(0, 5);
-    // Fallback to top in-stock products with special discount
     return products
-      .filter((p) => (p.stockQuantity || 0) > 0)
-      .slice(0, 5)
-      .map((p, idx) => ({ ...p, discount: p.discount || (15 - idx * 2) }));
+      .filter((p) => (p.discount || 0) > 0 && (p.stockQuantity || 0) > 0)
+      .sort((a, b) => (b.discount || 0) - (a.discount || 0))
+      .slice(0, 5);
   }, [products]);
 
   const filteredProducts = useMemo(() => {
-    if (activeTab === 'holders') return products.filter((p) => p.category?.includes('هولدر') || p.category?.includes('پایه') || p.category?.includes('نگهدارنده'));
-    if (activeTab === 'cables') return products.filter((p) => p.category?.includes('کابل') || p.category?.includes('شارژر') || p.category?.includes('سیم') || p.category?.includes('آداپتور'));
-    if (activeTab === 'cases') return products.filter((p) => p.category?.includes('قاب') || p.category?.includes('کاور'));
-    if (activeTab === 'protectors') return products.filter((p) => p.category?.includes('گلس') || p.category?.includes('محافظ'));
-    return products.slice(0, 8);
+    if (activeTab === 'all') return products.slice(0, 8);
+    return products.filter((p) => p.category === activeTab);
   }, [products, activeTab]);
 
   const valueProps = useMemo(() => [
@@ -319,9 +291,6 @@ export default function Home() {
             </Link>
           ))}
 
-          {/* The page h1 lives here: the banner itself carries no visible copy */}
-          <h1 className="sr-only">{normalizePersianTypography(currentSlide?.title ?? '')}</h1>
-
           {heroSlides.length > 1 && (<>
             <button
               type="button"
@@ -355,6 +324,39 @@ export default function Home() {
             </div>
           </>)}
         </div>
+        {currentSlide && (
+          <div className="mt-3 flex flex-col gap-1 px-1 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm font-black text-slate-900 dark:text-white sm:text-base">
+              {normalizePersianTypography(currentSlide.title)}
+            </p>
+            <Link
+              to={currentSlide.buttonLink}
+              className="inline-flex min-h-11 shrink-0 items-center gap-1.5 text-sm font-bold text-[var(--color-emphasis-text)]"
+            >
+              {normalizePersianTypography(currentSlide.buttonText)}
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+          </div>
+        )}
+        <div className="mt-3 grid grid-cols-2 gap-2 sm:hidden">
+          {valueProps.map((item) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={item.title}
+                className="flex items-center gap-2 rounded-xl border border-slate-200/80 bg-white p-2.5 dark:border-white/[0.07] dark:bg-[var(--color-surface-dark)]"
+              >
+                <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border ${item.color}`}>
+                  <Icon className="h-4 w-4" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block truncate text-[11px] font-black text-slate-900 dark:text-white">{item.title}</span>
+                  <span className="block truncate text-[10px] text-slate-500 dark:text-slate-400">{item.desc}</span>
+                </span>
+              </div>
+            );
+          })}
+        </div>
       </section>
 
       {/* 2. Amazing Deals Section — product-first fold */}
@@ -370,32 +372,6 @@ export default function Home() {
               <div className="min-w-0">
                 <h2 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white">{normalizePersianTypography(settings.dealsTitle || STORE_SETTINGS_DEFAULTS.dealsTitle)}</h2>
                 <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">{normalizePersianTypography(settings.dealsSubtitle || STORE_SETTINGS_DEFAULTS.dealsSubtitle)}</p>
-              </div>
-            </div>
-
-            {/* Countdown Clock */}
-            <div className="self-start sm:self-auto sm:bg-white/80 sm:dark:bg-[var(--color-surface-elevated-dark)] sm:border sm:border-slate-200/80 sm:dark:border-white/[0.08] sm:px-3.5 sm:py-1.5 sm:rounded-2xl text-xs font-bold sm:shadow-xs shrink-0">
-              <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-[var(--color-emphasis-text)] shrink-0" />
-              <span className="hidden sm:inline text-slate-700 dark:text-slate-300">فرصت باقی‌مانده:</span>
-              <div dir="ltr" className="flex items-center gap-1 text-sm font-black text-[var(--color-emphasis-text)]">
-                <span className="tabular-nums bg-slate-50 dark:bg-black/40 px-1 sm:px-1.5 py-0.5 rounded-lg border border-slate-200/80 dark:border-white/[0.08] text-[var(--color-cta)] dark:text-[var(--color-emphasis-text)]">{toPersianDigits(timeLeft.hours.toString().padStart(2, '0'))}</span>
-                <span>:</span>
-                <span className="tabular-nums bg-slate-50 dark:bg-black/40 px-1 sm:px-1.5 py-0.5 rounded-lg border border-slate-200/80 dark:border-white/[0.08] text-[var(--color-cta)] dark:text-[var(--color-emphasis-text)]">{toPersianDigits(timeLeft.minutes.toString().padStart(2, '0'))}</span>
-                <span>:</span>
-                <span className="tabular-nums bg-slate-50 dark:bg-black/40 px-1 sm:px-1.5 py-0.5 rounded-lg border border-slate-200/80 dark:border-white/[0.08] text-[var(--color-cta)] dark:text-[var(--color-emphasis-text)]">{toPersianDigits(timeLeft.seconds.toString().padStart(2, '0'))}</span>
-              </div>
-              </div>
-              {/* Thin seconds bar */}
-              <div
-                role="progressbar"
-                aria-label="ثانیه‌های باقی‌مانده"
-                aria-valuenow={59 - timeLeft.seconds}
-                aria-valuemin={0}
-                aria-valuemax={59}
-                className="hidden sm:block mt-1.5 h-1 rounded-full bg-slate-100 dark:bg-white/[0.06] overflow-hidden"
-              >
-                <div className="h-1 bg-[var(--color-cta)]/50 rounded-full transition-all duration-1000 ease-linear" style={{ width: `${((59 - timeLeft.seconds) / 59) * 100}%` }} />
               </div>
             </div>
           </div>
@@ -532,25 +508,25 @@ export default function Home() {
       {/* 6. Trending Products Tabs Focus on Core Categories */}
       <section className="w-full">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5">
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2.5 min-w-0">
             <div className="p-2 rounded-xl bg-primary-50 dark:bg-primary-950/40 border border-primary-200/60 dark:border-primary-900/50">
               <TrendingUp className="h-4 w-4 text-[var(--color-emphasis-text)]" />
             </div>
             <h2 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white whitespace-nowrap">کالاهای برگزیده بازار</h2>
+            {activeTab === 'all' && (
+              <Link to="/products" className="inline-flex min-h-11 shrink-0 items-center gap-1 text-xs font-black text-[var(--color-emphasis-text)]">
+                مشاهده همه
+                <ArrowLeft className="h-3.5 w-3.5" />
+              </Link>
+            )}
           </div>
 
-          {/* Core Category Tabs — pill chips (modern segmented style, no dated underline scoop) */}
+          {/* Live category tabs — equality on the catalogue name, not a substring guess */}
           <div className="flex items-center gap-1.5 overflow-x-auto custom-scrollbar scroll-smooth snap-x pb-1 sm:pb-0">
-            {[
-              { id: 'all', label: 'همه محصولات' },
-              { id: 'holders', label: 'هولدر و پایه' },
-              { id: 'cases', label: 'قاب و کاور' },
-              { id: 'protectors', label: 'گلس و محافظ کابل' },
-              { id: 'cables', label: 'کابل و شارژر' },
-            ].map((tab) => (
+            {[{ id: 'all', label: 'همه' }, ...categories.map((cat) => ({ id: cat.title as string, label: cat.title as string }))].map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
+                onClick={() => setActiveTab(tab.id)}
                 aria-pressed={activeTab === tab.id}
                 className={`shrink-0 snap-start inline-flex items-center px-4 sm:px-3.5 min-h-11 sm:min-h-[38px] rounded-full text-[13px] sm:text-xs font-black transition-all duration-200 border ${
                   activeTab === tab.id

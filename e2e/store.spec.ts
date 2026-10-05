@@ -27,7 +27,7 @@ test.describe('Storefront Pages & Core Flows', () => {
 
     // Verify main product details exist
     await expect(page.locator('h1')).toBeVisible();
-    const addToCartBtn = page.getByRole('button', { name: /افزودن به سبد خرید|به سبد افزوده شد|اطلاع به محض موجود شدن/ }).first();
+    const addToCartBtn = page.getByRole('button', { name: /افزودن به سبد خرید|به سبد افزوده شد|ناموجود/ }).first();
     await expect(addToCartBtn).toBeVisible();
 
     if (await addToCartBtn.isEnabled()) {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ProductCard from '../../components/ProductCard';
 import { ProductCardSkeleton } from '../../components/Skeletons';
-import { Sparkles, Clock, Flame } from 'lucide-react';
+import { Sparkles, Flame } from 'lucide-react';
 import { motion } from 'motion/react';
 import { buildProductQuery } from '../../lib/productQuery';
 import { getJson } from '../../lib/jsonFetch';
@@ -10,30 +10,6 @@ export default function Offers() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  // Real weekly-deal countdown: ticks down to the end of the current week
-  // (Saturday 23:59:59, Persian retail week) instead of a frozen fake string.
-  const [remaining, setRemaining] = useState('');
-
-  useEffect(() => {
-    const tick = () => {
-      const now = new Date();
-      const end = new Date(now);
-      // daysUntilSaturday: JS getDay() 0=Sun..6=Sat → Saturday is day 6.
-      const daysToSaturday = (6 - now.getDay() + 7) % 7;
-      end.setDate(now.getDate() + daysToSaturday);
-      end.setHours(23, 59, 59, 999);
-      const diff = Math.max(0, end.getTime() - now.getTime());
-      const d = Math.floor(diff / 86400000);
-      const h = Math.floor((diff % 86400000) / 3600000);
-      const m = Math.floor((diff % 3600000) / 60000);
-      const s = Math.floor((diff % 60000) / 1000);
-      const fa = (n: number) => n.toLocaleString('fa-IR', { minimumIntegerDigits: 2, useGrouping: false });
-      setRemaining(`${fa(d)} روز و ${fa(h)}:${fa(m)}:${fa(s)}`);
-    };
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -57,13 +33,9 @@ export default function Offers() {
             <Flame className="h-4 w-4 text-white/80 animate-pulse" /> جشنواره تخفیف‌های شگفت‌انگیز
           </div>
           <h1 className="text-3xl font-black mb-3 tracking-tight">پیشنهادهای ویژه و محدود</h1>
-          <p className="text-rose-100 text-sm leading-relaxed mb-4">
-            بهترین لوازم جانبی موبایل با بالاترین میزان تخفیف و تضمین اصالت کالا. فرصت را از دست ندهید!
+          <p className="text-rose-100 text-sm leading-relaxed">
+            بهترین لوازم جانبی موبایل با بالاترین میزان تخفیف و تضمین اصالت کالا.
           </p>
-          <div className="inline-flex items-center gap-3 bg-black/30 backdrop-blur-md px-4 py-2 rounded-xl text-xs font-bold">
-            <Clock className="h-4 w-4 text-white/80" />
-            <span>زمان باقی‌مانده پیشنهاد هفته: {remaining}</span>
-          </div>
         </div>
       </div>
 

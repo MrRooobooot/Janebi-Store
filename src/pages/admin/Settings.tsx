@@ -88,6 +88,75 @@ function CollapsibleSection({
   );
 }
 
+const HERO_INPUT =
+  'w-full bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs';
+
+const HERO_SLIDE_FIELDS = {
+  1: {
+    title: 'heroSlide1Title',
+    subtitle: 'heroSlide1Subtitle',
+    badge: 'heroSlide1Badge',
+    tag: 'heroSlide1Tag',
+    buttonText: 'heroSlide1ButtonText',
+    link: 'heroSlide1Link',
+    image: 'heroSlide1Image',
+  },
+  2: {
+    title: 'heroSlide2Title',
+    subtitle: 'heroSlide2Subtitle',
+    badge: 'heroSlide2Badge',
+    tag: 'heroSlide2Tag',
+    buttonText: 'heroSlide2ButtonText',
+    link: 'heroSlide2Link',
+    image: 'heroSlide2Image',
+  },
+  3: {
+    title: 'heroSlide3Title',
+    subtitle: 'heroSlide3Subtitle',
+    badge: 'heroSlide3Badge',
+    tag: 'heroSlide3Tag',
+    buttonText: 'heroSlide3ButtonText',
+    link: 'heroSlide3Link',
+    image: 'heroSlide3Image',
+  },
+} as const;
+
+function HeroSlideEditor({
+  n,
+  label,
+  settings,
+  setSettings,
+}: {
+  n: 1 | 2 | 3;
+  label: string;
+  settings: StoreSettingsData;
+  setSettings: React.Dispatch<React.SetStateAction<StoreSettingsData>>;
+}) {
+  const fields = HERO_SLIDE_FIELDS[n];
+  const setField = (key: keyof StoreSettingsData) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSettings((prev) => ({ ...prev, [key]: e.target.value }));
+  };
+  return (
+    <div className="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 space-y-3">
+      <span className="text-xs font-black text-[var(--color-emphasis-text)]">{label}</span>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <input type="text" placeholder="عنوان زیر بنر" value={settings[fields.title] || ''} onChange={setField(fields.title)} className={HERO_INPUT} />
+        <input type="text" placeholder="متن دکمه زیر بنر" value={settings[fields.buttonText] || ''} onChange={setField(fields.buttonText)} className={HERO_INPUT} />
+        <input type="text" placeholder="لینک دکمه" value={settings[fields.link] || ''} onChange={setField(fields.link)} className={`${HERO_INPUT} text-left dir-ltr`} />
+        <input type="text" placeholder="مسیر تصویر" value={settings[fields.image] || ''} onChange={setField(fields.image)} className={`${HERO_INPUT} text-left dir-ltr`} />
+      </div>
+      <details className="rounded-xl border border-dashed border-gray-300 dark:border-gray-600 px-3 py-2">
+        <summary className="cursor-pointer text-[11px] font-bold text-gray-500 dark:text-gray-400">روی صفحه دیده نمی‌شود</summary>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3">
+          <input type="text" placeholder="زیرعنوان" value={settings[fields.subtitle] || ''} onChange={setField(fields.subtitle)} className={`${HERO_INPUT} md:col-span-2`} />
+          <input type="text" placeholder="نشان" value={settings[fields.badge] || ''} onChange={setField(fields.badge)} className={HERO_INPUT} />
+          <input type="text" placeholder="برچسب" value={settings[fields.tag] || ''} onChange={setField(fields.tag)} className={HERO_INPUT} />
+        </div>
+      </details>
+    </div>
+  );
+}
+
 export default function AdminSettings() {
   const [settings, setSettings] = useState<StoreSettingsData>({
     ...STORE_SETTINGS_DEFAULTS,
@@ -277,131 +346,12 @@ export default function AdminSettings() {
             مدیریت اسلایدرهای هیرو صفحه اول
           </h2>
 
-          {/* اسلاید ۱ */}
-          <div className="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 space-y-3">
-            <span className="text-xs font-black text-[var(--color-emphasis-text)]">اسلاید شماره ۱ (شارژر و آداپتور)</span>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <input
-                type="text"
-                placeholder="عنوان اصلی"
-                value={settings.heroSlide1Title || ''}
-                onChange={e => setSettings({ ...settings, heroSlide1Title: e.target.value })}
-                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
-              />
-              <input
-                type="text"
-                placeholder="بج / برچسب (مثلاً گارانتی ۶ ماهه)"
-                value={settings.heroSlide1Badge || ''}
-                onChange={e => setSettings({ ...settings, heroSlide1Badge: e.target.value })}
-                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
-              />
-              <input
-                type="text"
-                placeholder="توضیحات کوتاه"
-                value={settings.heroSlide1Subtitle || ''}
-                onChange={e => setSettings({ ...settings, heroSlide1Subtitle: e.target.value })}
-                className="col-span-full bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
-              />
-              <input
-                type="text"
-                placeholder="لینک دکمه"
-                value={settings.heroSlide1Link || ''}
-                onChange={e => setSettings({ ...settings, heroSlide1Link: e.target.value })}
-                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-left dir-ltr"
-              />
-              <input
-                type="text"
-                placeholder="مسیر تصویر (مثلاً /products/hld-13.svg)"
-                value={settings.heroSlide1Image || ''}
-                onChange={e => setSettings({ ...settings, heroSlide1Image: e.target.value })}
-                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-left dir-ltr"
-              />
-            </div>
-          </div>
-
-          {/* اسلاید ۲ */}
-          <div className="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 space-y-3">
-            <span className="text-xs font-black text-gray-700 dark:text-gray-300">اسلاید شماره ۲ (قاب و کاور)</span>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <input
-                type="text"
-                placeholder="عنوان اصلی"
-                value={settings.heroSlide2Title || ''}
-                onChange={e => setSettings({ ...settings, heroSlide2Title: e.target.value })}
-                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
-              />
-              <input
-                type="text"
-                placeholder="بج / برچسب"
-                value={settings.heroSlide2Badge || ''}
-                onChange={e => setSettings({ ...settings, heroSlide2Badge: e.target.value })}
-                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
-              />
-              <input
-                type="text"
-                placeholder="توضیحات کوتاه"
-                value={settings.heroSlide2Subtitle || ''}
-                onChange={e => setSettings({ ...settings, heroSlide2Subtitle: e.target.value })}
-                className="col-span-full bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
-              />
-              <input
-                type="text"
-                placeholder="لینک دکمه"
-                value={settings.heroSlide2Link || ''}
-                onChange={e => setSettings({ ...settings, heroSlide2Link: e.target.value })}
-                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-left dir-ltr"
-              />
-              <input
-                type="text"
-                placeholder="مسیر تصویر (مثلاً /products/cas-4.svg)"
-                value={settings.heroSlide2Image || ''}
-                onChange={e => setSettings({ ...settings, heroSlide2Image: e.target.value })}
-                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-left dir-ltr"
-              />
-            </div>
-          </div>
-
-          {/* اسلاید ۳ */}
-          <div className="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 space-y-3">
-            <span className="text-xs font-black text-blue-600">اسلاید شماره ۳ (هندزفری و صوتی)</span>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <input
-                type="text"
-                placeholder="عنوان اصلی"
-                value={settings.heroSlide3Title || ''}
-                onChange={e => setSettings({ ...settings, heroSlide3Title: e.target.value })}
-                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
-              />
-              <input
-                type="text"
-                placeholder="بج / برچسب"
-                value={settings.heroSlide3Badge || ''}
-                onChange={e => setSettings({ ...settings, heroSlide3Badge: e.target.value })}
-                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
-              />
-              <input
-                type="text"
-                placeholder="توضیحات کوتاه"
-                value={settings.heroSlide3Subtitle || ''}
-                onChange={e => setSettings({ ...settings, heroSlide3Subtitle: e.target.value })}
-                className="col-span-full bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs"
-              />
-              <input
-                type="text"
-                placeholder="لینک دکمه"
-                value={settings.heroSlide3Link || ''}
-                onChange={e => setSettings({ ...settings, heroSlide3Link: e.target.value })}
-                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-left dir-ltr"
-              />
-              <input
-                type="text"
-                placeholder="مسیر تصویر (مثلاً /products/cbl-1.svg)"
-                value={settings.heroSlide3Image || ''}
-                onChange={e => setSettings({ ...settings, heroSlide3Image: e.target.value })}
-                className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-left dir-ltr"
-              />
-            </div>
-          </div>
+          <p className="text-xs leading-relaxed text-gray-500 dark:text-gray-400">
+            روی بنر فقط تصویر دیده می‌شود. عنوان و متن دکمه زیر بنر نمایش داده می‌شوند.
+          </p>
+          <HeroSlideEditor n={1} label="اسلاید شماره ۱" settings={settings} setSettings={setSettings} />
+          <HeroSlideEditor n={2} label="اسلاید شماره ۲" settings={settings} setSettings={setSettings} />
+          <HeroSlideEditor n={3} label="اسلاید شماره ۳" settings={settings} setSettings={setSettings} />
         </div>
 
         {/* ۴. بخش‌های محتوایی صفحه اصلی (تاشو) */}

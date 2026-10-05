@@ -12,6 +12,16 @@ import { getJson } from '../lib/jsonFetch';
 import { useStoreSettings } from '../hooks/useStoreSettings';
 import AuthModal from './auth/AuthModal';
 import { toPersianDigits } from '../lib/utils';
+import { useToast } from '../contexts/ToastContext';
+
+const TRUST_LINKS = [
+  { label: 'درباره ما', to: '/about' },
+  { label: 'تماس با ما', to: '/contact' },
+  { label: 'پرسش‌های متداول', to: '/faq' },
+  { label: 'مجله', to: '/blog' },
+  { label: 'قوانین', to: '/terms' },
+  { label: 'حریم خصوصی', to: '/privacy' },
+];
 
 export default function Header() {
   const { user, isLoggedIn, logout } = useAuth();
@@ -22,6 +32,7 @@ export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { addToast } = useToast();
   const settings = useStoreSettings();
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
@@ -68,6 +79,22 @@ export default function Header() {
     };
   }, [userDropdownOpen]);
 
+  const announcementParts = settings.announcement.split('کد تخفیف:');
+  const promoCode = announcementParts.length === 2 ? announcementParts[1].trim() : '';
+  const promoText = promoCode
+    ? announcementParts[0].replace(/\s*\|\s*$/, '').trim()
+    : settings.announcement;
+
+  const copyPromoCode = async () => {
+    if (!promoCode) return;
+    try {
+      await navigator.clipboard.writeText(promoCode);
+      addToast('کد کپی شد', 'success');
+    } catch {
+      addToast('کپی کد ممکن نشد', 'error');
+    }
+  };
+
   const navLinks = [
     { label: 'صفحه اصلی', to: '/' },
     { label: 'تمام محصولات', to: '/products' },
@@ -86,17 +113,24 @@ export default function Header() {
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 text-[12px] sm:text-[11px] font-medium text-[var(--color-cta)] min-w-0">
             <Sparkles className="h-3.5 w-3.5 shrink-0 motion-safe:animate-pulse" />
-            <span className="text-slate-800 dark:text-slate-200 line-clamp-2 sm:line-clamp-none sm:truncate font-semibold">
-              {settings.announcement.split('کد تخفیف:').length === 2 ? (
-                <>
-                  {settings.announcement.split('کد تخفیف:')[0]}کد تخفیف:{' '}
-                  <span dir="ltr" className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] font-black text-[11px] sm:text-[10px] align-middle">
-                    {settings.announcement.split('کد تخفیف:')[1].trim()}
-                  </span>
-                </>
-              ) : settings.announcement}
+            <span className="text-slate-800 dark:text-slate-200 truncate font-semibold min-w-0">
+              {promoText}
             </span>
           </div>
+          {promoCode ? (
+            <div className="flex items-center gap-1 shrink-0">
+              <span dir="ltr" className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] font-black text-[11px] sm:text-[10px]">
+                {promoCode}
+              </span>
+              <button
+                type="button"
+                onClick={copyPromoCode}
+                className="inline-flex items-center min-h-8 px-2 rounded-md bg-white dark:bg-white/10 border border-slate-200 dark:border-white/10 text-[11px] font-black text-slate-700 dark:text-slate-200 cursor-pointer"
+              >
+                کپی
+              </button>
+            </div>
+          ) : null}
           <div className="hidden md:flex items-center gap-4 text-[11px] text-slate-600 dark:text-slate-400 font-medium shrink-0">
             <span className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 font-bold">
               <span className="relative flex h-2 w-2">
@@ -150,7 +184,7 @@ export default function Header() {
             <button
               onClick={openCartDrawer}
               aria-label="مشاهده سبد خرید"
-              className="hidden sm:flex items-center gap-1.5 h-11 bg-primary-50 hover:bg-primary-100 dark:bg-primary-950/40 text-[var(--color-emphasis-text)] border border-primary-200 dark:border-primary-800/60 px-3 rounded-xl transition-all duration-200 shadow-xs cursor-pointer active:scale-95"
+              className="flex items-center gap-1.5 h-11 bg-primary-50 hover:bg-primary-100 dark:bg-primary-950/40 text-[var(--color-emphasis-text)] border border-primary-200 dark:border-primary-800/60 px-3 rounded-xl transition-all duration-200 shadow-xs cursor-pointer active:scale-95"
             >
               <div className="relative">
                 <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -276,6 +310,19 @@ export default function Header() {
               </Link>
             ))}
           </div>
+
+          <nav className="grid grid-cols-2 gap-2 text-xs font-medium" aria-label="راهنمای فروشگاه">
+            {TRUST_LINKS.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-[var(--color-cta)]/10 dark:hover:bg-[var(--color-cta)]/30 hover:text-[var(--color-emphasis-text)] text-slate-800 dark:text-slate-200 text-center"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
 
           <button
             type="button"

@@ -260,7 +260,8 @@ router.post("/:id/reviews", validate(reviewSubmitSchema), async (req, res) => {
     date: new Date().toISOString().split("T")[0],
     isVerifiedBuyer: false,
     helpfulCount: 0,
-    unhelpfulCount: 0
+    unhelpfulCount: 0,
+    approved: false,
   };
 
   await db.transaction(async (tx) => {

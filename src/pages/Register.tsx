@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { User, Phone, Lock, Eye, EyeOff, UserPlus, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
-import { isValidIranianMobile, normalizeIranianMobile } from '../lib/utils';
+import { isValidIranianMobile, normalizeIranianMobile, safeNextPath } from '../lib/utils';
 
 export default function Register() {
   const { register } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [agreeTerms, setAgreeTerms] = useState(true);
+  const [agreeTerms, setAgreeTerms] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,7 +50,7 @@ export default function Register() {
 
     const success = await register(name, normalizedPhone, password);
     if (success) {
-      navigate('/profile');
+      navigate(safeNextPath(searchParams.get('next')));
     }
   };
 
@@ -144,6 +145,7 @@ export default function Register() {
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
             </div>
+            <p className="mt-1.5 text-[11px] font-medium text-gray-500 dark:text-gray-400">حداقل ۶ کاراکتر</p>
           </div>
 
           <div>
@@ -177,7 +179,10 @@ export default function Register() {
               className="rounded-md border-gray-300 text-[var(--color-emphasis-text)] focus:ring-[var(--color-cta)]/40"
             />
             <span>
-              قوانین و حریم خصوصی را مطالعه کرده و می‌پذیرم
+              <Link to="/terms" className="font-bold text-[var(--color-emphasis-text)] hover:underline" onClick={(e) => e.stopPropagation()}>قوانین</Link>
+              {' '}و{' '}
+              <Link to="/privacy" className="font-bold text-[var(--color-emphasis-text)] hover:underline" onClick={(e) => e.stopPropagation()}>حریم خصوصی</Link>
+              {' '}را مطالعه کرده و می‌پذیرم
             </span>
           </label>
 

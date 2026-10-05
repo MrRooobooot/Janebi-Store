@@ -107,14 +107,25 @@ export default function Footer() {
           {/* Links column (§2.7 / §9): quick customer links incl. order tracking */}
           <div className="lg:col-span-3 space-y-3 text-right p-5 rounded-2xl bg-white dark:bg-[var(--color-surface-dark)] border border-zinc-200/80 dark:border-white/[0.07] shadow-xs">
             <h3 className="text-sm font-black text-zinc-900 dark:text-zinc-100">دسترسی سریع</h3>
-            <nav className="flex flex-col items-start gap-2.5 text-xs text-zinc-600 dark:text-zinc-400" aria-label="لینک‌های فوتر">
-              <Link
-                to="/profile?tab=orders"
-                className="inline-flex items-center gap-2 min-h-11 py-2 font-bold hover:text-[var(--color-emphasis-text)] transition-colors"
-              >
-                <PackageSearch className="h-4 w-4 text-[var(--color-emphasis-text)] shrink-0" />
-                پیگیری سفارش
-              </Link>
+            <nav className="flex flex-col items-start gap-1 text-xs text-zinc-600 dark:text-zinc-400" aria-label="لینک‌های فوتر">
+              {[
+                { to: '/profile?tab=orders', label: 'پیگیری سفارش', icon: true },
+                { to: '/about', label: 'درباره ما' },
+                { to: '/contact', label: 'تماس با ما' },
+                { to: '/faq', label: 'پرسش‌های متداول' },
+                { to: '/blog', label: 'مجله' },
+                { to: '/terms', label: 'قوانین' },
+                { to: '/privacy', label: 'حریم خصوصی' },
+              ].map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className="inline-flex items-center gap-2 min-h-11 py-1 font-bold hover:text-[var(--color-emphasis-text)] transition-colors"
+                >
+                  {item.icon ? <PackageSearch className="h-4 w-4 text-[var(--color-emphasis-text)] shrink-0" /> : null}
+                  {item.label}
+                </Link>
+              ))}
             </nav>
           </div>
 

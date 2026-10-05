@@ -2,8 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { 
   Star, ShieldCheck, Truck, ShoppingCart, Heart, ArrowLeftRight, Zap, 
-  CheckCircle2, Check, Maximize2, X, RotateCcw, Award, PackageCheck, AlertCircle, Share2, HandCoins,
-  ChevronLeft, ChevronRight
+  CheckCircle2, Check, Maximize2, X, Award, PackageCheck, AlertCircle, Share2, ZoomIn,
+  ChevronLeft, ChevronRight, Minus, Plus
 } from 'lucide-react';
 import { useWishlist } from '../contexts/WishlistContext';
 import { useCompare } from '../contexts/CompareContext';
@@ -22,6 +22,14 @@ import { Product } from '../types';
 import { formatPrice, toPersianDigits } from '../lib/utils';
 import { STORE_SETTINGS_DEFAULTS } from '../lib/constants';
 
+function clampZoom(value: number) {
+  return Math.min(3, Math.max(1, Math.round(value * 100) / 100));
+}
+
+function touchDistance(touches: React.TouchList) {
+  return Math.hypot(touches[0].clientX - touches[1].clientX, touches[0].clientY - touches[1].clientY);
+}
+
 export default function ProductDetail() {
   const { id } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
@@ -33,9 +41,15 @@ export default function ProductDetail() {
   const [loading, setLoading] = useState(true);
   const [showStickyBar, setShowStickyBar] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
+  const [qty, setQty] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [zoomScale, setZoomScale] = useState(1);
+  const [zoomPan, setZoomPan] = useState({ x: 0, y: 0 });
   const actionsRef = useRef<HTMLDivElement>(null);
+  const zoomSurfaceRef = useRef<HTMLDivElement>(null);
+  const pinchRef = useRef<{ distance: number; scale: number } | null>(null);
+  const dragRef = useRef<{ id: number; x: number; y: number; panX: number; panY: number } | null>(null);
 
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { toggleCompare, isInCompare } = useCompare();
@@ -52,6 +66,7 @@ export default function ProductDetail() {
       })
       .then((data) => {
         setProduct(data);
+        setQty(1);
         setSelectedImageIndex(0);
         setLoading(false);
         addRecentlyViewed({
@@ -112,6 +127,23 @@ export default function ProductDetail() {
     };
   }, [isLightboxOpen]);
 
+  useEffect(() => {
+    setZoomScale(1);
+    setZoomPan({ x: 0, y: 0 });
+    pinchRef.current = null;
+    dragRef.current = null;
+  }, [selectedImageIndex, isLightboxOpen]);
+
+  useEffect(() => {
+    const surface = zoomSurfaceRef.current;
+    if (!isLightboxOpen || !surface) return;
+    const blockScroll = (event: TouchEvent) => {
+      if (event.touches.length > 1 || zoomScale > 1) event.preventDefault();
+    };
+    surface.addEventListener('touchmove', blockScroll, { passive: false });
+    return () => surface.removeEventListener('touchmove', blockScroll);
+  }, [isLightboxOpen, zoomScale]);
+
   // Show sticky bar when the main action buttons scroll out of view
   useEffect(() => {
     if (!actionsRef.current) return;
@@ -159,10 +191,14 @@ export default function ProductDetail() {
 
   const inWishlist = product ? isInWishlist(product.id) : false;
   const inCompare = product ? isInCompare(product.id) : false;
+  const stock = typeof product.stockQuantity === 'number' ? product.stockQuantity : 10;
+  const outOfStock = stock <= 0;
+  const lowStock = stock > 0 && stock <= 3;
 
   const handleAddToCart = () => {
     if (product) {
-      addToCart(product);
+      const maxQty = Math.min(stock, 10);
+      addToCart(product, Math.min(Math.max(qty, 1), Math.max(maxQty, 1)));
       setAddedToCart(true);
       addToast(`${product.title} به سبد خرید اضافه شد`, 'success');
       setTimeout(() => setAddedToCart(false), 2000);
@@ -186,9 +222,6 @@ export default function ProductDetail() {
     btns[next]?.focus();
   };
   const hasRating = !!product.rating && product.rating > 0;
-  const stock = typeof product.stockQuantity === 'number' ? product.stockQuantity : 10;
-  const outOfStock = stock <= 0;
-  const lowStock = stock > 0 && stock <= 3;
 
   return (
     <>
@@ -305,24 +338,6 @@ export default function ProductDetail() {
                   })}
                 </div>
               )}
-
-              {/* Trust Badges - Desktop view */}
-              <div className="grid grid-cols-2 gap-3 mt-6 pt-6 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60">
-                <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-[var(--color-canvas-light)]/70 dark:bg-white/[0.035] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/50">
-                  <Award className="h-5 w-5 text-[var(--color-emphasis-text)] shrink-0" />
-                  <div className="text-right">
-                    <p className="text-xs font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">ضمانت ۱۰۰٪ اصالت</p>
-                    <p className="text-[10px] text-gray-500 dark:text-gray-400">کالای اورجینال و شرکتی</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-[var(--color-canvas-light)]/70 dark:bg-white/[0.035] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/50">
-                  <RotateCcw className="h-5 w-5 text-emerald-500 shrink-0" />
-                  <div className="text-right">
-                    <p className="text-xs font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">۷ روز مهلت تست</p>
-                    <p className="text-[10px] text-gray-500 dark:text-gray-400">ضمانت بازگشت وجه</p>
-                  </div>
-                </div>
-              </div>
             </div>
 
             {/* Product Info Column */}
@@ -436,6 +451,32 @@ export default function ProductDetail() {
 
               {/* Action Buttons */}
               <div ref={actionsRef} className="pt-6 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
+                {!outOfStock && (
+                  <div className="mb-4 flex items-center gap-3">
+                    <span className="text-xs font-bold text-gray-500 dark:text-gray-400">تعداد</span>
+                    <div className="inline-flex items-center rounded-2xl border border-gray-200 dark:border-gray-700">
+                      <button
+                        type="button"
+                        aria-label="کاهش تعداد"
+                        disabled={qty <= 1}
+                        onClick={() => setQty((current) => Math.max(1, current - 1))}
+                        className="flex h-11 w-11 items-center justify-center text-gray-600 disabled:opacity-40 dark:text-gray-300"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </button>
+                      <span className="min-w-8 text-center text-sm font-black">{toPersianDigits(qty)}</span>
+                      <button
+                        type="button"
+                        aria-label="افزایش تعداد"
+                        disabled={qty >= Math.min(stock, 10)}
+                        onClick={() => setQty((current) => Math.min(Math.min(stock, 10), current + 1))}
+                        className="flex h-11 w-11 items-center justify-center text-gray-600 disabled:opacity-40 dark:text-gray-300"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                )}
                 <div className="flex items-center gap-3">
                 <button
                   onClick={handleAddToCart}
@@ -449,7 +490,7 @@ export default function ProductDetail() {
                   }`}
                 >
                   {outOfStock ? (
-                    'اطلاع به محض موجود شدن'
+                    'ناموجود'
                   ) : addedToCart ? (
                     <>
                       <CheckCircle2 className="h-5 w-5" />
@@ -501,24 +542,6 @@ export default function ProductDetail() {
                     </span>
                   ))}
                 </div>
-              </div>
-
-              {/* Trust Badges Row — Digikala-style (D1) */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-6 pt-6 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
-                {[
-                  { icon: Truck, label: 'تحویل اکسپرس' },
-                  { icon: HandCoins, label: 'پرداخت در محل' },
-                  { icon: PackageCheck, label: '۷ روز ضمانت بازگشت' },
-                  { icon: Award, label: 'ضمانت اصالت' },
-                ].map(({ icon: Icon, label }) => (
-                  <div
-                    key={label}
-                    className="flex items-center gap-2 px-2.5 py-2.5 rounded-xl bg-[var(--color-canvas-light)]/70 dark:bg-white/[0.035] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/50 text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]"
-                  >
-                    <Icon className="h-4 w-4 text-[var(--color-cta)] shrink-0" />
-                    <span className="text-xs font-bold leading-tight">{label}</span>
-                  </div>
-                ))}
               </div>
             </div>
           </div>
@@ -668,9 +691,23 @@ export default function ProductDetail() {
             <button
               onClick={() => setIsLightboxOpen(false)}
               aria-label="بستن نمایش تصویر"
-              className="absolute top-6 left-6 w-11 h-11 flex items-center justify-center text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-full backdrop-blur-md transition-colors z-50 cursor-pointer"
+              className="absolute top-20 left-6 w-11 h-11 flex items-center justify-center text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-full backdrop-blur-md transition-colors z-50 cursor-pointer"
             >
               <X className="h-6 w-6" />
+            </button>
+
+            <button
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation();
+                setZoomScale((current) => (current > 1 ? 1 : 2));
+                setZoomPan({ x: 0, y: 0 });
+              }}
+              aria-label={zoomScale > 1 ? 'اندازه اصلی' : 'بزرگ‌نمایی'}
+              className="absolute top-20 right-6 z-50 inline-flex min-h-11 items-center gap-1.5 rounded-full bg-white/15 px-3 text-xs font-bold text-white hover:bg-white/25"
+            >
+              <ZoomIn className="h-4 w-4" />
+              {zoomScale > 1 ? 'اندازه اصلی' : 'بزرگ‌نمایی'}
             </button>
 
             {hasGallery && galleryImages.length > 1 && (
@@ -700,16 +737,70 @@ export default function ProductDetail() {
               </>
             )}
 
-            <motion.img
-              key={selectedImageIndex}
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              src={galleryImages[selectedImageIndex] || product.image}
-              alt={product.title}
-              className="max-w-[90vw] max-h-[85vh] object-contain rounded-2xl"
-              onClick={(e) => e.stopPropagation()}
-            />
+            <div
+              ref={zoomSurfaceRef}
+              className="flex max-h-[85vh] max-w-[90vw] touch-none items-center justify-center overflow-hidden"
+              onClick={(event) => event.stopPropagation()}
+              onWheel={(event) => {
+                event.stopPropagation();
+                setZoomScale((current) => {
+                  const next = clampZoom(current + (event.deltaY < 0 ? 0.25 : -0.25));
+                  if (next === 1) setZoomPan({ x: 0, y: 0 });
+                  return next;
+                });
+              }}
+              onPointerDown={(event) => {
+                if (event.pointerType !== 'mouse' || zoomScale <= 1) return;
+                event.currentTarget.setPointerCapture(event.pointerId);
+                dragRef.current = { id: event.pointerId, x: event.clientX, y: event.clientY, panX: zoomPan.x, panY: zoomPan.y };
+              }}
+              onPointerMove={(event) => {
+                const drag = dragRef.current;
+                if (!drag || drag.id !== event.pointerId) return;
+                setZoomPan({ x: drag.panX + event.clientX - drag.x, y: drag.panY + event.clientY - drag.y });
+              }}
+              onPointerUp={() => { dragRef.current = null; }}
+              onTouchStart={(event) => {
+                if (event.touches.length === 2) {
+                  pinchRef.current = { distance: touchDistance(event.touches), scale: zoomScale };
+                  dragRef.current = null;
+                } else if (event.touches.length === 1 && zoomScale > 1) {
+                  dragRef.current = {
+                    id: -1,
+                    x: event.touches[0].clientX,
+                    y: event.touches[0].clientY,
+                    panX: zoomPan.x,
+                    panY: zoomPan.y,
+                  };
+                }
+              }}
+              onTouchMove={(event) => {
+                if (event.touches.length === 2 && pinchRef.current && pinchRef.current.distance > 0) {
+                  const next = clampZoom(pinchRef.current.scale * (touchDistance(event.touches) / pinchRef.current.distance));
+                  setZoomScale(next);
+                  if (next === 1) setZoomPan({ x: 0, y: 0 });
+                } else if (event.touches.length === 1 && dragRef.current && zoomScale > 1) {
+                  const drag = dragRef.current;
+                  setZoomPan({
+                    x: drag.panX + event.touches[0].clientX - drag.x,
+                    y: drag.panY + event.touches[0].clientY - drag.y,
+                  });
+                }
+              }}
+              onTouchEnd={() => {
+                pinchRef.current = null;
+                dragRef.current = null;
+              }}
+            >
+              <img
+                key={selectedImageIndex}
+                src={galleryImages[selectedImageIndex] || product.image}
+                alt={product.title}
+                draggable={false}
+                className="max-h-[85vh] max-w-[90vw] select-none rounded-2xl object-contain"
+                style={{ transform: `translate(${zoomPan.x}px, ${zoomPan.y}px) scale(${zoomScale})` }}
+              />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

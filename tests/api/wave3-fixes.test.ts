@@ -11,7 +11,8 @@ import { env } from '../../server/env.js';
 /**
  * Wave 3 regressions:
  *  1. Store settings persist in DB (survive restarts) — admin API round-trip.
- *  2. Submitting a review recomputes product rating + reviewsCount.
+ *  2. A new review stays unpublished until an admin approves it; approval
+ *     recomputes product rating + reviewsCount.
  *  3. Cart add rejects out-of-stock products and over-stock quantities.
  */
 
@@ -20,7 +21,9 @@ describe('Wave 3 — settings persistence, rating recompute, cart stock guard', 
   const phone = '09' + Math.floor(100000000 + Math.random() * 900000000);
   const userId = 'w3-user-' + ts;
   let token: string;
+  let adminToken: string;
   let productId: number;
+  const adminId = 'w3-admin-' + ts;
 
   beforeAll(async () => {
     await db.insert(users).values({
@@ -31,6 +34,17 @@ describe('Wave 3 — settings persistence, rating recompute, cart stock guard', 
       role: 'user',
     });
     token = jwt.sign({ userId }, env.JWT_ACCESS_SECRET, { expiresIn: '1h' });
+
+    const adminPhone = '09' + Math.floor(100000000 + Math.random() * 900000000);
+    await db.insert(users).values({
+      id: adminId,
+      name: 'Wave3 Admin',
+      phone: adminPhone,
+      password: 'hash',
+      role: 'admin',
+      mustChangePassword: false,
+    });
+    adminToken = jwt.sign({ userId: adminId }, env.JWT_ACCESS_SECRET, { expiresIn: '1h' });
 
     const p = await db.insert(products).values({
       title: 'W3 Rated Product',
@@ -50,6 +64,7 @@ describe('Wave 3 — settings persistence, rating recompute, cart stock guard', 
       .where(eq(products.id, productId));
     await db.delete(products).where(eq(products.id, productId));
     await db.delete(users).where(eq(users.id, userId));
+    await db.delete(users).where(eq(users.id, adminId));
     // restore default settings rows created by this suite
     await db.delete(storeSettings).where(eq(storeSettings.key, 'announcement'));
   });
@@ -68,18 +83,31 @@ describe('Wave 3 — settings persistence, rating recompute, cart stock guard', 
     expect(row?.value).toBe('تست پایداری تنظیمات W3');
   });
 
-  it('submitting a review recomputes product rating and reviewsCount', async () => {
+  it('submitting a review stays unpublished until an admin approves it', async () => {
     const r1 = await request(app)
       .post(`/api/products/${productId}/reviews`)
       .send({ userName: 'Ali', rating: 5, title: 'عالی', comment: 'خیلی خوب بود' });
     expect(r1.status).toBe(201);
+    expect(r1.body.approved).toBe(false);
 
     const r2 = await request(app)
       .post(`/api/products/${productId}/reviews`)
       .send({ userName: 'Sara', rating: 3, title: 'متوسط', comment: 'قابل قبول' });
     expect(r2.status).toBe(201);
 
-    const product = await db.query.products.findFirst({ where: eq(products.id, productId) });
+    let product = await db.query.products.findFirst({ where: eq(products.id, productId) });
+    expect(product?.rating).toBe(0);
+    expect(product?.reviewsCount).toBe(0);
+
+    for (const id of [r1.body.id, r2.body.id]) {
+      const approved = await request(app)
+        .put(`/api/admin/reviews/${id}/approved`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({ approved: true });
+      expect(approved.status).toBe(200);
+    }
+
+    product = await db.query.products.findFirst({ where: eq(products.id, productId) });
     expect(product?.rating).toBe(4); // (5+3)/2 = 4
     expect(product?.reviewsCount).toBe(2);
   });

@@ -1,12 +1,22 @@
 import React, { useState } from 'react';
 import { User as UserIcon, Phone, MapPin, Building, Star, CheckCircle2, AlertCircle } from 'lucide-react';
-import { CheckoutFormData } from '../../hooks/useCheckoutForm';
+import { CheckoutFormData, CheckoutFieldErrors } from '../../hooks/useCheckoutForm';
 import { useAuth } from '../../contexts/AuthContext';
 import { normalizeIranianMobile, isValidIranianMobile, toEnglishDigits } from '../../lib/utils';
 
 interface CheckoutRecipientFormProps {
   formData: CheckoutFormData;
   updateField: (field: keyof CheckoutFormData, value: string) => void;
+  fieldErrors?: CheckoutFieldErrors;
+}
+
+function FieldError({ id, message }: { id: string; message?: string }) {
+  if (!message) return null;
+  return (
+    <p id={id} className="mt-1.5 text-[11px] font-bold text-rose-600 dark:text-rose-400" role="alert">
+      {message}
+    </p>
+  );
 }
 
 const PROVINCES = [
@@ -30,6 +40,7 @@ const PROVINCES = [
 export default function CheckoutRecipientForm({
   formData,
   updateField,
+  fieldErrors = {},
 }: CheckoutRecipientFormProps) {
   const { user } = useAuth();
   const savedAddresses = user?.addresses || [];
@@ -120,14 +131,21 @@ export default function CheckoutRecipientForm({
               value={formData.name}
               onChange={(e) => updateField('name', e.target.value)}
               placeholder="مثلا: علی محمدی"
-              className="w-full bg-gray-50/80 dark:bg-gray-800/70 border border-gray-200/80 dark:border-gray-700 rounded-2xl py-3 px-4 pr-10 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30 transition-colors"
+              className={`w-full bg-gray-50/80 dark:bg-gray-800/70 border rounded-2xl py-3 px-4 pr-10 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none transition-colors ${
+                fieldErrors.name
+                  ? 'border-rose-400 focus:border-rose-500'
+                  : 'border-gray-200/80 dark:border-gray-700 focus:border-[var(--color-cta)]/30'
+              }`}
               required
             id="checkout-name"
             name="recipientName"
             autoComplete="name"
+            aria-invalid={!!fieldErrors.name}
+            aria-describedby={fieldErrors.name ? 'checkout-name-error' : undefined}
             />
             <UserIcon className="h-4 w-4 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
+          <FieldError id="checkout-name-error" message={fieldErrors.name} />
         </div>
 
         {/* Phone */}
@@ -151,7 +169,7 @@ export default function CheckoutRecipientForm({
               onBlur={(e) => updateField('phone', normalizeIranianMobile(e.target.value))}
               placeholder="09123456789"
               className={`w-full bg-gray-50/80 dark:bg-gray-800/70 border rounded-2xl py-3 px-4 pl-10 text-left font-mono text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none transition-colors ${
-                !isPhoneValid
+                !isPhoneValid || fieldErrors.phone
                   ? 'border-rose-400 focus:border-rose-500 text-rose-600'
                   : 'border-gray-200/80 dark:border-gray-700 focus:border-[var(--color-cta)]/30'
               }`}
@@ -159,9 +177,12 @@ export default function CheckoutRecipientForm({
             id="checkout-phone"
             name="recipientPhone"
             autoComplete="tel"
+            aria-invalid={!!fieldErrors.phone || !isPhoneValid}
+            aria-describedby={fieldErrors.phone ? 'checkout-phone-error' : undefined}
             />
             <Phone className="h-4 w-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
+          <FieldError id="checkout-phone-error" message={fieldErrors.phone} />
         </div>
 
         {/* Province */}
@@ -172,9 +193,15 @@ export default function CheckoutRecipientForm({
           <select
             value={formData.province}
             onChange={(e) => updateField('province', e.target.value)}
-            className="w-full bg-gray-50/80 dark:bg-gray-800/70 border border-gray-200/80 dark:border-gray-700 rounded-2xl py-3 px-4 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30 cursor-pointer transition-colors"
+            className={`w-full bg-gray-50/80 dark:bg-gray-800/70 border rounded-2xl py-3 px-4 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none cursor-pointer transition-colors ${
+              fieldErrors.province
+                ? 'border-rose-400 focus:border-rose-500'
+                : 'border-gray-200/80 dark:border-gray-700 focus:border-[var(--color-cta)]/30'
+            }`}
           id="checkout-province"
           name="province"
+          aria-invalid={!!fieldErrors.province}
+          aria-describedby={fieldErrors.province ? 'checkout-province-error' : undefined}
           >
             {PROVINCES.map((p) => (
               <option key={p} value={p}>
@@ -182,6 +209,7 @@ export default function CheckoutRecipientForm({
               </option>
             ))}
           </select>
+          <FieldError id="checkout-province-error" message={fieldErrors.province} />
         </div>
 
         {/* City */}
@@ -194,12 +222,19 @@ export default function CheckoutRecipientForm({
             value={formData.city}
             onChange={(e) => updateField('city', e.target.value)}
             placeholder="مثلا: تهران"
-            className="w-full bg-gray-50/80 dark:bg-gray-800/70 border border-gray-200/80 dark:border-gray-700 rounded-2xl py-3 px-4 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30 transition-colors"
+            className={`w-full bg-gray-50/80 dark:bg-gray-800/70 border rounded-2xl py-3 px-4 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none transition-colors ${
+              fieldErrors.city
+                ? 'border-rose-400 focus:border-rose-500'
+                : 'border-gray-200/80 dark:border-gray-700 focus:border-[var(--color-cta)]/30'
+            }`}
             required
           id="checkout-city"
           name="recipientCity"
           autoComplete="address-level2"
+          aria-invalid={!!fieldErrors.city}
+          aria-describedby={fieldErrors.city ? 'checkout-city-error' : undefined}
           />
+          <FieldError id="checkout-city-error" message={fieldErrors.city} />
         </div>
       </div>
 
@@ -213,12 +248,19 @@ export default function CheckoutRecipientForm({
           value={formData.address}
           onChange={(e) => updateField('address', e.target.value)}
           placeholder="خیابان اصلی، بلوار، کوچه، پلاک، زنگ یا شماره واحد..."
-          className="w-full bg-gray-50/80 dark:bg-gray-800/70 border border-gray-200/80 dark:border-gray-700 rounded-2xl p-4 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30 resize-none transition-colors leading-relaxed"
+          className={`w-full bg-gray-50/80 dark:bg-gray-800/70 border rounded-2xl p-4 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none resize-none transition-colors leading-relaxed ${
+            fieldErrors.address
+              ? 'border-rose-400 focus:border-rose-500'
+              : 'border-gray-200/80 dark:border-gray-700 focus:border-[var(--color-cta)]/30'
+          }`}
           required
         id="checkout-address"
         name="recipientAddress"
         autoComplete="street-address"
+        aria-invalid={!!fieldErrors.address}
+        aria-describedby={fieldErrors.address ? 'checkout-address-error' : undefined}
         />
+        <FieldError id="checkout-address-error" message={fieldErrors.address} />
       </div>
 
       {/* Postal Code & Notes */}
@@ -242,14 +284,17 @@ export default function CheckoutRecipientForm({
             onChange={(e) => updateField('postalCode', e.target.value)}
             placeholder="1234567890"
             className={`w-full bg-gray-50/80 dark:bg-gray-800/70 border rounded-2xl py-3 px-4 text-left font-mono text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none transition-colors ${
-              !isPostalCodeValid
+              !isPostalCodeValid || fieldErrors.postalCode
                 ? 'border-rose-400 focus:border-rose-500 text-rose-600'
                 : 'border-gray-200/80 dark:border-gray-700 focus:border-[var(--color-cta)]/30'
             }`}
           id="checkout-postal"
           name="recipientPostal"
           autoComplete="postal-code"
+          aria-invalid={!!fieldErrors.postalCode || !isPostalCodeValid}
+          aria-describedby={fieldErrors.postalCode ? 'checkout-postal-error' : undefined}
           />
+          <FieldError id="checkout-postal-error" message={fieldErrors.postalCode} />
         </div>
 
         <div>

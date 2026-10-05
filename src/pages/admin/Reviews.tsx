@@ -1,6 +1,7 @@
 import { authFetch } from '../../lib/api';
 import React, { useState, useEffect } from 'react';
 import { MessageSquare, Star, Trash2, Search, Filter, ThumbsUp, ThumbsDown, CheckCircle, AlertCircle } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import PageHeader from '../../components/admin/PageHeader';
 import { useToast } from '../../contexts/ToastContext';
 
@@ -28,6 +29,10 @@ export default function AdminReviews() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [ratingFilter, setRatingFilter] = useState<string>('all');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const rawStatus = searchParams.get('status');
+  const statusFilter: 'pending' | 'published' | 'all' =
+    rawStatus === 'published' || rawStatus === 'all' ? rawStatus : 'pending';
   const [selectedReview, setSelectedReview] = useState<ReviewItem | null>(null);
   const { addToast } = useToast();
 
@@ -98,7 +103,10 @@ export default function AdminReviews() {
       r.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       r.comment.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (r.product && r.product.title.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchesRating && matchesSearch;
+    const matchesStatus = statusFilter === 'all'
+      || (statusFilter === 'pending' && !(r.approved ?? true))
+      || (statusFilter === 'published' && (r.approved ?? true));
+    return matchesRating && matchesSearch && matchesStatus;
   });
 
   return (
@@ -126,6 +134,28 @@ export default function AdminReviews() {
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
+          {([
+            ['pending', 'در انتظار'],
+            ['published', 'منتشرشده'],
+            ['all', 'همه'],
+          ] as const).map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => {
+                const next = new URLSearchParams(searchParams);
+                next.set('status', id);
+                setSearchParams(next, { replace: true });
+              }}
+              className={`px-3 py-2 rounded-xl text-xs font-bold border transition-colors ${
+                statusFilter === id
+                  ? 'bg-[var(--color-cta)] border-[var(--color-cta)] text-white'
+                  : 'bg-gray-50 dark:bg-gray-700/50 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
           <Filter className="h-4 w-4 text-gray-400" />
           <select
             value={ratingFilter}
@@ -195,7 +225,7 @@ export default function AdminReviews() {
                       <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${(rev.approved ?? true)
                         ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
                         : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'}`}>
-                        {(rev.approved ?? true) ? 'منتشرشده' : 'رد‌شده'}
+                        {(rev.approved ?? true) ? 'منتشرشده' : 'در انتظار بررسی'}
                       </span>
                     </td>
                     <td className="p-3.5">

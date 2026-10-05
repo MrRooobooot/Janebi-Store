@@ -18,6 +18,35 @@ export interface CheckoutFormData {
   shippingMethod: 'express' | 'standard';
 }
 
+export type CheckoutFieldErrorKey = 'name' | 'phone' | 'province' | 'city' | 'address' | 'postalCode';
+export type CheckoutFieldErrors = Partial<Record<CheckoutFieldErrorKey, string>>;
+
+const FIELD_ORDER: CheckoutFieldErrorKey[] = ['name', 'phone', 'province', 'city', 'address', 'postalCode'];
+const FIELD_IDS: Record<CheckoutFieldErrorKey, string> = {
+  name: 'checkout-name',
+  phone: 'checkout-phone',
+  province: 'checkout-province',
+  city: 'checkout-city',
+  address: 'checkout-address',
+  postalCode: 'checkout-postal',
+};
+
+function collectFieldErrors(formData: CheckoutFormData): CheckoutFieldErrors {
+  const errors: CheckoutFieldErrors = {};
+  if (!formData.name.trim()) errors.name = 'نام تحویل‌گیرنده را وارد کنید';
+  if (!isValidIranianMobile(normalizeIranianMobile(formData.phone))) {
+    errors.phone = 'لطفا یک شماره موبایل معتبر وارد کنید (مثال: ۰۹۱۲۳۴۵۶۷۸۹)';
+  }
+  if (!formData.province) errors.province = 'استان را انتخاب کنید';
+  if (!formData.city.trim()) errors.city = 'شهر را وارد کنید';
+  if (!formData.address.trim()) errors.address = 'آدرس را وارد کنید';
+  const postal = toEnglishDigits(formData.postalCode.trim());
+  if (postal && !/^\d{10}$/.test(postal)) {
+    errors.postalCode = 'کد پستی باید ۱۰ رقم باشد (یا خالی بگذارید)';
+  }
+  return errors;
+}
+
 export function useCheckoutForm() {
   const { cart, cartTotal, clearCart, appliedCoupon, couponDetails, couponDiscount, setAppliedCoupon } = useCart();
   const { addToast } = useToast();
@@ -36,6 +65,7 @@ export function useCheckoutForm() {
   });
 
   const [submitting, setSubmitting] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<CheckoutFieldErrors>({});
 
   const isFreeShipping = cartTotal >= FREE_SHIPPING_THRESHOLD;
   // Mirror the server exactly (server/routes/orders.ts) — never invent different numbers here.
@@ -48,28 +78,31 @@ export function useCheckoutForm() {
 
   const updateField = (field: keyof CheckoutFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+    if (field in FIELD_IDS) {
+      setFieldErrors((prev) => {
+        if (!prev[field as CheckoutFieldErrorKey]) return prev;
+        const next = { ...prev };
+        delete next[field as CheckoutFieldErrorKey];
+        return next;
+      });
+    }
   };
 
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const errors = collectFieldErrors(formData);
+    const firstInvalid = FIELD_ORDER.find((key) => errors[key]);
+    if (firstInvalid) {
+      setFieldErrors(errors);
+      addToast(errors[firstInvalid]!, 'error');
+      document.getElementById(FIELD_IDS[firstInvalid])?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    setFieldErrors({});
+
     const normalizedPhone = normalizeIranianMobile(formData.phone);
-    if (!isValidIranianMobile(normalizedPhone)) {
-      addToast('لطفا یک شماره موبایل معتبر وارد کنید (مثال: ۰۹۱۲۳۴۵۶۷۸۹)', 'error');
-      return;
-    }
-
-    if (!formData.name.trim() || !formData.province || !formData.city || !formData.address.trim()) {
-      addToast('لطفا تمامی اطلاعات ضروری گیرنده را تکمیل کنید', 'error');
-      return;
-    }
-
-    // Optional field, but if filled it must be a valid 10-digit Iranian postal code.
     const postal = toEnglishDigits(formData.postalCode.trim());
-    if (postal && !/^\d{10}$/.test(postal)) {
-      addToast('کد پستی باید ۱۰ رقم باشد (یا خالی بگذارید)', 'error');
-      return;
-    }
 
     setSubmitting(true);
 
@@ -117,7 +150,7 @@ export function useCheckoutForm() {
       // never the raw server string ("Unauthorized: No token provided").
       if (res.status === 401) {
         addToast('برای ثبت سفارش ابتدا وارد حساب خود شوید', 'error');
-        navigate('/login');
+        navigate('/login?next=/checkout');
         return;
       }
 
@@ -182,6 +215,7 @@ export function useCheckoutForm() {
     shippingFee,
     finalPayable,
     submitting,
+    fieldErrors,
     handleCheckout,
   };
 }

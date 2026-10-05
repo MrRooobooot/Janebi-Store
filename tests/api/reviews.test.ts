@@ -94,12 +94,13 @@ describe('Reviews API Integration Tests', () => {
     expect(res.body.productId).toBe(testProductId);
     expect(res.body.rating).toBe(5);
     expect(res.body.userName).toBe('امیر رضایی');
+    expect(res.body.approved).toBe(false);
     createdReviewIds.push(res.body.id);
 
-    // Verify it is returned in GET
+    // Unpublished reviews stay out of the public list.
     const getRes = await request(app).get(`/api/products/${testProductId}/reviews`);
     expect(getRes.status).toBe(200);
-    expect(getRes.body.some((r: any) => r.id === res.body.id)).toBe(true);
+    expect(getRes.body.some((r: any) => r.id === res.body.id)).toBe(false);
   });
 
   it('POST /api/products/:id/reviews accepts lower rating boundary (rating = 1)', async () => {

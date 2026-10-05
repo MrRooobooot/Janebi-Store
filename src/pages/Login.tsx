@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { AlertCircle,  Phone, Lock, Eye, EyeOff, LogIn, ArrowLeft, KeyRound, ShieldCheck } from "lucide-react";
 import { motion } from "motion/react";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../contexts/ToastContext";
-import { isValidIranianMobile, normalizeIranianMobile, toPersianDigits } from "../lib/utils";
+import { isValidIranianMobile, normalizeIranianMobile, safeNextPath, toPersianDigits } from "../lib/utils";
 import { resolveOtpStatus } from "../lib/otp";
 
 // OTP login is DEAD in production (no SMS provider — audit known blocker #5).
@@ -19,6 +19,8 @@ export default function Login() {
   const { login } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const nextPath = safeNextPath(searchParams.get("next"));
 
   const [mode, setMode] = useState<"password" | "forgot">("password");
   const [otpEnabled, setOtpEnabled] = useState(false);
@@ -203,7 +205,7 @@ export default function Login() {
       if (result.mustChangePassword) {
         navigate("/force-change-password");
       } else {
-        navigate("/profile");
+        navigate(nextPath);
       }
     }
   };
@@ -332,6 +334,7 @@ export default function Login() {
                   />
                   <Lock className="h-4 w-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
+                <p className="mt-1.5 text-[11px] font-medium text-gray-500 dark:text-gray-400">حداقل ۶ کاراکتر</p>
               </div>
 
               <div>
@@ -383,6 +386,7 @@ export default function Login() {
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
+              <p className="mt-1.5 text-[11px] font-medium text-gray-500 dark:text-gray-400">حداقل ۴ کاراکتر</p>
             </div>
           ) : null}
 
@@ -432,7 +436,7 @@ export default function Login() {
 
         <div className="mt-8 pt-6 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-center text-xs font-medium text-gray-500">
           حساب کاربری ندارید؟{" "}
-          <Link to="/register" className="font-extrabold text-[var(--color-emphasis-text)] hover:underline">
+          <Link to={searchParams.get("next") ? `/register?next=${encodeURIComponent(searchParams.get("next") || "")}` : "/register"} className="font-extrabold text-[var(--color-emphasis-text)] hover:underline">
             ثبت‌نام کنید
           </Link>
         </div>

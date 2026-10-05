@@ -219,12 +219,13 @@ describe('Products & Reviews API Integration Tests', () => {
     expect(res.body.productId).toBe(prodId1);
     expect(res.body.rating).toBe(5);
     expect(res.body.title).toBe('کیفیت عالی');
+    expect(res.body.approved).toBe(false);
     createdReviewId = res.body.id;
 
-    // Verify it appears in GET /api/products/:id/reviews
+    // Unpublished reviews stay out of the public list.
     const getRes = await request(app).get(`/api/products/${prodId1}/reviews`);
     expect(getRes.status).toBe(200);
-    expect(getRes.body.some((r: any) => r.id === createdReviewId)).toBe(true);
+    expect(getRes.body.some((r: any) => r.id === createdReviewId)).toBe(false);
   });
 
   it('POST /api/products/:id/reviews returns 400 when rating is less than 1 or greater than 5', async () => {

@@ -97,7 +97,7 @@ export default function Dashboard() {
     { title: "محصولات", value: metrics.totalProducts, icon: Package, color: "text-purple-500", bg: "bg-purple-100 dark:bg-purple-500/20" },
     { title: "کاربران", value: metrics.totalUsers, icon: Users, color: "text-[var(--color-emphasis-text)]", bg: "bg-primary-100 dark:bg-primary-500/20" },
     { title: "پیام‌های خوانده‌نشده", value: toPersianDigits(metrics.unreadMessages || 0), icon: Mail, color: "text-rose-500", bg: "bg-rose-100 dark:bg-rose-500/20" },
-    { title: "نظرات در انتظار بررسی", value: toPersianDigits(metrics.pendingReviews || 0), icon: MessageSquare, color: "text-sky-500", bg: "bg-sky-100 dark:bg-sky-500/20" },
+    { title: "نظرات در انتظار بررسی", value: toPersianDigits(metrics.pendingReviews || 0), icon: MessageSquare, color: "text-sky-500", bg: "bg-sky-100 dark:bg-sky-500/20", href: "/admin/reviews?status=pending" },
   ];
 
   return (
@@ -171,17 +171,30 @@ export default function Dashboard() {
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {statCards.map((stat, i) => (
-          <div key={i} className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-gray-700 flex items-center gap-4 shadow-xs">
-            <div className={`p-4 rounded-xl ${stat.bg}`}>
-              <stat.icon className={`h-8 w-8 ${stat.color}`} />
+        {statCards.map((stat) => {
+          const card = (
+            <>
+              <div className={`p-4 rounded-xl ${stat.bg}`}>
+                <stat.icon className={`h-8 w-8 ${stat.color}`} />
+              </div>
+              <div>
+                <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">{stat.title}</div>
+                <div className="text-xl sm:text-2xl font-bold text-[var(--color-text-main-light)] dark:text-white">{stat.value}</div>
+              </div>
+            </>
+          );
+          const className = "bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-gray-700 flex items-center gap-4 shadow-xs";
+          const href = 'href' in stat ? stat.href : undefined;
+          return href ? (
+            <Link key={stat.title} to={href} className={`${className} hover:border-sky-300 dark:hover:border-sky-700 transition-colors`}>
+              {card}
+            </Link>
+          ) : (
+            <div key={stat.title} className={className}>
+              {card}
             </div>
-            <div>
-              <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">{stat.title}</div>
-              <div className="text-xl sm:text-2xl font-bold text-[var(--color-text-main-light)] dark:text-white">{stat.value}</div>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Analytics Insights */}

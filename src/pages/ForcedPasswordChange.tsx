@@ -115,6 +115,7 @@ export default function ForcedPasswordChange() {
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
             </div>
+            <p className="mt-1.5 text-[11px] font-medium text-gray-500 dark:text-gray-400">حداقل ۸ کاراکتر</p>
           </div>
 
           <div>

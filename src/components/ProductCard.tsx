@@ -84,7 +84,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
               type="button"
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleCompare(product); }}
               aria-label={inCompare ? "حذف از مقایسه" : "افزودن به مقایسه"}
-              className={`hidden sm:flex w-8 h-8 rounded-lg items-center justify-center transition-all cursor-pointer ${
+              className={`flex w-11 h-11 sm:w-8 sm:h-8 rounded-xl sm:rounded-lg items-center justify-center transition-all cursor-pointer ${
                 inCompare 
                   ? 'bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/60 text-[var(--color-emphasis-text)] border border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/40' 
                   : 'bg-slate-50 dark:bg-white/[0.04] text-slate-400 hover:text-[var(--color-emphasis-text)] hover:bg-[var(--color-cta)]/10 dark:hover:bg-[var(--color-cta)]/30 border border-slate-200/60 dark:border-white/[0.06]'
@@ -159,6 +159,11 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
           <h3 className="font-black text-[13px] sm:text-[15px] text-slate-900 dark:text-slate-100 line-clamp-2 leading-snug sm:leading-relaxed h-10 sm:h-12 flex items-start group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors mb-1.5 [text-wrap:balance]">
             {product.title}
           </h3>
+          {product.sku ? (
+            <p dir="ltr" className="font-mono text-[11px] leading-tight text-slate-500 dark:text-slate-400 mb-1.5 text-right">
+              {product.sku}
+            </p>
+          ) : null}
 
           {variant === 'full' && (
           <div className="hidden sm:flex h-5 items-center text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate">
