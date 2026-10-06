@@ -239,20 +239,20 @@ export default function Home() {
             <ArrowLeft className="h-3.5 w-3.5" />
           </Link>
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3 lg:mx-auto lg:w-full lg:max-w-2xl">
           {categories.map((cat) => {
             const Icon = cat.icon;
             return (
               <Link
                 key={cat.slug || cat.title}
                 to={`/products?category=${encodeURIComponent(cat.title)}`}
-                className="group flex min-h-[168px] flex-col items-center justify-center gap-3 rounded-3xl border border-slate-200/80 bg-white p-4 text-center dark:border-white/[0.08] dark:bg-[var(--color-surface-dark)] sm:min-h-[200px]"
+                className="group flex min-h-[168px] flex-col items-center justify-center gap-3 rounded-3xl border border-slate-200/80 bg-white p-4 text-center dark:border-white/[0.08] dark:bg-[var(--color-surface-dark)]"
               >
-                <span className={`flex h-16 w-16 items-center justify-center rounded-2xl sm:h-20 sm:w-20 ${getCategoryWell(cat.title)}`}>
-                  <Icon className="h-8 w-8 stroke-[1.75] sm:h-10 sm:w-10" aria-hidden />
+                <span className={`flex h-16 w-16 items-center justify-center rounded-2xl ${getCategoryWell(cat.title)}`}>
+                  <Icon className="h-8 w-8 stroke-[1.75]" aria-hidden />
                 </span>
                 <span>
-                  <span className="block text-sm font-black leading-snug text-slate-900 transition-colors group-hover:text-[var(--color-emphasis-text)] dark:text-white sm:text-base">{cat.title}</span>
+                  <span className="block text-sm font-black leading-snug text-slate-900 transition-colors group-hover:text-[var(--color-emphasis-text)] dark:text-white">{cat.title}</span>
                   <span className="mt-1 block text-xs text-slate-500 dark:text-slate-400">{toPersianDigits(cat.count || 0)} کالا</span>
                 </span>
               </Link>
