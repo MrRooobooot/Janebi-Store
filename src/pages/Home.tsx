@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { getJson } from '../lib/jsonFetch';
 import { getCategoryIcon, getCategoryWell } from '../lib/categoryIcons';
+import { pickHomeProducts } from '../lib/homeCatalogue';
 import { Product } from '../types';
 import { toPersianDigits, normalizePersianTypography } from '../lib/utils';
 import { useStoreSettings } from '../hooks/useStoreSettings';
@@ -107,10 +108,13 @@ export default function Home() {
       .slice(0, 4);
   }, [products]);
 
-  const filteredProducts = useMemo(() => {
-    if (activeTab === 'all') return products.slice(0, 8);
-    return products.filter((p) => p.category === activeTab);
-  }, [products, activeTab]);
+  const filteredProducts = useMemo(
+    () => pickHomeProducts(products, activeTab),
+    [products, activeTab],
+  );
+  const catalogueHref = activeTab === 'all'
+    ? '/products'
+    : `/products?category=${encodeURIComponent(activeTab)}`;
 
   const valueProps = useMemo(() => [
     {
@@ -212,7 +216,7 @@ export default function Home() {
             </div>
           )}
         </div>
-        <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 lg:grid-cols-4">
+        <div className="mt-4 hidden gap-x-4 gap-y-3 lg:grid lg:grid-cols-4">
           {valueProps.map((item) => {
             const Icon = item.icon;
             return (
@@ -228,18 +232,17 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="w-full">
+      <section className="w-full lg:mx-auto lg:max-w-2xl">
         <div className="mb-4 flex items-end justify-between gap-3 sm:mb-6">
           <div>
             <h2 className="text-lg font-black text-slate-900 dark:text-white sm:text-2xl">دسته‌بندی‌های تخصصی</h2>
-            <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-300">دو دستهٔ فروشگاه</p>
           </div>
           <Link to="/products" className="inline-flex min-h-11 shrink-0 items-center gap-1 text-xs font-bold text-[var(--color-emphasis-text)]">
             کاتالوگ
             <ArrowLeft className="h-3.5 w-3.5" />
           </Link>
         </div>
-        <div className="grid grid-cols-2 gap-3 lg:mx-auto lg:w-full lg:max-w-2xl">
+        <div className="grid grid-cols-2 gap-3">
           {categories.map((cat) => {
             const Icon = cat.icon;
             return (
@@ -266,15 +269,12 @@ export default function Home() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5">
           <div className="flex min-w-0 flex-wrap items-end gap-x-3 gap-y-1">
             <div className="min-w-0">
-              <p className="text-xs text-slate-500">کاتالوگ</p>
-              <h2 className="mt-1 text-lg font-black text-slate-900 dark:text-white sm:text-2xl">کالاهای برگزیده بازار</h2>
+              <h2 className="text-lg font-black text-slate-900 dark:text-white sm:text-2xl">کالاهای برگزیده بازار</h2>
             </div>
-            {activeTab === 'all' && (
-              <Link to="/products" className="inline-flex min-h-11 shrink-0 items-center gap-1 text-xs font-bold text-[var(--color-emphasis-text)]">
-                مشاهده همه
-                <ArrowLeft className="h-3.5 w-3.5" />
-              </Link>
-            )}
+            <Link to={catalogueHref} className="inline-flex min-h-11 shrink-0 items-center gap-1 text-xs font-bold text-[var(--color-emphasis-text)]">
+              مشاهده همه
+              <ArrowLeft className="h-3.5 w-3.5" />
+            </Link>
           </div>
 
           {/* Live category tabs — equality on the catalogue name, not a substring guess */}
@@ -319,6 +319,21 @@ export default function Home() {
           )}
         </div>
       </section>
+
+      <div className="grid grid-cols-2 gap-x-4 gap-y-3 lg:hidden">
+        {valueProps.map((item) => {
+          const Icon = item.icon;
+          return (
+            <div key={item.title} className="flex items-start gap-2">
+              <Icon className="mt-0.5 h-4 w-4 shrink-0 text-slate-500" />
+              <span className="min-w-0">
+                <span className="block text-xs font-bold leading-snug text-slate-900 dark:text-white">{item.title}</span>
+                <span className="mt-0.5 block text-xs leading-snug text-slate-500 dark:text-slate-400">{item.desc}</span>
+              </span>
+            </div>
+          );
+        })}
+      </div>
 
       {(loading || dealProducts.length > 0) && (
       <section className="w-full">

@@ -23,6 +23,18 @@ export default function ChatWidget() {
   const location = useLocation();
   const settings = useStoreSettings();
   const purchasePath = /^\/(product\/|cart|checkout)/.test(location.pathname);
+  const onHome = location.pathname === '/';
+  const [homeChatClear, setHomeChatClear] = useState(false);
+  useEffect(() => {
+    if (!onHome) return;
+    // The homepage tabs mount after this widget, so a one-shot measurement
+    // misses them. Scroll position does not depend on that node.
+    const update = () => setHomeChatClear(window.scrollY > 280);
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    return () => window.removeEventListener('scroll', update);
+  }, [onHome]);
+  const tuckChat = purchasePath || (onHome && !homeChatClear);
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     { 
@@ -108,7 +120,7 @@ export default function ChatWidget() {
   };
 
   return (
-    <div className={`fixed left-3 z-50 flex-col items-start transition-all duration-300 print:hidden sm:left-auto sm:right-6 sm:items-end ${purchasePath ? 'hidden sm:flex sm:bottom-6' : 'bottom-[5.75rem] flex sm:bottom-6'}`}>
+    <div className={`fixed left-3 z-50 flex-col items-start transition-all duration-300 print:hidden sm:left-auto sm:right-6 sm:items-end ${tuckChat ? 'hidden sm:flex sm:bottom-6' : 'bottom-[5.75rem] flex sm:bottom-6'}`}>
       {isOpen && (
           <div
             className="dropdown-in bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl shadow-2xl border border-gray-200 dark:border-[var(--color-border-dark)] w-[min(24rem,calc(100vw-5.75rem))] sm:w-96 max-h-[min(32rem,calc(100dvh-8rem))] h-[32rem] flex flex-col overflow-hidden mb-4 transition-colors"

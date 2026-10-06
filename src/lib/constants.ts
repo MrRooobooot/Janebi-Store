@@ -51,15 +51,15 @@ export const STORE_SETTINGS_DEFAULTS: Record<string, string> = {
   // Homepage sections — admin/bale-bot editable (2026-09-09). Every homepage
   // block reads these via /api/settings; defaults = current live copy.
   announcementBarEnabled: 'true', // 'false' hides the top announcement bar (bot toggle st:bar_tog)
-  dealsTitle: 'پیشنهادهای شگفت‌انگیز روز',
-  dealsSubtitle: 'تخفیف‌های محدود با تضمین کمترین قیمت بازار',
+  dealsTitle: 'کالاهای تخفیف‌دار',
+  dealsSubtitle: 'تخفیف روی کالاهای موجود فروشگاه',
   b2bTitle: 'فروش عمده، کارتنی و همکاران سراسر ایران',
   b2bDesc: 'قیمت همکاری ویژه برای مغازه‌داران و خریداران عمده هولدر و کابل',
   b2bLink: '/contact?type=wholesale',
   b2bButtonText: 'استعلام لیست قیمت عمده',
   vipBadge: 'باشگاه مشتریان جانبی آرنا',
-  vipTitle: 'کد تخفیف ۱۵٪ هدیه اول عضویت!',
-  vipSubtitle: 'با عضویت در خبرنامه از جدیدترین تخفیف‌های شگفت‌انگیز، جادویی‌ترین پکیج‌های لوازم جانبی و کوپن‌های اختصاصی باخبر شوید.',
+  vipTitle: 'کد تخفیف ۱۰٪ هدیه اول عضویت!',
+  vipSubtitle: 'با عضویت، کد تخفیف ۱۰٪ برای اولین خرید را می‌گیرید.',
   vipCouponCode: 'WELCOME10', // shown after successful newsletter signup (real code must exist in coupons table)
   valueProp1Title: 'فروش تک و عمده همکاران',
   valueProp1Desc: 'قیمت رقابتی بازار و ارسال کارتنی برای فروشگاه‌ها',
