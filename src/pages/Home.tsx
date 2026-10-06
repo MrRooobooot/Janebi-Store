@@ -11,7 +11,7 @@ import {
   PackageCheck, ChevronLeft, ChevronRight,
 } from 'lucide-react';
 import { getJson } from '../lib/jsonFetch';
-import { getCategoryIcon } from '../lib/categoryIcons';
+import { getCategoryIcon, getCategoryWell } from '../lib/categoryIcons';
 import { Product } from '../types';
 import { toPersianDigits, normalizePersianTypography } from '../lib/utils';
 import { useStoreSettings } from '../hooks/useStoreSettings';
@@ -135,9 +135,6 @@ export default function Home() {
     },
   ], [settings]);
 
-  const categoryCover = (title: string) =>
-    products.find((p) => p.category === title && /\.(webp|png|jpe?g)(\?|$)/i.test(p.image || ''))?.image;
-
   return (
     <div className="page-stack pb-24 lg:pb-16 w-full max-w-full overflow-hidden box-border">
       
@@ -244,21 +241,19 @@ export default function Home() {
         </div>
         <div className="grid grid-cols-2 gap-3">
           {categories.map((cat) => {
-            const cover = categoryCover(cat.title);
+            const Icon = cat.icon;
             return (
               <Link
                 key={cat.slug || cat.title}
                 to={`/products?category=${encodeURIComponent(cat.title)}`}
-                className="flex min-h-[168px] flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white dark:border-white/[0.08] dark:bg-[var(--color-surface-dark)]"
+                className="group flex min-h-[168px] flex-col items-center justify-center gap-3 rounded-3xl border border-slate-200/80 bg-white p-4 text-center dark:border-white/[0.08] dark:bg-[var(--color-surface-dark)] sm:min-h-[200px]"
               >
-                <span className="flex aspect-[4/3] items-center justify-center overflow-hidden bg-white p-3 sm:aspect-[16/9] dark:bg-white/[0.04]">
-                  {cover ? (
-                    <img src={cover} alt="" className="h-full w-full object-contain" />
-                  ) : null}
+                <span className={`flex h-16 w-16 items-center justify-center rounded-2xl sm:h-20 sm:w-20 ${getCategoryWell(cat.title)}`}>
+                  <Icon className="h-8 w-8 stroke-[1.75] sm:h-10 sm:w-10" aria-hidden />
                 </span>
-                <span className="flex items-baseline justify-between gap-2 px-3 py-3">
-                  <span className="text-sm font-black leading-snug text-slate-900 dark:text-white">{cat.title}</span>
-                  <span className="shrink-0 text-xs text-slate-500">{toPersianDigits(cat.count || 0)} کالا</span>
+                <span>
+                  <span className="block text-sm font-black leading-snug text-slate-900 transition-colors group-hover:text-[var(--color-emphasis-text)] dark:text-white sm:text-base">{cat.title}</span>
+                  <span className="mt-1 block text-xs text-slate-500 dark:text-slate-400">{toPersianDigits(cat.count || 0)} کالا</span>
                 </span>
               </Link>
             );
