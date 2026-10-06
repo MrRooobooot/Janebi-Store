@@ -47,25 +47,23 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
     <div className={`linear-card bg-white dark:bg-[var(--color-surface-dark)] rounded-2xl border border-slate-200/80 dark:border-white/[0.08] ${cardPad} transition-all duration-300 relative flex flex-col h-full group select-none hover:-translate-y-0.5 hover:shadow-[var(--shadow-elevation-2)] overflow-hidden`}>
       
       {/* 1. Header Badges & Quick Action Floating Buttons */}
-      <div className="flex items-center justify-between gap-2 mb-2 sm:mb-2.5 relative z-10">
-          <div className="min-w-0 flex-1">
-            {outOfStock ? (
-              <span className="bg-slate-100 dark:bg-white/[0.06] text-slate-500 dark:text-slate-400 text-xs font-bold px-2 py-0.5 rounded-full border border-slate-200 dark:border-white/[0.08] inline-block">
-                ناموجود
-              </span>
-            ) : product.discount && product.discount > 0 ? (
-              <span className="inline-flex h-6 max-w-full items-center gap-1 whitespace-nowrap rounded-full bg-[var(--color-cta)] px-2.5 text-xs font-bold leading-none text-white">
-                <span>{toPersianDigits(product.discount)}٪</span>
-                <span>تخفیف</span>
-              </span>
-            ) : (
-              <span className="hidden sm:block font-bold text-xs text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-white/[0.04] px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-white/[0.06] whitespace-nowrap overflow-hidden text-ellipsis">
-                {product.brand || 'اورجینال'}
-              </span>
-            )}
-          </div>
+      <div className="flex flex-wrap items-center justify-between gap-1.5 mb-2 sm:mb-2.5 relative z-10">
+          {outOfStock ? (
+            <span className="inline-flex h-6 shrink-0 items-center rounded-full border border-slate-200 bg-slate-100 px-2.5 text-xs font-bold text-slate-500 dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-slate-400">
+              ناموجود
+            </span>
+          ) : product.discount && product.discount > 0 ? (
+            <span className="inline-flex h-6 min-w-max shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-[var(--color-cta)] px-2.5 text-xs font-bold leading-none text-white">
+              <span>{toPersianDigits(product.discount)}٪</span>
+              <span>تخفیف</span>
+            </span>
+          ) : (
+            <span className="hidden sm:inline-flex h-6 max-w-full shrink items-center overflow-hidden text-ellipsis whitespace-nowrap rounded-md border border-slate-200/60 bg-slate-100 px-2 text-xs font-bold text-slate-600 dark:border-white/[0.06] dark:bg-white/[0.04] dark:text-slate-400">
+              {product.brand || 'اورجینال'}
+            </span>
+          )}
 
-          <div className="flex items-center gap-1.5 shrink-0">
+          <div className="ms-auto flex shrink-0 items-center gap-1.5">
             {variant === 'full' && (
               <>
             <button
@@ -117,7 +115,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
 
             {/* Low stock badge */}
             {typeof product.stockQuantity === 'number' && product.stockQuantity === 1 && (
-              <span className="absolute bottom-2 right-2 bg-[var(--color-accent-surface)]/90 backdrop-blur-xs text-white text-xs font-bold px-2 py-0.5 rounded-md shadow-xs">
+              <span className="absolute bottom-2 right-2 inline-flex h-6 max-w-[calc(100%-1rem)] items-center rounded-full bg-[var(--color-cta)] px-2.5 text-xs font-bold leading-none text-white">
                 تنها {toPersianDigits(product.stockQuantity)} عدد
               </span>
             )}
@@ -157,7 +155,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
           )}
 
           {/* 4. Product Title — text-wrap balance kills single-word orphan lines («با» alone) */}
-          <h3 className="font-bold text-[13px] sm:text-[15px] text-slate-900 dark:text-slate-100 line-clamp-2 leading-snug sm:leading-relaxed h-10 sm:h-12 flex items-start group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors mb-1.5 [text-wrap:balance]">
+          <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-slate-100 line-clamp-2 leading-snug min-h-10 sm:min-h-12 flex items-start group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors mb-1.5 [text-wrap:balance]">
             {product.title}
           </h3>
           {product.sku ? (
@@ -198,7 +196,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
                 ·
               </span>
             )}
-            <div className="text-[14px] sm:text-[15px] font-bold text-[var(--color-emphasis-text)] tracking-tight leading-tight whitespace-nowrap">
+            <div className="text-sm sm:text-base font-bold text-[var(--color-emphasis-text)] tracking-tight leading-tight">
               {formatPrice(product.price).replace(' تومان', '')}
             </div>
             <span className="text-xs font-bold text-slate-500 dark:text-slate-400 leading-tight">تومان</span>

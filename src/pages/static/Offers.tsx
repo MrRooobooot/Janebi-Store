@@ -25,7 +25,7 @@ export default function Offers() {
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="space-y-8"
+      className="page-stack"
     >
       <div className="bg-gradient-to-r from-rose-600 via-[var(--color-accent-surface)] to-[var(--color-cta-hover)] text-white rounded-2xl p-8 sm:p-10 relative overflow-hidden shadow-lg shadow-rose-600/20">
         <div className="relative z-10 max-w-xl">

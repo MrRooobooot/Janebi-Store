@@ -25,7 +25,7 @@ export default function NewProducts() {
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="space-y-8"
+      className="page-stack"
     >
       <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white rounded-2xl p-8 sm:p-10 relative overflow-hidden shadow-lg shadow-blue-600/20">
         <div className="relative z-10 max-w-xl">

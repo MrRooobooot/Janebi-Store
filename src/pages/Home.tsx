@@ -244,7 +244,7 @@ export default function Home() {
   };
 
   return (
-    <div className="space-y-8 sm:space-y-12 pb-24 lg:pb-16 w-full max-w-full overflow-hidden box-border">
+    <div className="page-stack pb-24 lg:pb-16 w-full max-w-full overflow-hidden box-border">
       
       {/* 1. Hero Showcase Section */}
       <section className="w-full box-border">
@@ -367,8 +367,8 @@ export default function Home() {
                   <Icon className="h-4 w-4" />
                 </span>
                 <span className="min-w-0">
-                  <span className="block truncate text-xs font-bold text-slate-900 dark:text-white">{item.title}</span>
-                  <span className="block truncate text-xs text-slate-500 dark:text-slate-400">{item.desc}</span>
+                  <span className="block text-xs font-bold leading-snug text-slate-900 dark:text-white">{item.title}</span>
+                  <span className="mt-0.5 block text-xs leading-snug text-slate-500 dark:text-slate-400">{item.desc}</span>
                 </span>
               </div>
             );
@@ -525,11 +525,11 @@ export default function Home() {
       {/* 6. Trending Products Tabs Focus on Core Categories */}
       <section className="w-full">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5">
-          <div className="flex items-center gap-2.5 min-w-0">
+          <div className="flex min-w-0 flex-wrap items-center gap-x-2.5 gap-y-1">
             <div className="p-2 rounded-xl bg-primary-50 dark:bg-primary-950/40 border border-primary-200/60 dark:border-primary-900/50">
               <TrendingUp className="h-4 w-4 text-[var(--color-emphasis-text)]" />
             </div>
-            <h2 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white whitespace-nowrap">کالاهای برگزیده بازار</h2>
+            <h2 className="min-w-0 text-lg sm:text-2xl font-black text-slate-900 dark:text-white">کالاهای برگزیده بازار</h2>
             {activeTab === 'all' && (
               <Link to="/products" className="inline-flex min-h-11 shrink-0 items-center gap-1 text-xs font-bold text-[var(--color-emphasis-text)]">
                 مشاهده همه
@@ -539,13 +539,13 @@ export default function Home() {
           </div>
 
           {/* Live category tabs — equality on the catalogue name, not a substring guess */}
-          <div className="flex items-center gap-1.5 overflow-x-auto custom-scrollbar scroll-smooth snap-x pb-1 sm:pb-0">
+          <div className="flex flex-wrap items-center gap-1.5">
             {[{ id: 'all', label: 'همه' }, ...categories.map((cat) => ({ id: cat.title as string, label: cat.title as string }))].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 aria-pressed={activeTab === tab.id}
-                className={`shrink-0 snap-start inline-flex items-center px-4 sm:px-3.5 min-h-11 sm:min-h-[38px] rounded-full text-[13px] sm:text-xs font-bold transition-all duration-200 border ${
+                className={`inline-flex items-center px-4 sm:px-3.5 min-h-11 sm:min-h-[38px] rounded-full text-xs font-bold transition-all duration-200 border ${
                   activeTab === tab.id
                     ? 'bg-[var(--color-cta)] border-[var(--color-cta)] text-white shadow-xs shadow-[var(--color-cta)]/30'
                     : 'border-slate-200 dark:border-slate-700/70 text-[var(--color-text-muted-light)] dark:text-[var(--color-text-muted-dark)] hover:text-[var(--color-text-main-light)] dark:hover:text-[var(--color-text-main-dark)] hover:border-[var(--color-cta)]/40 bg-white dark:bg-white/[0.04]'

@@ -8,7 +8,7 @@ export default function Privacy() {
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="space-y-8"
+      className="page-stack"
     >
       <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white rounded-2xl p-8 sm:p-10 relative overflow-hidden">
         <div className="relative z-10 max-w-xl">

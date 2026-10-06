@@ -65,7 +65,7 @@ export default function Products() {
   }, [isCategoryFiltered, selectedCategory, realCount, loading]);
 
   return (
-    <div className="w-full space-y-6">
+    <div className="page-stack w-full">
       {/* Page Title Header — warm rose-tinted band (Iranian-palette hero, ≥4.5:1 subtext) */}
       <div className="mb-6 text-right bg-[var(--color-band-tint-light)] dark:bg-[var(--color-band-tint-dark)] p-5 sm:p-6 rounded-2xl border border-[var(--color-cta)]/20 dark:border-white/[0.08] shadow-[var(--shadow-elevation-1)]">
           {isCategoryFiltered ? (

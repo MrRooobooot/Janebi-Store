@@ -68,7 +68,7 @@ export default function Brands() {
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="space-y-8 text-right"
+      className="page-stack text-right"
     >
       {/* Hero Header */}
       <div className="relative rounded-2xl bg-gradient-to-r from-gray-950 via-gray-900 to-gray-900 text-white p-6 sm:p-10 overflow-hidden shadow-xl border border-gray-800">

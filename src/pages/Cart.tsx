@@ -55,7 +55,7 @@ export default function Cart() {
       initial={shouldReduceMotion ? false : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className="w-full text-right space-y-6 pb-40 lg:pb-0"
+      className="page-stack w-full text-right pb-40 lg:pb-0"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-8">

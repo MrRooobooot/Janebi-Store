@@ -9,7 +9,7 @@ export default function About() {
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="space-y-10"
+      className="page-stack"
     >
       {/* Hero Section */}
       <div className="rounded-2xl p-8 sm:p-12 text-white [background:linear-gradient(135deg,#e11d48,#be123c)] relative overflow-hidden shadow-lg shadow-[var(--color-cta)]/25">

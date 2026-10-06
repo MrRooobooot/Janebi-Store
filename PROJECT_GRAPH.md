@@ -8,6 +8,11 @@
 
 ---
 
+## Storefront type and spacing (2026-10-06, `src/index.css`)
+- Fluid type lives in `@theme` (`--text-xs` stays 12px; `--text-sm` through `--text-6xl` are `clamp()`). `@layer base` sets `min-width: 0` on flex/grid children so Persian lines wrap instead of sliding under the next box. One-line chips (`.whitespace-nowrap` without `.truncate` / `.overflow-hidden`) keep `min-width: max-content`.
+- Page rhythm is `@utility page-stack` (`clamp` row-gap). Storefront page roots use it. Admin pages stay on fixed `space-y-*`.
+- Product-card discount pills are `shrink-0 min-w-max`. The card header wraps the two 44px actions under the pill on a 320px two-column grid.
+
 ## Real inventory: MCdodo cables (2026-09-19, commit b450c8d — DB-only, no deploy)
 - 7 Mcdodo Lightning cables added to prod via admin API (in-container short-lived owner JWT): ids 5633–5639, SKUs CA-5261/3581/3580/7271/7270/2261/2260, prices 875k/635k/545k/475k/475k/410k/335k تومان, category «کابل و سیم», stock 10. Full ledger: `docs/REAL-INVENTORY-2026-09-19.md`.
 - Prod catalogue now **45 products, 2 categories** («کابل و سیم» + «هولدر و نگهدارنده»). Pre-write backup: `/home/ubuntu/backups/janebi-pre-mcdodo-20260919-190933.db`.

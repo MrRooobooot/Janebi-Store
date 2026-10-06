@@ -229,7 +229,7 @@ export default function ProductDetail() {
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="space-y-10 pb-28 lg:pb-12 text-right"
+        className="page-stack pb-28 lg:pb-12 text-right"
       >
         {/* Main Product Card */}
         <div className="bg-[var(--color-surface-light)]/85 dark:bg-[var(--color-surface-dark)]/85 backdrop-blur-xl rounded-2xl p-6 sm:p-8 lg:p-10 shadow-sm border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] transition-colors">
@@ -549,10 +549,10 @@ export default function ProductDetail() {
           </div>
         </div>
         <div className="bg-[var(--color-surface-light)]/85 dark:bg-[var(--color-surface-dark)]/85 backdrop-blur-xl rounded-2xl p-6 sm:p-8 lg:p-10 shadow-sm border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
-          <div className="flex gap-4 sm:gap-8 border-b border-gray-200 dark:border-[var(--color-border-dark)] mb-6 sm:mb-8 overflow-x-auto scroll-px-4 px-1 pb-px">
+          <div className="flex flex-wrap gap-x-4 gap-y-1 border-b border-gray-200 dark:border-[var(--color-border-dark)] mb-6 sm:mb-8">
             <button
               onClick={() => setActiveTab('description')}
-              className={`min-h-11 flex items-center px-0.5 pb-4 font-bold text-sm sm:text-base border-b-2 transition-all whitespace-nowrap relative ${
+              className={`min-h-11 flex items-center px-0.5 pb-4 font-bold text-sm sm:text-base border-b-2 transition-all relative ${
                 activeTab === 'description'
                   ? 'text-[var(--color-emphasis-text)] border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/30 font-bold'
                   : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-800 dark:hover:text-gray-200'
@@ -562,7 +562,7 @@ export default function ProductDetail() {
             </button>
             <button
               onClick={() => setActiveTab('specs')}
-              className={`min-h-11 flex items-center px-0.5 pb-4 font-bold text-sm sm:text-base border-b-2 transition-all whitespace-nowrap relative ${
+              className={`min-h-11 flex items-center px-0.5 pb-4 font-bold text-sm sm:text-base border-b-2 transition-all relative ${
                 activeTab === 'specs'
                   ? 'text-[var(--color-emphasis-text)] border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/30 font-bold'
                   : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-800 dark:hover:text-gray-200'
@@ -572,7 +572,7 @@ export default function ProductDetail() {
             </button>
             <button
               onClick={() => setActiveTab('reviews')}
-              className={`min-h-11 flex items-center px-0.5 pb-4 font-bold text-sm sm:text-base border-b-2 transition-all whitespace-nowrap relative ${
+              className={`min-h-11 flex items-center px-0.5 pb-4 font-bold text-sm sm:text-base border-b-2 transition-all relative ${
                 activeTab === 'reviews'
                   ? 'text-[var(--color-emphasis-text)] border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/30 font-bold'
                   : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-800 dark:hover:text-gray-200'

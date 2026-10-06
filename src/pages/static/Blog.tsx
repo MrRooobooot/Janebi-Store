@@ -209,7 +209,7 @@ export default function Blog() {
       initial={prefersReducedMotion ? false : { opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: prefersReducedMotion ? 0 : 0.4 }}
-      className="space-y-8"
+      className="page-stack"
     >
       <div className="text-white rounded-2xl [background:linear-gradient(135deg,#e11d48,#be123c)] p-8 sm:p-10 relative overflow-hidden shadow-lg shadow-[var(--color-cta)]/25">
         <div className="relative z-10 max-w-xl">

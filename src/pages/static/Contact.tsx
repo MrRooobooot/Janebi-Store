@@ -48,7 +48,7 @@ export default function Contact() {
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="space-y-10"
+      className="page-stack"
     >
       {/* Title */}
       <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 dark:from-gray-900 dark:via-gray-850 dark:to-gray-900 text-white rounded-2xl p-8 sm:p-10 relative overflow-hidden">
