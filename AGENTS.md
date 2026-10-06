@@ -237,13 +237,14 @@ reference check.
   (~420s). `web_search` 403s → `web_extract` / delegate. Raw-IP curl blocked → delegate the QA child.
   SSH outage: 2 retries then a BLOCKED report (TCP open + ssh refused = fail2ban/sshd, needs the VPS
   console). Oversized inline shell one-liners are blocklisted → write a script file, run it, delete it.
-- **Hero (home):** HTML type on a CSS poster. `HERO_COPY` in `Home.tsx` is the only source —
-  the homepage does not read `heroSlide*` settings, product SVGs, or `public/images/hero/*.webp`.
-  Two slides, one per live category («هولدر و نگهدارنده», «کابل و سیم»). Each slide is an
-  absolutely-positioned `<Link>` (rose or ink gradient + an inline SVG mark), crossfaded on a 6s
-  rotation that stays off under `prefers-reduced-motion`. Copy is real Vazirmatn in the slide;
-  arrows sit in a bottom bar so they do not cover the line. The page `h1` stays `sr-only`.
-  A category missing from the live catalogue drops its slide. Do not put the photographic
-  slides or Ken Burns `object-cover` crop back.
+- **Hero (home):** a 2:1 product photo with HTML type on the empty right. `HERO_COPY` in
+  `Home.tsx` is the only copy source — the homepage does not read `heroSlide*` settings.
+  Photos are `public/images/hero/holder.webp` and `cable.webp` (1600×800, product on the left,
+  no type inside the file). The frame is `aspect-[2/1]` with `object-cover`, so phone and laptop
+  share one crop. Two slides, one per live category («هولدر و نگهدارنده», «کابل و سیم»). Each
+  slide is an absolutely-positioned `<Link>`, crossfaded on a 6s rotation that stays off under
+  `prefers-reduced-motion`. Arrows sit in a bottom bar. The page `h1` stays `sr-only`.
+  A category missing from the live catalogue drops its slide. Do not point the hero back at
+  `slide-1.webp` / `slide-3.webp`.
 - **Memory writes:** batch atomically; `replace` `old_text` must match the CURRENT entry; an
   over-limit rejection lists `current_entries` — prune and add in the SAME retry batch.

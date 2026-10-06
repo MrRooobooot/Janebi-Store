@@ -9,8 +9,9 @@
 ---
 
 ## Homepage hero (2026-10-06, `src/pages/Home.tsx`)
-- The slider is HTML type on a CSS poster. `HERO_COPY` is the only source. The homepage ignores `store_settings` `heroSlide*` keys, so old DB photos and copy cannot return. Admin Settings still edits those keys.
-- Two slides when both live categories exist: «هولدر و نگهدارنده» and «کابل و سیم». Each is a `<Link>` to `/products?category=…`. No `<img>`, no `/images/hero/`, no Ken Burns.
+- Two 2:1 banners: `public/images/hero/holder.webp` and `cable.webp`. Product sits on the left; the right is empty so Vazirmatn copy from `HERO_COPY` sits on it. The frame is `aspect-[2/1]`.
+- The homepage ignores `store_settings` `heroSlide*` keys. Admin Settings still edits those keys. Do not serve `slide-1.webp` or `slide-3.webp` as the hero.
+- Slides: «هولدر و نگهدارنده» and «کابل و سیم», each a `<Link>` to `/products?category=…`.
 
 ## Storefront type and spacing (2026-10-06, `src/index.css`)
 - Fluid type lives in `@theme` (`--text-xs` stays 12px; `--text-sm` through `--text-6xl` are `clamp()`). `@layer base` sets `min-width: 0` on flex/grid children so Persian lines wrap instead of sliding under the next box. One-line chips (`.whitespace-nowrap` without `.truncate` / `.overflow-hidden`) keep `min-width: max-content`.

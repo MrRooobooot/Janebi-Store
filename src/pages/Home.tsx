@@ -17,44 +17,23 @@ import { toPersianDigits, normalizePersianTypography } from '../lib/utils';
 import { useStoreSettings } from '../hooks/useStoreSettings';
 import { STORE_SETTINGS_DEFAULTS } from '../lib/constants';
 
-type HeroTone = 'rose' | 'ink';
-
-/** Fresh homepage slides. Copy and art live here, so old settings photos cannot come back. */
-const HERO_COPY: Record<string, { kicker: string; title: string; line: string; action: string; tone: HeroTone }> = {
+/** Homepage slides. Copy is HTML type; photos are product-only so old settings art cannot return. */
+const HERO_COPY: Record<string, { kicker: string; title: string; line: string; action: string; image: string }> = {
   'هولدر و نگهدارنده': {
     kicker: 'هولدر',
     title: 'گوشی سر جایش می‌ماند',
     line: 'مگنتی، برای خودرو و میز',
     action: 'دیدن هولدرها',
-    tone: 'rose',
+    image: '/images/hero/holder.webp',
   },
   'کابل و سیم': {
     kicker: 'کابل',
     title: 'شارژ که قطع نمی‌شود',
     line: 'بافت کنفی، اتصال محکم',
     action: 'دیدن کابل‌ها',
-    tone: 'ink',
+    image: '/images/hero/cable.webp',
   },
 };
-
-function HeroMark({ tone }: { tone: HeroTone }) {
-  if (tone === 'rose') {
-    return (
-      <svg viewBox="0 0 160 220" className="h-full w-full" aria-hidden="true">
-        <rect x="36" y="8" width="88" height="150" rx="18" fill="none" stroke="currentColor" strokeWidth="7" />
-        <circle cx="80" cy="188" r="16" fill="none" stroke="currentColor" strokeWidth="7" />
-        <path d="M64 188h32" stroke="currentColor" strokeWidth="7" strokeLinecap="round" />
-      </svg>
-    );
-  }
-  return (
-    <svg viewBox="0 0 200 200" className="h-full w-full" aria-hidden="true">
-      <circle cx="100" cy="100" r="74" fill="none" stroke="currentColor" strokeWidth="8" />
-      <circle cx="100" cy="100" r="46" fill="none" stroke="currentColor" strokeWidth="8" />
-      <circle cx="100" cy="100" r="14" fill="currentColor" />
-    </svg>
-  );
-}
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -249,7 +228,7 @@ export default function Home() {
             rotation-safe (slide titles are plain <p>), SEO + a11y clean. */}
         <h1 className="sr-only">فروشگاه لوازم جانبی موبایل و تبلت | جانبی آرنا</h1>
         <div
-          className="relative min-h-[26rem] overflow-hidden rounded-3xl shadow-lg touch-pan-y sm:min-h-[22rem]"
+          className="relative aspect-[2/1] overflow-hidden rounded-3xl shadow-lg touch-pan-y"
           onTouchStart={(e) => { mobileTouchX.current = e.touches[0].clientX; }}
           onTouchEnd={(e) => {
             const dx = e.changedTouches[0].clientX - mobileTouchX.current;
@@ -265,37 +244,31 @@ export default function Home() {
               aria-label={`${slide.title}. ${slide.action}`}
               aria-hidden={idx !== activeSlide}
               tabIndex={idx === activeSlide ? 0 : -1}
-              className={`absolute inset-0 flex items-end p-6 pb-20 transition-opacity duration-700 ease-out motion-reduce:transition-none sm:items-center sm:p-10 sm:pb-16 ${
-                slide.tone === 'rose'
-                  ? 'bg-[radial-gradient(circle_at_12%_78%,#fb7185_0%,transparent_40%),linear-gradient(145deg,#4c0519_0%,#be123c_58%,#9f1239_100%)] text-white'
-                  : 'bg-[radial-gradient(circle_at_12%_78%,#be123c_0%,transparent_34%),linear-gradient(160deg,#090d16_0%,#1e1b4b_100%)] text-white'
-              }`}
+              className="absolute inset-0 transition-opacity duration-700 ease-out motion-reduce:transition-none"
               style={{ opacity: idx === activeSlide ? 1 : 0, pointerEvents: idx === activeSlide ? 'auto' : 'none' }}
             >
-              <span aria-hidden="true" className="pointer-events-none absolute -bottom-8 -left-6 h-56 w-44 text-white/30 sm:h-72 sm:w-56">
-                <HeroMark tone={slide.tone} />
-              </span>
-              <span className="relative z-10 flex max-w-md flex-col gap-3">
-                <span className="text-sm font-bold text-[#fecdd3]">{slide.kicker}</span>
-                <span className="text-4xl font-black leading-tight sm:text-5xl">{slide.title}</span>
-                <span className="text-base font-medium text-white/80 sm:text-lg">{slide.line}</span>
-                <span className="mt-1 inline-flex min-h-11 items-center gap-1.5 text-sm font-bold">
+              <img src={slide.image} alt="" className="absolute inset-0 h-full w-full object-cover" />
+              <span className="absolute inset-y-0 right-0 z-10 flex w-[48%] max-w-md flex-col justify-center gap-0.5 pb-12 pr-3 text-slate-900 sm:gap-2 sm:pb-16 sm:pr-8">
+                <span className="text-xs font-bold text-slate-500 sm:text-sm">{slide.kicker}</span>
+                <span className="text-lg font-black leading-tight sm:text-4xl">{slide.title}</span>
+                <span className="text-xs font-medium text-slate-600 sm:text-base">{slide.line}</span>
+                <span className="mt-0.5 inline-flex items-center gap-1 text-xs font-bold text-[var(--color-cta)] sm:mt-1 sm:text-sm">
                   {slide.action}
-                  <ArrowLeft className="h-4 w-4" />
+                  <ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 </span>
               </span>
             </Link>
           ))}
 
           {heroSlides.length > 1 && (
-            <div className="absolute inset-x-3 bottom-3 z-20 flex items-center justify-between gap-3">
+            <div className="absolute inset-x-2 bottom-2 z-20 flex items-center justify-between gap-3 sm:inset-x-3 sm:bottom-3">
               <button
                 type="button"
                 onClick={() => setActiveSlide((prev) => (prev === 0 ? heroSlides.length - 1 : prev - 1))}
                 aria-label="اسلاید قبلی"
-                className="flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-md"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-900/70 text-white sm:h-11 sm:w-11"
               >
-                <ChevronRight className="h-5 w-5" />
+                <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
               </button>
               <div className="flex items-center gap-1" role="tablist" aria-label="اسلایدهای صفحه اصلی">
                 {heroSlides.map((slide, idx) => (
@@ -306,9 +279,9 @@ export default function Home() {
                     role="tab"
                     aria-selected={activeSlide === idx}
                     aria-label={`اسلاید ${toPersianDigits(idx + 1)}`}
-                    className="flex h-11 min-w-6 items-center justify-center px-1"
+                    className="flex h-9 min-w-6 items-center justify-center px-1 sm:h-11"
                   >
-                    <span className={`block h-2 rounded-full transition-all duration-300 motion-reduce:transition-none ${activeSlide === idx ? 'w-7 bg-white' : 'w-2 bg-white/45'}`} />
+                    <span className={`block h-2 rounded-full transition-all duration-300 motion-reduce:transition-none ${activeSlide === idx ? 'w-7 bg-slate-900' : 'w-2 bg-slate-900/35'}`} />
                   </button>
                 ))}
               </div>
@@ -316,9 +289,9 @@ export default function Home() {
                 type="button"
                 onClick={() => setActiveSlide((prev) => (prev + 1) % heroSlides.length)}
                 aria-label="اسلاید بعدی"
-                className="flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-md"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-900/70 text-white sm:h-11 sm:w-11"
               >
-                <ChevronLeft className="h-5 w-5" />
+                <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
               </button>
             </div>
           )}
