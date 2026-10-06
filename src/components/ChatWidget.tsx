@@ -22,7 +22,7 @@ const QUICK_QUESTIONS = [
 export default function ChatWidget() {
   const location = useLocation();
   const settings = useStoreSettings();
-  const isProductDetail = location.pathname.startsWith('/product/');
+  const purchasePath = /^\/(product\/|cart|checkout)/.test(location.pathname);
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     { 
@@ -108,7 +108,7 @@ export default function ChatWidget() {
   };
 
   return (
-    <div className={`fixed left-3 sm:left-auto sm:right-6 z-50 print:hidden flex flex-col items-start sm:items-end transition-all duration-300 ${isProductDetail ? 'bottom-[148px] sm:bottom-6' : 'bottom-[5.75rem] sm:bottom-6'}`}>
+    <div className={`fixed left-3 z-50 flex-col items-start transition-all duration-300 print:hidden sm:left-auto sm:right-6 sm:items-end ${purchasePath ? 'hidden sm:flex sm:bottom-6' : 'bottom-[5.75rem] flex sm:bottom-6'}`}>
       {isOpen && (
           <div
             className="dropdown-in bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl shadow-2xl border border-gray-200 dark:border-[var(--color-border-dark)] w-[min(24rem,calc(100vw-5.75rem))] sm:w-96 max-h-[min(32rem,calc(100dvh-8rem))] h-[32rem] flex flex-col overflow-hidden mb-4 transition-colors"

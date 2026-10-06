@@ -57,8 +57,22 @@ export default function CheckoutOrderSummary({
         </span>
       </h3>
 
+      <details className="group lg:hidden">
+        <summary className="cursor-pointer list-none text-xs font-bold text-[var(--color-emphasis-text)]">
+          مشاهدهٔ {toPersianDigits(cart.length)} قلم کالا
+        </summary>
+        <div className="mt-3 space-y-3">
+          {cart.map((item) => (
+            <div key={item.id} className="flex items-center gap-3 text-xs">
+              <span className="min-w-0 flex-1 truncate font-bold">{item.title}</span>
+              <span className="shrink-0">{toPersianDigits(item.quantity)} × {formatPrice(item.price)}</span>
+            </div>
+          ))}
+        </div>
+      </details>
+
       {/* Cart items scrollable overview */}
-      <div className="space-y-3 max-h-60 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700">
+      <div className="hidden max-h-60 space-y-3 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700 lg:block">
         {cart.map((item) => (
           <div key={item.id} className="flex items-center gap-3.5 text-xs bg-gray-50/50 dark:bg-gray-800/30 p-2 rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60">
             <div className="w-12 h-12 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-800 p-1 border border-[var(--color-border-light)] dark:border-gray-700 shrink-0 flex items-center justify-center">

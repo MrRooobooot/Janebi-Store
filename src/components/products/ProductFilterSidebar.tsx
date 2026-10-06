@@ -370,7 +370,7 @@ export default function ProductFilterSidebar({
   return (
     <>
       {/* Desktop Filter Sidebar */}
-      <aside className="hidden lg:block lg:col-span-3 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-6 pb-28 shadow-xs h-fit sticky top-28 max-h-[calc(100vh-7.5rem)] overflow-y-auto scroll-smooth">
+      <aside className="sticky top-28 hidden h-fit max-h-[calc(100vh-7.5rem)] overflow-y-auto scroll-smooth rounded-2xl border border-[var(--color-border-light)] bg-[var(--color-surface-light)] p-4 pb-28 shadow-xs dark:border-[var(--color-border-dark)] dark:bg-[var(--color-surface-dark)] lg:col-span-2 lg:block">
         <div className="flex items-center justify-between mb-6 pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
           <h3 className="font-bold text-base text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
             <span>فیلترهای پیشرفته</span>
@@ -398,11 +398,11 @@ export default function ProductFilterSidebar({
               />
 
               <motion.div
-                initial={{ x: '100%' }}
-                animate={{ x: 0 }}
-                exit={{ x: '100%' }}
-                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                className="fixed inset-y-0 right-0 w-full max-w-xs bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] shadow-2xl p-6 overflow-y-auto flex flex-col justify-between"
+                initial={{ y: '100%' }}
+                animate={{ y: 0 }}
+                exit={{ y: '100%' }}
+                transition={{ type: 'spring', damping: 28, stiffness: 280 }}
+                className="fixed inset-x-0 bottom-0 flex max-h-[85vh] flex-col justify-between overflow-y-auto rounded-t-3xl bg-[var(--color-surface-light)] p-5 pb-[calc(76px+1.25rem)] shadow-2xl dark:bg-[var(--color-surface-dark)]"
               >
                 <div>
                   <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] mb-6">

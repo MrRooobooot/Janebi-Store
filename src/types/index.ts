@@ -49,6 +49,7 @@ export interface Order {
   subtotal?: number;
   shippingFee?: number;
   paymentMethod?: string;
+  refId?: string | null;
   trackingCode?: string;
   recipient: OrderRecipient;
   items: OrderItem[];

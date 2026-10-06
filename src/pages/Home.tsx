@@ -7,11 +7,11 @@ import LatestReviews from '../components/LatestReviews';
 import RecentlyViewed from '../components/RecentlyViewed';
 import VipClubBanner from '../components/VipClubBanner';
 import {
-  ArrowLeft, Smartphone, Truck, ShieldCheck, Headset,
+  ArrowLeft, Truck, ShieldCheck, Headset,
   PackageCheck, ChevronLeft, ChevronRight,
 } from 'lucide-react';
 import { getJson } from '../lib/jsonFetch';
-import { getCategoryIcon, getCategoryWell } from '../lib/categoryIcons';
+import { getCategoryIcon } from '../lib/categoryIcons';
 import { Product } from '../types';
 import { toPersianDigits, normalizePersianTypography } from '../lib/utils';
 import { useStoreSettings } from '../hooks/useStoreSettings';
@@ -40,65 +40,11 @@ export default function Home() {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
-  const catScrollRef = useRef<HTMLDivElement>(null);
-  const [canScrollPrev, setCanScrollPrev] = useState(false);
-  const [canScrollNext, setCanScrollNext] = useState(true);
-  const isDraggingCat = useRef(false);
-  const catStartX = useRef(0);
-  const catStartScroll = useRef(0);
-  const catDragMoved = useRef(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const mobileTouchX = useRef(0);
   const [loadError, setLoadError] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
   const settings = useStoreSettings();
-
-  const updateCatScrollBounds = () => {
-    const el = catScrollRef.current;
-    if (!el) return;
-    const scrollLeft = Math.abs(el.scrollLeft);
-    const maxScroll = el.scrollWidth - el.clientWidth;
-    setCanScrollPrev(scrollLeft > 15);
-    setCanScrollNext(scrollLeft < maxScroll - 15);
-  };
-
-  const scrollCats = (direction: 'prev' | 'next') => {
-    const el = catScrollRef.current;
-    if (!el) return;
-    const step = Math.min(el.clientWidth * 0.75, 360);
-    el.scrollBy({
-      left: direction === 'next' ? -step : step,
-      behavior: 'smooth',
-    });
-    setTimeout(updateCatScrollBounds, 350);
-  };
-
-  const handleCatMouseDown = (e: React.MouseEvent) => {
-    const el = catScrollRef.current;
-    if (!el) return;
-    isDraggingCat.current = true;
-    catDragMoved.current = false;
-    catStartX.current = e.pageX - el.offsetLeft;
-    catStartScroll.current = el.scrollLeft;
-  };
-
-  const handleCatMouseMove = (e: React.MouseEvent) => {
-    if (!isDraggingCat.current) return;
-    const el = catScrollRef.current;
-    if (!el) return;
-    e.preventDefault();
-    const x = e.pageX - el.offsetLeft;
-    const walk = (x - catStartX.current);
-    if (Math.abs(walk) > 4) {
-      catDragMoved.current = true;
-    }
-    el.scrollLeft = catStartScroll.current - walk;
-    updateCatScrollBounds();
-  };
-
-  const handleCatMouseUp = () => {
-    isDraggingCat.current = false;
-  };
 
   const heroSlides = useMemo(() => {
     const known = Object.entries(HERO_COPY).map(([category, copy]) => ({
@@ -189,32 +135,8 @@ export default function Home() {
     },
   ], [settings]);
 
-  const renderCategoryCard = (cat: any, idx: number) => {
-    const Icon = cat.icon || Smartphone;
-    return (
-      <Link
-        key={`${cat.slug}-${idx}`}
-        to={`/products?category=${encodeURIComponent(cat.title)}`}
-        onClick={(e) => {
-          if (catDragMoved.current) {
-            e.preventDefault();
-            e.stopPropagation();
-          }
-        }}
-        className="w-full h-full min-h-[148px] sm:min-h-[168px] relative flex flex-col items-center justify-center p-4 rounded-2xl bg-white dark:bg-[var(--color-surface-dark)] border border-slate-200/80 dark:border-white/[0.08] group text-center select-none min-touch-target"
-      >
-        <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center mb-3 shrink-0 ${getCategoryWell(cat.title)}`}>
-          <Icon className="h-6 w-6 sm:h-7 sm:w-7 stroke-[2]" />
-        </div>
-        <span className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors w-full px-1 block leading-tight line-clamp-2">
-          {cat.title}
-        </span>
-        <span className="text-xs text-slate-500 dark:text-slate-400 mt-1 block">
-          {toPersianDigits(cat.count || 0)} کالا
-        </span>
-      </Link>
-    );
-  };
+  const categoryCover = (title: string) =>
+    products.find((p) => p.category === title && /\.(webp|png|jpe?g)(\?|$)/i.test(p.image || ''))?.image;
 
   return (
     <div className="page-stack pb-24 lg:pb-16 w-full max-w-full overflow-hidden box-border">
@@ -293,7 +215,7 @@ export default function Home() {
             </div>
           )}
         </div>
-        <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 sm:hidden">
+        <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 lg:grid-cols-4">
           {valueProps.map((item) => {
             const Icon = item.icon;
             return (
@@ -309,122 +231,38 @@ export default function Home() {
         </div>
       </section>
 
-      {(loading || dealProducts.length > 0) && (
       <section className="w-full">
         <div className="mb-4 flex items-end justify-between gap-3 sm:mb-6">
-          <div className="min-w-0">
-            <p className="text-xs text-slate-500">پیشنهاد</p>
-            <h2 className="mt-1 text-lg font-black text-slate-900 dark:text-white sm:text-2xl">{normalizePersianTypography(settings.dealsTitle || STORE_SETTINGS_DEFAULTS.dealsTitle)}</h2>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">{normalizePersianTypography(settings.dealsSubtitle || STORE_SETTINGS_DEFAULTS.dealsSubtitle)}</p>
+          <div>
+            <h2 className="text-lg font-black text-slate-900 dark:text-white sm:text-2xl">دسته‌بندی‌های تخصصی</h2>
+            <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-300">دو دستهٔ فروشگاه</p>
           </div>
-          <Link to="/offers" className="inline-flex shrink-0 items-center gap-1 text-sm font-bold text-[var(--color-cta)]">
-            همه پیشنهادها
-            <ArrowLeft className="h-4 w-4" />
+          <Link to="/products" className="inline-flex min-h-11 shrink-0 items-center gap-1 text-xs font-bold text-[var(--color-emphasis-text)]">
+            کاتالوگ
+            <ArrowLeft className="h-3.5 w-3.5" />
           </Link>
         </div>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-          {loading ? (
-            Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-64 animate-pulse rounded-2xl bg-slate-100 dark:bg-white/[0.03]" />
-            ))
-          ) : (
-            dealProducts.map((p) => (
-              <ProductCard key={p.id} product={p} variant="compact" />
-            ))
-          )}
-        </div>
-      </section>
-      )}
-
-      {/* 3. Wholesale / B2B Banner Strip — removed (user: «نیازی نداریم»); /contact?type=wholesale still reachable from header nav */}
-
-      {/* 4. Value Propositions Bar */}
-      <section className="w-full">
-        <div className="hidden sm:grid grid-cols-2 lg:grid-cols-4 gap-6">
-          {valueProps.map((item, i) => {
-            const Icon = item.icon;
+        <div className="grid grid-cols-2 gap-3">
+          {categories.map((cat) => {
+            const cover = categoryCover(cat.title);
             return (
-              <div key={i} className="flex items-start gap-3">
-                <Icon className="mt-0.5 h-5 w-5 shrink-0 text-slate-500" />
-                <div className="min-w-0">
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">{item.title}</h4>
-                  <p className="mt-0.5 text-xs leading-snug text-slate-500 dark:text-slate-400">{item.desc}</p>
-                </div>
-              </div>
+              <Link
+                key={cat.slug || cat.title}
+                to={`/products?category=${encodeURIComponent(cat.title)}`}
+                className="flex min-h-[168px] flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white dark:border-white/[0.08] dark:bg-[var(--color-surface-dark)]"
+              >
+                <span className="flex aspect-[4/3] items-center justify-center bg-white p-3 dark:bg-white/[0.04]">
+                  {cover ? (
+                    <img src={cover} alt="" className="max-h-full max-w-full object-contain" />
+                  ) : null}
+                </span>
+                <span className="flex items-baseline justify-between gap-2 px-3 py-3">
+                  <span className="text-sm font-black leading-snug text-slate-900 dark:text-white">{cat.title}</span>
+                  <span className="shrink-0 text-xs text-slate-500">{toPersianDigits(cat.count || 0)} کالا</span>
+                </span>
+              </Link>
             );
           })}
-        </div>
-      </section>
-
-      {/* 5. Category Visual Circles */}
-      <section className="w-full">
-        <div className="flex items-center justify-between mb-4 sm:mb-6">
-          <div>
-            <h2 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white">دسته‌بندی‌های تخصصی</h2>
-            <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5">انتخاب تجهیزات بر اساس دسته‌بندی</p>
-          </div>
-
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Prev/Next Arrow Buttons for Mobile/Tablet Carousel */}
-            <div className="flex lg:hidden items-center gap-1.5" role="group" aria-label="کنترل‌های ناوبری دسته‌بندی">
-              <button
-                type="button"
-                onClick={() => scrollCats('prev')}
-                disabled={!canScrollPrev}
-                aria-label="دسته‌بندی‌های قبلی"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-900/70 text-white disabled:cursor-not-allowed disabled:opacity-30"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => scrollCats('next')}
-                disabled={!canScrollNext}
-                aria-label="دسته‌بندی‌های بعدی"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-900/70 text-white disabled:cursor-not-allowed disabled:opacity-30"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-            </div>
-
-            <Link to="/products" className="text-xs font-bold text-[var(--color-emphasis-text)] hover:underline flex items-center gap-1 shrink-0 mr-1 sm:mr-2 min-h-[44px]">
-              <span className="hidden sm:inline">مشاهده کاتالوگ کامل</span>
-              <span className="sm:hidden">همه</span>
-              <ArrowLeft className="h-3.5 w-3.5" />
-            </Link>
-          </div>
-        </div>
-
-        {/* 1. Desktop View (>= 1024px): Balanced 8-Column Grid — Zero Cutoff, Zero Overlap */}
-        <div className="hidden lg:grid lg:grid-cols-4 gap-4">
-          {categories.slice(0, 8).map((cat, idx) => (
-            <div key={`desktop-${cat.slug}-${idx}`} className="w-full">
-              {renderCategoryCard(cat, idx)}
-            </div>
-          ))}
-        </div>
-
-        {/* 2. Mobile & Tablet View (< 1024px): Smooth Touch Carousel with Mouse-Drag + Header Nav */}
-        <div className="relative lg:hidden">
-          {/* Edge fade gradients */}
-          {/* Scroll Track: Supports Mouse Click-and-Drag (PC) + Native Touch Momentum Swipe (Mobile) */}
-          <div
-            dir="rtl"
-            ref={catScrollRef}
-            onScroll={updateCatScrollBounds}
-            onMouseDown={handleCatMouseDown}
-            onMouseMove={handleCatMouseMove}
-            onMouseUp={handleCatMouseUp}
-            onMouseLeave={handleCatMouseUp}
-            className="flex gap-3 sm:gap-4 overflow-x-auto pb-3 scroll-smooth hide-scrollbar select-none cursor-grab active:cursor-grabbing snap-x"
-            style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
-          >
-            {categories.map((cat, idx) => (
-              <div key={`mobile-${cat.slug}-${idx}`} className={`shrink-0 snap-start ${categories.length < 3 ? 'w-full sm:w-64' : 'w-40 sm:w-52'}`}>
-                {renderCategoryCard(cat, idx)}
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -486,6 +324,33 @@ export default function Home() {
           )}
         </div>
       </section>
+
+      {(loading || dealProducts.length > 0) && (
+      <section className="w-full">
+        <div className="mb-4 flex items-end justify-between gap-3 sm:mb-6">
+          <div className="min-w-0">
+            <p className="text-xs text-slate-500">پیشنهاد</p>
+            <h2 className="mt-1 text-lg font-black text-slate-900 dark:text-white sm:text-2xl">{normalizePersianTypography(settings.dealsTitle || STORE_SETTINGS_DEFAULTS.dealsTitle)}</h2>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">{normalizePersianTypography(settings.dealsSubtitle || STORE_SETTINGS_DEFAULTS.dealsSubtitle)}</p>
+          </div>
+          <Link to="/offers" className="inline-flex shrink-0 items-center gap-1 text-sm font-bold text-[var(--color-cta)]">
+            همه پیشنهادها
+            <ArrowLeft className="h-4 w-4" />
+          </Link>
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+          {loading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="h-64 animate-pulse rounded-2xl bg-slate-100 dark:bg-white/[0.03]" />
+            ))
+          ) : (
+            dealProducts.map((p) => (
+              <ProductCard key={p.id} product={p} variant="compact" />
+            ))
+          )}
+        </div>
+      </section>
+      )}
 
       {/* 7. Customer Reviews */}
       <LatestReviews />

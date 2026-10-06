@@ -131,19 +131,11 @@ export default function Header() {
               </button>
             </div>
           ) : null}
-          <div className="hidden md:flex items-center gap-4 text-xs text-slate-600 dark:text-slate-400 font-medium shrink-0">
-            <span className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 font-bold">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-              </span>
-              پشتیبانی آنلاین — پاسخ‌گوییم
-            </span>
-            <span className="h-3 w-px bg-slate-300 dark:bg-slate-700" />
-            <span>تلفن پشتیبانی: <span dir="ltr" className="font-bold tabular-nums text-slate-700 dark:text-slate-300">{toPersianDigits(settings.phone)}</span></span>
-            <span className="h-3 w-px bg-slate-300 dark:bg-slate-700" />
-            <span>ساعت کاری: {toPersianDigits(settings.supportHours)}</span>
-          </div>
+          <p className="hidden min-w-0 truncate text-xs text-slate-500 md:block">
+            {toPersianDigits(settings.phone)}
+            <span className="mx-2 text-slate-300">·</span>
+            {toPersianDigits(settings.supportHours)}
+          </p>
         </div>
       </div>
       )}
@@ -294,30 +286,14 @@ export default function Header() {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] px-4 py-4 space-y-3 animate-in slide-in-from-top-2 duration-150">
-          <div className="grid grid-cols-2 gap-2 text-xs font-medium">
-            {navLinks.map((link, i) => (
+        <div className="space-y-2 border-t border-[var(--color-border-light)] bg-[var(--color-surface-light)] px-4 py-3 dark:border-[var(--color-border-dark)] dark:bg-[var(--color-surface-dark)] lg:hidden">
+          <nav className="flex flex-col text-sm font-bold" aria-label="منوی اصلی">
+            {[...navLinks, ...TRUST_LINKS].map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-[var(--color-cta)]/10 dark:hover:bg-[var(--color-cta)]/30 hover:text-[var(--color-emphasis-text)] text-slate-800 dark:text-slate-200 text-center ${
-                  // odd item count: last link spans both columns (no orphan slot)
-                  navLinks.length % 2 === 1 && i === navLinks.length - 1 ? 'col-span-2' : ''
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-
-          <nav className="grid grid-cols-2 gap-2 text-xs font-medium" aria-label="راهنمای فروشگاه">
-            {TRUST_LINKS.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-[var(--color-cta)]/10 dark:hover:bg-[var(--color-cta)]/30 hover:text-[var(--color-emphasis-text)] text-slate-800 dark:text-slate-200 text-center"
+                className="border-b border-slate-100 py-3 text-slate-800 last:border-0 dark:border-white/10 dark:text-slate-100"
               >
                 {link.label}
               </Link>

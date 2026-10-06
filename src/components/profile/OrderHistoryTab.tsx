@@ -13,17 +13,17 @@ interface OrderHistoryTabProps {
 
 type OrderTab = 'all' | 'pending_payment' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
 
-const ORDER_STEPS = ['پرداخت', 'آماده‌سازی', 'ارسال', 'تحویل'] as const;
+const ORDER_STEPS = ['ثبت', 'پرداخت', 'ارسال', 'تحویل'] as const;
 
 function orderProgressIndex(status: string): number | null {
   switch (status) {
     case 'pending':
     case 'pending_payment':
-      return 0;
-    case 'processing':
       return 1;
-    case 'shipped':
+    case 'processing':
       return 2;
+    case 'shipped':
+      return 3;
     case 'delivered':
       return 3;
     default:
@@ -214,6 +214,11 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
                   </span>
                 </div>
               </div>
+              {order.refId ? (
+                <p className="text-xs font-bold text-slate-600 dark:text-slate-300">
+                  کد پیگیری پرداخت: <span dir="ltr" className="latin-nums">{order.refId}</span>
+                </p>
+              ) : null}
 
               {order.status !== 'cancelled' && <OrderProgress status={order.status} />}
 

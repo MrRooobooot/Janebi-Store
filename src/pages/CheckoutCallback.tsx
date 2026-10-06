@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { CheckCircle2, XCircle, ArrowRight, ShoppingBag, Clock } from 'lucide-react';
+import { authFetch } from '../lib/api';
 
 export default function CheckoutCallback() {
   const [searchParams] = useSearchParams();
@@ -16,12 +17,47 @@ export default function CheckoutCallback() {
   // Gateway session died (expired authority / our 45min window): the order is
   // still payable, so this is a "retry" screen — not a payment failure.
   const isExpired = status === 'expired';
+  const [retrying, setRetrying] = useState(false);
+  const [retryError, setRetryError] = useState('');
 
   useEffect(() => {
     if (!status) {
-      navigate('/');
+      navigate('/', { replace: true });
     }
   }, [status, navigate]);
+
+  // The previous history entry is the bank or Zarinpal. Back from here must
+  // stay on the store: that gateway page rejects a request with no Referer.
+  useEffect(() => {
+    if (!status) return;
+    const leaveGateway = () => navigate('/profile?tab=orders', { replace: true });
+    window.history.pushState({ storeCallback: true }, '');
+    window.addEventListener('popstate', leaveGateway);
+    return () => window.removeEventListener('popstate', leaveGateway);
+  }, [status, navigate]);
+
+  const retryPayment = async () => {
+    if (!orderId || retrying) return;
+    setRetrying(true);
+    setRetryError('');
+    try {
+      const res = await authFetch('/api/payment/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.url) {
+        window.location.assign(data.url);
+        return;
+      }
+      setRetryError(data.error || 'اتصال به درگاه برقرار نشد. از سفارش‌های من دوباره پرداخت کنید.');
+    } catch {
+      setRetryError('اتصال به درگاه برقرار نشد. از سفارش‌های من دوباره پرداخت کنید.');
+    } finally {
+      setRetrying(false);
+    }
+  };
 
   if (!status) return null;
 
@@ -78,13 +114,27 @@ export default function CheckoutCallback() {
           )}
         </div>
 
+        {retryError && (
+          <p className="mb-4 text-sm font-bold text-rose-600 dark:text-rose-400">{retryError}</p>
+        )}
+
         <div className="flex flex-col gap-3">
+          {!isSuccess && orderId && (
+            <button
+              type="button"
+              onClick={retryPayment}
+              disabled={retrying}
+              className="btn-primary flex w-full items-center justify-center gap-2 rounded-xl py-3.5 font-bold text-white disabled:opacity-60"
+            >
+              {retrying ? 'در حال اتصال به درگاه…' : 'پرداخت دوبارهٔ همین سفارش'}
+            </button>
+          )}
           <Link 
             to="/profile?tab=orders"
-            className="btn-primary w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
+            className="btn-primary flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--color-cta)] py-3.5 font-bold text-white hover:bg-[var(--color-cta-hover)]"
           >
             <ShoppingBag className="h-5 w-5" />
-            {isExpired ? 'پرداخت دوباره از سفارش‌های من' : 'مشاهده سفارشات من'}
+            مشاهده سفارشات من
           </Link>
           
           <Link 

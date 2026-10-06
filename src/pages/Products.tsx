@@ -125,7 +125,7 @@ export default function Products() {
           />
 
           {/* Main Product Area */}
-          <div className="lg:col-span-9 space-y-6">
+          <div className="space-y-6 lg:col-span-10">
             <ProductSortHeader
               filteredCount={totalProducts}
               totalCount={totalProducts}

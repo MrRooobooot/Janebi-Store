@@ -49,12 +49,12 @@ export default function CartItemList({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: -60, scale: 0.95 }}
             transition={{ duration: 0.3 }}
-            className="flex flex-col items-stretch justify-between gap-6 rounded-3xl py-5 sm:flex-row sm:items-center sm:py-6"
+            className="flex flex-row items-center justify-between gap-3 border-b border-[var(--color-border-light)] py-3 last:border-0 dark:border-[var(--color-border-dark)]"
           >
             {/* Product Info */}
             <div className="flex items-center gap-4 sm:gap-5 flex-1 min-w-0">
               <Link to={`/products/${item.id}`} className="shrink-0 group/img">
-                <div className="w-20 h-20 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100/60 dark:from-gray-800/60 dark:to-gray-800/20 p-2.5 border border-[var(--color-border-light)] dark:border-gray-700/60 overflow-hidden group-hover/img:scale-105 transition-transform duration-300 flex items-center justify-center">
+                <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-xl border border-[var(--color-border-light)] bg-white p-1.5 dark:border-gray-700/60 dark:bg-white/[0.04]">
                   <img
                     src={item.image}
                     alt={item.title}
@@ -96,7 +96,7 @@ export default function CartItemList({
             </div>
 
             {/* Quantity Controls & Price */}
-            <div className="flex sm:flex-col items-center sm:items-end justify-between border-t sm:border-t-0 pt-4 sm:pt-0 border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] gap-4">
+            <div className="flex shrink-0 flex-col items-end gap-2">
               <div className="flex items-center gap-2.5 bg-gray-50/80 dark:bg-gray-800/60 p-1.5 rounded-2xl border border-gray-200/80 dark:border-gray-700/80 shadow-xs">
                 <button
                   onClick={() => updateQuantity(item.id, item.quantity + 1)}

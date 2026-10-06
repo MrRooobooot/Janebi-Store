@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Truck, HeadphonesIcon, Shield, CheckCircle, Send, Phone, Mail, Award, PackageSearch } from 'lucide-react';
+import { Send, Phone, Mail, Award, PackageSearch } from 'lucide-react';
 import Logo from './Logo';
 import { useToast } from '../contexts/ToastContext';
-import { FREE_SHIPPING_THRESHOLD } from '../lib/constants';
 import { useStoreSettings } from '../hooks/useStoreSettings';
 import { toPersianDigits } from '../lib/utils';
 import { jsonFetch } from '../lib/jsonFetch';
@@ -38,50 +37,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-zinc-50/90 dark:bg-[var(--color-surface-footer-dark)]/95 border-t border-zinc-200/80 dark:border-white/[0.08] mt-16 transition-colors duration-300 w-full overflow-hidden">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-12">
-        {/* Value Propositions */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-12 border-b border-zinc-200/80 dark:border-white/[0.08] pb-12">
-          <div className="flex items-start gap-3">
-            <div className="p-2.5 rounded-xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] shrink-0">
-              <Truck className="h-6 w-6" strokeWidth={2} />
-            </div>
-            <div>
-              <h3 className="font-bold text-zinc-900 dark:text-zinc-100 text-xs sm:text-sm mb-0.5">ارسال سریع و رایگان</h3>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">سفارش‌های بالای {toPersianDigits((settings.freeShippingThreshold || FREE_SHIPPING_THRESHOLD).toLocaleString('fa-IR'))} تومان</p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3">
-            <div className="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 shrink-0">
-              <HeadphonesIcon className="h-6 w-6" strokeWidth={2} />
-            </div>
-            <div>
-              <h3 className="font-bold text-zinc-900 dark:text-zinc-100 text-xs sm:text-sm mb-0.5">پشتیبانی تخصصی</h3>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">{toPersianDigits(settings.supportHours || '۷ روز هفته، ۹ صبح تا ۹ شب')}</p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3">
-            <div className="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 shrink-0">
-              <Shield className="h-6 w-6" strokeWidth={2} />
-            </div>
-            <div>
-              <h3 className="font-bold text-zinc-900 dark:text-zinc-100 text-xs sm:text-sm mb-0.5">۷ روز ضمانت بازگشت</h3>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">تضمین سلامت فنی کالا</p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3">
-            <div className="p-2.5 rounded-xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] shrink-0">
-              <CheckCircle className="h-6 w-6" strokeWidth={2} />
-            </div>
-            <div>
-              <h3 className="font-bold text-zinc-900 dark:text-zinc-100 text-xs sm:text-sm mb-0.5">ضمانت اصالت کالا</h3>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">۱۰۰٪ اورجینال با گارانتی معتبر</p>
-            </div>
-          </div>
-        </div>
-
+      <div className="mx-auto max-w-7xl px-3 py-8 sm:px-6 lg:px-8">
         {/* Newsletter & Info & Trust Seal Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 mb-10">
           {/* About & Contact Info */}

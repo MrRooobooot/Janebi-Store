@@ -36,6 +36,7 @@ router.get(["/", "/my-orders"], async (req: AuthRequest, res) => {
     vipPointsUsed: o.vipPointsUsed || 0,
     vipPointsEarned: o.vipPointsEarned || 0,
     paymentMethod: o.paymentMethod,
+    refId: o.refId,
     shippingMethod: o.shippingMethod,
     recipient: {
       name: o.recipientName,

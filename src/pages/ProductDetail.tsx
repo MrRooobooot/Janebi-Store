@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { 
-  Star, ShieldCheck, Truck, ShoppingCart, Heart, ArrowLeftRight, Zap, 
+  Star, ShieldCheck, Truck, ShoppingCart, Heart, ArrowLeftRight, 
   CheckCircle2, Check, Maximize2, X, Award, PackageCheck, AlertCircle, Share2, ZoomIn,
   ChevronLeft, ChevronRight, Minus, Plus
 } from 'lucide-react';
@@ -147,12 +147,11 @@ export default function ProductDetail() {
   // Show sticky bar when the main action buttons scroll out of view
   useEffect(() => {
     if (!actionsRef.current) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setShowStickyBar(!entry.isIntersecting);
-      },
-      { threshold: 0.1, rootMargin: '-80px 0px 0px 0px' }
-    );
+    const observer = new IntersectionObserver(([entry]) => {
+      // Below the fold is not "scrolled past": the bar stays hidden until the
+      // buy button has actually left through the top of the viewport.
+      setShowStickyBar(!entry.isIntersecting && entry.boundingClientRect.top < 0);
+    });
     observer.observe(actionsRef.current);
     return () => observer.disconnect();
   }, [product]);
@@ -229,7 +228,7 @@ export default function ProductDetail() {
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="page-stack pb-28 lg:pb-12 text-right"
+        className={`page-stack text-right ${showStickyBar ? 'pb-44 lg:pb-28' : 'pb-28 lg:pb-12'}`}
       >
         {/* Main Product Card */}
         <div>
@@ -240,7 +239,7 @@ export default function ProductDetail() {
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.4 }}
-                className="relative mb-4 aspect-square overflow-hidden rounded-3xl bg-[var(--color-stage-light)] dark:bg-[var(--color-stage-dark)]"
+                className="relative mb-4 aspect-square overflow-hidden rounded-3xl bg-white dark:bg-[var(--color-stage-dark)]"
               >
                 {product.discount && (
                   <div className="absolute top-5 right-5 z-10 inline-flex h-7 items-center gap-1 whitespace-nowrap rounded-full bg-[var(--color-cta)] px-3 text-xs font-bold leading-none text-white">
@@ -430,23 +429,6 @@ export default function ProductDetail() {
                   </div>
                 </div>
 
-                {/* Features Badges */}
-                {product.features && product.features.length > 0 && (
-                  <div className="mb-8">
-                    <h2 className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-3">ویژگی‌های برجسته:</h2>
-                    <div className="flex flex-wrap gap-2">
-                      {product.features.map((feat: string, idx: number) => (
-                        <span
-                          key={idx}
-                          className="bg-[var(--color-cta)] text-white text-xs font-bold px-3 py-1.5 rounded-xl border border-[var(--color-cta)] flex items-center gap-1.5 shadow-xs"
-                        >
-                          <Zap className="h-3.5 w-3.5 text-[var(--color-emphasis-text)]" />
-                          {feat}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
 
               {/* Action Buttons */}
@@ -542,6 +524,22 @@ export default function ProductDetail() {
                     </span>
                   ))}
                 </div>
+
+                {product.features && product.features.length > 0 && (
+                  <div className="mt-6">
+                    <h2 className="mb-3 text-xs font-bold text-gray-500 dark:text-gray-400">ویژگی‌های برجسته</h2>
+                    <div className="flex flex-wrap gap-2">
+                      {product.features.map((feat: string, idx: number) => (
+                        <span
+                          key={idx}
+                          className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700 dark:bg-white/10 dark:text-slate-200"
+                        >
+                          {feat}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
