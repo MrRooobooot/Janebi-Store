@@ -34,7 +34,7 @@ export default function BackToTop() {
   return (
     <button
       onClick={scrollToTop}
-      className={`fixed right-4 left-auto sm:left-6 sm:right-auto z-40 flex h-12 w-12 items-center justify-center rounded-full border border-transparent bg-[var(--color-cta)] text-white shadow-lg shadow-[var(--color-cta)]/25 transition-all hover:-translate-y-0.5 hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] ${
+      className={`fixed right-4 left-auto z-40 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-cta)] text-white hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] sm:left-6 sm:right-auto ${
         abovePurchaseBar ? 'bottom-[148px] sm:bottom-6' : 'bottom-[5.75rem] sm:bottom-6'
       }`}
       aria-label="بازگشت به بالا"

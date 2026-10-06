@@ -39,7 +39,7 @@ export default function Checkout() {
           description="برای ثبت سفارش ابتدا باید محصولاتی را به سبد خرید اضافه کنید."
           actionText="مشاهده محصولات"
           actionLink="/products"
-          className="bg-[var(--color-surface-light)]/80 dark:bg-[var(--color-surface-dark)]/80 backdrop-blur-xl rounded-2xl p-12 shadow-xs border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]"
+          className="rounded-3xl p-12"
         />
       </motion.div>
     );

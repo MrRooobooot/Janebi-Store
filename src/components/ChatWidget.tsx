@@ -200,7 +200,7 @@ export default function ChatWidget() {
         <button
           onClick={() => setIsOpen(true)}
           aria-label="پاسخ خودکار"
-          className="hover:scale-105 active:scale-95 transition-transform bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] text-white border border-transparent shadow-lg shadow-[var(--color-cta)]/25 w-11 h-11 sm:w-auto sm:h-12 sm:px-4 rounded-full flex items-center justify-center gap-2 transition-colors cursor-pointer"
+          className="flex h-11 w-11 cursor-pointer items-center justify-center gap-2 rounded-full bg-[var(--color-cta)] text-white hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] sm:h-12 sm:w-auto sm:px-4"
         >
           <MessageCircle className="h-5 w-5 shrink-0" />
           <span className="hidden sm:inline text-xs font-bold">پاسخ خودکار</span>

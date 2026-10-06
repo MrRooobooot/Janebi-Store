@@ -5,14 +5,13 @@ import React from 'react';
  */
 export function ProductCardSkeleton() {
   return (
-    <div className="linear-card bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-light)]/[0.025] rounded-2xl border border-zinc-200/80 dark:border-white/[0.08] p-4.5 relative flex flex-col h-full shadow-xs transition-colors select-none">
-      {/* Image Skeleton */}
-      <div className="aspect-square w-full relative overflow-hidden rounded-2xl bg-zinc-100 dark:bg-[var(--color-surface-light)]/[0.04] animate-pulse mb-4">
+    <div className="linear-card bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-light)]/[0.025] rounded-2xl border border-zinc-200/80 dark:border-white/[0.08] relative flex flex-col h-full overflow-hidden select-none">
+      <div className="aspect-square w-full relative overflow-hidden bg-zinc-100 dark:bg-[var(--color-surface-light)]/[0.04] animate-pulse">
         <div className="absolute top-3 right-3 w-12 h-5 bg-zinc-200 dark:bg-[var(--color-surface-light)]/[0.08] rounded-md"></div>
       </div>
 
       {/* Details Skeleton */}
-      <div className="grow flex flex-col justify-between">
+      <div className="grow flex flex-col justify-between p-3 sm:p-4">
         <div className="space-y-2.5">
           {/* Brand badge */}
           <div className="h-3.5 bg-zinc-200 dark:bg-[var(--color-surface-light)]/[0.06] rounded-md w-1/3 animate-pulse"></div>

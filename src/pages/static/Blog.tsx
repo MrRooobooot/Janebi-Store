@@ -211,20 +211,18 @@ export default function Blog() {
       transition={{ duration: prefersReducedMotion ? 0 : 0.4 }}
       className="page-stack"
     >
-      <div className="text-white rounded-2xl [background:linear-gradient(135deg,#e11d48,#be123c)] p-8 sm:p-10 relative overflow-hidden shadow-lg shadow-[var(--color-cta)]/25">
-        <div className="relative z-10 max-w-xl">
-          <span className="inline-flex items-center gap-1.5 bg-black/25 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full mb-3">
-            <BookOpen className="h-3.5 w-3.5" /> مجله تخصصی جانبی آرنا
-          </span>
-          <h1 className="text-3xl font-black mb-3 tracking-tight">آخرین اخبار و راهنماهای کاربردی</h1>
-          <p className="text-white/90 text-sm leading-relaxed">
+      <header className="max-w-xl text-right">
+        <div>
+          <p className="text-xs text-slate-500">مجله تخصصی جانبی آرنا</p>
+          <h1 className="mt-1 text-lg font-black text-slate-900 dark:text-white sm:text-4xl">آخرین اخبار و راهنماهای کاربردی</h1>
+          <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
             بررسی جدیدترین گجت‌ها، تکنولوژی‌های شارژ و مقالات آموزشی برای نگهداری بهتر از لوازم جانبی.
           </p>
           {/* r36 freshness stamp (SEO/AEO 20260913a): derived from the real latest
               post date — never hardcoded, hidden until articles are loaded. */}
           {articles.length > 0 && (
             <p
-              className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-white/90 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full border border-white/20"
+              className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-slate-500"
               data-freshness="20260913a"
             >
               <Calendar className="h-3.5 w-3.5" aria-hidden="true" />
@@ -239,7 +237,7 @@ export default function Blog() {
             </p>
           )}
         </div>
-      </div>
+      </header>
 
       {/* Loading */}
       {loading && (
@@ -329,7 +327,7 @@ export default function Blog() {
                 tabIndex={0}
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpenArticle(art); } }}
                 aria-label={`خواندن مقاله: ${art.title}`}
-                className="bg-zinc-50 dark:bg-zinc-900/60 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 overflow-hidden hover:shadow-lg dark:hover:shadow-black/30 hover:border-[var(--color-cta)]/30 dark:hover:border-zinc-700 hover:-translate-y-1 motion-reduce:hover:translate-y-0 transition-all duration-300 motion-reduce:transition-none flex flex-col group h-full cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-cta)]/40 will-change-transform"
+                className="flex h-full cursor-pointer flex-col overflow-hidden rounded-3xl bg-zinc-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-cta)]/40 dark:bg-zinc-900/60"
               >
                 <div className="aspect-[16/9] w-full relative rounded-2xl overflow-hidden bg-gradient-to-br from-[var(--color-cta)]/10 to-[var(--color-cta)]/5 dark:from-zinc-800 dark:to-zinc-900 flex items-center justify-center">
                   <img src={art.image || FALLBACK_IMAGE} alt={art.title} loading="lazy" decoding="async" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 motion-reduce:transition-none motion-reduce:group-hover:scale-100" />

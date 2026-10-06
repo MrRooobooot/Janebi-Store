@@ -232,15 +232,15 @@ export default function ProductDetail() {
         className="page-stack pb-28 lg:pb-12 text-right"
       >
         {/* Main Product Card */}
-        <div className="bg-[var(--color-surface-light)]/85 dark:bg-[var(--color-surface-dark)]/85 backdrop-blur-xl rounded-2xl p-6 sm:p-8 lg:p-10 shadow-sm border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] transition-colors">
-          <div className="flex flex-col lg:flex-row gap-10 lg:gap-14">
+        <div>
+          <div className="flex flex-col lg:flex-row gap-10 lg:gap-16">
             {/* Gallery Column */}
             <div className="w-full lg:w-5/12">
               <motion.div
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.4 }}
-                className="aspect-square bg-[var(--color-stage-light)] dark:bg-[var(--color-stage-dark)] rounded-2xl flex items-center justify-center p-8 mb-4 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] relative overflow-hidden group shadow-inner"
+                className="relative mb-4 aspect-square overflow-hidden rounded-3xl bg-[var(--color-stage-light)] dark:bg-[var(--color-stage-dark)]"
               >
                 {product.discount && (
                   <div className="absolute top-5 right-5 z-10 inline-flex h-7 items-center gap-1 whitespace-nowrap rounded-full bg-[var(--color-cta)] px-3 text-xs font-bold leading-none text-white">
@@ -253,14 +253,14 @@ export default function ProductDetail() {
                 <button
                   onClick={() => setIsLightboxOpen(true)}
                   aria-label="مشاهده تصویر در اندازه بزرگ"
-                  className="absolute top-5 left-5 w-10 h-10 rounded-xl bg-[var(--color-surface-light)]/80 dark:bg-white/[0.08] backdrop-blur-md border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-gray-700 dark:text-gray-200 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all hover:scale-105 z-10 shadow-sm"
+                  className="absolute top-3 left-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-slate-900/70 text-white sm:h-11 sm:w-11"
                 >
                   <Maximize2 className="h-4 w-4" />
                 </button>
 
                 {/* Main Image Prev/Next Navigation Arrows for Mouse & Touch */}
                 {hasGallery && galleryImages.length > 1 && (
-                  <>
+                  <div className="absolute inset-x-3 bottom-3 z-10 flex items-center justify-between">
                     <button
                       type="button"
                       onClick={(e) => {
@@ -268,9 +268,9 @@ export default function ProductDetail() {
                         setSelectedImageIndex((prev) => (prev === 0 ? galleryImages.length - 1 : prev - 1));
                       }}
                       aria-label="تصویر قبلی"
-                      className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black text-gray-800 dark:text-gray-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer opacity-80 hover:opacity-100"
+                      className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-900/70 text-white sm:h-11 sm:w-11"
                     >
-                      <ChevronRight className="h-4 w-4" />
+                      <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
                     </button>
                     <button
                       type="button"
@@ -279,11 +279,11 @@ export default function ProductDetail() {
                         setSelectedImageIndex((prev) => (prev + 1) % galleryImages.length);
                       }}
                       aria-label="تصویر بعدی"
-                      className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/80 dark:bg-black/60 hover:bg-white dark:hover:bg-black text-gray-800 dark:text-gray-200 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer opacity-80 hover:opacity-100"
+                      className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-900/70 text-white sm:h-11 sm:w-11"
                     >
-                      <ChevronLeft className="h-4 w-4" />
+                      <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
                     </button>
-                  </>
+                  </div>
                 )}
 
                 <AnimatePresence mode="wait" initial={false}>
@@ -293,13 +293,13 @@ export default function ProductDetail() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.985 }}
                     transition={{ duration: 0.22, ease: 'easeOut' }}
-                    className="w-full h-full flex items-center justify-center"
+                    className="flex h-full w-full items-center justify-center p-6 pb-16"
                   >
                     <PictureImage
                       src={galleryImages[selectedImageIndex] || product.image}
                       alt={product.title}
                       priority={selectedImageIndex === 0}
-                      className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-500 cursor-zoom-in"
+                      className="max-h-full max-w-full cursor-zoom-in object-contain"
                       onClick={() => setIsLightboxOpen(true)}
                     />
                   </motion.div>
@@ -327,10 +327,10 @@ export default function ProductDetail() {
                         aria-label={`نمایش تصویر ${toPersianDigits(idx + 1)} از ${toPersianDigits(galleryImages.length)}`}
                         aria-current={isActive ? 'true' : undefined}
                         aria-pressed={isActive}
-                        className={`w-20 h-20 sm:w-[72px] sm:h-[72px] min-w-[44px] min-h-[44px] bg-[var(--color-surface-card-light)] dark:bg-white/[0.04] backdrop-blur-md rounded-2xl border-2 p-2 shrink-0 transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700 ${
+                        className={`h-20 w-20 shrink-0 rounded-2xl border-2 bg-[var(--color-surface-card-light)] p-2 dark:bg-white/[0.04] sm:h-[72px] sm:w-[72px] ${
                           isActive
-                            ? 'border-primary-500 ring-2 ring-primary-400/60 shadow-[var(--shadow-glow-orange)] scale-105 opacity-100'
-                            : 'border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] opacity-60 hover:opacity-100 hover:border-primary-300 dark:hover:border-primary-400/50'
+                            ? 'border-slate-900 opacity-100 dark:border-white'
+                            : 'border-transparent opacity-60'
                         }`}
                       >
                         <img src={img} alt={`تصویر ${toPersianDigits(idx + 1)} ${product.title}`} width="96" height="96" loading="lazy" decoding="async" className="w-full h-full object-contain" />
@@ -346,9 +346,7 @@ export default function ProductDetail() {
               <div>
                 {/* Brand & Action Share Header */}
                 <div className="flex items-center justify-between mb-3">
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 text-[var(--color-emphasis-text)] border border-[var(--color-cta)]/50 dark:border-[var(--color-cta)]/50 text-xs font-bold">
-                    <span>برند: {product.brand}</span>
-                  </div>
+                  <p className="text-xs text-slate-500">برند: {product.brand}</p>
                   <button
                     onClick={handleShare}
                     aria-label="اشتراک‌گذاری محصول"
@@ -483,12 +481,12 @@ export default function ProductDetail() {
                 <button
                   onClick={handleAddToCart}
                   disabled={outOfStock}
-                  className={`flex-1 font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-2.5 transition-all shadow-lg active:scale-98 text-sm sm:text-base ${
+                  className={`flex flex-1 items-center justify-center gap-2.5 rounded-2xl px-6 py-4 text-sm font-bold sm:text-base ${
                     outOfStock
-                      ? 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed shadow-none'
+                      ? 'cursor-not-allowed bg-gray-300 text-gray-500 dark:bg-gray-700 dark:text-gray-400'
                       : addedToCart
-                      ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/20'
-                      : 'btn-primary shadow-[var(--color-cta)]/25'
+                      ? 'bg-emerald-600 text-white'
+                      : 'btn-primary'
                   }`}
                 >
                   {outOfStock ? (
@@ -548,7 +546,7 @@ export default function ProductDetail() {
             </div>
           </div>
         </div>
-        <div className="bg-[var(--color-surface-light)]/85 dark:bg-[var(--color-surface-dark)]/85 backdrop-blur-xl rounded-2xl p-6 sm:p-8 lg:p-10 shadow-sm border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
+        <div>
           <div className="flex flex-wrap gap-x-4 gap-y-1 border-b border-gray-200 dark:border-[var(--color-border-dark)] mb-6 sm:mb-8">
             <button
               onClick={() => setActiveTab('description')}
@@ -856,7 +854,7 @@ export default function ProductDetail() {
                   <button
                     onClick={handleAddToCart}
                     disabled={outOfStock}
-                    className={`min-touch-target flex-1 h-11 px-4 sm:px-5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-md ${
+                    className={`min-touch-target flex h-11 flex-1 items-center justify-center gap-1.5 rounded-xl px-4 text-xs font-bold sm:px-5 ${
                       outOfStock
                         ? 'bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed'
                         : addedToCart
@@ -894,7 +892,7 @@ export default function ProductDetail() {
             transition={{ type: 'spring', stiffness: 400, damping: 30 }}
             className="fixed bottom-6 left-0 right-0 z-40 hidden lg:flex justify-center pointer-events-none"
           >
-            <div className="pointer-events-auto flex items-center gap-6 bg-[var(--color-surface-light)]/95 dark:bg-[var(--color-surface-dark)]/95 backdrop-blur-2xl rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-2xl px-6 py-3.5 w-full max-w-3xl mx-6">
+            <div className="pointer-events-auto mx-6 flex w-full max-w-3xl items-center gap-6 rounded-3xl bg-[var(--color-surface-light)] px-6 py-3.5 dark:bg-[var(--color-surface-dark)]">
               <div className="min-w-0 flex-1">
                 <p className="text-xs text-gray-500 dark:text-gray-400 font-bold truncate leading-tight">
                   {product.title}

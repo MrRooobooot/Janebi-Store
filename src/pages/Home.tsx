@@ -7,8 +7,8 @@ import LatestReviews from '../components/LatestReviews';
 import RecentlyViewed from '../components/RecentlyViewed';
 import VipClubBanner from '../components/VipClubBanner';
 import {
-  ArrowLeft, Smartphone, Truck, ShieldCheck, Headset, Flame,
-  TrendingUp, PackageCheck, ChevronLeft, ChevronRight,
+  ArrowLeft, Smartphone, Truck, ShieldCheck, Headset,
+  PackageCheck, ChevronLeft, ChevronRight,
 } from 'lucide-react';
 import { getJson } from '../lib/jsonFetch';
 import { getCategoryIcon, getCategoryWell } from '../lib/categoryIcons';
@@ -157,7 +157,7 @@ export default function Home() {
     return products
       .filter((p) => (p.discount || 0) > 0 && (p.stockQuantity || 0) > 0)
       .sort((a, b) => (b.discount || 0) - (a.discount || 0))
-      .slice(0, 5);
+      .slice(0, 4);
   }, [products]);
 
   const filteredProducts = useMemo(() => {
@@ -170,25 +170,21 @@ export default function Home() {
       title: settings.valueProp1Title || STORE_SETTINGS_DEFAULTS.valueProp1Title,
       desc: settings.valueProp1Desc || STORE_SETTINGS_DEFAULTS.valueProp1Desc,
       icon: PackageCheck,
-      color: 'text-blue-600 bg-blue-50 border-blue-200/80 dark:text-blue-400 dark:bg-blue-950/40 dark:border-blue-900/40',
     },
     {
       title: settings.valueProp2Title || STORE_SETTINGS_DEFAULTS.valueProp2Title,
       desc: settings.valueProp2Desc || STORE_SETTINGS_DEFAULTS.valueProp2Desc,
       icon: Truck,
-      color: 'text-[var(--color-emphasis-text)] bg-primary-50 border-primary-200/80 dark:bg-primary-950/40 dark:border-primary-900/40',
     },
     {
       title: settings.valueProp3Title || STORE_SETTINGS_DEFAULTS.valueProp3Title,
       desc: settings.valueProp3Desc || STORE_SETTINGS_DEFAULTS.valueProp3Desc,
       icon: ShieldCheck,
-      color: 'text-emerald-600 bg-emerald-50 border-emerald-200/80 dark:text-emerald-400 dark:bg-emerald-950/40 dark:border-emerald-900/40',
     },
     {
       title: settings.valueProp4Title || STORE_SETTINGS_DEFAULTS.valueProp4Title,
       desc: settings.valueProp4Desc || STORE_SETTINGS_DEFAULTS.valueProp4Desc,
       icon: Headset,
-      color: 'text-amber-600 bg-amber-50 border-amber-200/80 dark:text-amber-400 dark:bg-amber-950/40 dark:border-amber-900/40',
     },
   ], [settings]);
 
@@ -204,9 +200,9 @@ export default function Home() {
             e.stopPropagation();
           }
         }}
-        className="w-full h-full min-h-[140px] sm:min-h-[148px] relative flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl bg-white dark:bg-[var(--color-surface-dark)] border border-slate-200/90 dark:border-white/[0.08] hover:border-primary-300 dark:hover:border-primary-500/40 hover:shadow-md transition-all duration-200 group text-center shadow-xs select-none min-touch-target"
+        className="w-full h-full min-h-[148px] sm:min-h-[168px] relative flex flex-col items-center justify-center p-4 rounded-2xl bg-white dark:bg-[var(--color-surface-dark)] border border-slate-200/80 dark:border-white/[0.08] group text-center select-none min-touch-target"
       >
-        <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center mb-2.5 shrink-0 transition-all duration-200 group-hover:scale-105 group-hover:bg-[var(--color-cta)] group-hover:text-white group-hover:border-transparent ${getCategoryWell(cat.title)}`}>
+        <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center mb-3 shrink-0 ${getCategoryWell(cat.title)}`}>
           <Icon className="h-6 w-6 sm:h-7 sm:w-7 stroke-[2]" />
         </div>
         <span className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors w-full px-1 block leading-tight line-clamp-2">
@@ -296,17 +292,12 @@ export default function Home() {
             </div>
           )}
         </div>
-        <div className="mt-3 grid grid-cols-2 gap-2 sm:hidden">
+        <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 sm:hidden">
           {valueProps.map((item) => {
             const Icon = item.icon;
             return (
-              <div
-                key={item.title}
-                className="flex items-center gap-2 rounded-xl border border-slate-200/80 bg-white p-2.5 dark:border-white/[0.07] dark:bg-[var(--color-surface-dark)]"
-              >
-                <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border ${item.color}`}>
-                  <Icon className="h-4 w-4" />
-                </span>
+              <div key={item.title} className="flex items-start gap-2">
+                <Icon className="mt-0.5 h-4 w-4 shrink-0 text-slate-500" />
                 <span className="min-w-0">
                   <span className="block text-xs font-bold leading-snug text-slate-900 dark:text-white">{item.title}</span>
                   <span className="mt-0.5 block text-xs leading-snug text-slate-500 dark:text-slate-400">{item.desc}</span>
@@ -319,37 +310,31 @@ export default function Home() {
 
       {/* 2. Amazing Deals Section — product-first fold */}
       <section className="w-full">
-        <div className="bg-gradient-to-br from-[#ffe4e6] via-[#fff5f6] to-white dark:from-[var(--color-surface-dark)] dark:via-[var(--color-surface-header-dark)] dark:to-[var(--color-surface-footer-dark)] rounded-2xl p-2.5 sm:p-8 text-slate-900 dark:text-white border border-rose-200/80 dark:border-white/[0.08] shadow-lg dark:shadow-2xl relative overflow-hidden transition-colors">
-          
-          {/* Section Header */}
-          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 mb-2 sm:mb-6 pb-2 sm:pb-4 border-b border-rose-100 dark:border-white/[0.06]">
-            <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-primary-50 dark:bg-primary-950/40 border border-primary-200/60 dark:border-primary-900/50 flex items-center justify-center text-[var(--color-emphasis-text)] shrink-0">
-                <Flame className="h-5 w-5 animate-bounce" />
-              </div>
-              <div className="min-w-0">
-                <h2 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white">{normalizePersianTypography(settings.dealsTitle || STORE_SETTINGS_DEFAULTS.dealsTitle)}</h2>
-                <p className="text-xs sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">{normalizePersianTypography(settings.dealsSubtitle || STORE_SETTINGS_DEFAULTS.dealsSubtitle)}</p>
-              </div>
+        <div className="mb-4 flex items-end justify-between gap-3 sm:mb-6">
+          <div className="min-w-0">
+            <p className="text-xs text-slate-500">پیشنهاد</p>
+            <h2 className="mt-1 text-lg font-black text-slate-900 dark:text-white sm:text-2xl">{normalizePersianTypography(settings.dealsTitle || STORE_SETTINGS_DEFAULTS.dealsTitle)}</h2>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">{normalizePersianTypography(settings.dealsSubtitle || STORE_SETTINGS_DEFAULTS.dealsSubtitle)}</p>
+          </div>
+          <Link to="/offers" className="inline-flex shrink-0 items-center gap-1 text-sm font-bold text-[var(--color-cta)]">
+            همه پیشنهادها
+            <ArrowLeft className="h-4 w-4" />
+          </Link>
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+          {loading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="h-64 animate-pulse rounded-2xl bg-slate-100 dark:bg-white/[0.03]" />
+            ))
+          ) : dealProducts.length > 0 ? (
+            dealProducts.map((p) => (
+              <ProductCard key={p.id} product={p} variant="compact" />
+            ))
+          ) : (
+            <div className="col-span-full py-8 text-center text-sm font-medium text-slate-500 dark:text-slate-300">
+              در حال حاضر تمام شگفت‌انگیزها به پایان رسیده‌اند.
             </div>
-          </div>
-
-          {/* Deal Cards */}
-          <div className="relative z-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-            {loading ? (
-              Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="h-64 bg-slate-100 dark:bg-white/[0.03] rounded-2xl animate-pulse" />
-              ))
-            ) : dealProducts.length > 0 ? (
-              dealProducts.map((p) => (
-                <ProductCard key={p.id} product={p} variant="compact" />
-              ))
-            ) : (
-              <div className="col-span-full py-8 text-center text-sm font-medium text-slate-500 dark:text-slate-300">
-                در حال حاضر تمام شگفت‌انگیزها به پایان رسیده‌اند.
-              </div>
-            )}
-          </div>
+          )}
         </div>
       </section>
 
@@ -357,20 +342,15 @@ export default function Home() {
 
       {/* 4. Value Propositions Bar */}
       <section className="w-full">
-        <div className="hidden sm:grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+        <div className="hidden sm:grid grid-cols-2 lg:grid-cols-4 gap-6">
           {valueProps.map((item, i) => {
             const Icon = item.icon;
             return (
-              <div 
-                key={i} 
-                className="flex items-center gap-3.5 p-4 rounded-2xl bg-white dark:bg-[var(--color-surface-dark)] border border-slate-200/80 dark:border-white/[0.07] shadow-xs hover:border-slate-300 dark:hover:border-white/[0.15] transition-all"
-              >
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border ${item.color}`}>
-                  <Icon className="h-6 w-6 stroke-[2]" />
-                </div>
+              <div key={i} className="flex items-start gap-3">
+                <Icon className="mt-0.5 h-5 w-5 shrink-0 text-slate-500" />
                 <div className="min-w-0">
-                  <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100">{item.title}</h4>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">{item.desc}</p>
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">{item.title}</h4>
+                  <p className="mt-0.5 text-xs leading-snug text-slate-500 dark:text-slate-400">{item.desc}</p>
                 </div>
               </div>
             );
@@ -394,7 +374,7 @@ export default function Home() {
                 onClick={() => scrollCats('prev')}
                 disabled={!canScrollPrev}
                 aria-label="دسته‌بندی‌های قبلی"
-                className="min-touch-target w-9 h-9 rounded-xl border border-slate-200 dark:border-slate-800 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-slate-700 dark:text-slate-200 hover:text-[var(--color-emphasis-text)] hover:border-[var(--color-cta)]/40 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-900/70 text-white disabled:cursor-not-allowed disabled:opacity-30"
               >
                 <ChevronRight className="h-4 w-4" />
               </button>
@@ -403,7 +383,7 @@ export default function Home() {
                 onClick={() => scrollCats('next')}
                 disabled={!canScrollNext}
                 aria-label="دسته‌بندی‌های بعدی"
-                className="min-touch-target w-9 h-9 rounded-xl border border-slate-200 dark:border-slate-800 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-slate-700 dark:text-slate-200 hover:text-[var(--color-emphasis-text)] hover:border-[var(--color-cta)]/40 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-900/70 text-white disabled:cursor-not-allowed disabled:opacity-30"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
@@ -418,7 +398,7 @@ export default function Home() {
         </div>
 
         {/* 1. Desktop View (>= 1024px): Balanced 8-Column Grid — Zero Cutoff, Zero Overlap */}
-        <div className="hidden lg:grid lg:grid-cols-8 gap-3 sm:gap-4">
+        <div className="hidden lg:grid lg:grid-cols-4 gap-4">
           {categories.slice(0, 8).map((cat, idx) => (
             <div key={`desktop-${cat.slug}-${idx}`} className="w-full">
               {renderCategoryCard(cat, idx)}
@@ -429,19 +409,6 @@ export default function Home() {
         {/* 2. Mobile & Tablet View (< 1024px): Smooth Touch Carousel with Mouse-Drag + Header Nav */}
         <div className="relative lg:hidden">
           {/* Edge fade gradients */}
-          <div
-            aria-hidden="true"
-            className={`pointer-events-none absolute inset-y-0 left-0 w-8 sm:w-12 z-10 bg-gradient-to-r from-white via-white/70 to-transparent dark:from-[var(--color-canvas-dark)] dark:via-[var(--color-canvas-dark)]/70 transition-opacity duration-300 ${
-              canScrollNext ? 'opacity-100' : 'opacity-0'
-            }`}
-          />
-          <div
-            aria-hidden="true"
-            className={`pointer-events-none absolute inset-y-0 right-0 w-8 sm:w-12 z-10 bg-gradient-to-l from-white via-white/70 to-transparent dark:from-[var(--color-canvas-dark)] dark:via-[var(--color-canvas-dark)]/70 transition-opacity duration-300 ${
-              canScrollPrev ? 'opacity-100' : 'opacity-0'
-            }`}
-          />
-
           {/* Scroll Track: Supports Mouse Click-and-Drag (PC) + Native Touch Momentum Swipe (Mobile) */}
           <div
             dir="rtl"
@@ -455,7 +422,7 @@ export default function Home() {
             style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
           >
             {categories.map((cat, idx) => (
-              <div key={`mobile-${cat.slug}-${idx}`} className={`shrink-0 snap-start ${categories.length < 3 ? 'w-full sm:w-64' : 'w-28 sm:w-36'}`}>
+              <div key={`mobile-${cat.slug}-${idx}`} className={`shrink-0 snap-start ${categories.length < 3 ? 'w-full sm:w-64' : 'w-40 sm:w-52'}`}>
                 {renderCategoryCard(cat, idx)}
               </div>
             ))}
@@ -466,11 +433,11 @@ export default function Home() {
       {/* 6. Trending Products Tabs Focus on Core Categories */}
       <section className="w-full">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5">
-          <div className="flex min-w-0 flex-wrap items-center gap-x-2.5 gap-y-1">
-            <div className="p-2 rounded-xl bg-primary-50 dark:bg-primary-950/40 border border-primary-200/60 dark:border-primary-900/50">
-              <TrendingUp className="h-4 w-4 text-[var(--color-emphasis-text)]" />
+          <div className="flex min-w-0 flex-wrap items-end gap-x-3 gap-y-1">
+            <div className="min-w-0">
+              <p className="text-xs text-slate-500">کاتالوگ</p>
+              <h2 className="mt-1 text-lg font-black text-slate-900 dark:text-white sm:text-2xl">کالاهای برگزیده بازار</h2>
             </div>
-            <h2 className="min-w-0 text-lg sm:text-2xl font-black text-slate-900 dark:text-white">کالاهای برگزیده بازار</h2>
             {activeTab === 'all' && (
               <Link to="/products" className="inline-flex min-h-11 shrink-0 items-center gap-1 text-xs font-bold text-[var(--color-emphasis-text)]">
                 مشاهده همه
@@ -488,7 +455,7 @@ export default function Home() {
                 aria-pressed={activeTab === tab.id}
                 className={`inline-flex items-center px-4 sm:px-3.5 min-h-11 sm:min-h-[38px] rounded-full text-xs font-bold transition-all duration-200 border ${
                   activeTab === tab.id
-                    ? 'bg-[var(--color-cta)] border-[var(--color-cta)] text-white shadow-xs shadow-[var(--color-cta)]/30'
+                    ? 'bg-[var(--color-cta)] border-[var(--color-cta)] text-white'
                     : 'border-slate-200 dark:border-slate-700/70 text-[var(--color-text-muted-light)] dark:text-[var(--color-text-muted-dark)] hover:text-[var(--color-text-main-light)] dark:hover:text-[var(--color-text-main-dark)] hover:border-[var(--color-cta)]/40 bg-white dark:bg-white/[0.04]'
                 }`}
               >

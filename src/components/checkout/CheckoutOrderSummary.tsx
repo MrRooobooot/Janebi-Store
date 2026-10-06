@@ -131,7 +131,7 @@ export default function CheckoutOrderSummary({
         type="submit"
         disabled={submitting}
         aria-label={submitAria}
-        className="btn-primary hidden w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] dark:bg-[var(--color-cta)] dark:hover:bg-[var(--color-cta-hover)] text-white font-bold py-4 px-6 rounded-2xl shadow-lg shadow-[var(--color-cta)]/25 lg:flex items-center justify-center gap-2.5 transition-all active:scale-98 text-sm sm:text-base disabled:opacity-50 group"
+        className="btn-primary hidden w-full items-center justify-center gap-2.5 rounded-2xl px-6 py-4 text-sm font-bold disabled:opacity-50 sm:text-base lg:flex"
       >
         {submitContent}
         {!submitting && (

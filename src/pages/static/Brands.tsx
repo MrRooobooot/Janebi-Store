@@ -161,7 +161,7 @@ export default function Brands() {
             >
               <Link 
                 to={`/products?brand=${encodeURIComponent(b.name)}`}
-                className="bg-[var(--color-surface-light)] dark:bg-gray-800/90 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700/60 p-5 flex flex-col justify-between hover:shadow-xl hover:border-[var(--color-cta)]/40 dark:hover:border-[var(--color-cta)]/40 hover:-translate-y-1.5 transition-all duration-300 group h-full relative overflow-hidden"
+                className="relative flex h-full flex-col justify-between overflow-hidden rounded-3xl bg-[var(--color-surface-light)] p-5 dark:bg-gray-800/90"
               >
                 <div>
                   {/* Cover Banner */}

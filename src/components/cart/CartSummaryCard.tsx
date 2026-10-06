@@ -35,7 +35,7 @@ export default function CartSummaryCard({
   const payable = finalTotal + (isFreeShipping ? 0 : SHIPPING_FEES.standard);
 
   return (
-    <div className="bg-[var(--color-surface-light)]/90 dark:bg-[var(--color-surface-dark)]/90 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] surface-card rounded-2xl p-5 shadow-sm lg:sticky lg:top-24 space-y-6">
+    <div className="space-y-6 rounded-3xl p-5 lg:sticky lg:top-24">
       <h3 className="font-bold text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
         خلاصه پیش‌فاکتور
       </h3>
@@ -76,7 +76,7 @@ export default function CartSummaryCard({
             type="submit"
             disabled={couponLoading || !couponInput.trim()}
             aria-label="اعمال کد تخفیف"
-            className="btn-primary min-touch-target inline-flex items-center justify-center bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] dark:bg-[var(--color-cta)] dark:hover:bg-[var(--color-cta-hover)] text-white font-bold px-5 py-3 rounded-2xl text-xs transition-all disabled:opacity-40 active:scale-95 shadow-sm shrink-0"
+            className="btn-primary inline-flex min-touch-target shrink-0 items-center justify-center rounded-2xl px-5 py-3 text-xs font-bold disabled:opacity-40"
           >
             {couponLoading ? 'بررسی...' : 'اعمال'}
           </button>
@@ -162,7 +162,7 @@ export default function CartSummaryCard({
       <Link
         to="/checkout"
         aria-label="ادامه فرایند خرید و تکمیل اطلاعات پرداخت"
-        className="btn-primary hidden w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] dark:bg-[var(--color-cta)] dark:hover:bg-[var(--color-cta-hover)] text-white font-bold py-4 px-6 rounded-2xl shadow-lg shadow-[var(--color-cta)]/25 lg:flex items-center justify-center gap-2.5 transition-all active:scale-98 text-sm sm:text-base group"
+        className="btn-primary hidden w-full items-center justify-center gap-2.5 rounded-2xl px-6 py-4 text-sm font-bold sm:text-base lg:flex"
       >
         <span>تکمیل اطلاعات و پرداخت</span>
         <ArrowLeft className="h-5 w-5 group-hover:translate-x-[-3px] transition-transform" />

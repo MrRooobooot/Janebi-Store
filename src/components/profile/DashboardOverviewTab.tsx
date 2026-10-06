@@ -1,5 +1,5 @@
 import React from 'react';
-import { Package, MapPin, Heart, Gift, Clock, ShieldCheck, ArrowLeft, Sparkles } from 'lucide-react';
+import { Package, MapPin, Heart, Gift, Clock, ShieldCheck, ArrowLeft } from 'lucide-react';
 import { UserProfile } from '../../contexts/AuthContext';
 import { Order } from '../../types';
 import { toPersianDigits, formatPrice, totalSpentOf } from '../../lib/utils';
@@ -23,25 +23,21 @@ export default function DashboardOverviewTab({
   return (
     <div className="space-y-6 text-right">
       {/* Welcome Hero Banner */}
-      <div className="rounded-2xl p-6 sm:p-8 text-white [background:linear-gradient(135deg,#e11d48,#be123c)] relative overflow-hidden shadow-lg shadow-[var(--color-cta)]/25">
-        <div className="absolute top-0 left-0 w-64 h-64 bg-[var(--color-surface-light)]/10 rounded-full blur-2xl pointer-events-none" />
-        <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-          <div>
-            <h2 className="text-xl sm:text-2xl font-black mb-2 flex items-center gap-2">
-              <span>سلام {user.name} عزیز، خوش آمدید!</span>
-              <Sparkles className="h-5 w-5 text-white/80 animate-pulse" />
-            </h2>
-            <p className="text-xs sm:text-sm text-white/90 font-medium max-w-xl leading-relaxed">
-              از این بخش می‌توانید سفارش‌ها، آدرس‌های ارسال و تنظیمات حساب خود را به راحتی مدیریت کنید.
-            </p>
-          </div>
-
-          <div className="bg-[var(--color-surface-light)]/15 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/20 text-center shrink-0">
-            <span className="text-xs font-bold text-white/90 block">امتیاز باشگاه VIP</span>
-            <span className="text-xl font-bold text-white">{toPersianDigits(user.vipPoints || 0)}</span>
-          </div>
+      <header className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
+        <div>
+          <p className="text-xs text-slate-500">حساب</p>
+          <h2 className="mt-1 text-lg font-black text-slate-900 dark:text-white sm:text-2xl">
+            سلام {user.name} عزیز، خوش آمدید!
+          </h2>
+          <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+            از این بخش می‌توانید سفارش‌ها، آدرس‌های ارسال و تنظیمات حساب خود را به راحتی مدیریت کنید.
+          </p>
         </div>
-      </div>
+        <p className="text-xs text-slate-500">
+          امتیاز باشگاه VIP
+          <span className="mr-2 text-xl font-bold text-[var(--color-cta)]">{toPersianDigits(user.vipPoints || 0)}</span>
+        </p>
+      </header>
 
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

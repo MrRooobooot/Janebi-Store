@@ -188,7 +188,7 @@ export default function Register() {
 
           <button
             type="submit"
-            className="btn-primary w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold py-4 px-6 rounded-2xl shadow-lg shadow-[var(--color-cta)]/25 flex items-center justify-center gap-2 transition-all active:scale-98 text-sm mt-6"
+            className="btn-primary mt-6 flex w-full items-center justify-center gap-2 rounded-2xl px-6 py-4 text-sm font-bold"
           >
             <span>ثبت‌نام و عضویت</span>
             <ArrowLeft className="h-4 w-4" />

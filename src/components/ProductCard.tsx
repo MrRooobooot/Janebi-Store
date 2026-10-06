@@ -21,8 +21,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
   // Compact (dense rows like the deals strip): same design language, 4:3 tile and
   // tighter padding so the price + CTA still land inside the first phone screen.
   const compact = variant === 'compact';
-  const cardPad = compact ? 'p-2.5 sm:p-3.5' : 'p-2.5 sm:p-4 pb-3 sm:pb-4';
-  const tileAspect = compact ? 'aspect-[4/3] sm:aspect-square' : 'aspect-square';
+  const tileAspect = compact ? 'aspect-[4/3]' : 'aspect-square';
   // R2-09: reset timer is cleared on unmount.
   const addedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
@@ -44,12 +43,21 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
   };
 
   return (
-    <div className={`linear-card bg-white dark:bg-[var(--color-surface-dark)] rounded-2xl border border-slate-200/80 dark:border-white/[0.08] ${cardPad} transition-all duration-300 relative flex flex-col h-full group select-none hover:-translate-y-0.5 hover:shadow-[var(--shadow-elevation-2)] overflow-hidden`}>
-      
-      {/* 1. Header Badges & Quick Action Floating Buttons */}
-      <div className="flex flex-wrap items-center justify-between gap-1.5 mb-2 sm:mb-2.5 relative z-10">
+    <div className="product-card linear-card bg-white dark:bg-[var(--color-surface-dark)] rounded-2xl border border-slate-200/80 dark:border-white/[0.08] relative flex flex-col h-full overflow-hidden group select-none">
+      <div className={`relative ${tileAspect} w-full bg-[var(--color-stage-light)] dark:bg-[var(--color-stage-dark)]`}>
+        <Link to={`/product/${product.id}`} className="absolute inset-0" tabIndex={-1} aria-hidden="true">
+          <PictureImage
+            src={product.image}
+            alt=""
+            width="280"
+            height="280"
+            sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 280px"
+            className="h-full w-full object-cover"
+          />
+        </Link>
+        <div className="pointer-events-none absolute inset-x-2 top-2 flex items-start justify-between gap-1.5">
           {outOfStock ? (
-            <span className="inline-flex h-6 shrink-0 items-center rounded-full border border-slate-200 bg-slate-100 px-2.5 text-xs font-bold text-slate-500 dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-slate-400">
+            <span className="inline-flex h-6 shrink-0 items-center rounded-full bg-slate-900/70 px-2.5 text-xs font-bold text-white">
               ناموجود
             </span>
           ) : product.discount && product.discount > 0 ? (
@@ -58,68 +66,48 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
               <span>تخفیف</span>
             </span>
           ) : (
-            <span className="hidden sm:inline-flex h-6 max-w-full shrink items-center overflow-hidden text-ellipsis whitespace-nowrap rounded-md border border-slate-200/60 bg-slate-100 px-2 text-xs font-bold text-slate-600 dark:border-white/[0.06] dark:bg-white/[0.04] dark:text-slate-400">
+            <span className="hidden sm:inline-flex h-6 max-w-[60%] shrink items-center overflow-hidden text-ellipsis whitespace-nowrap rounded-full bg-slate-900/55 px-2.5 text-xs font-bold text-white">
               {product.brand || 'اورجینال'}
             </span>
           )}
-
-          <div className="ms-auto flex shrink-0 items-center gap-1.5">
-            {variant === 'full' && (
-              <>
-            <button
-              type="button"
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist(product); }}
-              aria-label={inWishlist ? "حذف از لیست علاقه‌مندی‌ها" : "افزودن به لیست علاقه‌مندی‌ها"}
-              className={`w-11 h-11 sm:w-8 sm:h-8 rounded-xl sm:rounded-lg flex items-center justify-center transition-all cursor-pointer ${
-                inWishlist 
-                  ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-500 border border-rose-200 dark:border-rose-800' 
-                  : 'bg-slate-50 dark:bg-white/[0.04] text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 border border-slate-200/60 dark:border-white/[0.06]'
-              }`}
-              title="علاقه‌مندی‌ها"
-            >
-              <Heart className={`h-3.5 w-3.5 ${inWishlist ? 'fill-rose-500 text-rose-500' : ''}`} />
-            </button>
-            <button
-              type="button"
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleCompare(product); }}
-              aria-label={inCompare ? "حذف از مقایسه" : "افزودن به مقایسه"}
-              className={`flex w-11 h-11 sm:w-8 sm:h-8 rounded-xl sm:rounded-lg items-center justify-center transition-all cursor-pointer ${
-                inCompare 
-                  ? 'bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 text-[var(--color-emphasis-text)] border border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/40' 
-                  : 'bg-slate-50 dark:bg-white/[0.04] text-slate-400 hover:text-[var(--color-emphasis-text)] hover:bg-[var(--color-cta)]/10 dark:hover:bg-[var(--color-cta)]/30 border border-slate-200/60 dark:border-white/[0.06]'
-              }`}
-              title="مقایسه مشخصات"
-            >
-              <Scale className="h-3.5 w-3.5" />
-            </button>
-              </>
-            )}
-          </div>
+          {variant === 'full' && (
+            <div className="pointer-events-auto ms-auto flex shrink-0 items-center gap-1.5">
+              <button
+                type="button"
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist(product); }}
+                aria-label={inWishlist ? "حذف از لیست علاقه‌مندی‌ها" : "افزودن به لیست علاقه‌مندی‌ها"}
+                className={`flex h-9 w-9 items-center justify-center rounded-full cursor-pointer ${
+                  inWishlist
+                    ? 'bg-white text-rose-600'
+                    : 'bg-slate-900/70 text-white'
+                }`}
+              >
+                <Heart className={`h-3.5 w-3.5 ${inWishlist ? 'fill-rose-600 text-rose-600' : ''}`} />
+              </button>
+              <button
+                type="button"
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleCompare(product); }}
+                aria-label={inCompare ? "حذف از مقایسه" : "افزودن به مقایسه"}
+                className={`flex h-9 w-9 items-center justify-center rounded-full cursor-pointer ${
+                  inCompare
+                    ? 'bg-white text-[var(--color-cta)]'
+                    : 'bg-slate-900/70 text-white'
+                }`}
+              >
+                <Scale className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          )}
         </div>
+        {typeof product.stockQuantity === 'number' && product.stockQuantity === 1 && (
+          <span className="absolute bottom-2 right-2 inline-flex h-6 max-w-[calc(100%-1rem)] items-center rounded-full bg-[var(--color-cta)] px-2.5 text-xs font-bold leading-none text-white">
+            تنها {toPersianDigits(product.stockQuantity)} عدد
+          </span>
+        )}
+      </div>
 
-        {/* 2. Visual Product Image Container */}
-        <Link to={`/product/${product.id}`} className="block group-hover:opacity-95 transition-opacity">
-          <div className={`relative ${tileAspect} w-full rounded-2xl bg-[var(--color-stage-light)] dark:bg-[var(--color-stage-dark)] border border-slate-200/70 dark:border-white/[0.09] p-2 sm:p-4 flex items-center justify-center overflow-hidden mb-2 sm:mb-2.5 group-hover:border-[var(--color-border-light-hover)] dark:group-hover:border-white/[0.12] transition-colors`}>
-            
-            {/* Ambient Radial Accent */}
-            <div className="absolute inset-0 bg-radial from-[var(--color-cta)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            
-            <PictureImage
-              src={product.image}
-              alt=""  /* decorative: the card link already exposes the title */
-              width="280"
-              height="280"
-              sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 240px"
-              className="max-h-full max-w-full object-contain drop-shadow-sm group-hover:scale-108 transition-transform duration-500"
-            />
-
-            {/* Low stock badge */}
-            {typeof product.stockQuantity === 'number' && product.stockQuantity === 1 && (
-              <span className="absolute bottom-2 right-2 inline-flex h-6 max-w-[calc(100%-1rem)] items-center rounded-full bg-[var(--color-cta)] px-2.5 text-xs font-bold leading-none text-white">
-                تنها {toPersianDigits(product.stockQuantity)} عدد
-              </span>
-            )}
-          </div>
+      <div className={`flex flex-1 flex-col ${compact ? 'p-3' : 'p-3 sm:p-4'}`}>
+        <Link to={`/product/${product.id}`} className="block">
 
           {variant === 'full' && (
           <div className="hidden sm:flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 mb-1 px-0.5">
@@ -208,12 +196,12 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
             disabled={outOfStock}
             onClick={handleAddToCart}
             aria-label={outOfStock ? 'کالای ناموجود' : `افزودن ${product.title} به سبد خرید`}
-            className={`raycast-btn h-11 w-11 sm:w-auto sm:h-11 px-0 sm:px-3.5 rounded-xl flex items-center justify-center gap-1 text-[13px] font-bold transition-all duration-200 cursor-pointer shrink-0 ${
+            className={`h-11 w-11 sm:w-auto sm:h-11 px-0 sm:px-3.5 rounded-xl flex items-center justify-center gap-1 text-[13px] font-bold cursor-pointer shrink-0 ${
               outOfStock 
-                ? 'bg-slate-100 dark:bg-white/[0.05] text-slate-500 dark:text-slate-400 border border-slate-200/60 dark:border-white/[0.06] cursor-not-allowed shadow-none'
+                ? 'bg-slate-100 dark:bg-white/[0.05] text-slate-500 dark:text-slate-400 border border-slate-200/60 dark:border-white/[0.06] cursor-not-allowed'
                 : added 
-                  ? 'bg-emerald-600 text-white shadow-emerald-600/30'
-                  : 'bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] active:scale-95 text-white'
+                  ? 'bg-emerald-600 text-white'
+                  : 'bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] text-white'
             }`}
             title={outOfStock ? 'ناموجود' : 'افزودن به سبد خرید'}
           >
@@ -233,7 +221,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
           </button>
         </div>
       </div>
-
+      </div>
     </div>
   );
 });

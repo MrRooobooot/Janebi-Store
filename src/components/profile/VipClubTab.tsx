@@ -45,33 +45,25 @@ export default function VipClubTab() {
   return (
     <div className="space-y-6 text-right">
       {/* Tier Progress Card */}
-      <div className="bg-gradient-to-br from-[var(--color-cta)] via-[var(--color-accent-surface)] to-[var(--color-cta-hover)] rounded-2xl p-6 sm:p-8 text-white relative overflow-hidden shadow-lg shadow-[var(--color-cta)]/25 space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-black/25 backdrop-blur-md flex items-center justify-center">
-              <Award className="h-6 w-6 text-white/80" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold">سطح اشتراک: طلایی (VIP)</h2>
-              <p className="text-xs text-white/90 font-medium">
-                شما {toPersianDigits(points)} امتیاز فعال دارید
-              </p>
-            </div>
+      <div className="space-y-4">
+        <div className="flex items-end justify-between gap-3">
+          <div>
+            <p className="text-xs text-slate-500">سطح بعدی: الماس</p>
+            <h2 className="mt-1 text-lg font-black text-slate-900 dark:text-white sm:text-2xl">سطح اشتراک: طلایی (VIP)</h2>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+              شما {toPersianDigits(points)} امتیاز فعال دارید
+            </p>
           </div>
-          <span className="text-xs font-bold bg-[var(--color-surface-light)] text-[var(--color-emphasis-text)] px-3 py-1.5 rounded-full">
-            سطح بعدی: الماس
-          </span>
+          <Award className="h-5 w-5 shrink-0 text-slate-500" />
         </div>
-
-        {/* Progress bar */}
-        <div className="space-y-1.5 pt-2">
-          <div className="flex justify-between text-xs font-bold text-white/90">
+        <div className="space-y-1.5">
+          <div className="flex justify-between text-xs font-bold text-slate-500">
             <span>پیشرفت تا سطح بعدی</span>
             <span>{toPersianDigits(points)} / {toPersianDigits(targetPoints)} امتیاز</span>
           </div>
-          <div className="w-full h-3 bg-black/20 rounded-full overflow-hidden p-0.5">
+          <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-white/10">
             <div
-              className="h-full bg-[var(--color-surface-light)] rounded-full transition-all duration-500"
+              className="h-full rounded-full bg-[var(--color-cta)]"
               style={{ width: `${progressPercent}%` }}
             />
           </div>

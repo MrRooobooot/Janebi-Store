@@ -1,6 +1,5 @@
 import React from 'react';
 import FAQ from '../../components/FAQ';
-import { HelpCircle } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export default function FAQPage() {
@@ -11,21 +10,15 @@ export default function FAQPage() {
       transition={{ duration: 0.4 }}
       className="page-stack"
     >
-      <div className="text-white rounded-2xl [background:linear-gradient(135deg,#e11d48,#be123c)] p-8 sm:p-10 relative overflow-hidden shadow-lg shadow-[var(--color-cta)]/25">
-        <div className="relative z-10 max-w-xl">
-          <span className="inline-flex items-center gap-1.5 bg-black/25 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full mb-3">
-            <HelpCircle className="h-3.5 w-3.5" /> مرکز راهنمایی و پشتیبانی
-          </span>
-          <h1 className="text-3xl font-black mb-3 tracking-tight">سوالات متداول خریداران</h1>
-          <p className="text-white/90 text-sm leading-relaxed">
-            پاسخ جامع به رایج‌ترین پرسش‌های شما در خصوص نحوه ثبت سفارش، ضمانت اصالت، زمان ارسال و مرجوعی کالا.
-          </p>
-        </div>
-      </div>
+      <header className="max-w-xl text-right">
+        <p className="text-xs text-slate-500">مرکز راهنمایی و پشتیبانی</p>
+        <h1 className="mt-1 text-lg font-black text-slate-900 dark:text-white sm:text-4xl">سوالات متداول خریداران</h1>
+        <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+          پاسخ جامع به رایج‌ترین پرسش‌های شما در خصوص نحوه ثبت سفارش، ضمانت اصالت، زمان ارسال و مرجوعی کالا.
+        </p>
+      </header>
 
-      <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-6 sm:p-10 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs">
-        <FAQ />
-      </div>
+      <FAQ />
     </motion.div>
   );
 }

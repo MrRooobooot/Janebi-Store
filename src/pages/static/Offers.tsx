@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ProductCard from '../../components/ProductCard';
 import { ProductCardSkeleton } from '../../components/Skeletons';
-import { Sparkles, Flame } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
 import { buildProductQuery } from '../../lib/productQuery';
 import { getJson } from '../../lib/jsonFetch';
@@ -27,17 +27,13 @@ export default function Offers() {
       transition={{ duration: 0.4 }}
       className="page-stack"
     >
-      <div className="bg-gradient-to-r from-rose-600 via-[var(--color-accent-surface)] to-[var(--color-cta-hover)] text-white rounded-2xl p-8 sm:p-10 relative overflow-hidden shadow-lg shadow-rose-600/20">
-        <div className="relative z-10 max-w-xl">
-          <div className="inline-flex items-center gap-2 bg-black/25 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold mb-3">
-            <Flame className="h-4 w-4 text-white/80 animate-pulse" /> جشنواره تخفیف‌های شگفت‌انگیز
-          </div>
-          <h1 className="text-3xl font-black mb-3 tracking-tight">پیشنهادهای ویژه و محدود</h1>
-          <p className="text-rose-100 text-sm leading-relaxed">
-            بهترین لوازم جانبی موبایل با بالاترین میزان تخفیف و تضمین اصالت کالا.
-          </p>
-        </div>
-      </div>
+      <header className="max-w-xl text-right">
+        <p className="text-xs text-slate-500">جشنواره تخفیف‌های شگفت‌انگیز</p>
+        <h1 className="mt-1 text-lg font-black text-slate-900 dark:text-white sm:text-4xl">پیشنهادهای ویژه و محدود</h1>
+        <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+          بهترین لوازم جانبی موبایل با بالاترین میزان تخفیف و تضمین اصالت کالا.
+        </p>
+      </header>
 
       <div>
         <div className="flex items-center justify-between mb-6">

@@ -153,7 +153,7 @@ export default function DynamicBreadcrumbs() {
       />
       <nav
         aria-label="مسیر راهنما"
-        className="flex items-center gap-1.5 text-[13px] text-gray-500 dark:text-gray-400 mb-4 sm:mb-6 overflow-x-auto whitespace-nowrap hide-scrollbar print:hidden dir-rtl py-1 px-1"
+        className="mb-4 flex flex-wrap items-center gap-x-1.5 gap-y-1 py-1 text-[13px] text-gray-500 dir-rtl dark:text-gray-400 sm:mb-6 print:hidden"
       >
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
@@ -179,7 +179,7 @@ export default function DynamicBreadcrumbs() {
               ) : (
                 <span
                   aria-current="page"
-                  className="text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] font-bold truncate max-w-[200px] sm:max-w-[350px]"
+                  className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]"
                   title={item.label}
                 >
                   {item.label}

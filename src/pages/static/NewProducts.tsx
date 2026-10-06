@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ProductCard from '../../components/ProductCard';
 import { ProductCardSkeleton } from '../../components/Skeletons';
-import { Sparkles, Zap } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
 import { buildProductQuery } from '../../lib/productQuery';
 import { getJson } from '../../lib/jsonFetch';
@@ -27,17 +27,13 @@ export default function NewProducts() {
       transition={{ duration: 0.4 }}
       className="page-stack"
     >
-      <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white rounded-2xl p-8 sm:p-10 relative overflow-hidden shadow-lg shadow-blue-600/20">
-        <div className="relative z-10 max-w-xl">
-          <div className="inline-flex items-center gap-2 bg-black/25 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold mb-3">
-            <Zap className="h-4 w-4 text-white/80" /> تازه رسیده‌ها
-          </div>
-          <h1 className="text-3xl font-black mb-3 tracking-tight">جدیدترین محصولات جانبی آرنا</h1>
-          <p className="text-blue-100 text-sm leading-relaxed">
-            جدیدترین قاب‌ها، گلس‌ها، هندزفری‌ها و شارژرهای دیواری متناسب با جدیدترین گوشی‌های بازار.
-          </p>
-        </div>
-      </div>
+      <header className="max-w-xl text-right">
+        <p className="text-xs text-slate-500">تازه رسیده‌ها</p>
+        <h1 className="mt-1 text-lg font-black text-slate-900 dark:text-white sm:text-4xl">جدیدترین محصولات جانبی آرنا</h1>
+        <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+          جدیدترین قاب‌ها، گلس‌ها، هندزفری‌ها و شارژرهای دیواری متناسب با جدیدترین گوشی‌های بازار.
+        </p>
+      </header>
 
       <div>
         <div className="flex items-center justify-between mb-6">

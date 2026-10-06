@@ -33,7 +33,7 @@ export default function EmptyState({
       {actionLink && actionText && (
         <Link
           to={actionLink}
-          className="btn-primary bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] dark:bg-[var(--color-cta)] dark:hover:bg-[var(--color-cta-hover)] text-white font-bold py-3 px-8 rounded-xl transition-colors inline-flex items-center justify-center min-touch-target shadow-md shadow-[var(--color-cta)]/25 active:scale-95 raycast-btn"
+          className="btn-primary inline-flex min-touch-target items-center justify-center rounded-xl px-8 py-3 font-bold"
         >
           {actionText}
         </Link>
@@ -42,7 +42,7 @@ export default function EmptyState({
       {onActionClick && actionText && !actionLink && (
         <button
           onClick={onActionClick}
-          className="btn-primary bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] dark:bg-[var(--color-cta)] dark:hover:bg-[var(--color-cta-hover)] text-white font-bold py-3 px-8 rounded-xl transition-colors inline-flex items-center justify-center min-touch-target shadow-md shadow-[var(--color-cta)]/25 active:scale-95 raycast-btn"
+          className="btn-primary inline-flex min-touch-target items-center justify-center rounded-xl px-8 py-3 font-bold"
         >
           {actionText}
         </button>

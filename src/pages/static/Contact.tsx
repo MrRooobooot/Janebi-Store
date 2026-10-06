@@ -187,7 +187,7 @@ export default function Contact() {
             <button 
               type="submit" 
               disabled={isSubmitting}
-              className="btn-primary w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold py-3 px-8 rounded-xl shadow-md shadow-[var(--color-cta)]/25 transition-all duration-300 active:scale-98 disabled:opacity-50"
+              className="btn-primary inline-flex w-full items-center justify-center gap-2 rounded-xl px-8 py-3 font-bold disabled:opacity-50 sm:w-auto"
             >
               <Send className="h-4 w-4" /> {isSubmitting ? 'در حال ارسال...' : 'ارسال پیام'}
             </button>

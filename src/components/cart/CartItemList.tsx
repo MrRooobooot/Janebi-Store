@@ -49,7 +49,7 @@ export default function CartItemList({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: -60, scale: 0.95 }}
             transition={{ duration: 0.3 }}
-            className="bg-[var(--color-surface-light)]/90 dark:bg-[var(--color-surface-dark)]/90 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/80 rounded-2xl p-5 sm:p-6 shadow-sm hover:border-[var(--color-cta)]/30 dark:hover:border-gray-700 transition-all flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-6 group"
+            className="flex flex-col items-stretch justify-between gap-6 rounded-3xl py-5 sm:flex-row sm:items-center sm:py-6"
           >
             {/* Product Info */}
             <div className="flex items-center gap-4 sm:gap-5 flex-1 min-w-0">

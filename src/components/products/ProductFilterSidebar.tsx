@@ -423,7 +423,7 @@ export default function ProductFilterSidebar({
                 <div className="pt-6 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] mt-6 sticky bottom-0 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)]">
                   <button
                     onClick={() => setMobileFilterOpen(false)}
-                    className="w-full bg-[var(--color-cta)] text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-[var(--color-cta)]/25 active:scale-98 transition-transform text-sm cursor-pointer"
+                    className="btn-primary w-full cursor-pointer rounded-2xl py-3.5 text-sm font-bold"
                   >
                     مشاهده نتایج ({productsCount})
                   </button>

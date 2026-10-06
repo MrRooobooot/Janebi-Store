@@ -1,6 +1,5 @@
 import React from 'react';
 import { ShieldCheck, Truck, Headphones, Award, CheckCircle2 } from 'lucide-react';
-import { LogoSymbol } from '../../components/Logo';
 import { motion } from 'motion/react';
 
 export default function About() {
@@ -12,22 +11,15 @@ export default function About() {
       className="page-stack"
     >
       {/* Hero Section */}
-      <div className="rounded-2xl p-8 sm:p-12 text-white [background:linear-gradient(135deg,#e11d48,#be123c)] relative overflow-hidden shadow-lg shadow-[var(--color-cta)]/25">
-        <div className="relative z-10 max-w-2xl">
-          <div className="inline-flex items-center gap-2 bg-black/25 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold mb-4">
-            <Award className="h-4 w-4" /> درباره فروشگاه جانبی آرنا
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-black mb-4 tracking-tight leading-tight">
-            مرجع تخصصی و معتبر لوازم جانبی دیجیتال و موبایل
-          </h1>
-          <p className="text-white/90 text-sm sm:text-base leading-relaxed">
-            ما در جانبی آرنا با بیش از ۷ سال تجربه در تامین و توزیع مستقیم لوازم جانبی اصلی، تضمین‌کننده بهترین کیفیت و مناسب‌ترین قیمت برای هموطنان عزیز هستیم.
-          </p>
-        </div>
-        <div className="absolute -left-10 -bottom-10 w-64 h-64 opacity-15 rotate-12 pointer-events-none">
-          <LogoSymbol theme="white" className="w-full h-full" />
-        </div>
-      </div>
+      <header className="max-w-2xl text-right">
+        <p className="text-xs text-slate-500">درباره فروشگاه جانبی آرنا</p>
+        <h1 className="mt-1 text-lg font-black leading-tight text-slate-900 dark:text-white sm:text-4xl">
+          مرجع تخصصی و معتبر لوازم جانبی دیجیتال و موبایل
+        </h1>
+        <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300 sm:text-base">
+          ما در جانبی آرنا با بیش از ۷ سال تجربه در تامین و توزیع مستقیم لوازم جانبی اصلی، تضمین‌کننده بهترین کیفیت و مناسب‌ترین قیمت برای هموطنان عزیز هستیم.
+        </p>
+      </header>
 
       {/* Value Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 sm:gap-6">

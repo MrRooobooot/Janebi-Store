@@ -273,7 +273,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-[var(--color-cta)]/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] text-sm mt-6 disabled:opacity-60 cursor-pointer"
+              className="btn-primary mt-6 flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-sm font-bold disabled:opacity-60"
             >
               {loading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
