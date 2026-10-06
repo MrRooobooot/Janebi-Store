@@ -16,11 +16,45 @@ import { Product } from '../types';
 import { toPersianDigits, normalizePersianTypography } from '../lib/utils';
 import { useStoreSettings } from '../hooks/useStoreSettings';
 import { STORE_SETTINGS_DEFAULTS } from '../lib/constants';
-import PictureImage from '../components/PictureImage';
 
-/** Path convention for full-bleed hero art — any other path (the bundled product SVGs used
- *  as slide defaults) stays a contained illustration instead of being cropped to full bleed. */
-const HERO_ART = /^\/images\/hero\//;
+type HeroTone = 'rose' | 'ink';
+
+/** Fresh homepage slides. Copy and art live here, so old settings photos cannot come back. */
+const HERO_COPY: Record<string, { kicker: string; title: string; line: string; action: string; tone: HeroTone }> = {
+  'هولدر و نگهدارنده': {
+    kicker: 'هولدر',
+    title: 'گوشی سر جایش می‌ماند',
+    line: 'مگنتی، برای خودرو و میز',
+    action: 'دیدن هولدرها',
+    tone: 'rose',
+  },
+  'کابل و سیم': {
+    kicker: 'کابل',
+    title: 'شارژ که قطع نمی‌شود',
+    line: 'بافت کنفی، اتصال محکم',
+    action: 'دیدن کابل‌ها',
+    tone: 'ink',
+  },
+};
+
+function HeroMark({ tone }: { tone: HeroTone }) {
+  if (tone === 'rose') {
+    return (
+      <svg viewBox="0 0 160 220" className="h-full w-full" aria-hidden="true">
+        <rect x="36" y="8" width="88" height="150" rx="18" fill="none" stroke="currentColor" strokeWidth="7" />
+        <circle cx="80" cy="188" r="16" fill="none" stroke="currentColor" strokeWidth="7" />
+        <path d="M64 188h32" stroke="currentColor" strokeWidth="7" strokeLinecap="round" />
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 200 200" className="h-full w-full" aria-hidden="true">
+      <circle cx="100" cy="100" r="74" fill="none" stroke="currentColor" strokeWidth="8" />
+      <circle cx="100" cy="100" r="46" fill="none" stroke="currentColor" strokeWidth="8" />
+      <circle cx="100" cy="100" r="14" fill="currentColor" />
+    </svg>
+  );
+}
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -88,50 +122,16 @@ export default function Home() {
   };
 
   const heroSlides = useMemo(() => {
-    const allSlides = [
-    {
-      id: 1,
-      tag: settings.heroSlide1Tag || STORE_SETTINGS_DEFAULTS.heroSlide1Tag,
-      title: settings.heroSlide1Title || STORE_SETTINGS_DEFAULTS.heroSlide1Title,
-      subtitle: settings.heroSlide1Subtitle || STORE_SETTINGS_DEFAULTS.heroSlide1Subtitle,
-      buttonText: settings.heroSlide1ButtonText || STORE_SETTINGS_DEFAULTS.heroSlide1ButtonText,
-      buttonLink: settings.heroSlide1Link || STORE_SETTINGS_DEFAULTS.heroSlide1Link,
-      badge: settings.heroSlide1Badge || STORE_SETTINGS_DEFAULTS.heroSlide1Badge,
-      image: settings.heroSlide1Image || '/products/hld-13.svg',
-      borderColor: 'border-[var(--color-cta)]/40 dark:border-[var(--color-cta)]/30',
-    },
-    {
-      id: 2,
-      tag: settings.heroSlide2Tag || STORE_SETTINGS_DEFAULTS.heroSlide2Tag,
-      title: settings.heroSlide2Title || STORE_SETTINGS_DEFAULTS.heroSlide2Title,
-      subtitle: settings.heroSlide2Subtitle || STORE_SETTINGS_DEFAULTS.heroSlide2Subtitle,
-      buttonText: settings.heroSlide2ButtonText || STORE_SETTINGS_DEFAULTS.heroSlide2ButtonText,
-      buttonLink: settings.heroSlide2Link || STORE_SETTINGS_DEFAULTS.heroSlide2Link,
-      badge: settings.heroSlide2Badge || STORE_SETTINGS_DEFAULTS.heroSlide2Badge,
-      image: settings.heroSlide2Image || '/products/cas-4.svg',
-      borderColor: 'border-blue-500/40 dark:border-blue-500/30',
-    },
-    {
-      id: 3,
-      tag: settings.heroSlide3Tag || STORE_SETTINGS_DEFAULTS.heroSlide3Tag,
-      title: settings.heroSlide3Title || STORE_SETTINGS_DEFAULTS.heroSlide3Title,
-      subtitle: settings.heroSlide3Subtitle || STORE_SETTINGS_DEFAULTS.heroSlide3Subtitle,
-      buttonText: settings.heroSlide3ButtonText || STORE_SETTINGS_DEFAULTS.heroSlide3ButtonText,
-      buttonLink: settings.heroSlide3Link || STORE_SETTINGS_DEFAULTS.heroSlide3Link,
-      badge: settings.heroSlide3Badge || STORE_SETTINGS_DEFAULTS.heroSlide3Badge,
-      image: settings.heroSlide3Image || '/products/cbl-1.svg',
-      borderColor: 'border-purple-500/40 dark:border-purple-500/30',
-    },
-    ];
-    // Never advertise a category the store has no stock in: slides whose CTA targets an
-    // empty category are dropped (falling back to the first slide if all are unavailable).
-    const liveCategories = new Set(categories.map((c) => c.title));
-    const available = allSlides.filter((s) => {
-      const m = String(s.buttonLink).match(/[?&]category=([^&]+)/);
-      return !m || liveCategories.has(decodeURIComponent(m[1]));
-    });
-    return available.length ? available : [allSlides[0]];
-  }, [settings, categories]);
+    const known = Object.entries(HERO_COPY).map(([category, copy]) => ({
+      id: category,
+      ...copy,
+      to: `/products?category=${encodeURIComponent(category)}`,
+    }));
+    if (categories.length === 0) return known;
+    const live = new Set(categories.map((c) => c.title as string));
+    const available = known.filter((slide) => live.has(slide.id));
+    return available.length ? available : known.slice(0, 1);
+  }, [categories]);
 
   useEffect(() => {
     if (activeSlide >= heroSlides.length) setActiveSlide(0);
@@ -148,9 +148,6 @@ export default function Home() {
     }, 6000);
     return () => clearInterval(timer);
   }, [heroSlides.length]);
-
-  const currentSlide = heroSlides[activeSlide];
-  const heroIsArt = heroSlides.some((slide) => HERO_ART.test(slide.image));
 
   useEffect(() => {
     let cancelled = false;
@@ -252,11 +249,7 @@ export default function Home() {
             rotation-safe (slide titles are plain <p>), SEO + a11y clean. */}
         <h1 className="sr-only">فروشگاه لوازم جانبی موبایل و تبلت | جانبی آرنا</h1>
         <div
-          className={`relative rounded-2xl overflow-hidden border border-slate-200/90 dark:border-white/[0.08] shadow-lg dark:shadow-2xl transition-colors duration-500 touch-pan-y ${
-            heroIsArt
-              ? 'bg-gradient-to-br from-white via-slate-50 to-rose-50/30 dark:from-[var(--color-surface-dark)] dark:via-[var(--color-surface-header-dark)] dark:to-[var(--color-surface-footer-dark)] aspect-[4/3] sm:aspect-[16/9]'
-              : 'bg-gradient-to-br from-[#fecdd3] via-[#ffe4e6] to-[#fff5f6] dark:from-[#3b1020] dark:via-[#241018] dark:to-[#120c14] aspect-[4/3] lg:aspect-[3/2]'
-          }`}
+          className="relative min-h-[26rem] overflow-hidden rounded-3xl shadow-lg touch-pan-y sm:min-h-[22rem]"
           onTouchStart={(e) => { mobileTouchX.current = e.touches[0].clientX; }}
           onTouchEnd={(e) => {
             const dx = e.changedTouches[0].clientX - mobileTouchX.current;
@@ -265,96 +258,71 @@ export default function Home() {
             }
           }}
         >
-          {/* Branded backdrop — shows through wherever a slide has no full-bleed art */}
-          <div className={`absolute inset-0 bg-[radial-gradient(var(--color-border-light)_1px,transparent_1px)] dark:bg-[radial-gradient(rgba(255,255,255,0.16)_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none ${heroIsArt ? 'opacity-60' : 'opacity-35'}`} />
-
-          {/* Image-only banner: one layer per slide, crossfaded on the 6s rotation, and the layer
-              itself is the link to its category — no copy, no catalogue cards on top. */}
           {heroSlides.map((slide, idx) => (
             <Link
               key={slide.id}
-              to={slide.buttonLink}
-              aria-label={slide.title}
+              to={slide.to}
+              aria-label={`${slide.title}. ${slide.action}`}
               aria-hidden={idx !== activeSlide}
               tabIndex={idx === activeSlide ? 0 : -1}
-              className="absolute inset-0 flex items-center justify-center transition-opacity duration-700 ease-out motion-reduce:transition-none"
+              className={`absolute inset-0 flex items-end p-6 pb-20 transition-opacity duration-700 ease-out motion-reduce:transition-none sm:items-center sm:p-10 sm:pb-16 ${
+                slide.tone === 'rose'
+                  ? 'bg-[radial-gradient(circle_at_12%_78%,#fb7185_0%,transparent_40%),linear-gradient(145deg,#4c0519_0%,#be123c_58%,#9f1239_100%)] text-white'
+                  : 'bg-[radial-gradient(circle_at_12%_78%,#be123c_0%,transparent_34%),linear-gradient(160deg,#090d16_0%,#1e1b4b_100%)] text-white'
+              }`}
               style={{ opacity: idx === activeSlide ? 1 : 0, pointerEvents: idx === activeSlide ? 'auto' : 'none' }}
             >
-              {HERO_ART.test(slide.image) ? (
-                <PictureImage
-                  src={slide.image}
-                  alt={slide.title}
-                  width="1536"
-                  height="1024"
-                  priority={idx === 0}
-                  className={`h-full w-full object-cover${idx === activeSlide ? ' hero-kenburns' : ''}`}
-                />
-              ) : (
-                <>
-                  <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 h-[72%] aspect-square -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#fb7185]/35 blur-3xl" />
-                  <img
-                    src={slide.image}
-                    alt=""
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-[-10%] h-[120%] w-[120%] max-w-none object-cover object-center opacity-45 blur-3xl saturate-150"
-                  />
-                  <img
-                    src={slide.image}
-                    alt=""
-                    className="relative z-10 h-[88%] w-[88%] object-contain object-center drop-shadow-[0_18px_40px_rgba(11,21,54,0.18)]"
-                  />
-                </>
-              )}
+              <span aria-hidden="true" className="pointer-events-none absolute -bottom-8 -left-6 h-56 w-44 text-white/30 sm:h-72 sm:w-56">
+                <HeroMark tone={slide.tone} />
+              </span>
+              <span className="relative z-10 flex max-w-md flex-col gap-3">
+                <span className="text-sm font-bold text-[#fecdd3]">{slide.kicker}</span>
+                <span className="text-4xl font-black leading-tight sm:text-5xl">{slide.title}</span>
+                <span className="text-base font-medium text-white/80 sm:text-lg">{slide.line}</span>
+                <span className="mt-1 inline-flex min-h-11 items-center gap-1.5 text-sm font-bold">
+                  {slide.action}
+                  <ArrowLeft className="h-4 w-4" />
+                </span>
+              </span>
             </Link>
           ))}
 
-          {heroSlides.length > 1 && (<>
-            <button
-              type="button"
-              onClick={() => setActiveSlide((prev) => (prev === 0 ? heroSlides.length - 1 : prev - 1))}
-              aria-label="اسلاید قبلی"
-              className="absolute right-2 lg:right-4 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/85 dark:bg-black/55 hover:bg-white dark:hover:bg-black/80 border border-white/70 dark:border-white/10 text-slate-800 dark:text-slate-100 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer"
-            >
-              <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveSlide((prev) => (prev + 1) % heroSlides.length)}
-              aria-label="اسلاید بعدی"
-              className="absolute left-2 lg:left-4 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/85 dark:bg-black/55 hover:bg-white dark:hover:bg-black/80 border border-white/70 dark:border-white/10 text-slate-800 dark:text-slate-100 flex items-center justify-center backdrop-blur-md shadow-md transition-all active:scale-90 cursor-pointer"
-            >
-              <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
-            </button>
-            <div className="absolute bottom-3 left-0 right-0 z-20 flex items-center justify-center gap-2" role="tablist" aria-label="اسلایدهای صفحه اصلی">
-              {heroSlides.map((slide, idx) => (
-                <button
-                  key={slide.id}
-                  onClick={() => setActiveSlide(idx)}
-                  role="tab"
-                  aria-selected={activeSlide === idx}
-                  aria-label={`اسلاید ${toPersianDigits(idx + 1)}`}
-                  className="h-6 min-w-6 px-1 flex items-center justify-center cursor-pointer"
-                >
-                  <span className={`block h-2 rounded-full shadow-[0_1px_4px_rgba(0,0,0,0.45)] transition-all duration-300 motion-reduce:transition-none ${activeSlide === idx ? 'w-7 bg-white' : 'w-2 bg-white/55'}`} />
-                </button>
-              ))}
+          {heroSlides.length > 1 && (
+            <div className="absolute inset-x-3 bottom-3 z-20 flex items-center justify-between gap-3">
+              <button
+                type="button"
+                onClick={() => setActiveSlide((prev) => (prev === 0 ? heroSlides.length - 1 : prev - 1))}
+                aria-label="اسلاید قبلی"
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-md"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+              <div className="flex items-center gap-1" role="tablist" aria-label="اسلایدهای صفحه اصلی">
+                {heroSlides.map((slide, idx) => (
+                  <button
+                    key={slide.id}
+                    type="button"
+                    onClick={() => setActiveSlide(idx)}
+                    role="tab"
+                    aria-selected={activeSlide === idx}
+                    aria-label={`اسلاید ${toPersianDigits(idx + 1)}`}
+                    className="flex h-11 min-w-6 items-center justify-center px-1"
+                  >
+                    <span className={`block h-2 rounded-full transition-all duration-300 motion-reduce:transition-none ${activeSlide === idx ? 'w-7 bg-white' : 'w-2 bg-white/45'}`} />
+                  </button>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={() => setActiveSlide((prev) => (prev + 1) % heroSlides.length)}
+                aria-label="اسلاید بعدی"
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-md"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
             </div>
-          </>)}
+          )}
         </div>
-        {currentSlide && (
-          <div className="mt-3 flex flex-col gap-1 px-1 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-base font-bold text-slate-900 dark:text-white sm:text-lg">
-              {normalizePersianTypography(currentSlide.title)}
-            </p>
-            <Link
-              to={currentSlide.buttonLink}
-              className="inline-flex min-h-11 shrink-0 items-center gap-1.5 text-sm font-bold text-[var(--color-emphasis-text)]"
-            >
-              {normalizePersianTypography(currentSlide.buttonText)}
-              <ArrowLeft className="h-4 w-4" />
-            </Link>
-          </div>
-        )}
         <div className="mt-3 grid grid-cols-2 gap-2 sm:hidden">
           {valueProps.map((item) => {
             const Icon = item.icon;

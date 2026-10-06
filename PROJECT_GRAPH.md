@@ -8,6 +8,10 @@
 
 ---
 
+## Homepage hero (2026-10-06, `src/pages/Home.tsx`)
+- The slider is HTML type on a CSS poster. `HERO_COPY` is the only source. The homepage ignores `store_settings` `heroSlide*` keys, so old DB photos and copy cannot return. Admin Settings still edits those keys.
+- Two slides when both live categories exist: «هولدر و نگهدارنده» and «کابل و سیم». Each is a `<Link>` to `/products?category=…`. No `<img>`, no `/images/hero/`, no Ken Burns.
+
 ## Storefront type and spacing (2026-10-06, `src/index.css`)
 - Fluid type lives in `@theme` (`--text-xs` stays 12px; `--text-sm` through `--text-6xl` are `clamp()`). `@layer base` sets `min-width: 0` on flex/grid children so Persian lines wrap instead of sliding under the next box. One-line chips (`.whitespace-nowrap` without `.truncate` / `.overflow-hidden`) keep `min-width: max-content`.
 - Page rhythm is `@utility page-stack` (`clamp` row-gap). Storefront page roots use it. Admin pages stay on fixed `space-y-*`.

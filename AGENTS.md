@@ -237,15 +237,13 @@ reference check.
   (~420s). `web_search` 403s → `web_extract` / delegate. Raw-IP curl blocked → delegate the QA child.
   SSH outage: 2 retries then a BLOCKED report (TCP open + ssh refused = fail2ban/sshd, needs the VPS
   console). Oversized inline shell one-liners are blocklisted → write a script file, run it, delete it.
-- **Hero art (home):** the home hero is an IMAGE-ONLY banner — no copy, no catalogue cards (the
-  first `<div>` inside the hero `<section>` of `Home.tsx`). One absolutely-positioned `<Link>` layer
-  per slide, crossfaded on the 6s rotation; the layer itself links to that slide's category and
-  carries the `aria-label`, while the page `h1` stays `sr-only`. A slide goes full-bleed **only**
-  when its image path starts with `/images/hero/` (`HERO_ART` in `Home.tsx`); the bundled product
-  SVGs stay contained on the branded gradient + dot-grid backdrop. Files
-  `public/images/hero/slide-{1,2,3}.webp` (1536×1024, subject centred with ~15% margin — desktop
-  crops to 2.5:1, phones to 4:3) wired via `store_settings` keys `heroSlide1Image`…`heroSlide3Image`.
-  Ken Burns runs on the active layer only; rotation and drift are both off under
-  `prefers-reduced-motion`. Slides whose category has no stock are dropped (prod shows 2 of 3).
+- **Hero (home):** HTML type on a CSS poster. `HERO_COPY` in `Home.tsx` is the only source —
+  the homepage does not read `heroSlide*` settings, product SVGs, or `public/images/hero/*.webp`.
+  Two slides, one per live category («هولدر و نگهدارنده», «کابل و سیم»). Each slide is an
+  absolutely-positioned `<Link>` (rose or ink gradient + an inline SVG mark), crossfaded on a 6s
+  rotation that stays off under `prefers-reduced-motion`. Copy is real Vazirmatn in the slide;
+  arrows sit in a bottom bar so they do not cover the line. The page `h1` stays `sr-only`.
+  A category missing from the live catalogue drops its slide. Do not put the photographic
+  slides or Ken Burns `object-cover` crop back.
 - **Memory writes:** batch atomically; `replace` `old_text` must match the CURRENT entry; an
   over-limit rejection lists `current_entries` — prune and add in the SAME retry batch.
