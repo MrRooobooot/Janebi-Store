@@ -33,7 +33,7 @@ export default function CheckoutShippingPaymentForm({
                 : 'border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] hover:border-gray-200 dark:hover:border-gray-700 bg-gray-50/50 dark:bg-gray-800/20'
             }`}
           >
-            <div className="p-3 bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/80 text-[var(--color-emphasis-text)] rounded-2xl shrink-0">
+            <div className="p-3 bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 text-[var(--color-emphasis-text)] rounded-2xl shrink-0">
               <Zap className="h-6 w-6" />
             </div>
             <div className="flex-1 min-w-0">

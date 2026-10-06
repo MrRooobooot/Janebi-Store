@@ -79,7 +79,7 @@ export default function CheckoutStepsBar({ currentStep = 2 }: CheckoutStepsBarPr
                 <span
                   className={`text-xs ${
                     isCurrent
-                      ? 'font-bold text-[var(--color-cta)]'
+                      ? 'font-bold text-[var(--color-emphasis-text)]'
                       : 'font-medium text-zinc-500 dark:text-zinc-400'
                   }`}
                 >

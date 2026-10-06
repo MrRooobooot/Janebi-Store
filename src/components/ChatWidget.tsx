@@ -111,7 +111,7 @@ export default function ChatWidget() {
     <div className={`fixed left-3 sm:left-auto sm:right-6 z-50 print:hidden flex flex-col items-start sm:items-end transition-all duration-300 ${isProductDetail ? 'bottom-[148px] sm:bottom-6' : 'bottom-[5.75rem] sm:bottom-6'}`}>
       {isOpen && (
           <div
-            className="dropdown-in bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl shadow-2xl border border-gray-200 dark:border-[var(--color-border-dark)] w-[92vw] sm:w-96 h-[32rem] flex flex-col overflow-hidden mb-4 transition-colors"
+            className="dropdown-in bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl shadow-2xl border border-gray-200 dark:border-[var(--color-border-dark)] w-[min(24rem,calc(100vw-5.75rem))] sm:w-96 max-h-[min(32rem,calc(100dvh-8rem))] h-[32rem] flex flex-col overflow-hidden mb-4 transition-colors"
           >
             {/* Header */}
             <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border-b border-gray-200 dark:border-[var(--color-border-dark)] text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] p-4 flex items-center justify-between">

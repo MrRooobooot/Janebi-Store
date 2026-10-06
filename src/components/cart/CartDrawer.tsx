@@ -77,7 +77,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               {/* Drawer Header */}
               <div className="p-4 sm:p-5 border-b border-zinc-100 dark:border-white/[0.06] flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/50 text-[var(--color-emphasis-text)] flex items-center justify-center">
+                  <div className="w-9 h-9 rounded-xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 text-[var(--color-emphasis-text)] flex items-center justify-center">
                     <ShoppingBag className="h-5 w-5" />
                   </div>
                   <div>
@@ -128,7 +128,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-3.5 divide-y divide-zinc-100 dark:divide-zinc-800/60">
                 {cart.length === 0 ? (
                   <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-4">
-                    <div className="w-16 h-16 rounded-2xl bg-[var(--color-cta)]/10 text-[var(--color-cta)] flex items-center justify-center">
+                    <div className="w-16 h-16 rounded-2xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 text-[var(--color-emphasis-text)] flex items-center justify-center">
                       <ShoppingCart className="h-8 w-8" />
                     </div>
                     <div>

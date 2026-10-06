@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { ArrowUp } from 'lucide-react';
 
 export default function BackToTop() {
+  const location = useLocation();
   const [isVisible, setIsVisible] = useState(false);
+  const abovePurchaseBar = location.pathname.startsWith('/product/');
 
   useEffect(() => {
     const toggleVisibility = () => {
@@ -31,7 +34,9 @@ export default function BackToTop() {
   return (
     <button
       onClick={scrollToTop}
-      className="fixed bottom-6 left-6 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] text-white border border-transparent shadow-lg shadow-[var(--color-cta)]/25 w-12 h-12 rounded-full flex items-center justify-center transition-all z-40 hover:-translate-y-0.5"
+      className={`fixed right-4 left-auto sm:left-6 sm:right-auto z-40 flex h-12 w-12 items-center justify-center rounded-full border border-transparent bg-[var(--color-cta)] text-white shadow-lg shadow-[var(--color-cta)]/25 transition-all hover:-translate-y-0.5 hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] ${
+        abovePurchaseBar ? 'bottom-[148px] sm:bottom-6' : 'bottom-[5.75rem] sm:bottom-6'
+      }`}
       aria-label="بازگشت به بالا"
     >
       <ArrowUp className="h-6 w-6" />

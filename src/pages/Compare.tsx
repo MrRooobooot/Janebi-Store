@@ -50,7 +50,7 @@ export default function Compare() {
       >
         <EmptyState
           icon={
-            <div className="w-16 h-16 rounded-2xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/40 text-[var(--color-emphasis-text)] flex items-center justify-center mx-auto mb-4 border border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/60 shadow-inner">
+            <div className="w-16 h-16 rounded-2xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 text-[var(--color-emphasis-text)] flex items-center justify-center mx-auto mb-4 border border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/60 shadow-inner">
               <Scale className="h-8 w-8" />
             </div>
           }
@@ -77,7 +77,7 @@ export default function Compare() {
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
         <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-3">
           مقایسه محصولات
-          <span className="text-xs font-bold bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/60 text-[var(--color-emphasis-text)] px-3 py-1 rounded-full border border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/50">
+          <span className="text-xs font-bold bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 text-[var(--color-emphasis-text)] px-3 py-1 rounded-full border border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/50">
             {toPersianDigits(compareItems.length)} کالا
           </span>
         </h1>

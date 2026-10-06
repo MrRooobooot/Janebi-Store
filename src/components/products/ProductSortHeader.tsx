@@ -151,7 +151,7 @@ export default function ProductSortHeader({
               type="button"
               onClick={chip.clear}
               aria-label={chip.aria}
-              className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-[var(--color-cta)]/10 px-3 py-1 text-xs font-bold text-[var(--color-cta)] transition-colors hover:bg-[var(--color-cta)]/20 cursor-pointer"
+              className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 px-3 py-1 text-xs font-bold text-[var(--color-emphasis-text)] transition-colors hover:bg-[var(--color-cta)]/20 cursor-pointer"
             >
               <span>{chip.label}</span>
               <X className="h-3.5 w-3.5" />

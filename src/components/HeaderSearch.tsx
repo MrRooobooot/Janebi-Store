@@ -299,7 +299,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
                         aria-selected={isSelected}
                         className={`group flex w-full items-center justify-between p-2.5 rounded-2xl cursor-pointer transition-all duration-150 ${
                           isSelected
-                            ? 'bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/40 border border-[var(--color-cta)]/60 dark:border-[var(--color-cta)]/40 shadow-xs'
+                            ? 'bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 border border-[var(--color-cta)]/60 dark:border-[var(--color-cta)]/40 shadow-xs'
                             : 'hover:bg-gray-50 dark:hover:bg-gray-800/60 border border-transparent'
                         }`}
                       >
@@ -376,7 +376,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
             {/* Case 3: Query entered, no results found */}
             {query.trim().length > 0 && !loading && results.length === 0 && (
               <div className="p-8 text-center space-y-3">
-                <div className="w-12 h-12 bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/50 text-[var(--color-emphasis-text)] rounded-2xl flex items-center justify-center mx-auto">
+                <div className="w-12 h-12 bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 text-[var(--color-emphasis-text)] rounded-2xl flex items-center justify-center mx-auto">
                   <SearchX className="h-6 w-6" />
                 </div>
                 <h4 className="font-bold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
@@ -393,7 +393,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
                       setIsOpen(true);
                       inputRef.current?.focus();
                     }}
-                    className="text-xs font-semibold text-[var(--color-emphasis-text)] hover:text-[var(--color-cta-hover)] bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/50 px-4 py-2 rounded-xl transition-colors"
+                    className="text-xs font-semibold text-[var(--color-emphasis-text)] hover:text-[var(--color-cta-hover)] bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 px-4 py-2 rounded-xl transition-colors"
                   >
                     پاک کردن عبارت جستجو
                   </button>

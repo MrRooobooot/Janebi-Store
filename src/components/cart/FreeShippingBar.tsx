@@ -23,7 +23,7 @@ export default function FreeShippingBar({
       className={`mb-10 p-5 md:p-6 rounded-2xl border transition-all shadow-xs ${
         isFreeShipping
           ? 'bg-emerald-50/80 dark:bg-emerald-950/30 border-emerald-200/60 dark:border-emerald-800/40 backdrop-blur-md'
-          : 'bg-[var(--color-cta)]/80 dark:bg-[var(--color-cta)]/30 border-[var(--color-cta)]/60 dark:border-[var(--color-cta)]/40 backdrop-blur-md'
+          : 'bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 border-[var(--color-cta)]/35 dark:border-[var(--color-cta)]/40 backdrop-blur-md'
       }`}
     >
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
@@ -69,7 +69,7 @@ export default function FreeShippingBar({
           className={`text-xs font-bold px-3 py-1.5 rounded-full border self-start md:self-center font-mono ${
             isFreeShipping
               ? 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700'
-              : 'bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/60 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/40'
+              : 'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-[var(--color-emphasis-text)] border-[var(--color-cta)]/35 dark:border-[var(--color-cta)]/40'
           }`}
         >
           {toPersianDigits(progressPercentage)}٪

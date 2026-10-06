@@ -111,7 +111,7 @@ export default function Header() {
       {settings.announcementBarEnabled !== 'false' && (
       <div className="bg-slate-100/90 dark:bg-[var(--color-surface-topbar-dark)]/95 text-slate-700 dark:text-slate-300 text-[13px] sm:text-xs py-1 sm:py-1.5 px-3 sm:px-4 border-b border-slate-200/70 dark:border-white/[0.06] w-full overflow-hidden transition-colors">
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5 text-[12px] sm:text-xs font-medium text-[var(--color-cta)] min-w-0">
+          <div className="flex items-center gap-1.5 text-[12px] sm:text-xs font-medium text-[var(--color-emphasis-text)] min-w-0">
             <Sparkles className="h-3.5 w-3.5 shrink-0 motion-safe:animate-pulse" />
             <span className="text-slate-800 dark:text-slate-200 truncate font-semibold min-w-0">
               {promoText}
@@ -279,7 +279,7 @@ export default function Header() {
                 to={link.to}
                 className={`hover:text-[var(--color-emphasis-text)] transition-colors py-1 ${
                   (link as any).highlight 
-                    ? 'text-[var(--color-cta)] font-bold px-2.5 py-0.5 rounded-lg bg-[var(--color-cta)]/10 border border-[var(--color-cta)]/25'
+                    ? 'text-[var(--color-emphasis-text)] font-bold px-2.5 py-0.5 rounded-lg bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 border border-[var(--color-cta)]/25'
                     : isActive 
                       ? 'text-[var(--color-emphasis-text)] font-bold' 
                       : ''

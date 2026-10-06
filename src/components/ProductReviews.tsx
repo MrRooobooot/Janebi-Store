@@ -241,7 +241,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
             </div>
           ) : (
             <span
-              className="inline-block bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/60 text-[var(--color-emphasis-text)] text-sm font-bold px-4 py-2 rounded-full mb-2"
+              className="inline-block bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 text-[var(--color-emphasis-text)] text-sm font-bold px-4 py-2 rounded-full mb-2"
               aria-label="این محصول هنوز امتیازی ثبت نشده است"
             >
               جدید
@@ -294,7 +294,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
               aria-pressed={ratingFilter === star}
               onClick={() => setRatingFilter(ratingFilter === star ? 'all' : star)}
               className={`flex w-full items-center gap-3 text-xs cursor-pointer group p-1 rounded-lg transition-colors ${
-                ratingFilter === star ? 'bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/40 font-bold' : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/40'
+                ratingFilter === star ? 'bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 font-bold' : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/40'
               }`}
             >
               <div className="flex items-center gap-1 w-14 shrink-0 font-bold text-zinc-700 dark:text-zinc-300">
@@ -323,7 +323,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
         <div>
           <h3 className="text-lg font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
             نظرات و بازخورد خریداران
-            <span className="text-xs font-bold bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/60 text-[var(--color-emphasis-text)] px-2.5 py-0.5 rounded-full">
+            <span className="text-xs font-bold bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 text-[var(--color-emphasis-text)] px-2.5 py-0.5 rounded-full">
               {filteredReviews.length.toLocaleString('fa-IR')}
             </span>
           </h3>
@@ -428,7 +428,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
                   ))}
                 </div>
 
-                <span className="text-xs font-bold text-[var(--color-emphasis-text)] bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/60 px-3 py-1 rounded-xl">
+                <span className="text-xs font-bold text-[var(--color-emphasis-text)] bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 px-3 py-1 rounded-xl">
                   {RATING_LABELS[hoverRating || userRating]}
                 </span>
               </div>

@@ -200,7 +200,7 @@ export default function Home() {
       title: settings.valueProp2Title || STORE_SETTINGS_DEFAULTS.valueProp2Title,
       desc: settings.valueProp2Desc || STORE_SETTINGS_DEFAULTS.valueProp2Desc,
       icon: Truck,
-      color: 'text-[var(--color-cta)] bg-primary-50 border-primary-200/80 dark:text-primary-400 dark:bg-primary-950/40 dark:border-primary-900/40',
+      color: 'text-[var(--color-emphasis-text)] bg-primary-50 border-primary-200/80 dark:bg-primary-950/40 dark:border-primary-900/40',
     },
     {
       title: settings.valueProp3Title || STORE_SETTINGS_DEFAULTS.valueProp3Title,

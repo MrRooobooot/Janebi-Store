@@ -1,162 +1,150 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Grid, Heart, User, ShoppingCart, Sun, Moon } from 'lucide-react';
+import { Home, LayoutGrid, Heart, User, ShoppingCart, Sun, Moon } from 'lucide-react';
 import { useWishlist } from '../contexts/WishlistContext';
-import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { toPersianDigits } from '../lib/utils';
 
+type Destination = {
+  path: string;
+  label: string;
+  ariaLabel: string;
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+  badge?: number;
+  /** Share of the row. Longer labels get more than the short ones. */
+  grow: string;
+  match: (pathname: string) => boolean;
+};
+
+function CountBadge({ count }: { count: number }) {
+  if (count <= 0) return null;
+  const shown = count > 99 ? '۹۹+' : toPersianDigits(count);
+  return (
+    <span className="pointer-events-none absolute -top-1.5 -end-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--color-cta)] px-1 text-xs font-bold leading-none text-white">
+      {shown}
+    </span>
+  );
+}
+
 export default function MobileBottomNav() {
   const location = useLocation();
   const { wishlist } = useWishlist();
-  const { isLoggedIn } = useAuth();
   const { cartCount } = useCart();
   const { isDarkMode, toggleTheme } = useTheme();
 
-  const navItems = [
+  const destinations: Destination[] = [
     {
       path: '/',
       label: 'خانه',
+      ariaLabel: 'خانه',
       icon: Home,
-      exact: true,
+      grow: 'flex-[0.85]',
+      match: (pathname) => pathname === '/',
     },
     {
       path: '/products',
       label: 'محصولات',
-      icon: Grid,
-      exact: false,
+      ariaLabel: 'محصولات',
+      icon: LayoutGrid,
+      grow: 'flex-[1.25]',
+      match: (pathname) =>
+        pathname === '/products' ||
+        pathname.startsWith('/products/') ||
+        pathname.startsWith('/product/'),
     },
     {
       path: '/wishlist',
-      label: 'علاقه‌مندی‌ها',
+      label: 'علاقه‌ها',
+      ariaLabel: 'علاقه‌مندی‌ها',
       icon: Heart,
       badge: wishlist.length,
-      exact: true,
+      grow: 'flex-[1.05]',
+      match: (pathname) => pathname === '/wishlist',
     },
     {
       path: '/profile',
       label: 'پروفایل',
+      ariaLabel: 'پروفایل',
       icon: User,
-      badge: isLoggedIn ? 0 : undefined,
-      exact: false,
+      grow: 'flex-[1.05]',
+      match: (pathname) => pathname === '/profile' || pathname.startsWith('/profile/'),
     },
     {
       path: '/cart',
-      label: 'سبد خرید',
+      label: 'سبد',
+      ariaLabel: 'سبد خرید',
       icon: ShoppingCart,
       badge: cartCount,
-      exact: true,
-      highlight: true,
+      grow: 'flex-[0.8]',
+      match: (pathname) => pathname === '/cart',
     },
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-white/95 dark:bg-[var(--color-surface-header-dark)]/95 backdrop-blur-xl border-t border-zinc-200/80 dark:border-white/[0.08] shadow-[0_-4px_20px_rgba(0,0,0,0.06)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.4)] px-2 pt-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))] transition-colors duration-300">
-      <div className="flex items-center justify-around max-w-md mx-auto">
-        {navItems.slice(0, 2).map((item) => {
-          const isActive = item.exact
-            ? location.pathname === item.path
-            : location.pathname.startsWith(item.path);
-          const Icon = item.icon;
-
-          return (
-            <Link
-              key={item.path}
-              to={item.path}
-              aria-label={item.label}
-              className={`relative flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all duration-300 min-touch-target ${
-                isActive
-                  ? 'text-[var(--color-emphasis-text)] font-bold'
-                  : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-[var(--color-surface-light)]/[0.04]'
-              }`}
-            >
-              {isActive && (
-                <span
-                  aria-hidden="true"
-                  className="absolute inset-0 bg-primary-50 dark:bg-primary-950/40 rounded-xl"
-                />
-              )}
-
-              <div className="relative flex items-center justify-center p-1 z-10">
-                <Icon className={`h-5 w-5 transition-transform duration-300 ${isActive ? 'scale-110 drop-shadow-md' : ''}`} />
-                {item.badge !== undefined && item.badge > 0 && (
-                  <span
-                    className="pop-in absolute -top-1.5 -right-2 text-xs font-bold h-5 min-w-5 px-1 rounded-full flex items-center justify-center bg-[var(--color-cta)] text-white"
-                  >
-                    {toPersianDigits(item.badge)}
+    <nav
+      aria-label="ناوبری اصلی"
+      className="pointer-events-none fixed inset-x-0 bottom-0 z-40 px-2 pt-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] print:hidden lg:hidden"
+    >
+      <div className="surface-glass pointer-events-auto mx-auto flex max-w-lg items-stretch gap-1 rounded-2xl p-1 shadow-lg">
+        <ul className="flex min-w-0 flex-1 items-stretch">
+          {destinations.map((item) => {
+            const active = item.match(location.pathname);
+            const Icon = item.icon;
+            return (
+              <li key={item.path} className={`min-w-0 ${item.grow}`}>
+                <Link
+                  to={item.path}
+                  aria-label={item.ariaLabel}
+                  aria-current={active ? 'page' : undefined}
+                  className={`flex h-full min-h-11 flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 py-1 motion-safe:transition-colors ${
+                    active
+                      ? 'text-[var(--color-emphasis-text)]'
+                      : 'text-[var(--color-text-muted-light)] hover:bg-black/[0.04] hover:text-[var(--color-text-main-light)] dark:text-[var(--color-text-muted-dark)] dark:hover:bg-white/[0.06] dark:hover:text-[var(--color-text-main-dark)]'
+                  }`}
+                >
+                  <span className="relative flex h-7 w-7 items-center justify-center">
+                    <span
+                      aria-hidden="true"
+                      className={`absolute inset-0 rounded-lg motion-safe:transition-colors ${
+                        active ? 'bg-[var(--color-cta)]' : 'bg-transparent'
+                      }`}
+                    />
+                    <Icon
+                      strokeWidth={active ? 2.25 : 1.75}
+                      className={`relative h-[18px] w-[18px] ${active ? 'text-white' : ''}`}
+                    />
+                    <CountBadge count={item.badge ?? 0} />
                   </span>
-                )}
-              </div>
-              <span className="text-xs mt-0.5 tracking-tight z-10">{item.label}</span>
-              {isActive && (
-                <span
-                  aria-hidden="true"
-                  className="absolute bottom-0 w-6 h-0.5 bg-[var(--color-cta)] rounded-full"
-                />
-              )}
-            </Link>
-          );
-        })}
+                  <span className={`max-w-full truncate text-xs leading-none ${active ? 'font-bold' : ''}`}>
+                    {item.label}
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
 
-        {/* Theme toggle — center slot (user: theme switch was buried in the drawer) */}
+        <div className="my-1.5 w-px shrink-0 bg-[var(--color-border-light)] dark:bg-[var(--color-border-dark)]" aria-hidden="true" />
+
         <button
           type="button"
           onClick={toggleTheme}
           aria-label={isDarkMode ? 'حالت روز (روشن)' : 'حالت شب (تاریک)'}
-          className="relative flex flex-col items-center justify-center py-1.5 px-3 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-[var(--color-surface-light)]/[0.04] transition-all duration-300 min-touch-target active:scale-95 cursor-pointer"
+          className="flex w-11 shrink-0 flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 py-1 text-[var(--color-text-muted-light)] hover:bg-black/[0.04] dark:text-[var(--color-text-muted-dark)] dark:hover:bg-white/[0.06] motion-safe:transition-colors"
         >
-          <div className="relative flex items-center justify-center p-1 z-10">
-            {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-          </div>
-          <span className="text-xs mt-0.5 tracking-tight z-10">{isDarkMode ? 'روشن' : 'تاریک'}</span>
+          <span
+            className={`flex h-7 w-7 items-center justify-center rounded-lg ${
+              isDarkMode
+                ? 'bg-amber-100 text-amber-700 dark:bg-amber-400/15 dark:text-amber-300'
+                : 'bg-indigo-100 text-indigo-700 dark:bg-indigo-400/15 dark:text-indigo-300'
+            }`}
+          >
+            {isDarkMode ? <Sun className="h-[18px] w-[18px]" strokeWidth={2.25} /> : <Moon className="h-[18px] w-[18px]" strokeWidth={2.25} />}
+          </span>
+          <span className="text-xs leading-none">{isDarkMode ? 'روشن' : 'تاریک'}</span>
         </button>
-
-        {navItems.slice(2).map((item) => {
-          const isActive = item.exact
-            ? location.pathname === item.path
-            : location.pathname.startsWith(item.path);
-          const Icon = item.icon;
-
-          return (
-            <Link
-              key={item.path}
-              to={item.path}
-              aria-label={item.label}
-              className={`relative flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all duration-300 min-touch-target ${
-                isActive
-                  ? 'text-[var(--color-emphasis-text)] font-bold'
-                  : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-[var(--color-surface-light)]/[0.04]'
-              }`}
-            >
-              {isActive && (
-                <span
-                  aria-hidden="true"
-                  className="absolute inset-0 bg-primary-50 dark:bg-primary-950/40 rounded-xl"
-                />
-              )}
-              
-              <div className="relative flex items-center justify-center p-1 z-10">
-                <Icon className={`h-5 w-5 transition-transform duration-300 ${isActive ? 'scale-110 drop-shadow-md' : ''}`} />
-                {item.badge !== undefined && item.badge > 0 && (
-                  <span
-                    className="pop-in absolute -top-1.5 -right-2 text-xs font-bold h-5 min-w-5 px-1 rounded-full flex items-center justify-center bg-[var(--color-cta)] text-white"
-                  >
-                    {toPersianDigits(item.badge)}
-                  </span>
-                )}
-              </div>
-              <span className="text-xs mt-0.5 tracking-tight z-10">{item.label}</span>
-              {isActive && (
-                <span
-                  aria-hidden="true"
-                  className="absolute bottom-0 w-6 h-0.5 bg-[var(--color-cta)] rounded-full"
-                />
-              )}
-            </Link>
-          );
-        })}
       </div>
-    </div>
+    </nav>
   );
 }

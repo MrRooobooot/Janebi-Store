@@ -32,7 +32,7 @@ export default function About() {
       {/* Value Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 sm:gap-6">
         <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] p-6 rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs">
-          <div className="w-12 h-12 rounded-xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/50 text-[var(--color-emphasis-text)] flex items-center justify-center mb-4">
+          <div className="w-12 h-12 rounded-xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 text-[var(--color-emphasis-text)] flex items-center justify-center mb-4">
             <ShieldCheck className="h-6 w-6" />
           </div>
           <h3 className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-base mb-2">تضمین ۱۰۰٪ اصالت</h3>

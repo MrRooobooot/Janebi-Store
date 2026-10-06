@@ -67,7 +67,7 @@ export default function Contact() {
         {/* Contact Info Cards */}
         <div className="space-y-4 lg:col-span-1">
           <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs flex items-start gap-4">
-            <div className="p-3 bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/50 text-[var(--color-emphasis-text)] rounded-xl shrink-0">
+            <div className="p-3 bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 text-[var(--color-emphasis-text)] rounded-xl shrink-0">
               <MapPin className="h-6 w-6" />
             </div>
             <div>

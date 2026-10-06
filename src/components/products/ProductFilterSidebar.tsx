@@ -184,7 +184,7 @@ export default function ProductFilterSidebar({
                 onClick={() => toggleBrand(b.name)}
                 className={`flex items-center justify-between p-2.5 rounded-xl text-xs cursor-pointer transition-all duration-200 ${
                   isChecked
-                    ? 'bg-[var(--color-cta)]/80 dark:bg-[var(--color-cta)]/10 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] font-bold shadow-xs shadow-[var(--color-cta)]/40 dark:shadow-none'
+                    ? 'bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 text-[var(--color-emphasis-text)] font-bold'
                     : 'hover:bg-gray-50 dark:hover:bg-gray-800/80 text-gray-700 dark:text-gray-300'
                 }`}
               >

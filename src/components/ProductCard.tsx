@@ -54,8 +54,9 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
                 ناموجود
               </span>
             ) : product.discount && product.discount > 0 ? (
-              <span className="bg-[var(--color-cta)] text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-xs inline-block">
-                {toPersianDigits(product.discount)}٪ تخفیف
+              <span className="inline-flex h-6 max-w-full items-center gap-1 whitespace-nowrap rounded-full bg-[var(--color-cta)] px-2.5 text-xs font-bold leading-none text-white">
+                <span>{toPersianDigits(product.discount)}٪</span>
+                <span>تخفیف</span>
               </span>
             ) : (
               <span className="hidden sm:block font-bold text-xs text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-white/[0.04] px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-white/[0.06] whitespace-nowrap overflow-hidden text-ellipsis">
@@ -86,7 +87,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
               aria-label={inCompare ? "حذف از مقایسه" : "افزودن به مقایسه"}
               className={`flex w-11 h-11 sm:w-8 sm:h-8 rounded-xl sm:rounded-lg items-center justify-center transition-all cursor-pointer ${
                 inCompare 
-                  ? 'bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/60 text-[var(--color-emphasis-text)] border border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/40' 
+                  ? 'bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 text-[var(--color-emphasis-text)] border border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/40' 
                   : 'bg-slate-50 dark:bg-white/[0.04] text-slate-400 hover:text-[var(--color-emphasis-text)] hover:bg-[var(--color-cta)]/10 dark:hover:bg-[var(--color-cta)]/30 border border-slate-200/60 dark:border-white/[0.06]'
               }`}
               title="مقایسه مشخصات"

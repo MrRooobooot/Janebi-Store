@@ -26,7 +26,7 @@ export default function CartItemList({
       <div className="flex items-center justify-between px-2 mb-2">
         <h2 className="text-lg font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
           <span>اقلام سبد خرید</span>
-          <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/60 text-[var(--color-emphasis-text)]">
+          <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 text-[var(--color-emphasis-text)]">
             {toPersianDigits(cart.length)} قلم کالا
           </span>
         </h2>
@@ -73,7 +73,7 @@ export default function CartItemList({
                     {item.brand}
                   </span>
                   {item.category && (
-                    <span className="text-xs font-bold px-2 py-0.5 rounded-lg bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/40 text-[var(--color-emphasis-text)]">
+                    <span className="text-xs font-bold px-2 py-0.5 rounded-lg bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 text-[var(--color-emphasis-text)]">
                       {item.category}
                     </span>
                   )}
@@ -124,7 +124,7 @@ export default function CartItemList({
                   {formatPrice(item.price * item.quantity)}
                 </div>
                 {item.quantity > 1 && (
-                  <div className="text-xs text-gray-400 font-medium">
+                  <div className="text-xs font-medium text-[var(--color-text-muted-light)] dark:text-[var(--color-text-muted-dark)]">
                     هر عدد {formatPrice(item.price)}
                   </div>
                 )}

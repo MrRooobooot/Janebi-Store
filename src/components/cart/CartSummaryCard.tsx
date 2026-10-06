@@ -152,7 +152,7 @@ export default function CartSummaryCard({
         <div className="border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pt-4 flex justify-between items-center text-sm">
           <span className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">مبلغ نهایی قابل پرداخت:</span>
           <div className="text-left">
-            <div className="font-bold text-lg text-[var(--color-cta)] tracking-tight">
+            <div className="font-bold text-lg text-[var(--color-emphasis-text)] tracking-tight">
               {formatPrice(payable)}
             </div>
           </div>
@@ -168,7 +168,7 @@ export default function CartSummaryCard({
         <ArrowLeft className="h-5 w-5 group-hover:translate-x-[-3px] transition-transform" />
       </Link>
 
-      <div className="hidden lg:flex items-center justify-center gap-2 text-xs font-bold text-slate-400 pt-2 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
+      <div className="hidden lg:flex items-center justify-center gap-2 text-xs font-bold text-[var(--color-text-muted-light)] dark:text-[var(--color-text-muted-dark)] pt-2 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
         <ShieldCheck className="h-4 w-4 text-emerald-500" />
         <span>پرداخت امن و رمزنگاری‌شده بانکی</span>
       </div>
@@ -179,7 +179,7 @@ export default function CartSummaryCard({
             <div className="surface-glass flex items-center gap-3 rounded-2xl p-3 text-right shadow-2xl">
               <div className="min-w-0 shrink-0">
                 <p className="text-xs font-bold text-gray-500 dark:text-gray-400">مبلغ نهایی</p>
-                <p className="text-sm font-bold text-primary-600 dark:text-primary-400">{formatPrice(payable)}</p>
+                <p className="text-sm font-bold text-[var(--color-emphasis-text)]">{formatPrice(payable)}</p>
               </div>
               <Link
                 to="/checkout"

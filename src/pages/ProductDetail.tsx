@@ -173,7 +173,7 @@ export default function ProductDetail() {
   if (!product)
     return (
       <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-12 text-center border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex flex-col items-center shadow-xs">
-        <div className="w-16 h-16 rounded-2xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/40 text-[var(--color-emphasis-text)] flex items-center justify-center mb-4 border border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/60 shadow-inner">
+        <div className="w-16 h-16 rounded-2xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 text-[var(--color-emphasis-text)] flex items-center justify-center mb-4 border border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/60 shadow-inner">
           <AlertCircle className="h-8 w-8" />
         </div>
         <h2 className="text-xl font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] mb-2">محصول یافت نشد!</h2>
@@ -243,8 +243,9 @@ export default function ProductDetail() {
                 className="aspect-square bg-[var(--color-stage-light)] dark:bg-[var(--color-stage-dark)] rounded-2xl flex items-center justify-center p-8 mb-4 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] relative overflow-hidden group shadow-inner"
               >
                 {product.discount && (
-                  <div className="absolute top-5 right-5 bg-gradient-to-r from-rose-600 to-[var(--color-cta)]/10 text-white font-bold px-3.5 py-1.5 rounded-xl z-10 text-xs shadow-md tracking-wider">
-                    {toPersianDigits(product.discount)}٪ تخفیف
+                  <div className="absolute top-5 right-5 z-10 inline-flex h-7 items-center gap-1 whitespace-nowrap rounded-full bg-[var(--color-cta)] px-3 text-xs font-bold leading-none text-white">
+                    <span>{toPersianDigits(product.discount)}٪</span>
+                    <span>تخفیف</span>
                   </div>
                 )}
 
@@ -345,7 +346,7 @@ export default function ProductDetail() {
               <div>
                 {/* Brand & Action Share Header */}
                 <div className="flex items-center justify-between mb-3">
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/40 text-[var(--color-emphasis-text)] border border-[var(--color-cta)]/50 dark:border-[var(--color-cta)]/50 text-xs font-bold">
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 text-[var(--color-emphasis-text)] border border-[var(--color-cta)]/50 dark:border-[var(--color-cta)]/50 text-xs font-bold">
                     <span>برند: {product.brand}</span>
                   </div>
                   <button
@@ -400,8 +401,9 @@ export default function ProductDetail() {
                           <span className="text-[var(--color-text-subtle-light)] dark:text-[var(--color-text-subtle-dark)] text-sm line-through font-medium">
                             {formatPrice(product.originalPrice)}
                           </span>
-                          <span className="bg-rose-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                            {toPersianDigits(product.discount)}٪ تخفیف
+                          <span className="inline-flex h-6 items-center gap-1 whitespace-nowrap rounded-full bg-[var(--color-cta)] px-2.5 text-xs font-bold leading-none text-white">
+                            <span>{toPersianDigits(product.discount)}٪</span>
+                            <span>تخفیف</span>
                           </span>
                         </div>
                       )}

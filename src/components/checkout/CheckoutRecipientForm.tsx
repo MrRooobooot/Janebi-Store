@@ -90,7 +90,7 @@ export default function CheckoutRecipientForm({
                   onClick={() => handleSelectSavedAddress(addr)}
                   className={`p-4 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between text-right ${
                     isSelected
-                      ? 'border-[var(--color-cta)]/30 bg-[var(--color-cta)]/60 dark:bg-[var(--color-cta)]/30 shadow-xs'
+                      ? 'border-[var(--color-cta)] bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 shadow-xs'
                       : 'border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] hover:border-gray-200 dark:hover:border-gray-700 bg-gray-50/60 dark:bg-gray-800/30'
                   }`}
                 >
