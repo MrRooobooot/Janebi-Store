@@ -45,7 +45,7 @@ export default function Footer() {
             <div className="space-y-2">
               <Logo size="sm" />
               <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                مرجع تخصصی عرضه مستقیم انواع لوازم جانبی موبایل، شارژر، گلس، قاب و تجهیزات دیجیتال با ضمانت اصالت و سلامت فیزیکی.
+                مرجع تخصصی عرضه مستقیم هولدر و نگهدارنده، کابل و سیم موبایل با ضمانت اصالت و سلامت فیزیکی.
               </p>
             </div>
             <div className="space-y-2 text-xs text-zinc-600 dark:text-zinc-400 pt-2 font-medium border-t border-zinc-200/80 dark:border-zinc-800">
