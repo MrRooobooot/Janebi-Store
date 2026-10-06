@@ -239,7 +239,7 @@ export default function ProductDetail() {
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.4 }}
-                className="relative mb-4 aspect-square overflow-hidden rounded-3xl bg-white dark:bg-[var(--color-stage-dark)]"
+                className="relative mb-4 aspect-[4/3] overflow-hidden rounded-3xl bg-white dark:bg-[var(--color-stage-dark)] lg:aspect-square"
               >
                 {product.discount && (
                   <div className="absolute top-5 right-5 z-10 inline-flex h-7 items-center gap-1 whitespace-nowrap rounded-full bg-[var(--color-cta)] px-3 text-xs font-bold leading-none text-white">
