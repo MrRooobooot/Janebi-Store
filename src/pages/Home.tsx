@@ -254,7 +254,7 @@ export default function Home() {
         <div
           className={`relative rounded-2xl overflow-hidden border border-slate-200/90 dark:border-white/[0.08] shadow-lg dark:shadow-2xl transition-colors duration-500 touch-pan-y ${
             heroIsArt
-              ? 'bg-gradient-to-br from-white via-slate-50 to-rose-50/30 dark:from-[var(--color-surface-dark)] dark:via-[var(--color-surface-header-dark)] dark:to-[var(--color-surface-footer-dark)] aspect-[4/3] sm:aspect-[16/9] lg:aspect-[5/2]'
+              ? 'bg-gradient-to-br from-white via-slate-50 to-rose-50/30 dark:from-[var(--color-surface-dark)] dark:via-[var(--color-surface-header-dark)] dark:to-[var(--color-surface-footer-dark)] aspect-[4/3] sm:aspect-[16/9]'
               : 'bg-gradient-to-br from-[#fecdd3] via-[#ffe4e6] to-[#fff5f6] dark:from-[#3b1020] dark:via-[#241018] dark:to-[#120c14] aspect-[4/3] lg:aspect-[3/2]'
           }`}
           onTouchStart={(e) => { mobileTouchX.current = e.touches[0].clientX; }}
