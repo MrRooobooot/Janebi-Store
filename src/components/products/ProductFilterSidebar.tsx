@@ -402,10 +402,10 @@ export default function ProductFilterSidebar({
                 animate={{ y: 0 }}
                 exit={{ y: '100%' }}
                 transition={{ type: 'spring', damping: 28, stiffness: 280 }}
-                className="fixed inset-x-0 bottom-0 flex max-h-[85vh] flex-col justify-between overflow-y-auto rounded-t-3xl bg-[var(--color-surface-light)] p-5 pb-[calc(76px+1.25rem)] shadow-2xl dark:bg-[var(--color-surface-dark)]"
+                className="fixed inset-x-0 bottom-0 flex max-h-[85vh] flex-col rounded-t-3xl bg-[var(--color-surface-light)] shadow-2xl dark:bg-[var(--color-surface-dark)]"
               >
-                <div>
-                  <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] mb-6">
+                <div className="px-5 pt-5">
+                  <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
                     <h3 className="font-bold text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
                       فیلتر محصولات
                     </h3>
@@ -416,11 +416,13 @@ export default function ProductFilterSidebar({
                       <X className="h-5 w-5" />
                     </button>
                   </div>
+                </div>
 
+                <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pt-6 pb-4">
                   {renderFilterControls()}
                 </div>
 
-                <div className="pt-6 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] mt-6 sticky bottom-0 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)]">
+                <div className="border-t border-[var(--color-border-light)] px-5 pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] dark:border-[var(--color-border-dark)]">
                   <button
                     onClick={() => setMobileFilterOpen(false)}
                     className="btn-primary w-full cursor-pointer rounded-2xl py-3.5 text-sm font-bold"

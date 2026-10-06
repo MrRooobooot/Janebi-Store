@@ -251,9 +251,9 @@ export default function Home() {
                 to={`/products?category=${encodeURIComponent(cat.title)}`}
                 className="flex min-h-[168px] flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white dark:border-white/[0.08] dark:bg-[var(--color-surface-dark)]"
               >
-                <span className="flex aspect-[4/3] items-center justify-center bg-white p-3 dark:bg-white/[0.04]">
+                <span className="flex aspect-[4/3] items-center justify-center overflow-hidden bg-white p-3 sm:aspect-[16/9] dark:bg-white/[0.04]">
                   {cover ? (
-                    <img src={cover} alt="" className="max-h-full max-w-full object-contain" />
+                    <img src={cover} alt="" className="h-full w-full object-contain" />
                   ) : null}
                 </span>
                 <span className="flex items-baseline justify-between gap-2 px-3 py-3">
