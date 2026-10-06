@@ -1,9 +1,8 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, LayoutGrid, Heart, User, ShoppingCart, Sun, Moon } from 'lucide-react';
+import { Home, LayoutGrid, Heart, User, ShoppingCart } from 'lucide-react';
 import { useWishlist } from '../contexts/WishlistContext';
 import { useCart } from '../contexts/CartContext';
-import { useTheme } from '../contexts/ThemeContext';
 import { toPersianDigits } from '../lib/utils';
 
 type Destination = {
@@ -31,7 +30,6 @@ export default function MobileBottomNav() {
   const location = useLocation();
   const { wishlist } = useWishlist();
   const { cartCount } = useCart();
-  const { isDarkMode, toggleTheme } = useTheme();
 
   const destinations: Destination[] = [
     {
@@ -124,26 +122,6 @@ export default function MobileBottomNav() {
             );
           })}
         </ul>
-
-        <div className="my-1.5 w-px shrink-0 bg-[var(--color-border-light)] dark:bg-[var(--color-border-dark)]" aria-hidden="true" />
-
-        <button
-          type="button"
-          onClick={toggleTheme}
-          aria-label={isDarkMode ? 'حالت روز (روشن)' : 'حالت شب (تاریک)'}
-          className="flex w-11 shrink-0 flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 py-1 text-[var(--color-text-muted-light)] hover:bg-black/[0.04] dark:text-[var(--color-text-muted-dark)] dark:hover:bg-white/[0.06] motion-safe:transition-colors"
-        >
-          <span
-            className={`flex h-7 w-7 items-center justify-center rounded-lg ${
-              isDarkMode
-                ? 'bg-amber-100 text-amber-700 dark:bg-amber-400/15 dark:text-amber-300'
-                : 'bg-indigo-100 text-indigo-700 dark:bg-indigo-400/15 dark:text-indigo-300'
-            }`}
-          >
-            {isDarkMode ? <Sun className="h-[18px] w-[18px]" strokeWidth={2.25} /> : <Moon className="h-[18px] w-[18px]" strokeWidth={2.25} />}
-          </span>
-          <span className="text-xs leading-none">{isDarkMode ? 'روشن' : 'تاریک'}</span>
-        </button>
       </div>
     </nav>
   );
