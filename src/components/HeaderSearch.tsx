@@ -259,7 +259,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
                 <X className="h-4 w-4" />
               </button>
             ) : (
-              <div className="hidden sm:flex items-center gap-0.5 px-2 py-0.5 rounded-lg bg-gray-200/70 dark:bg-gray-700/70 text-[10px] text-gray-500 dark:text-gray-400 font-mono">
+              <div className="hidden sm:flex items-center gap-0.5 px-2 py-0.5 rounded-lg bg-gray-200/70 dark:bg-gray-700/70 text-xs text-gray-500 dark:text-gray-400 font-mono">
                 <Command className="h-3 w-3" />
                 <span>K</span>
               </div>
@@ -271,7 +271,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
       {/* Real-time Suggestions Dropdown */}
       {isOpen && (
           <div
-            className="dropdown-in absolute right-0 left-0 mt-2 bg-[var(--color-surface-light)]/98 dark:bg-[var(--color-surface-dark)]/98 backdrop-blur-2xl rounded-3xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-2xl overflow-hidden z-50 divide-y divide-gray-100 dark:divide-gray-800/60 max-h-[75vh] flex flex-col"
+            className="dropdown-in absolute right-0 left-0 mt-2 bg-[var(--color-surface-light)]/98 dark:bg-[var(--color-surface-dark)]/98 backdrop-blur-2xl rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-2xl overflow-hidden z-50 divide-y divide-gray-100 dark:divide-gray-800/60 max-h-[75vh] flex flex-col"
           >
             {/* Case 1: Query is entered and has results */}
             {query.trim().length > 0 && results.length > 0 && (
@@ -281,7 +281,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
                     <Sparkles className="h-3.5 w-3.5 text-[var(--color-emphasis-text)]" />
                     پیشنهادهای آنی ({results.length.toLocaleString('fa-IR')} محصول)
                   </span>
-                  <span className="text-[11px] hidden sm:inline text-gray-400">
+                  <span className="text-xs hidden sm:inline text-gray-400">
                     با کلیدهای جهت‌نما یا کلیک انتخـاب کنید
                   </span>
                 </div>
@@ -319,7 +319,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
                             <h4 className="font-bold text-xs sm:text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] truncate group-hover:text-[var(--color-emphasis-text)] transition-colors">
                               {product.title}
                             </h4>
-                            <div className="flex items-center gap-2 mt-1 text-[11px]">
+                            <div className="flex items-center gap-2 mt-1 text-xs">
                               <span className="inline-flex items-center gap-1 text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-md font-medium">
                                 <Tag className="h-3 w-3 text-[var(--color-emphasis-text)]" />
                                 {product.category}
@@ -333,12 +333,12 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
                         </div>
 
                         <div className="shrink-0 text-left pl-1">
-                          <div className="text-xs sm:text-sm font-black text-[var(--color-emphasis-text)]">
+                          <div className="text-xs sm:text-sm font-bold text-[var(--color-emphasis-text)]">
                             {product.price.toLocaleString('fa-IR')}{' '}
-                            <span className="text-[10px] font-normal text-gray-500 dark:text-gray-400">تومان</span>
+                            <span className="text-xs font-normal text-gray-500 dark:text-gray-400">تومان</span>
                           </div>
                           {product.originalPrice && (
-                            <div className="text-[10px] text-gray-400 line-through">
+                            <div className="text-xs text-gray-400 line-through">
                               {product.originalPrice.toLocaleString('fa-IR')}
                             </div>
                           )}
@@ -415,7 +415,7 @@ export default function HeaderSearch({ onSearchSubmit, className = '', autoFocus
                       <button
                         type="button"
                         onClick={clearRecentSearches}
-                        className="text-[11px] text-gray-400 hover:text-red-500 transition-colors"
+                        className="text-xs text-gray-400 hover:text-red-500 transition-colors"
                       >
                         پاک کردن تاریخچه
                       </button>

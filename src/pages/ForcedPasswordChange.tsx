@@ -73,7 +73,7 @@ export default function ForcedPasswordChange() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="w-full max-w-md bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-8 shadow-xl relative overflow-hidden"
+        className="w-full max-w-md bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-8 shadow-xl relative overflow-hidden"
       >
         <div className="absolute -top-12 -right-12 w-40 h-40 bg-[var(--color-cta)]/10 rounded-full blur-2xl pointer-events-none" />
 
@@ -115,7 +115,7 @@ export default function ForcedPasswordChange() {
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
             </div>
-            <p className="mt-1.5 text-[11px] font-medium text-gray-500 dark:text-gray-400">حداقل ۸ کاراکتر</p>
+            <p className="mt-1.5 text-xs font-medium text-gray-500 dark:text-gray-400">حداقل ۸ کاراکتر</p>
           </div>
 
           <div>
@@ -139,7 +139,7 @@ export default function ForcedPasswordChange() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-extrabold py-4 px-6 rounded-2xl shadow-lg shadow-[var(--color-cta)]/25 flex items-center justify-center gap-2 transition-all active:scale-98 text-sm mt-6 disabled:opacity-60"
+            className="btn-primary w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold py-4 px-6 rounded-2xl shadow-lg shadow-[var(--color-cta)]/25 flex items-center justify-center gap-2 transition-all active:scale-98 text-sm mt-6 disabled:opacity-60"
           >
             <span>{isLoading ? "در حال ثبت..." : "ثبت رمز جدید و ورود به پنل"}</span>
             <ArrowLeft className="h-4 w-4" />

@@ -134,7 +134,7 @@ export default function AdminBlog() {
         </div>
         <button
           onClick={openCreate}
-          className="flex items-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-colors shadow-xs"
+          className="btn-primary flex items-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-colors shadow-xs"
         >
           <Plus className="h-4 w-4" /> مقاله جدید
         </button>
@@ -173,18 +173,18 @@ export default function AdminBlog() {
                   <tr key={post.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/20 transition-colors">
                     <td className="p-3.5 max-w-[280px]">
                       <div className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] truncate" title={post.title}>{post.title}</div>
-                      <div className="text-[11px] text-gray-500 dark:text-gray-400 truncate">{post.excerpt}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{post.excerpt}</div>
                     </td>
                     <td className="p-3.5 text-gray-600 dark:text-gray-300 whitespace-nowrap">{post.category}</td>
                     <td className="p-3.5 text-gray-600 dark:text-gray-300 whitespace-nowrap">{post.author}</td>
                     <td className="p-3.5">
-                      <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${post.published
+                      <span className={`px-2 py-1 rounded-full text-xs font-bold ${post.published
                         ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
                         : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'}`}>
                         {post.published ? 'منتشرشده' : 'پیش‌نویس'}
                       </span>
                     </td>
-                    <td className="p-3.5 text-gray-500 dark:text-gray-400 text-[11px] whitespace-nowrap">
+                    <td className="p-3.5 text-gray-500 dark:text-gray-400 text-xs whitespace-nowrap">
                       {new Date(post.createdAt).toLocaleDateString('fa-IR')}
                     </td>
                     <td className="p-3.5">
@@ -227,7 +227,7 @@ export default function AdminBlog() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-black text-gray-900 dark:text-gray-100">
+              <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100">
                 {form.id ? 'ویرایش مقاله' : 'مقاله جدید'}
               </h2>
               <button onClick={() => setShowForm(false)} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500" aria-label="بستن">
@@ -305,7 +305,7 @@ export default function AdminBlog() {
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="flex items-center gap-2 px-5 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold disabled:opacity-50"
+                className="btn-primary flex items-center gap-2 px-5 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold disabled:opacity-50"
               >
                 {saving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                 {form.id ? 'ذخیره تغییرات' : 'انتشار مقاله'}

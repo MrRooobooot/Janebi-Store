@@ -111,7 +111,7 @@ export default function Header() {
       {settings.announcementBarEnabled !== 'false' && (
       <div className="bg-slate-100/90 dark:bg-[var(--color-surface-topbar-dark)]/95 text-slate-700 dark:text-slate-300 text-[13px] sm:text-xs py-1 sm:py-1.5 px-3 sm:px-4 border-b border-slate-200/70 dark:border-white/[0.06] w-full overflow-hidden transition-colors">
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5 text-[12px] sm:text-[11px] font-medium text-[var(--color-cta)] min-w-0">
+          <div className="flex items-center gap-1.5 text-[12px] sm:text-xs font-medium text-[var(--color-cta)] min-w-0">
             <Sparkles className="h-3.5 w-3.5 shrink-0 motion-safe:animate-pulse" />
             <span className="text-slate-800 dark:text-slate-200 truncate font-semibold min-w-0">
               {promoText}
@@ -119,19 +119,19 @@ export default function Header() {
           </div>
           {promoCode ? (
             <div className="flex items-center gap-1 shrink-0">
-              <span dir="ltr" className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] font-black text-[11px] sm:text-[10px]">
+              <span dir="ltr" className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] font-bold text-xs sm:text-xs">
                 {promoCode}
               </span>
               <button
                 type="button"
                 onClick={copyPromoCode}
-                className="inline-flex items-center min-h-8 px-2 rounded-md bg-white dark:bg-white/10 border border-slate-200 dark:border-white/10 text-[11px] font-black text-slate-700 dark:text-slate-200 cursor-pointer"
+                className="inline-flex items-center min-h-8 px-2 rounded-md bg-white dark:bg-white/10 border border-slate-200 dark:border-white/10 text-xs font-bold text-slate-700 dark:text-slate-200 cursor-pointer"
               >
                 کپی
               </button>
             </div>
           ) : null}
-          <div className="hidden md:flex items-center gap-4 text-[11px] text-slate-600 dark:text-slate-400 font-medium shrink-0">
+          <div className="hidden md:flex items-center gap-4 text-xs text-slate-600 dark:text-slate-400 font-medium shrink-0">
             <span className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 font-bold">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -189,12 +189,12 @@ export default function Header() {
               <div className="relative">
                 <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-primary-600 text-white text-[9px] font-black min-w-4 h-4 px-0.5 rounded-full flex items-center justify-center border-2 border-white dark:border-[var(--color-surface-header-dark)] shadow-xs">
+                  <span className="absolute -top-2 -right-2 bg-[var(--color-cta)] text-white text-xs font-bold min-w-5 h-5 px-1 rounded-full flex items-center justify-center border-2 border-white dark:border-[var(--color-surface-header-dark)]">
                     {toPersianDigits(cartCount)}
                   </span>
                 )}
               </div>
-              <span className="text-xs font-black hidden lg:inline">سبد خرید</span>
+              <span className="text-xs font-bold hidden lg:inline">سبد خرید</span>
             </button>
 
             {/* User Account Menu / Login */}
@@ -218,7 +218,7 @@ export default function Header() {
                   >
                     <div className="px-4 py-2 border-b border-slate-100 dark:border-white/[0.06]">
                       <p className="text-xs font-bold text-slate-900 dark:text-white">{user?.name}</p>
-                      <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">{user?.phone || user?.email}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user?.phone || user?.email}</p>
                     </div>
 
                     <Link
@@ -259,7 +259,7 @@ export default function Header() {
               <button
                 onClick={() => setAuthModalOpen(true)}
                 aria-label="ورود یا ثبت نام در سایت"
-                className="flex items-center gap-1 justify-center min-h-[44px] min-w-[44px] border border-[var(--color-cta)]/60 text-[var(--color-emphasis-text)] bg-transparent sm:border-transparent sm:bg-[var(--color-cta)] sm:text-white hover:bg-[var(--color-cta)]/10 sm:hover:bg-[var(--color-cta-hover)] px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-black transition-all shadow-sm shadow-[var(--color-cta)]/25 cursor-pointer active:scale-95 shrink-0"
+                className="flex items-center gap-1 justify-center min-h-[44px] min-w-[44px] border border-[var(--color-cta)]/60 text-[var(--color-emphasis-text)] bg-transparent sm:border-transparent sm:bg-[var(--color-cta)] sm:text-white hover:bg-[var(--color-cta)]/10 sm:hover:bg-[var(--color-cta-hover)] px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition-all shadow-sm shadow-[var(--color-cta)]/25 cursor-pointer active:scale-95 shrink-0"
               >
                 <LogIn className="h-4 w-4" />
                 <span className="hidden sm:inline">ورود / عضویت</span>
@@ -279,9 +279,9 @@ export default function Header() {
                 to={link.to}
                 className={`hover:text-[var(--color-emphasis-text)] transition-colors py-1 ${
                   (link as any).highlight 
-                    ? 'text-[var(--color-cta)] font-black px-2.5 py-0.5 rounded-lg bg-[var(--color-cta)]/10 border border-[var(--color-cta)]/25'
+                    ? 'text-[var(--color-cta)] font-bold px-2.5 py-0.5 rounded-lg bg-[var(--color-cta)]/10 border border-[var(--color-cta)]/25'
                     : isActive 
-                      ? 'text-[var(--color-emphasis-text)] font-black' 
+                      ? 'text-[var(--color-emphasis-text)] font-bold' 
                       : ''
                 }`}
               >
@@ -333,7 +333,7 @@ export default function Header() {
               {isDarkMode ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4 text-slate-600" />}
               {isDarkMode ? "حالت روز (روشن)" : "حالت شب (تاریک)"}
             </span>
-            <span className="text-[11px] text-slate-500 dark:text-slate-400">{isDarkMode ? "روشن" : "تاریک"}</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400">{isDarkMode ? "روشن" : "تاریک"}</span>
           </button>
 
           <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex justify-between text-xs text-slate-600 dark:text-slate-400">

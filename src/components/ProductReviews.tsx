@@ -231,7 +231,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
   return (
     <div className="space-y-8 text-right">
       {/* Top Overview & Ratings Summary Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-gradient-to-br from-zinc-50 to-[var(--color-cta)]/30 dark:from-zinc-800/60 dark:to-zinc-900/60 rounded-3xl p-6 sm:p-8 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-gradient-to-br from-zinc-50 to-[var(--color-cta)]/30 dark:from-zinc-800/60 dark:to-zinc-900/60 rounded-2xl p-6 sm:p-8 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
         
         {/* Rating Score Card */}
         <div className="lg:col-span-4 flex flex-col items-center justify-center p-6 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/80 shadow-xs text-center">
@@ -241,7 +241,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
             </div>
           ) : (
             <span
-              className="inline-block bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/60 text-[var(--color-emphasis-text)] text-sm font-black px-4 py-2 rounded-full mb-2"
+              className="inline-block bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/60 text-[var(--color-emphasis-text)] text-sm font-bold px-4 py-2 rounded-full mb-2"
               aria-label="این محصول هنوز امتیازی ثبت نشده است"
             >
               جدید
@@ -310,7 +310,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
                 />
               </div>
 
-              <span className="w-12 text-left text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
+              <span className="w-12 text-left text-xs font-semibold text-zinc-500 dark:text-zinc-400">
                 {toPersianDigits(count)} نظر ({toPersianDigits(percentage)}٪)
               </span>
             </button>
@@ -321,7 +321,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
       {/* Action Header: Filter / Sort / Add Review Button */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2">
         <div>
-          <h3 className="text-lg font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
+          <h3 className="text-lg font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
             نظرات و بازخورد خریداران
             <span className="text-xs font-bold bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/60 text-[var(--color-emphasis-text)] px-2.5 py-0.5 rounded-full">
               {filteredReviews.length.toLocaleString('fa-IR')}
@@ -335,7 +335,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
         {isLoggedIn ? (
           <button
             onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold px-5 py-3 rounded-2xl shadow-md hover:shadow-lg transition-all shrink-0"
+            className="btn-primary flex items-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold px-5 py-3 rounded-2xl shadow-md hover:shadow-lg transition-all shrink-0"
           >
             <MessageSquarePlus className="h-4 w-4" />
             <span>{showForm ? 'بستن فرم ثبت نظر' : 'افزودن نظر جدید'}</span>
@@ -356,10 +356,10 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
             exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, height: 0 }}
             transition={{ duration: prefersReducedMotion ? 0 : 0.3 }}
             onSubmit={handleSubmitReview}
-            className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 sm:p-8 border-2 border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/20 shadow-xl space-y-6 overflow-hidden"
+            className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-6 sm:p-8 border-2 border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/20 shadow-xl space-y-6 overflow-hidden"
           >
             <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
-              <h4 className="font-black text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
+              <h4 className="font-bold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
                 <Send className="h-4 w-4 text-[var(--color-emphasis-text)]" />
                 ثبت نظر و امتیاز برای این محصول
               </h4>
@@ -497,7 +497,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold px-7 py-2.5 rounded-xl transition-all shadow-md flex items-center gap-2 disabled:opacity-50"
+                className="btn-primary bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold px-7 py-2.5 rounded-xl transition-all shadow-md flex items-center gap-2 disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <span>در حال ارسال...</span>
@@ -582,7 +582,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   {/* User Avatar */}
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[var(--color-cta)]/10 to-[var(--color-accent-surface)] text-white font-black text-sm flex items-center justify-center shadow-xs shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[var(--color-cta)]/10 to-[var(--color-accent-surface)] text-white font-bold text-sm flex items-center justify-center shadow-xs shrink-0">
                     {review.userName.charAt(0)}
                   </div>
 
@@ -592,18 +592,18 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
                         {review.userName}
                       </span>
                       {review.isVerifiedBuyer && (
-                        <span className="inline-flex items-center gap-1 text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-md border border-emerald-200/50 dark:border-emerald-800/40">
+                        <span className="inline-flex items-center gap-1 text-xs font-bold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-md border border-emerald-200/50 dark:border-emerald-800/40">
                           <UserCheck className="h-3 w-3" />
                           خریدار این محصول
                         </span>
                       )}
                     </div>
-                    <span className="text-[11px] text-zinc-500 dark:text-zinc-400">{formatFaDate(review.date)}</span>
+                    <span className="text-xs text-zinc-500 dark:text-zinc-400">{formatFaDate(review.date)}</span>
                   </div>
                 </div>
 
                 {/* Star Badge */}
-                <div className="flex items-center gap-1 bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 border border-[var(--color-cta)]/40 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] px-2.5 py-1 rounded-xl text-xs font-black">
+                <div className="flex items-center gap-1 bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 border border-[var(--color-cta)]/40 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] px-2.5 py-1 rounded-xl text-xs font-bold">
                   <span>{toPersianDigits(review.rating.toFixed(1))}</span>
                   <Star className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
                 </div>
@@ -643,7 +643,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
                     onClick={() => handleVoteHelpful(review.id, 'helpful')}
                     aria-label={`ثبت رای مفید برای این دیدگاه (${review.helpfulCount} رای مفید)`}
                     aria-pressed={review.userVoted === 'helpful'}
-                    className={`flex items-center gap-1 px-2.5 min-h-[44px] rounded-lg border text-[11px] font-bold transition-all motion-reduce:transition-none ${
+                    className={`flex items-center gap-1 px-2.5 min-h-[44px] rounded-lg border text-xs font-bold transition-all motion-reduce:transition-none ${
                       review.userVoted === 'helpful'
                         ? 'bg-emerald-50 dark:bg-emerald-950/50 border-emerald-300 text-emerald-600'
                         : 'border-zinc-200 dark:border-zinc-700 text-zinc-500 hover:bg-zinc-50 dark:hover:bg-zinc-800'
@@ -657,7 +657,7 @@ export default function ProductReviews({ productId, initialReviewsCount = 0, ini
                     onClick={() => handleVoteHelpful(review.id, 'unhelpful')}
                     aria-label={`ثبت رای نامفید برای این دیدگاه (${review.unhelpfulCount} رای نامفید)`}
                     aria-pressed={review.userVoted === 'unhelpful'}
-                    className={`flex items-center gap-1 px-2.5 min-h-[44px] rounded-lg border text-[11px] font-bold transition-all motion-reduce:transition-none ${
+                    className={`flex items-center gap-1 px-2.5 min-h-[44px] rounded-lg border text-xs font-bold transition-all motion-reduce:transition-none ${
                       review.userVoted === 'unhelpful'
                         ? 'bg-red-50 dark:bg-red-950/50 border-red-300 text-red-600'
                         : 'border-zinc-200 dark:border-zinc-700 text-zinc-500 hover:bg-zinc-50 dark:hover:bg-zinc-800'

@@ -189,7 +189,7 @@ export default function AdminCoupons() {
 
         <button
           onClick={() => openCreateModal()}
-          className="flex items-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-extrabold px-5 py-3 rounded-2xl text-xs shadow-lg shadow-primary-500/25 transition-all cursor-pointer self-start sm:self-auto hover:scale-105 active:scale-95"
+          className="btn-primary flex items-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold px-5 py-3 rounded-2xl text-xs shadow-lg shadow-primary-500/25 transition-all cursor-pointer self-start sm:self-auto hover:scale-105 active:scale-95"
         >
           <Plus className="h-4 w-4" />
           <span>افزودن کد تخفیف جدید</span>
@@ -201,21 +201,21 @@ export default function AdminCoupons() {
         {loading ? (
           <div className="col-span-full p-12 text-center text-gray-500">در حال دریافت کدهای تخفیف...</div>
         ) : coupons.length === 0 ? (
-          <div className="col-span-full p-12 bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl text-center text-gray-500 border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs">
+          <div className="col-span-full p-12 bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl text-center text-gray-500 border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs">
             هیچ کد تخفیف فعالی یافت نشد. می‌توانید با دکمه بالا اولین کد را بسازید.
           </div>
         ) : (
           coupons.map((coupon) => (
             <div 
               key={coupon.code}
-              className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl p-5 border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs hover:shadow-md transition-all relative overflow-hidden flex flex-col justify-between"
+              className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl p-5 border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs hover:shadow-md transition-all relative overflow-hidden flex flex-col justify-between"
             >
               {/* Ticket Top Notch */}
               <div className="flex items-center justify-between gap-3 mb-4">
                 <button
                   type="button"
                   onClick={() => handleToggleActive(coupon)}
-                  className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold cursor-pointer transition-all hover:scale-105 ${
+                  className={`px-2.5 py-1 rounded-full text-xs font-bold cursor-pointer transition-all hover:scale-105 ${
                     coupon.active !== false
                       ? 'bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 border border-emerald-200 dark:border-emerald-900/40'
                       : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300 border border-gray-200 dark:border-gray-600'
@@ -225,7 +225,7 @@ export default function AdminCoupons() {
                   {coupon.active !== false ? 'فعال و معتبر' : 'غیرفعال'}
                 </button>
 
-                <span className="text-[10px] text-gray-500 dark:text-gray-400 font-bold">
+                <span className="text-xs text-gray-500 dark:text-gray-400 font-bold">
                   {coupon.percent ? 'تخفیف درصدی' : 'تخفیف نقدی'}
                 </span>
               </div>
@@ -233,10 +233,10 @@ export default function AdminCoupons() {
               {/* Coupon Code Block */}
               <div className="bg-gray-50 dark:bg-[var(--color-surface-dark)]/60 p-4 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 flex items-center justify-between mb-4">
                 <div>
-                  <span className="font-mono text-lg font-black text-[var(--color-emphasis-text)] tracking-wider">
+                  <span className="font-mono text-lg font-bold text-[var(--color-emphasis-text)] tracking-wider">
                     {coupon.code}
                   </span>
-                  <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5 font-bold truncate max-w-[180px]">
+                  <span className="text-xs text-gray-500 dark:text-gray-400 block mt-0.5 font-bold truncate max-w-[180px]">
                     {coupon.label || 'کد تخفیف اختصاصی'}
                   </span>
                 </div>
@@ -256,7 +256,7 @@ export default function AdminCoupons() {
               <div className="space-y-2 text-xs mb-4">
                 <div className="flex justify-between py-1 border-b border-gray-50 dark:border-gray-700/60">
                   <span className="text-gray-500 dark:text-gray-400">میزان تخفیف:</span>
-                  <span className="font-black text-[var(--color-text-main-light)] dark:text-white">
+                  <span className="font-bold text-[var(--color-text-main-light)] dark:text-white">
                     {coupon.percent ? `${toPersianDigits(coupon.percent)}٪` : `${toPersianDigits(coupon.amount?.toLocaleString('fa-IR'))} تومان`}
                   </span>
                 </div>
@@ -279,7 +279,7 @@ export default function AdminCoupons() {
 
               {/* Action Buttons */}
               <div className="pt-3 border-t border-[var(--color-border-light)] dark:border-gray-700 flex items-center justify-between">
-                <div className="flex flex-col items-start text-[10px] text-gray-600 dark:text-gray-400 font-bold gap-0.5">
+                <div className="flex flex-col items-start text-xs text-gray-600 dark:text-gray-400 font-bold gap-0.5">
                   {coupon.expiresAt ? (
                     <span>انقضا: {toPersianDigits(new Date(coupon.expiresAt).toLocaleDateString('fa-IR'))}</span>
                   ) : (
@@ -314,9 +314,9 @@ export default function AdminCoupons() {
       {/* Modern Add Coupon Modal */}
       {isModalOpen && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/65 backdrop-blur-md">
-          <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-[var(--color-border-light)] dark:border-gray-700 text-right animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-[var(--color-border-light)] dark:border-gray-700 text-right animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-gray-700 mb-5">
-              <h3 className="font-black text-[var(--color-text-main-light)] dark:text-white text-base flex items-center gap-2">
+              <h3 className="font-bold text-[var(--color-text-main-light)] dark:text-white text-base flex items-center gap-2">
                 <Tag className="h-5 w-5 text-primary-500" />
                 <span>{editingCode ? `ویرایش کد ${editingCode}` : 'تعریف کد تخفیف جدید'}</span>
               </h3>
@@ -327,7 +327,7 @@ export default function AdminCoupons() {
 
             <form onSubmit={handleSubmit} className="space-y-4 text-xs font-bold">
               <div>
-                <label className="block text-gray-700 dark:text-gray-300 mb-1.5 font-black">
+                <label className="block text-gray-700 dark:text-gray-300 mb-1.5 font-bold">
                   کد تخفیف (لاتین و انگلیسی) {editingCode ? '' : '*'}
                 </label>
                 <input
@@ -337,7 +337,7 @@ export default function AdminCoupons() {
                   value={formData.code}
                   onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
                   placeholder="مثال: OFF20 یا JANEBI100"
-                  className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 font-mono font-black text-sm text-[var(--color-emphasis-text)] focus:outline-none focus:border-primary-500 text-left dir-ltr"
+                  className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 font-mono font-bold text-sm text-[var(--color-emphasis-text)] focus:outline-none focus:border-primary-500 text-left dir-ltr"
                 />
               </div>
 
@@ -380,7 +380,7 @@ export default function AdminCoupons() {
                   className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs font-mono text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500 text-left dir-ltr"
                 />
                 {formData.minTotal ? (
-                  <span className="text-[10px] text-gray-500 dark:text-gray-400 mt-1 block">
+                  <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 block">
                     معادل: {toPersianDigits(parseInt(formData.minTotal || '0').toLocaleString('fa-IR'))} تومان
                   </span>
                 ) : null}
@@ -406,7 +406,7 @@ export default function AdminCoupons() {
                     onChange={(e) => setFormData({ ...formData, expiresAt: e.target.value })}
                     className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500"
                   />
-                  <span className="text-[10px] text-gray-500 dark:text-gray-400 mt-1 block">خالی = بدون انقضا</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 block">خالی = بدون انقضا</span>
                 </div>
                 <div>
                   <label className="block text-gray-700 dark:text-gray-300 mb-1.5">سقف تعداد استفاده</label>
@@ -417,7 +417,7 @@ export default function AdminCoupons() {
                     placeholder="مثال: 100"
                     className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs font-mono text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500 text-left dir-ltr"
                   />
-                  <span className="text-[10px] text-gray-500 dark:text-gray-400 mt-1 block">خالی = نامحدود</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 block">خالی = نامحدود</span>
                 </div>
               </div>
 
@@ -431,7 +431,7 @@ export default function AdminCoupons() {
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-extrabold shadow-md shadow-primary-500/20"
+                  className="btn-primary px-6 py-2.5 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold shadow-md shadow-primary-500/20"
                 >
                   {editingCode ? 'ذخیره تغییرات' : 'ایجاد کد تخفیف'}
                 </button>

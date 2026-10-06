@@ -51,7 +51,7 @@ export default function Contact() {
       className="space-y-10"
     >
       {/* Title */}
-      <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 dark:from-gray-900 dark:via-gray-850 dark:to-gray-900 text-white rounded-3xl p-8 sm:p-10 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 dark:from-gray-900 dark:via-gray-850 dark:to-gray-900 text-white rounded-2xl p-8 sm:p-10 relative overflow-hidden">
         <div className="relative z-10">
           <span className="inline-flex items-center gap-1.5 bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] border border-[var(--color-cta)]/30 text-xs font-bold px-3 py-1 rounded-full mb-3">
             <Sparkles className="h-3.5 w-3.5" /> پشتیبانی همه‌روزه
@@ -87,7 +87,7 @@ export default function Contact() {
               <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed dir-ltr text-right">
                 {settings.phone}
               </p>
-              <p className="text-[11px] text-gray-500 mt-1">خط ویژه سفارشات تلفنی</p>
+              <p className="text-xs text-gray-500 mt-1">خط ویژه سفارشات تلفنی</p>
             </div>
           </div>
 
@@ -117,7 +117,7 @@ export default function Contact() {
         </div>
 
         {/* Contact Form */}
-        <div className="lg:col-span-2 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 sm:p-8 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs">
+        <div className="lg:col-span-2 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-6 sm:p-8 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs">
           <div className="flex items-center gap-2 mb-6">
             <MessageSquare className="h-5 w-5 text-[var(--color-emphasis-text)]" />
             <h3 className="text-xl font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">ارسال پیام مستقیم به پشتیبانی</h3>
@@ -187,7 +187,7 @@ export default function Contact() {
             <button 
               type="submit" 
               disabled={isSubmitting}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold py-3 px-8 rounded-xl shadow-md shadow-[var(--color-cta)]/25 transition-all duration-300 active:scale-98 disabled:opacity-50"
+              className="btn-primary w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold py-3 px-8 rounded-xl shadow-md shadow-[var(--color-cta)]/25 transition-all duration-300 active:scale-98 disabled:opacity-50"
             >
               <Send className="h-4 w-4" /> {isSubmitting ? 'در حال ارسال...' : 'ارسال پیام'}
             </button>

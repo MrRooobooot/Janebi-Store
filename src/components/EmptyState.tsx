@@ -18,12 +18,12 @@ export default function EmptyState({
   actionText,
   actionLink,
   onActionClick,
-  className = "linear-card bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-light)]/[0.025] rounded-3xl p-8 sm:p-12 shadow-sm border border-zinc-200/80 dark:border-white/[0.08] min-h-[45vh]"
+  className = "linear-card bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-light)]/[0.025] rounded-2xl p-8 sm:p-12 shadow-sm border border-zinc-200/80 dark:border-white/[0.08] min-h-[45vh]"
 }: EmptyStateProps) {
   return (
     <div className={`${className} flex flex-col items-center justify-center text-center transition-colors select-none`}>
       <div
-        className="pop-in w-20 h-20 sm:w-24 sm:h-24 bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/30 text-[var(--color-emphasis-text)] rounded-2xl sm:rounded-3xl flex items-center justify-center mb-6 border border-[var(--color-cta)]/80 dark:border-[var(--color-cta)]/40 shadow-inner"
+        className="pop-in w-20 h-20 sm:w-24 sm:h-24 bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/30 text-[var(--color-emphasis-text)] rounded-2xl sm:rounded-2xl flex items-center justify-center mb-6 border border-[var(--color-cta)]/80 dark:border-[var(--color-cta)]/40 shadow-inner"
       >
         {icon}
       </div>
@@ -33,7 +33,7 @@ export default function EmptyState({
       {actionLink && actionText && (
         <Link
           to={actionLink}
-          className="bg-primary-600 hover:bg-primary-700 dark:bg-primary-600 dark:hover:bg-primary-500 text-white font-bold py-3 px-8 rounded-xl transition-colors inline-flex items-center justify-center min-touch-target shadow-md shadow-[var(--color-cta)]/25 active:scale-95 raycast-btn"
+          className="btn-primary bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] dark:bg-[var(--color-cta)] dark:hover:bg-[var(--color-cta-hover)] text-white font-bold py-3 px-8 rounded-xl transition-colors inline-flex items-center justify-center min-touch-target shadow-md shadow-[var(--color-cta)]/25 active:scale-95 raycast-btn"
         >
           {actionText}
         </Link>
@@ -42,7 +42,7 @@ export default function EmptyState({
       {onActionClick && actionText && !actionLink && (
         <button
           onClick={onActionClick}
-          className="bg-primary-600 hover:bg-primary-700 dark:bg-primary-600 dark:hover:bg-primary-500 text-white font-bold py-3 px-8 rounded-xl transition-colors inline-flex items-center justify-center min-touch-target shadow-md shadow-[var(--color-cta)]/25 active:scale-95 raycast-btn"
+          className="btn-primary bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] dark:bg-[var(--color-cta)] dark:hover:bg-[var(--color-cta-hover)] text-white font-bold py-3 px-8 rounded-xl transition-colors inline-flex items-center justify-center min-touch-target shadow-md shadow-[var(--color-cta)]/25 active:scale-95 raycast-btn"
         >
           {actionText}
         </button>

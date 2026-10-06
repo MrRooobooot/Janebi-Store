@@ -60,7 +60,7 @@ export default function Register() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="w-full max-w-md bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-8 shadow-xl relative overflow-hidden"
+        className="w-full max-w-md bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-8 shadow-xl relative overflow-hidden"
       >
         <div className="absolute -top-12 -left-12 w-40 h-40 bg-[var(--color-cta)]/10 rounded-full blur-2xl pointer-events-none" />
 
@@ -87,7 +87,7 @@ export default function Register() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="مثلا: علی رضایی"
-                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl py-3 px-4 pr-10 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30"
+                className="field w-full py-3 px-4 pr-10 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30"
                 required
               id="register-name"
               name="name"
@@ -108,7 +108,7 @@ export default function Register() {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="09123456789"
-                className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3.5 px-4 pl-10 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-400 focus:outline-none focus:border-[var(--color-cta)]/30 focus:ring-2 focus:ring-[var(--color-cta)]/20 transition-all"
+                className="field w-full py-3.5 px-4 pl-10 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-400 focus:outline-none focus:border-[var(--color-cta)]/30 focus:ring-2 focus:ring-[var(--color-cta)]/20 transition-all"
                 required
               id="register-phone"
               name="phone"
@@ -129,7 +129,7 @@ export default function Register() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3.5 px-4 pl-10 pr-10 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-400 focus:outline-none focus:border-[var(--color-cta)]/30 focus:ring-2 focus:ring-[var(--color-cta)]/20 transition-all"
+                className="field w-full py-3.5 px-4 pl-10 pr-10 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-400 focus:outline-none focus:border-[var(--color-cta)]/30 focus:ring-2 focus:ring-[var(--color-cta)]/20 transition-all"
                 required
               id="register-password"
               name="password"
@@ -145,7 +145,7 @@ export default function Register() {
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
             </div>
-            <p className="mt-1.5 text-[11px] font-medium text-gray-500 dark:text-gray-400">حداقل ۶ کاراکتر</p>
+            <p className="mt-1.5 text-xs font-medium text-gray-500 dark:text-gray-400">حداقل ۶ کاراکتر</p>
           </div>
 
           <div>
@@ -159,7 +159,7 @@ export default function Register() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3.5 px-4 pl-10 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-400 focus:outline-none focus:border-[var(--color-cta)]/30 focus:ring-2 focus:ring-[var(--color-cta)]/20 transition-all"
+                className="field w-full py-3.5 px-4 pl-10 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-400 focus:outline-none focus:border-[var(--color-cta)]/30 focus:ring-2 focus:ring-[var(--color-cta)]/20 transition-all"
                 required
               id="register-confirm-password"
               name="passwordConfirm"
@@ -188,7 +188,7 @@ export default function Register() {
 
           <button
             type="submit"
-            className="w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-extrabold py-4 px-6 rounded-2xl shadow-lg shadow-[var(--color-cta)]/25 flex items-center justify-center gap-2 transition-all active:scale-98 text-sm mt-6"
+            className="btn-primary w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold py-4 px-6 rounded-2xl shadow-lg shadow-[var(--color-cta)]/25 flex items-center justify-center gap-2 transition-all active:scale-98 text-sm mt-6"
           >
             <span>ثبت‌نام و عضویت</span>
             <ArrowLeft className="h-4 w-4" />
@@ -197,7 +197,7 @@ export default function Register() {
 
         <div className="mt-8 pt-6 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-center text-xs font-medium text-gray-500">
           قبلاً ثبت‌نام کرده‌اید؟{' '}
-          <Link to="/login" className="font-extrabold text-[var(--color-emphasis-text)] hover:underline">
+          <Link to="/login" className="font-bold text-[var(--color-emphasis-text)] hover:underline">
             وارد شوید
           </Link>
         </div>

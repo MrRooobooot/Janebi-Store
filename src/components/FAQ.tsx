@@ -90,7 +90,7 @@ export default function FAQ() {
                 <span className="flex items-center gap-3 min-w-0">
                   <span
                     aria-hidden="true"
-                    className={`flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg text-xs sm:text-sm font-black transition-colors ${
+                    className={`flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg text-xs sm:text-sm font-bold transition-colors ${
                       isOpen
                         ? 'bg-[var(--color-cta)] text-white dark:bg-[var(--color-cta)]'
                         : 'bg-[var(--color-cta)]/10 text-[var(--color-emphasis-text)] dark:bg-zinc-800/90 dark:text-[var(--color-emphasis-text)]'

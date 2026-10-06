@@ -179,13 +179,13 @@ export default function AdminMessages() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'unread':
-        return <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-rose-100 dark:bg-rose-950/40 text-rose-600 border border-rose-200">خوانده نشده</span>;
+        return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 dark:bg-rose-950/40 text-rose-600 border border-rose-200">خوانده نشده</span>;
       case 'read':
-        return <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-blue-100 dark:bg-blue-950/40 text-blue-600 border border-blue-200">خوانده شده</span>;
+        return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 dark:bg-blue-950/40 text-blue-600 border border-blue-200">خوانده شده</span>;
       case 'resolved':
-        return <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 border border-emerald-200">پاسخ‌داده‌شده</span>;
+        return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 border border-emerald-200">پاسخ‌داده‌شده</span>;
       case 'archived':
-        return <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-gray-100 dark:bg-gray-700/60 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-600">بایگانی‌شده</span>;
+        return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-gray-100 dark:bg-gray-700/60 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-600">بایگانی‌شده</span>;
       default:
         return null;
     }
@@ -199,7 +199,7 @@ export default function AdminMessages() {
       </div>
 
       {/* Filter Tabs & Search */}
-      <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 p-4 rounded-3xl border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs flex flex-col md:flex-row items-center justify-between gap-3">
+      <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 p-4 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs flex flex-col md:flex-row items-center justify-between gap-3">
         {/* Search Input */}
         <div className="relative flex-1 w-full">
           <input
@@ -230,7 +230,7 @@ export default function AdminMessages() {
               }`}
             >
               <span>{tab.label}</span>
-              <span className="text-[10px] opacity-80">({toPersianDigits(tab.count)})</span>
+              <span className="text-xs opacity-80">({toPersianDigits(tab.count)})</span>
             </button>
           ))}
         </div>
@@ -260,7 +260,7 @@ export default function AdminMessages() {
             <span>حذف انتخاب‌شده‌ها {selectedIds.size > 0 && `(${toPersianDigits(selectedIds.size)})`}</span>
           </button>
         </div>
-        <span className="text-[11px] text-gray-500 dark:text-gray-400 font-bold">
+        <span className="text-xs text-gray-500 dark:text-gray-400 font-bold">
           {toPersianDigits(filteredMessages.length)} پیام
         </span>
       </div>
@@ -270,7 +270,7 @@ export default function AdminMessages() {
         {loading ? (
           <div className="col-span-full p-12 text-center text-gray-500">در حال دریافت پیام‌ها...</div>
         ) : filteredMessages.length === 0 ? (
-          <div className="col-span-full p-12 bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl text-center text-gray-500 border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs">
+          <div className="col-span-full p-12 bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl text-center text-gray-500 border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs">
             هیچ پیامی در این دسته‌بندی یافت نشد.
           </div>
         ) : (
@@ -281,7 +281,7 @@ export default function AdminMessages() {
               tabIndex={0}
               onClick={() => setSelectedMessage(msg)}
               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedMessage(msg); } }}
-              className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl p-5 border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group"
+              className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl p-5 border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group"
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-3">
@@ -297,7 +297,7 @@ export default function AdminMessages() {
                     {getStatusBadge(msg.status)}
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">{faDate(msg.createdAt)}</span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">{faDate(msg.createdAt)}</span>
                     <button
                       aria-label={msg.status === 'archived' ? 'خروج از بایگانی' : 'بایگانی پیام'}
                       title={msg.status === 'archived' ? 'خروج از بایگانی' : 'بایگانی پیام'}
@@ -311,7 +311,7 @@ export default function AdminMessages() {
                   </div>
                 </div>
 
-                <h3 className="font-extrabold text-sm text-[var(--color-text-main-light)] dark:text-white mb-1 group-hover:text-[var(--color-emphasis-text)] transition-colors line-clamp-1">
+                <h3 className="font-bold text-sm text-[var(--color-text-main-light)] dark:text-white mb-1 group-hover:text-[var(--color-emphasis-text)] transition-colors line-clamp-1">
                   {msg.subject || 'بدون موضوع'}
                 </h3>
 
@@ -326,7 +326,7 @@ export default function AdminMessages() {
                   <span className="font-bold text-gray-800 dark:text-gray-200 truncate">{msg.name}</span>
                 </div>
 
-                <span className="text-[11px] text-[var(--color-emphasis-text)] font-bold flex items-center gap-1">
+                <span className="text-xs text-[var(--color-emphasis-text)] font-bold flex items-center gap-1">
                   <span>مشاهده پیام</span>
                   <ArrowLeft className="h-3 w-3" />
                 </span>
@@ -347,15 +347,15 @@ export default function AdminMessages() {
       {/* Message View Modal */}
       {selectedMessage && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/65 backdrop-blur-md">
-          <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl max-w-xl w-full p-6 shadow-2xl border border-[var(--color-border-light)] dark:border-gray-700 text-right animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl max-w-xl w-full p-6 shadow-2xl border border-[var(--color-border-light)] dark:border-gray-700 text-right animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-gray-700 mb-5">
               <div className="flex items-center gap-2">
                 <div className="p-2 rounded-xl bg-primary-100 dark:bg-primary-950/60 text-primary-700 dark:text-primary-300">
                   <Mail className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="font-black text-[var(--color-text-main-light)] dark:text-white text-base">جزئیات پیام ارسالی</h3>
-                  <span className="text-[11px] text-gray-500 dark:text-gray-400">{faDate(selectedMessage.createdAt)}</span>
+                  <h3 className="font-bold text-[var(--color-text-main-light)] dark:text-white text-base">جزئیات پیام ارسالی</h3>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">{faDate(selectedMessage.createdAt)}</span>
                 </div>
               </div>
               <button onClick={() => setSelectedMessage(null)} aria-label="بستن پنجره پیام" className="p-3 -m-1 flex items-center justify-center rounded-xl text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
@@ -399,7 +399,7 @@ export default function AdminMessages() {
             <div className="space-y-3 mb-6">
               <div>
                 <span className="text-xs font-bold text-gray-500 dark:text-gray-400 block mb-1">موضوع پیام:</span>
-                <div className="font-extrabold text-sm text-[var(--color-text-main-light)] dark:text-white">
+                <div className="font-bold text-sm text-[var(--color-text-main-light)] dark:text-white">
                   {selectedMessage.subject || 'بدون موضوع'}
                 </div>
               </div>

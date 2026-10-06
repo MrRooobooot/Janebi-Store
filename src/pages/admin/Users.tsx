@@ -152,7 +152,7 @@ export default function AdminUsers() {
       </div>
 
       {/* Search */}
-      <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 p-4 rounded-3xl border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs">
+      <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 p-4 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs">
         <div className="relative">
           <input
             type="text"
@@ -166,7 +166,7 @@ export default function AdminUsers() {
       </div>
 
       {/* Users Table */}
-      <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl border border-[var(--color-border-light)] dark:border-gray-700 overflow-hidden shadow-xs">
+      <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700 overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-right text-xs">
             <thead className="bg-gray-50/80 dark:bg-gray-700/50 text-gray-600 dark:text-gray-400 border-b border-[var(--color-border-light)] dark:border-gray-700">
@@ -202,8 +202,8 @@ export default function AdminUsers() {
                         className="w-10 h-10 rounded-full border border-gray-200 dark:border-gray-700 object-cover shrink-0"
                       />
                       <div>
-                        <div className="font-extrabold text-[var(--color-text-main-light)] dark:text-white">{u.name}</div>
-                        <div className="text-[10px] text-gray-500 font-mono mt-0.5">{u.email || 'بدون ایمیل'}</div>
+                        <div className="font-bold text-[var(--color-text-main-light)] dark:text-white">{u.name}</div>
+                        <div className="text-xs text-gray-500 font-mono mt-0.5">{u.email || 'بدون ایمیل'}</div>
                       </div>
                     </td>
                     <td className="p-4 font-mono font-bold text-gray-700 dark:text-gray-300">{u.phone}</td>
@@ -221,7 +221,7 @@ export default function AdminUsers() {
                       </button>
                     </td>
                     <td className="p-4">
-                      <span className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold ${
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
                         u.role === 'admin'
                           ? 'bg-purple-100 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800'
                           : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
@@ -277,9 +277,9 @@ export default function AdminUsers() {
       {/* Password Reset Modal */}
       {passwordModalUser && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-[var(--color-border-light)] dark:border-gray-700 text-right">
+          <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-[var(--color-border-light)] dark:border-gray-700 text-right">
             <div className="flex items-center justify-between pb-3 border-b border-[var(--color-border-light)] dark:border-gray-700 mb-4">
-              <h3 className="font-black text-[var(--color-text-main-light)] dark:text-white text-base flex items-center gap-2">
+              <h3 className="font-bold text-[var(--color-text-main-light)] dark:text-white text-base flex items-center gap-2">
                 <KeyRound className="h-5 w-5 text-[var(--color-emphasis-text)]" />
                 <span>تغییر رمز عبور کاربر</span>
               </h3>
@@ -317,7 +317,7 @@ export default function AdminUsers() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-5 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold transition-all disabled:opacity-50"
+                  className="btn-primary px-5 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold transition-all disabled:opacity-50"
                 >
                   {submitting ? 'در حال ثبت...' : 'ذخیره رمز جدید'}
                 </button>
@@ -331,9 +331,9 @@ export default function AdminUsers() {
       {/* VIP Points Modal */}
       {pointsModalUser && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-[var(--color-border-light)] dark:border-gray-700 text-right">
+          <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-[var(--color-border-light)] dark:border-gray-700 text-right">
             <div className="flex items-center justify-between pb-3 border-b border-[var(--color-border-light)] dark:border-gray-700 mb-4">
-              <h3 className="font-black text-[var(--color-text-main-light)] dark:text-white text-base flex items-center gap-2">
+              <h3 className="font-bold text-[var(--color-text-main-light)] dark:text-white text-base flex items-center gap-2">
                 <Award className="h-5 w-5 text-amber-500" />
                 <span>مدیریت امتیازات باشگاه VIP</span>
               </h3>
@@ -357,7 +357,7 @@ export default function AdminUsers() {
                   onChange={(e) => setPointsInput(toEnglishDigits(e.target.value).replace(/[^0-9]/g, ''))}
                   className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl p-3 text-xs font-bold text-gray-800 dark:text-gray-200 focus:outline-none focus:border-amber-500 font-mono text-left dir-ltr"
                 />
-                <span className="text-[10px] text-gray-500 mt-1 block">هر ۱۰۰ امتیاز معادل ۱۰,۰۰۰ تومان تخفیف روی خرید بعدی کاربر است.</span>
+                <span className="text-xs text-gray-500 mt-1 block">هر ۱۰۰ امتیاز معادل ۱۰,۰۰۰ تومان تخفیف روی خرید بعدی کاربر است.</span>
               </div>
 
               <div className="flex justify-end gap-2 pt-3 border-t border-[var(--color-border-light)] dark:border-gray-700">
@@ -371,7 +371,7 @@ export default function AdminUsers() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-gray-950 text-xs font-black transition-all disabled:opacity-50"
+                  className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-gray-950 text-xs font-bold transition-all disabled:opacity-50"
                 >
                   {submitting ? 'در حال ثبت...' : 'ذخیره امتیازات'}
                 </button>

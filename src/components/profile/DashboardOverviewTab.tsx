@@ -23,7 +23,7 @@ export default function DashboardOverviewTab({
   return (
     <div className="space-y-6 text-right">
       {/* Welcome Hero Banner */}
-      <div className="rounded-3xl p-6 sm:p-8 text-white [background:linear-gradient(135deg,#e11d48,#be123c)] relative overflow-hidden shadow-lg shadow-[var(--color-cta)]/25">
+      <div className="rounded-2xl p-6 sm:p-8 text-white [background:linear-gradient(135deg,#e11d48,#be123c)] relative overflow-hidden shadow-lg shadow-[var(--color-cta)]/25">
         <div className="absolute top-0 left-0 w-64 h-64 bg-[var(--color-surface-light)]/10 rounded-full blur-2xl pointer-events-none" />
         <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div>
@@ -37,8 +37,8 @@ export default function DashboardOverviewTab({
           </div>
 
           <div className="bg-[var(--color-surface-light)]/15 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/20 text-center shrink-0">
-            <span className="text-[10px] font-bold text-white/90 block">امتیاز باشگاه VIP</span>
-            <span className="text-xl font-black text-white">{toPersianDigits(user.vipPoints || 0)}</span>
+            <span className="text-xs font-bold text-white/90 block">امتیاز باشگاه VIP</span>
+            <span className="text-xl font-bold text-white">{toPersianDigits(user.vipPoints || 0)}</span>
           </div>
         </div>
       </div>
@@ -48,7 +48,7 @@ export default function DashboardOverviewTab({
         <button
           type="button"
           onClick={() => setActiveTab('orders')}
-          className="w-full text-right bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-5 shadow-xs cursor-pointer hover:border-[var(--color-cta)]/30 transition-all group"
+          className="w-full text-right bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-5 shadow-xs cursor-pointer hover:border-[var(--color-cta)]/30 transition-all group"
         >
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-bold text-gray-500 dark:text-gray-400">سفارش‌های در حال پردازش</span>
@@ -64,7 +64,7 @@ export default function DashboardOverviewTab({
         <button
           type="button"
           onClick={() => setActiveTab('orders')}
-          className="w-full text-right bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-5 shadow-xs cursor-pointer hover:border-[var(--color-cta)]/30 transition-all group"
+          className="w-full text-right bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-5 shadow-xs cursor-pointer hover:border-[var(--color-cta)]/30 transition-all group"
         >
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-bold text-gray-500 dark:text-gray-400">تحویل داده شده</span>
@@ -77,23 +77,23 @@ export default function DashboardOverviewTab({
           </div>
         </button>
 
-        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-5 shadow-xs">
+        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-5 shadow-xs">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-bold text-gray-500 dark:text-gray-400">مجموع خریدهای شما</span>
             <div className="p-2.5 rounded-2xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400">
               <ShieldCheck className="h-5 w-5" />
             </div>
           </div>
-          <div className="font-black text-lg text-[var(--color-emphasis-text)]">
+          <div className="font-bold text-lg text-[var(--color-emphasis-text)]">
             {formatPrice(totalSpent)}
           </div>
         </div>
       </div>
 
       {/* Recent Order Preview */}
-      <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 shadow-xs space-y-4">
+      <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-6 shadow-xs space-y-4">
         <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
-          <h3 className="font-extrabold text-base text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
+          <h3 className="font-bold text-base text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
             <Package className="h-5 w-5 text-[var(--color-emphasis-text)]" />
             <span>آخرین سفارش ثبت‌شده</span>
           </h3>
@@ -110,7 +110,7 @@ export default function DashboardOverviewTab({
           <div className="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] space-y-3">
             <div className="flex items-center justify-between text-xs font-bold">
               <span className="text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">کد سفارش: <span dir="ltr" className="latin-nums">{orders[0].id}</span></span>
-              <span className={`px-3 py-1 rounded-full text-[10px] ${
+              <span className={`px-3 py-1 rounded-full text-xs ${
                   orders[0].status === 'delivered' ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300'
                   : orders[0].status === 'cancelled' ? 'bg-rose-100 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300'
                   : orders[0].status === 'processing' ? 'bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300'

@@ -45,20 +45,20 @@ export default function VipClubTab() {
   return (
     <div className="space-y-6 text-right">
       {/* Tier Progress Card */}
-      <div className="bg-gradient-to-br from-[var(--color-cta)] via-[var(--color-accent-surface)] to-[var(--color-cta-hover)] rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-lg shadow-[var(--color-cta)]/25 space-y-4">
+      <div className="bg-gradient-to-br from-[var(--color-cta)] via-[var(--color-accent-surface)] to-[var(--color-cta-hover)] rounded-2xl p-6 sm:p-8 text-white relative overflow-hidden shadow-lg shadow-[var(--color-cta)]/25 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-2xl bg-black/25 backdrop-blur-md flex items-center justify-center">
               <Award className="h-6 w-6 text-white/80" />
             </div>
             <div>
-              <h2 className="text-xl font-black">سطح اشتراک: طلایی (VIP)</h2>
+              <h2 className="text-xl font-bold">سطح اشتراک: طلایی (VIP)</h2>
               <p className="text-xs text-white/90 font-medium">
                 شما {toPersianDigits(points)} امتیاز فعال دارید
               </p>
             </div>
           </div>
-          <span className="text-xs font-black bg-[var(--color-surface-light)] text-[var(--color-emphasis-text)] px-3 py-1.5 rounded-full">
+          <span className="text-xs font-bold bg-[var(--color-surface-light)] text-[var(--color-emphasis-text)] px-3 py-1.5 rounded-full">
             سطح بعدی: الماس
           </span>
         </div>
@@ -79,8 +79,8 @@ export default function VipClubTab() {
       </div>
 
       {/* Exclusive Coupons */}
-      <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 shadow-xs space-y-4">
-        <h3 className="font-extrabold text-base text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2 pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
+      <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-6 shadow-xs space-y-4">
+        <h3 className="font-bold text-base text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2 pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
           <Gift className="h-5 w-5 text-[var(--color-emphasis-text)]" />
           <span>کدهای تخفیف اختصاصی شما</span>
         </h3>
@@ -101,10 +101,10 @@ export default function VipClubTab() {
             >
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-black text-sm text-[var(--color-emphasis-text)] tracking-wider">
+                  <span className="font-bold text-sm text-[var(--color-emphasis-text)] tracking-wider">
                     {cp.code}
                   </span>
-                  <span className="text-[10px] font-bold text-gray-400">اعتبار: {cp.expiresAt ? new Date(cp.expiresAt).toLocaleDateString('fa-IR') : 'بدون محدودیت'}</span>
+                  <span className="text-xs font-bold text-gray-400">اعتبار: {cp.expiresAt ? new Date(cp.expiresAt).toLocaleDateString('fa-IR') : 'بدون محدودیت'}</span>
                 </div>
                 <p className="text-xs font-bold text-gray-700 dark:text-gray-300">
                   {cp.label} (حداقل خرید: {toPersianDigits(cp.minTotal.toLocaleString('fa-IR'))} تومان)

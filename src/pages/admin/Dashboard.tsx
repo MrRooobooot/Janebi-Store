@@ -79,7 +79,7 @@ export default function Dashboard() {
         <p>{error}</p>
         <button
           onClick={() => { setError(""); setLoading(true); fetchStats(); }}
-          className="px-4 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold transition-colors"
+          className="btn-primary px-4 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold transition-colors"
         >
           تلاش مجدد
         </button>
@@ -111,7 +111,7 @@ export default function Dashboard() {
         <div className="flex flex-wrap items-center gap-2">
           <Link
             to="/admin/products"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold transition-all shadow-sm"
+            className="btn-primary inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold transition-all shadow-sm"
           >
             <Package className="h-3.5 w-3.5" />
             <span>مدیریت کالاها</span>
@@ -141,7 +141,7 @@ export default function Dashboard() {
               <Rocket className="h-6 w-6" />
             </div>
             <div className="space-y-1">
-              <h2 className="font-black text-sm text-[var(--color-text-main-light)] dark:text-white">
+              <h2 className="font-bold text-sm text-[var(--color-text-main-light)] dark:text-white">
                 {metrics.totalProducts === 0 ? 'فروشگاه شما خالی است' : 'هنوز سفارشی ثبت نشده است'}
               </h2>
               <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
@@ -154,7 +154,7 @@ export default function Dashboard() {
           <div className="flex flex-wrap items-center gap-2 shrink-0">
             <Link
               to="/admin/products"
-              className="min-h-[44px] inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold transition-all shadow-sm"
+              className="btn-primary min-h-[44px] inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold transition-all shadow-sm"
             >
               <Package className="h-4 w-4" />
               <span>افزودن محصول</span>
@@ -227,10 +227,10 @@ export default function Dashboard() {
                         className="w-full rounded-t-md bg-emerald-500/80 hover:bg-emerald-600 dark:bg-emerald-500/60 dark:hover:bg-emerald-400 transition-colors"
                         style={{ height: `${heightPct}%` }}
                       />
-                      <div className="absolute bottom-full mb-1 hidden group-hover:block z-10 px-2 py-1 rounded-lg bg-gray-900 dark:bg-gray-700 text-white text-[10px] whitespace-nowrap pointer-events-none shadow-lg">
+                      <div className="absolute bottom-full mb-1 hidden group-hover:block z-10 px-2 py-1 rounded-lg bg-gray-900 dark:bg-gray-700 text-white text-xs whitespace-nowrap pointer-events-none shadow-lg">
                         {dayLabel} — {formatPrice(day.revenue)} · {toPersianDigits(day.orders)} سفارش
                       </div>
-                      <span className="text-[9px] sm:text-[10px] text-gray-500 dark:text-gray-400 mt-1 rotate-45 origin-top-right translate-x-1 whitespace-nowrap hidden sm:block">
+                      <span className="text-xs sm:text-xs text-gray-500 dark:text-gray-400 mt-1 rotate-45 origin-top-right translate-x-1 whitespace-nowrap hidden sm:block">
                         {dayLabel}
                       </span>
                     </div>
@@ -279,7 +279,7 @@ export default function Dashboard() {
                   <span className="font-bold text-gray-800 dark:text-gray-200">{cat.category}</span>
                   <div className="text-left">
                     <div className="font-mono font-bold text-[var(--color-emphasis-text)]">{cat.revenue.toLocaleString()} ت</div>
-                    <div className="text-[10px] text-gray-500 dark:text-gray-400">{cat.count} فروش</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">{cat.count} فروش</div>
                   </div>
                 </div>
               ))}
@@ -313,7 +313,7 @@ export default function Dashboard() {
                   <td className="p-4 text-gray-600 dark:text-gray-300">{order.recipientName}</td>
                   <td className="p-4 font-bold text-[var(--color-text-main-light)] dark:text-white font-mono">{order.total.toLocaleString()} تومان</td>
                   <td className="p-4">
-                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold ${
+                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${
                       order.status === "delivered" ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400" :
                       order.status === "processing" ? "bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400" :
                       order.status === "shipped" ? "bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400" :

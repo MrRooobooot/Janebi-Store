@@ -66,7 +66,7 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
 
   return (
     <section
-      className="reveal-in-view relative rounded-3xl text-white [background:linear-gradient(135deg,#e11d48,#be123c)] p-6 sm:p-10 md:p-12 overflow-hidden shadow-xl"
+      className="reveal-in-view relative rounded-2xl text-white [background:linear-gradient(135deg,#e11d48,#be123c)] p-6 sm:p-10 md:p-12 overflow-hidden shadow-xl"
     >
       {/* Background Decorative Blur circles */}
       <div className="absolute -top-24 -right-24 w-72 h-72 bg-[var(--color-surface-light)]/10 rounded-full blur-3xl pointer-events-none" />
@@ -74,7 +74,7 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
 
       <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
         <div className="text-right max-w-xl">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/25 backdrop-blur-md text-white text-xs font-black mb-4 border border-white/30">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/25 backdrop-blur-md text-white text-xs font-bold mb-4 border border-white/30">
             <Sparkles className="h-4 w-4 text-yellow-300" /> {badge}
           </div>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-black mb-3 leading-tight tracking-tight">
@@ -91,7 +91,7 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
               className="pop-in bg-black/25 backdrop-blur-md p-6 rounded-2xl border border-white/30 text-center text-white"
             >
               <CheckCircle2 className="h-12 w-12 text-green-300 mx-auto mb-3" />
-              <h3 className="font-extrabold text-lg mb-1">عضویت با موفقیت انجام شد!</h3>
+              <h3 className="font-bold text-lg mb-1">عضویت با موفقیت انجام شد!</h3>
               <p className="text-xs text-white/90 font-medium mb-3">از تخفیف‌های اختصاصی باشگاه مشتریان باخبر خواهید شد.</p>
               {couponCode && (
                 <button
@@ -100,7 +100,7 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
                   title="کلیک برای کپی کد تخفیف"
                   className="inline-flex items-center gap-2 bg-black/25 hover:bg-black/40 border border-dashed border-white/50 rounded-xl px-4 py-2.5 transition-colors cursor-pointer"
                 >
-                  <span dir="ltr" className="font-mono text-xl font-black tracking-widest text-yellow-300">{couponCode}</span>
+                  <span dir="ltr" className="font-mono text-xl font-bold tracking-widest text-yellow-300">{couponCode}</span>
                   {copied ? <Check className="h-4 w-4 text-green-300" /> : <Copy className="h-4 w-4 text-white/80" />}
                 </button>
               )}
@@ -126,7 +126,7 @@ export default function VipClubBanner({ badge, title, subtitle, couponCode }: Vi
               <button
                 type="submit"
                 disabled={submitting}
-                className="bg-zinc-950/90 hover:bg-black border border-white/40 text-white px-6 py-3.5 rounded-xl font-extrabold text-xs sm:text-sm transition-all duration-300 flex items-center justify-center gap-2 shrink-0 shadow-lg active:scale-95 cursor-pointer"
+                className="bg-zinc-950/90 hover:bg-black border border-white/40 text-white px-6 py-3.5 rounded-xl font-bold text-xs sm:text-sm transition-all duration-300 flex items-center justify-center gap-2 shrink-0 shadow-lg active:scale-95 cursor-pointer"
               >
                 <Gift className="h-4 w-4 text-yellow-300" />
                 {submitting ? 'در حال ثبت...' : 'دریافت هدیه'}

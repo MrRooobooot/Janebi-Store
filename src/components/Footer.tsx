@@ -47,7 +47,7 @@ export default function Footer() {
             </div>
             <div>
               <h3 className="font-bold text-zinc-900 dark:text-zinc-100 text-xs sm:text-sm mb-0.5">ارسال سریع و رایگان</h3>
-              <p className="text-[11px] text-zinc-500 dark:text-zinc-400">سفارش‌های بالای {toPersianDigits((settings.freeShippingThreshold || FREE_SHIPPING_THRESHOLD).toLocaleString('fa-IR'))} تومان</p>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">سفارش‌های بالای {toPersianDigits((settings.freeShippingThreshold || FREE_SHIPPING_THRESHOLD).toLocaleString('fa-IR'))} تومان</p>
             </div>
           </div>
 
@@ -57,7 +57,7 @@ export default function Footer() {
             </div>
             <div>
               <h3 className="font-bold text-zinc-900 dark:text-zinc-100 text-xs sm:text-sm mb-0.5">پشتیبانی تخصصی</h3>
-              <p className="text-[11px] text-zinc-500 dark:text-zinc-400">{toPersianDigits(settings.supportHours || '۷ روز هفته، ۹ صبح تا ۹ شب')}</p>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">{toPersianDigits(settings.supportHours || '۷ روز هفته، ۹ صبح تا ۹ شب')}</p>
             </div>
           </div>
 
@@ -67,7 +67,7 @@ export default function Footer() {
             </div>
             <div>
               <h3 className="font-bold text-zinc-900 dark:text-zinc-100 text-xs sm:text-sm mb-0.5">۷ روز ضمانت بازگشت</h3>
-              <p className="text-[11px] text-zinc-500 dark:text-zinc-400">تضمین سلامت فنی کالا</p>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">تضمین سلامت فنی کالا</p>
             </div>
           </div>
 
@@ -77,7 +77,7 @@ export default function Footer() {
             </div>
             <div>
               <h3 className="font-bold text-zinc-900 dark:text-zinc-100 text-xs sm:text-sm mb-0.5">ضمانت اصالت کالا</h3>
-              <p className="text-[11px] text-zinc-500 dark:text-zinc-400">۱۰۰٪ اورجینال با گارانتی معتبر</p>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">۱۰۰٪ اورجینال با گارانتی معتبر</p>
             </div>
           </div>
         </div>
@@ -106,7 +106,7 @@ export default function Footer() {
 
           {/* Links column (§2.7 / §9): quick customer links incl. order tracking */}
           <div className="lg:col-span-3 space-y-3 text-right p-5 rounded-2xl bg-white dark:bg-[var(--color-surface-dark)] border border-zinc-200/80 dark:border-white/[0.07] shadow-xs">
-            <h3 className="text-sm font-black text-zinc-900 dark:text-zinc-100">دسترسی سریع</h3>
+            <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">دسترسی سریع</h3>
             <nav className="flex flex-col items-start gap-1 text-xs text-zinc-600 dark:text-zinc-400" aria-label="لینک‌های فوتر">
               {[
                 { to: '/profile?tab=orders', label: 'پیگیری سفارش', icon: true },
@@ -132,7 +132,7 @@ export default function Footer() {
           {/* Newsletter Section */}
           <div className="lg:col-span-2 flex flex-col justify-between bg-gradient-to-r from-[var(--color-cta)]/10 to-[var(--color-cta)]/5 dark:from-zinc-900 dark:to-zinc-800/60 p-5 rounded-2xl border border-[var(--color-cta)]/60 dark:border-zinc-800 text-right">
             <div>
-              <h3 className="text-base font-black text-zinc-900 dark:text-zinc-100 mb-1">عضویت در خبرنامه جانبی آرنا</h3>
+              <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100 mb-1">عضویت در خبرنامه جانبی آرنا</h3>
               <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">از جدیدترین تخفیف‌ها، پکیج‌ها و کدهای تخفیف اختصاصی باخبر شوید.</p>
             </div>
             <form onSubmit={handleSubscribe} className="flex w-full mt-4">
@@ -151,7 +151,7 @@ export default function Footer() {
               <button 
                 type="submit" 
                 aria-label="ارسال عضویت در خبرنامه"
-                className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] text-white px-4 min-h-11 rounded-l-2xl flex items-center justify-center transition-colors cursor-pointer shrink-0"
+                className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] text-white px-4 min-h-11 min-w-11 rounded-l-2xl flex items-center justify-center transition-colors cursor-pointer shrink-0"
               >
                 <Send className="h-4 w-4" />
               </button>
@@ -160,7 +160,7 @@ export default function Footer() {
 
           {/* Enamad Trust Seal Badge - Responsive Card */}
           <div className="md:col-span-2 lg:col-span-3 flex flex-col items-center justify-center p-5 rounded-2xl bg-white dark:bg-[var(--color-surface-dark)] border border-zinc-200/80 dark:border-white/[0.07] shadow-xs text-center">
-            <span className="text-xs font-black text-zinc-800 dark:text-zinc-200 mb-3 flex items-center gap-1.5">
+            <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 mb-3 flex items-center gap-1.5">
               <Award className="h-4 w-4 text-[var(--color-emphasis-text)]" />
               نماد اعتماد الکترونیکی
             </span>
@@ -174,7 +174,7 @@ export default function Footer() {
               className="w-28 h-28 aspect-square bg-white dark:bg-white rounded-2xl border border-zinc-200/80 dark:border-white/[0.08] flex items-center justify-center p-2 shadow-xs hover:scale-105 transition-all duration-300 relative group overflow-hidden shrink-0 enamad-tile"
             >
               {!imgLoaded && !imgError && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-100 text-[10px] text-zinc-600 dark:text-zinc-400 font-bold p-1">
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-100 text-xs text-zinc-600 dark:text-zinc-400 font-bold p-1">
                   <span>در حال بارگذاری نماد...</span>
                 </div>
               )}
@@ -205,13 +205,13 @@ export default function Footer() {
               {imgError && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-2 bg-zinc-100 text-center">
                   <Award className="h-6 w-6 text-[var(--color-emphasis-text)] mb-1" />
-                  <span className="text-[10px] font-black text-zinc-700">دارای اینماد رسمی</span>
+                  <span className="text-xs font-bold text-zinc-700">دارای اینماد رسمی</span>
                   <span className="text-[8px] text-zinc-400">کلیک برای استعلام</span>
                 </div>
               )}
             </a>
 
-            <span className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-3 font-bold">
+            <span className="text-xs text-zinc-500 dark:text-zinc-400 mt-3 font-bold">
               تایید هویت و صلاحیت کسب‌وکار
             </span>
           </div>

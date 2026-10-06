@@ -39,7 +39,7 @@ export default function Checkout() {
           description="برای ثبت سفارش ابتدا باید محصولاتی را به سبد خرید اضافه کنید."
           actionText="مشاهده محصولات"
           actionLink="/products"
-          className="bg-[var(--color-surface-light)]/80 dark:bg-[var(--color-surface-dark)]/80 backdrop-blur-xl rounded-3xl p-12 shadow-xs border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]"
+          className="bg-[var(--color-surface-light)]/80 dark:bg-[var(--color-surface-dark)]/80 backdrop-blur-xl rounded-2xl p-12 shadow-xs border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]"
         />
       </motion.div>
     );
@@ -53,17 +53,14 @@ export default function Checkout() {
       className="w-full text-right space-y-6"
     >
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-3">
-          <span className="relative">
-            اطلاعات ارسال
-            <span className="absolute bottom-1 left-0 right-0 h-3 bg-[var(--color-cta)]/50 dark:bg-[var(--color-cta)]/20 -z-10 rounded-sm"></span>
-          </span>
+        <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
+          اطلاعات ارسال
         </h1>
       </div>
 
       <CheckoutStepsBar currentStep={2} />
 
-      <form onSubmit={handleCheckout} noValidate className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pb-40 lg:pb-0">
+      <form id="checkout-form" onSubmit={handleCheckout} noValidate className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pb-40 lg:pb-0">
         {/* Recipient details + Shipping & Payment Selection */}
         <div className="lg:col-span-8 space-y-8">
           <CheckoutRecipientForm formData={formData} updateField={updateField} fieldErrors={fieldErrors} />

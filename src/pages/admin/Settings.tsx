@@ -61,7 +61,7 @@ const FIELD =
 const FIELD_SM =
   'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs';
 const SECTION_CARD =
-  'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-4';
+  'bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-4';
 
 /** Collapsible settings card (details/summary) — open by default. */
 function CollapsibleSection({
@@ -80,8 +80,8 @@ function CollapsibleSection({
       <summary className="text-base font-bold text-[var(--color-text-main-light)] dark:text-white border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pb-3 flex items-center gap-2 cursor-pointer list-none select-none">
         {icon}
         {title}
-        <span className="ms-auto text-[10px] font-normal text-gray-600 dark:text-gray-400 group-open:hidden">نمایش ▾</span>
-        <span className="ms-auto text-[10px] font-normal text-gray-600 dark:text-gray-400 hidden group-open:inline">بستن ▴</span>
+        <span className="ms-auto text-xs font-normal text-gray-600 dark:text-gray-400 group-open:hidden">نمایش ▾</span>
+        <span className="ms-auto text-xs font-normal text-gray-600 dark:text-gray-400 hidden group-open:inline">بستن ▴</span>
       </summary>
       <div className="pt-4 space-y-4">{children}</div>
     </details>
@@ -138,7 +138,7 @@ function HeroSlideEditor({
   };
   return (
     <div className="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 space-y-3">
-      <span className="text-xs font-black text-[var(--color-emphasis-text)]">{label}</span>
+      <span className="text-xs font-bold text-[var(--color-emphasis-text)]">{label}</span>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <input type="text" placeholder="عنوان زیر بنر" value={settings[fields.title] || ''} onChange={setField(fields.title)} className={HERO_INPUT} />
         <input type="text" placeholder="متن دکمه زیر بنر" value={settings[fields.buttonText] || ''} onChange={setField(fields.buttonText)} className={HERO_INPUT} />
@@ -146,7 +146,7 @@ function HeroSlideEditor({
         <input type="text" placeholder="مسیر تصویر" value={settings[fields.image] || ''} onChange={setField(fields.image)} className={`${HERO_INPUT} text-left dir-ltr`} />
       </div>
       <details className="rounded-xl border border-dashed border-gray-300 dark:border-gray-600 px-3 py-2">
-        <summary className="cursor-pointer text-[11px] font-bold text-gray-500 dark:text-gray-400">روی صفحه دیده نمی‌شود</summary>
+        <summary className="cursor-pointer text-xs font-bold text-gray-500 dark:text-gray-400">روی صفحه دیده نمی‌شود</summary>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3">
           <input type="text" placeholder="زیرعنوان" value={settings[fields.subtitle] || ''} onChange={setField(fields.subtitle)} className={`${HERO_INPUT} md:col-span-2`} />
           <input type="text" placeholder="نشان" value={settings[fields.badge] || ''} onChange={setField(fields.badge)} className={HERO_INPUT} />
@@ -228,7 +228,7 @@ export default function AdminSettings() {
       <form onSubmit={handleSave} className="space-y-6">
         
         {/* ۱. اطلاعات اصلی و ارتباطی */}
-        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-4">
+        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-4">
           <h2 className="text-base font-bold text-[var(--color-text-main-light)] dark:text-white border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pb-3 flex items-center gap-2">
             <Phone className="h-5 w-5 text-[var(--color-emphasis-text)]" />
             اطلاعات تماس و هویت سایت
@@ -293,7 +293,7 @@ export default function AdminSettings() {
         </div>
 
         {/* ۲. بنر اعلان و آستانه ارسال */}
-        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-4">
+        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-4">
           <h2 className="text-base font-bold text-[var(--color-text-main-light)] dark:text-white border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pb-3 flex items-center gap-2">
             <Megaphone className="h-5 w-5 text-amber-500" />
             پیام اعلان سراسری و آستانه ارسال رایگان
@@ -332,7 +332,7 @@ export default function AdminSettings() {
                 className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary-500 text-left dir-ltr"
                 required
               />
-              <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 معادل: {settings.freeShippingThreshold.toLocaleString('fa-IR')} تومان
               </p>
             </div>
@@ -340,7 +340,7 @@ export default function AdminSettings() {
         </div>
 
         {/* ۳. مدیریت ۳ اسلایدر هیرو صفحه اول */}
-        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-6">
+        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-6">
           <h2 className="text-base font-bold text-[var(--color-text-main-light)] dark:text-white border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pb-3 flex items-center gap-2">
             <Layers className="h-5 w-5 text-[var(--color-emphasis-text)]" />
             مدیریت اسلایدرهای هیرو صفحه اول
@@ -430,7 +430,7 @@ export default function AdminSettings() {
               const dKey = `valueProp${n}Desc` as keyof StoreSettingsData;
               return (
                 <div key={n} className="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 space-y-3">
-                  <span className="text-xs font-black text-purple-600">کارت ارزش {n}</span>
+                  <span className="text-xs font-bold text-purple-600">کارت ارزش {n}</span>
                   <input
                     type="text"
                     placeholder="عنوان کارت"
@@ -452,7 +452,7 @@ export default function AdminSettings() {
         </CollapsibleSection>
 
         {/* ۵. پشتیبان‌گیری از دیتابیس */}
-        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-4">
+        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-4">
           <h2 className="text-base font-bold text-[var(--color-text-main-light)] dark:text-white border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pb-3 flex items-center gap-2">
             <Database className="h-5 w-5 text-indigo-500" />
             پشتیبان‌گیری از دیتابیس فروشگاه
@@ -461,7 +461,7 @@ export default function AdminSettings() {
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/30">
             <div>
               <h4 className="text-xs sm:text-sm font-bold text-indigo-950 dark:text-indigo-200">دریافت فایل کامل دیتابیس (SQLite Backup)</h4>
-              <p className="text-[11px] text-indigo-700 dark:text-indigo-400 mt-0.5">دانلود نسخه پشتیبان زنده از کلیه محصولات، کاربران، سفارشات و نظرات</p>
+              <p className="text-xs text-indigo-700 dark:text-indigo-400 mt-0.5">دانلود نسخه پشتیبان زنده از کلیه محصولات، کاربران، سفارشات و نظرات</p>
             </div>
 
             <a
@@ -481,7 +481,7 @@ export default function AdminSettings() {
           <button
             type="submit"
             disabled={saving}
-            className="flex items-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold text-sm px-8 py-3.5 rounded-2xl transition-all shadow-md disabled:opacity-50"
+            className="btn-primary flex items-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold text-sm px-8 py-3.5 rounded-2xl transition-all shadow-md disabled:opacity-50"
           >
             {saving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
             {saving ? 'در حال ذخیره...' : 'ذخیره تمام تنظیمات'}

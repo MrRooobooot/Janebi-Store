@@ -58,7 +58,7 @@ export default function Compare() {
           description="شما هنوز محصولی را برای مقایسه انتخاب نکرده‌اید. با افزودن محصولات به لیست مقایسه می‌توانید راحت‌تر تصمیم‌گیری کنید."
           actionText="مشاهده محصولات"
           actionLink="/products"
-          className="bg-[var(--color-surface-light)]/80 dark:bg-[var(--color-surface-dark)]/80 backdrop-blur-xl rounded-3xl p-12 shadow-xs border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-center"
+          className="bg-[var(--color-surface-light)]/80 dark:bg-[var(--color-surface-dark)]/80 backdrop-blur-xl rounded-2xl p-12 shadow-xs border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-center"
         />
       </motion.div>
     );
@@ -76,11 +76,8 @@ export default function Compare() {
     >
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
         <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-3">
-          <span className="relative">
-            مقایسه محصولات
-            <span className="absolute bottom-1 left-0 right-0 h-3 bg-[var(--color-cta)]/50 dark:bg-[var(--color-cta)]/20 -z-10 rounded-sm"></span>
-          </span>
-          <span className="text-xs font-extrabold bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/60 text-[var(--color-emphasis-text)] px-3 py-1 rounded-full border border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/50">
+          مقایسه محصولات
+          <span className="text-xs font-bold bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/60 text-[var(--color-emphasis-text)] px-3 py-1 rounded-full border border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/50">
             {toPersianDigits(compareItems.length)} کالا
           </span>
         </h1>
@@ -92,13 +89,13 @@ export default function Compare() {
         </button>
       </div>
 
-      <div className="bg-[var(--color-surface-light)]/80 dark:bg-[var(--color-surface-dark)]/80 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl overflow-hidden shadow-xs transition-colors">
+      <div className="bg-[var(--color-surface-light)]/80 dark:bg-[var(--color-surface-dark)]/80 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl overflow-hidden shadow-xs transition-colors">
         <div className="overflow-x-auto custom-scrollbar pb-2">
           <table className="w-full min-w-[900px] text-right border-collapse">
             <thead>
               <tr>
                 <th className="p-6 border-b border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 bg-[var(--color-canvas-light)]/50 dark:bg-[var(--color-canvas-dark)]/50 w-1/4 align-top">
-                  <div className="text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] font-black text-lg mb-2">
+                  <div className="text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] font-bold text-lg mb-2">
                     مشخصات کالاها
                   </div>
                   <p className="text-xs text-gray-500 dark:text-gray-400 font-medium leading-relaxed">
@@ -147,13 +144,13 @@ export default function Compare() {
                           {item.title}
                         </Link>
 
-                        <div className="text-[var(--color-emphasis-text)] font-black text-base mb-4 bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/10 px-3 py-1 rounded-xl">
+                        <div className="text-[var(--color-emphasis-text)] font-bold text-base mb-4 bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/10 px-3 py-1 rounded-xl">
                           {formatPrice(item.price)}
                         </div>
 
                         <button
                           onClick={() => addToCart(item)}
-                          className="w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white py-2.5 rounded-xl flex items-center justify-center gap-2 text-xs font-bold transition-all shadow-md active:scale-95"
+                          className="btn-primary w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white py-2.5 rounded-xl flex items-center justify-center gap-2 text-xs font-bold transition-all shadow-md active:scale-95"
                         >
                           <ShoppingCart className="h-4 w-4" /> افزودن به سبد
                         </button>
@@ -176,7 +173,7 @@ export default function Compare() {
                         <span className="text-2xl font-light text-gray-400">+</span>
                       </div>
                       <span className="text-xs sm:text-sm font-bold mb-1">افزودن کالا</span>
-                      <span className="text-[11px] font-medium text-gray-400">جهت مقایسه</span>
+                      <span className="text-xs font-medium text-gray-400">جهت مقایسه</span>
                     </div>
                   </th>
                 ))}

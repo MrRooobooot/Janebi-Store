@@ -30,7 +30,7 @@ export default function CheckoutCallback() {
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-md bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-8 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xl text-center"
+        className="w-full max-w-md bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-8 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xl text-center"
       >
         <div className="mb-6 flex justify-center">
           {isSuccess ? (
@@ -81,7 +81,7 @@ export default function CheckoutCallback() {
         <div className="flex flex-col gap-3">
           <Link 
             to="/profile?tab=orders"
-            className="w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
+            className="btn-primary w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
           >
             <ShoppingBag className="h-5 w-5" />
             {isExpired ? 'پرداخت دوباره از سفارش‌های من' : 'مشاهده سفارشات من'}

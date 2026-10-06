@@ -133,7 +133,7 @@ export default function AdminNewsletter() {
                     <td className="p-3.5 font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-left dir-ltr">
                       {sub.email}
                     </td>
-                    <td className="p-3.5 text-gray-500 dark:text-gray-400 font-mono text-[11px]">
+                    <td className="p-3.5 text-gray-500 dark:text-gray-400 font-mono text-xs">
                       {new Intl.DateTimeFormat('fa-IR', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(sub.subscribedAt))}
                     </td>
                     <td className="p-3.5">

@@ -27,7 +27,7 @@ export default function Offers() {
       transition={{ duration: 0.4 }}
       className="space-y-8"
     >
-      <div className="bg-gradient-to-r from-rose-600 via-[var(--color-accent-surface)] to-[var(--color-cta-hover)] text-white rounded-3xl p-8 sm:p-10 relative overflow-hidden shadow-lg shadow-rose-600/20">
+      <div className="bg-gradient-to-r from-rose-600 via-[var(--color-accent-surface)] to-[var(--color-cta-hover)] text-white rounded-2xl p-8 sm:p-10 relative overflow-hidden shadow-lg shadow-rose-600/20">
         <div className="relative z-10 max-w-xl">
           <div className="inline-flex items-center gap-2 bg-black/25 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold mb-3">
             <Flame className="h-4 w-4 text-white/80 animate-pulse" /> جشنواره تخفیف‌های شگفت‌انگیز
@@ -41,7 +41,7 @@ export default function Offers() {
 
       <div>
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
+          <h2 className="text-xl font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-[var(--color-emphasis-text)]" />
             محصولات دارنده تخفیف ویژه
           </h2>
@@ -58,7 +58,7 @@ export default function Offers() {
           ) : error ? (
             <div className="col-span-full bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-red-100 dark:border-red-900/40 rounded-2xl p-8 text-center">
               <p className="text-sm text-red-600 dark:text-red-400 font-bold">{error}</p>
-              <button onClick={() => window.location.reload()} className="mt-4 px-4 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold transition-colors">
+              <button onClick={() => window.location.reload()} className="btn-primary mt-4 px-4 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold transition-colors">
                 تلاش مجدد
               </button>
             </div>

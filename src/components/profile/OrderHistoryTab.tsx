@@ -11,10 +11,76 @@ interface OrderHistoryTabProps {
   onCancelOrder: (orderId: string) => void;
 }
 
+type OrderTab = 'all' | 'pending_payment' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+
+const ORDER_STEPS = ['پرداخت', 'آماده‌سازی', 'ارسال', 'تحویل'] as const;
+
+function orderProgressIndex(status: string): number | null {
+  switch (status) {
+    case 'pending':
+    case 'pending_payment':
+      return 0;
+    case 'processing':
+      return 1;
+    case 'shipped':
+      return 2;
+    case 'delivered':
+      return 3;
+    default:
+      return null;
+  }
+}
+
+function statusBadgeClass(status: string): string {
+  switch (status) {
+    case 'delivered':
+      return 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300';
+    case 'cancelled':
+      return 'bg-rose-100 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300';
+    case 'processing':
+      return 'bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300';
+    case 'shipped':
+      return 'bg-purple-100 dark:bg-purple-500/20 text-purple-700 dark:text-purple-300';
+    default:
+      return 'bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)]';
+  }
+}
+
+function OrderProgress({ status }: { status: string }) {
+  const index = orderProgressIndex(status);
+  if (index === null) return null;
+  const doneThrough = status === 'delivered' ? 3 : index - 1;
+
+  return (
+    <ol className="grid grid-cols-4 gap-2" aria-label="وضعیت سفارش">
+      {ORDER_STEPS.map((label, step) => {
+        const done = step <= doneThrough;
+        const current = status !== 'delivered' && step === index;
+        return (
+          <li key={label} className="min-w-0" aria-current={current ? 'step' : undefined}>
+            <div
+              className={`mb-1.5 h-1.5 rounded-full ${
+                done || current ? 'bg-[var(--color-cta)]' : 'bg-gray-200 dark:bg-white/10'
+              }`}
+            />
+            <span
+              className={`block truncate text-center text-xs font-bold ${
+                done || current ? 'text-[var(--color-emphasis-text)]' : 'text-gray-400'
+              }`}
+            >
+              {label}
+            </span>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
 export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryTabProps) {
   const { addToast } = useToast();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'all' | 'pending_payment' | 'processing' | 'delivered' | 'cancelled'>('all');
+  const [activeTab, setActiveTab] = useState<OrderTab>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [retryingId, setRetryingId] = useState<string | null>(null);
 
@@ -58,11 +124,20 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
     }, 300);
   };
 
+  const orderTabs: { id: OrderTab; label: string; count: number }[] = [
+    { id: 'all', label: 'همه سفارش‌ها', count: orders.length },
+    { id: 'pending_payment', label: 'در انتظار پرداخت', count: orders.filter((o) => o.status === 'pending_payment').length },
+    { id: 'processing', label: 'در حال پردازش', count: orders.filter((o) => o.status === 'processing').length },
+    { id: 'shipped', label: 'ارسال شده', count: orders.filter((o) => o.status === 'shipped').length },
+    { id: 'delivered', label: 'تحویل داده شده', count: orders.filter((o) => o.status === 'delivered').length },
+    { id: 'cancelled', label: 'لغو شده', count: orders.filter((o) => o.status === 'cancelled').length },
+  ];
+
   return (
     <div className="space-y-6 text-right">
       {/* Header & Search */}
-      <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
-        <h2 className="font-extrabold text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
+      <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-6 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+        <h2 className="font-bold text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
           <Package className="h-5 w-5 text-[var(--color-emphasis-text)]" />
           <span>سفارش‌های من ({toPersianDigits(orders.length)})</span>
         </h2>
@@ -82,16 +157,10 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
 
       {/* Filter Tabs */}
       <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
-        {[
-          { id: 'all', label: 'همه سفارش‌ها', count: orders.length },
-          { id: 'pending_payment', label: 'در انتظار پرداخت', count: orders.filter((o) => o.status === 'pending_payment').length },
-          { id: 'processing', label: 'در حال پردازش', count: orders.filter((o) => o.status === 'processing').length },
-          { id: 'delivered', label: 'تحویل داده شده', count: orders.filter((o) => o.status === 'delivered').length },
-          { id: 'cancelled', label: 'لغو شده', count: orders.filter((o) => o.status === 'cancelled').length },
-        ].map((tab) => (
+        {orderTabs.map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as any)}
+            onClick={() => setActiveTab(tab.id)}
             className={`px-4 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2 ${
               activeTab === tab.id
                 ? 'bg-[var(--color-cta)] text-white shadow-md shadow-[var(--color-cta)]/25'
@@ -100,7 +169,7 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
           >
             <span>{tab.label}</span>
             <span
-              className={`text-[10px] px-2 py-0.5 rounded-full ${
+              className={`text-xs px-2 py-0.5 rounded-full ${
                 activeTab === tab.id
                   ? 'bg-black/25 text-white'
                   : 'bg-gray-100 dark:bg-gray-800 text-gray-600'
@@ -114,7 +183,7 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
 
       {/* Orders List */}
       {filteredOrders.length === 0 ? (
-        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-12 text-center text-gray-500 font-bold text-sm">
+        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-12 text-center text-gray-500 font-bold text-sm">
           هیچ سفارشی متناسب با جستجوی شما یافت نشد.
         </div>
       ) : (
@@ -122,25 +191,15 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
           {filteredOrders.map((order) => (
             <div
               key={order.id}
-              className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 shadow-xs space-y-4"
+              className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-6 shadow-xs space-y-4"
             >
               {/* Order Header */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-xs">
                 <div className="flex items-center gap-3">
-                  <span className="font-extrabold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
+                  <span className="font-bold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
                     کد سفارش: <span dir="ltr" className="latin-nums">{order.id}</span>
                   </span>
-                  <span
-                    className={`px-3 py-1 rounded-full text-[11px] font-bold ${
-                      order.status === 'delivered'
-                        ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300'
-                        : order.status === 'cancelled'
-                        ? 'bg-rose-100 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300'
-                        : order.status === 'processing'
-                        ? 'bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300'
-                        : 'bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)]'
-                    }`}
-                  >
+                  <span className={`px-3 py-1 rounded-full text-xs font-bold ${statusBadgeClass(order.status)}`}>
                     {order.statusText}
                   </span>
                 </div>
@@ -150,11 +209,13 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
                     <Calendar className="h-3.5 w-3.5" />
                     {order.date}
                   </span>
-                  <span className="font-black text-[var(--color-emphasis-text)] text-sm">
+                  <span className="font-bold text-[var(--color-emphasis-text)] text-sm">
                     {formatPrice(order.total)}
                   </span>
                 </div>
               </div>
+
+              {order.status !== 'cancelled' && <OrderProgress status={order.status} />}
 
               {/* Order Items Horizontal Bar */}
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
@@ -176,14 +237,14 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
                       <div className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] truncate">
                         {item.title}
                       </div>
-                      <div className="text-[11px] text-gray-500 mt-0.5">
+                      <div className="text-xs text-gray-500 mt-0.5">
                         {toPersianDigits(item.qty)} عدد × {formatPrice(item.price)}
                       </div>
                       {order.status === 'delivered' && (
                         <button
                           onClick={() => navigate(`/products/${item.id}?writeReview=1`)}
                           aria-label={`ثبت نظر درباره ${item.title}`}
-                          className="mt-1 inline-flex items-center gap-1 text-[11px] font-bold text-[var(--color-emphasis-text)] hover:underline"
+                          className="mt-1 inline-flex items-center gap-1 text-xs font-bold text-[var(--color-emphasis-text)] hover:underline"
                         >
                           <MessageSquarePlus className="h-3 w-3" />
                           ثبت نظر
@@ -214,7 +275,7 @@ export default function OrderHistoryTab({ orders, onCancelOrder }: OrderHistoryT
                     <button
                       onClick={() => handleRetryPayment(order.id)}
                       disabled={retryingId === order.id}
-                      className="px-3.5 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] disabled:opacity-60 text-white font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                      className="btn-primary px-3.5 py-2 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] disabled:opacity-60 text-white font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
                     >
                       <CreditCard className="h-3.5 w-3.5" />
                       {retryingId === order.id ? 'در حال اتصال...' : 'پرداخت سفارش'}

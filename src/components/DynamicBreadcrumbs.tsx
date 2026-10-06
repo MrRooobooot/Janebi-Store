@@ -179,7 +179,7 @@ export default function DynamicBreadcrumbs() {
               ) : (
                 <span
                   aria-current="page"
-                  className="text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] font-black truncate max-w-[200px] sm:max-w-[350px]"
+                  className="text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] font-bold truncate max-w-[200px] sm:max-w-[350px]"
                   title={item.label}
                 >
                   {item.label}

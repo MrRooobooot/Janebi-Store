@@ -10,7 +10,7 @@ export default function Privacy() {
       transition={{ duration: 0.4 }}
       className="space-y-8"
     >
-      <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white rounded-3xl p-8 sm:p-10 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white rounded-2xl p-8 sm:p-10 relative overflow-hidden">
         <div className="relative z-10 max-w-xl">
           <span className="inline-flex items-center gap-1.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold px-3 py-1 rounded-full mb-3">
             <Lock className="h-3.5 w-3.5" /> حریم خصوصی شما محفوظ است
@@ -22,7 +22,7 @@ export default function Privacy() {
         </div>
       </div>
 
-      <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 sm:p-10 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-6 text-gray-700 dark:text-gray-300 leading-relaxed text-sm sm:text-base">
+      <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-6 sm:p-10 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-6 text-gray-700 dark:text-gray-300 leading-relaxed text-sm sm:text-base">
         <div className="flex items-center gap-3 text-lg font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
           <Eye className="h-5 w-5 text-[var(--color-emphasis-text)]" />
           <span>جمع‌آوری و استفاده از اطلاعات</span>

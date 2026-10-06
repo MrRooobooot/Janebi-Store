@@ -139,7 +139,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
 
       {/* Modal Card */}
       <div
-        className="dropdown-in relative w-full max-w-md bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 sm:p-8 shadow-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-right z-10 overflow-hidden my-auto max-h-[90vh] flex flex-col focus:outline-none"
+        className="dropdown-in relative w-full max-w-md bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-6 sm:p-8 shadow-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-right z-10 overflow-hidden my-auto max-h-[90vh] flex flex-col focus:outline-none"
         role="dialog"
         aria-modal="true"
         aria-label={mode === 'login' ? 'ورود به حساب کاربری' : 'ایجاد حساب کاربری جدید'}
@@ -156,7 +156,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
               <div className="w-8 h-8 rounded-xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] flex items-center justify-center font-bold">
                 <Sparkles className="h-4 w-4" />
               </div>
-              <span className="font-black text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
+              <span className="font-bold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
                 {mode === 'login' ? 'ورود به حساب کاربری' : 'ایجاد حساب کاربری جدید'}
               </span>
             </div>
@@ -265,7 +265,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
-              <p className="mt-1.5 text-[11px] font-medium text-gray-500 dark:text-gray-400">
+              <p className="mt-1.5 text-xs font-medium text-gray-500 dark:text-gray-400">
                 {mode === 'login' ? 'حداقل ۴ کاراکتر' : 'حداقل ۶ کاراکتر'}
               </p>
             </div>
@@ -273,7 +273,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-extrabold py-3.5 px-6 rounded-2xl shadow-lg shadow-[var(--color-cta)]/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] text-sm mt-6 disabled:opacity-60 cursor-pointer"
+              className="btn-primary w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-[var(--color-cta)]/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] text-sm mt-6 disabled:opacity-60 cursor-pointer"
             >
               {loading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -287,7 +287,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
           </form>
 
           {/* Footer note */}
-          <div className="mt-4 pt-3 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-center text-[11px] text-gray-500 dark:text-gray-400 space-y-2">
+          <div className="mt-4 pt-3 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-center text-xs text-gray-500 dark:text-gray-400 space-y-2">
             {mode === 'login' ? (
               <>
                 <div>

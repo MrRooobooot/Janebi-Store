@@ -50,15 +50,15 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
       <div className="flex items-center justify-between gap-2 mb-2 sm:mb-2.5 relative z-10">
           <div className="min-w-0 flex-1">
             {outOfStock ? (
-              <span className="bg-slate-100 dark:bg-white/[0.06] text-slate-500 dark:text-slate-400 text-[11px] font-black px-2 py-0.5 rounded-full border border-slate-200 dark:border-white/[0.08] inline-block">
+              <span className="bg-slate-100 dark:bg-white/[0.06] text-slate-500 dark:text-slate-400 text-xs font-bold px-2 py-0.5 rounded-full border border-slate-200 dark:border-white/[0.08] inline-block">
                 ناموجود
               </span>
             ) : product.discount && product.discount > 0 ? (
-              <span className="bg-[var(--color-cta)] text-white text-[11px] font-black px-2 py-0.5 rounded-full shadow-xs inline-block">
+              <span className="bg-[var(--color-cta)] text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-xs inline-block">
                 {toPersianDigits(product.discount)}٪ تخفیف
               </span>
             ) : (
-              <span className="hidden sm:block font-bold text-[11px] text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-white/[0.04] px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-white/[0.06] whitespace-nowrap overflow-hidden text-ellipsis">
+              <span className="hidden sm:block font-bold text-xs text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-white/[0.04] px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-white/[0.06] whitespace-nowrap overflow-hidden text-ellipsis">
                 {product.brand || 'اورجینال'}
               </span>
             )}
@@ -100,7 +100,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
 
         {/* 2. Visual Product Image Container */}
         <Link to={`/product/${product.id}`} className="block group-hover:opacity-95 transition-opacity">
-          <div className={`relative ${tileAspect} w-full rounded-2xl bg-white dark:bg-[var(--color-tile-dark)] border border-slate-200/70 dark:border-white/[0.09] p-2 sm:p-4 flex items-center justify-center overflow-hidden mb-2 sm:mb-2.5 group-hover:border-[var(--color-border-light-hover)] dark:group-hover:border-white/[0.12] transition-colors`}>
+          <div className={`relative ${tileAspect} w-full rounded-2xl bg-[var(--color-stage-light)] dark:bg-[var(--color-stage-dark)] border border-slate-200/70 dark:border-white/[0.09] p-2 sm:p-4 flex items-center justify-center overflow-hidden mb-2 sm:mb-2.5 group-hover:border-[var(--color-border-light-hover)] dark:group-hover:border-white/[0.12] transition-colors`}>
             
             {/* Ambient Radial Accent */}
             <div className="absolute inset-0 bg-radial from-[var(--color-cta)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -116,7 +116,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
 
             {/* Low stock badge */}
             {typeof product.stockQuantity === 'number' && product.stockQuantity === 1 && (
-              <span className="absolute bottom-2 right-2 bg-[var(--color-accent-surface)]/90 backdrop-blur-xs text-white text-[9px] font-black px-2 py-0.5 rounded-md shadow-xs">
+              <span className="absolute bottom-2 right-2 bg-[var(--color-accent-surface)]/90 backdrop-blur-xs text-white text-xs font-bold px-2 py-0.5 rounded-md shadow-xs">
                 تنها {toPersianDigits(product.stockQuantity)} عدد
               </span>
             )}
@@ -124,7 +124,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
 
           {variant === 'full' && (
           <div className="hidden sm:flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 mb-1 px-0.5">
-            <span className="font-bold text-[11px] text-[var(--color-emphasis-text)] truncate min-w-0 flex-1">
+            <span className="font-bold text-xs text-[var(--color-emphasis-text)] truncate min-w-0 flex-1">
               {product.category}
             </span>
             {product.rating ? (
@@ -156,17 +156,17 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
           )}
 
           {/* 4. Product Title — text-wrap balance kills single-word orphan lines («با» alone) */}
-          <h3 className="font-black text-[13px] sm:text-[15px] text-slate-900 dark:text-slate-100 line-clamp-2 leading-snug sm:leading-relaxed h-10 sm:h-12 flex items-start group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors mb-1.5 [text-wrap:balance]">
+          <h3 className="font-bold text-[13px] sm:text-[15px] text-slate-900 dark:text-slate-100 line-clamp-2 leading-snug sm:leading-relaxed h-10 sm:h-12 flex items-start group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors mb-1.5 [text-wrap:balance]">
             {product.title}
           </h3>
           {product.sku ? (
-            <p dir="ltr" className="font-mono text-[11px] leading-tight text-slate-500 dark:text-slate-400 mb-1.5 text-right">
+            <p dir="ltr" className="font-mono text-xs leading-tight text-slate-500 dark:text-slate-400 mb-1.5 text-right">
               {product.sku}
             </p>
           ) : null}
 
           {variant === 'full' && (
-          <div className="hidden sm:flex h-5 items-center text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate">
+          <div className="hidden sm:flex h-5 items-center text-xs text-slate-500 dark:text-slate-400 font-medium truncate">
             {product.warranty ? (
               <div className="flex items-center gap-1 truncate">
                 <ShieldCheck className="h-3 w-3 text-emerald-500 shrink-0" />
@@ -189,18 +189,18 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
           {/* Price Stack — unit on its own line: money NEVER truncates at any card width */}
           <div className="flex flex-col justify-end text-right min-w-0 min-h-[44px]">
             {product.originalPrice && product.originalPrice > product.price ? (
-              <span className="text-[11px] text-slate-500 dark:text-slate-400 line-through leading-tight tabular-nums">
+              <span className="text-xs text-slate-500 dark:text-slate-400 line-through leading-tight tabular-nums">
                 {formatPrice(product.originalPrice).replace(' تومان', '')}
               </span>
             ) : (
-              <span className="text-[11px] leading-tight invisible" aria-hidden="true">
+              <span className="text-xs leading-tight invisible" aria-hidden="true">
                 ·
               </span>
             )}
-            <div className="text-[14px] sm:text-[15px] font-black text-[var(--color-emphasis-text)] tracking-tight leading-tight whitespace-nowrap">
+            <div className="text-[14px] sm:text-[15px] font-bold text-[var(--color-emphasis-text)] tracking-tight leading-tight whitespace-nowrap">
               {formatPrice(product.price).replace(' تومان', '')}
             </div>
-            <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 leading-tight">تومان</span>
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 leading-tight">تومان</span>
           </div>
 
           {/* Primary Action Button */}
@@ -209,7 +209,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
             disabled={outOfStock}
             onClick={handleAddToCart}
             aria-label={outOfStock ? 'کالای ناموجود' : `افزودن ${product.title} به سبد خرید`}
-            className={`raycast-btn h-11 w-11 sm:w-auto sm:h-10 px-0 sm:px-3.5 rounded-xl flex items-center justify-center gap-1 text-[13px] font-black transition-all duration-200 cursor-pointer shrink-0 ${
+            className={`raycast-btn h-11 w-11 sm:w-auto sm:h-11 px-0 sm:px-3.5 rounded-xl flex items-center justify-center gap-1 text-[13px] font-bold transition-all duration-200 cursor-pointer shrink-0 ${
               outOfStock 
                 ? 'bg-slate-100 dark:bg-white/[0.05] text-slate-500 dark:text-slate-400 border border-slate-200/60 dark:border-white/[0.06] cursor-not-allowed shadow-none'
                 : added 
@@ -219,7 +219,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
             title={outOfStock ? 'ناموجود' : 'افزودن به سبد خرید'}
           >
             {outOfStock ? (
-              <span className="text-[10px] sm:text-[11px] font-bold">ناموجود</span>
+              <span className="text-xs sm:text-xs font-bold">ناموجود</span>
             ) : added ? (
               <>
                 <CheckCircle2 className="h-3.5 w-3.5 stroke-[2.5]" />

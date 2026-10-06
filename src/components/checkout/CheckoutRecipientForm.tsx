@@ -13,7 +13,7 @@ interface CheckoutRecipientFormProps {
 function FieldError({ id, message }: { id: string; message?: string }) {
   if (!message) return null;
   return (
-    <p id={id} className="mt-1.5 text-[11px] font-bold text-rose-600 dark:text-rose-400" role="alert">
+    <p id={id} className="mt-1.5 text-xs font-bold text-rose-600 dark:text-rose-400" role="alert">
       {message}
     </p>
   );
@@ -60,9 +60,9 @@ export default function CheckoutRecipientForm({
   const isPostalCodeValid = !formData.postalCode || /^\d{10}$/.test(toEnglishDigits(formData.postalCode.trim()));
 
   return (
-    <div className="bg-[var(--color-surface-light)]/90 dark:bg-[var(--color-surface-dark)]/90 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+    <div className="bg-[var(--color-surface-light)]/90 dark:bg-[var(--color-surface-dark)]/90 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
-        <h3 className="font-black text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
+        <h3 className="font-bold text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
           <MapPin className="h-5 w-5 text-[var(--color-emphasis-text)]" />
           <span>آدرس و مشخصات تحویل‌گیرنده</span>
         </h3>
@@ -76,7 +76,7 @@ export default function CheckoutRecipientForm({
       {/* Saved Addresses Quick Selector */}
       {savedAddresses.length > 0 && (
         <div className="space-y-2.5 pb-2">
-          <label className="block text-xs font-black text-gray-700 dark:text-gray-300">
+          <label className="block text-xs font-bold text-gray-700 dark:text-gray-300">
             انتخاب سریع آدرس ارسال:
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -95,20 +95,20 @@ export default function CheckoutRecipientForm({
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="font-black text-xs text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-1.5">
+                    <span className="font-bold text-xs text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-1.5">
                       <Building className="h-3.5 w-3.5 text-[var(--color-emphasis-text)]" />
                       {addr.title}
                     </span>
                     {addr.isDefault && (
-                      <span className="text-[10px] bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/10 text-[var(--color-emphasis-text)] px-2 py-0.5 rounded-md font-black">
+                      <span className="text-xs bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/10 text-[var(--color-emphasis-text)] px-2 py-0.5 rounded-md font-bold">
                         پیش‌فرض
                       </span>
                     )}
                   </div>
-                  <p className="text-[11px] text-gray-600 dark:text-gray-400 truncate mb-2 font-medium">
+                  <p className="text-xs text-gray-600 dark:text-gray-400 truncate mb-2 font-medium">
                     {addr.province}، {addr.city}، {addr.address}
                   </p>
-                  <div className="text-[10px] text-gray-500 dark:text-gray-400 flex justify-between font-bold border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 pt-2">
+                  <div className="text-xs text-gray-500 dark:text-gray-400 flex justify-between font-bold border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 pt-2">
                     <span>{addr.name}</span>
                     <span dir="ltr" className="font-mono">{addr.phone}</span>
                   </div>
@@ -122,7 +122,7 @@ export default function CheckoutRecipientForm({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Name */}
         <div>
-          <label htmlFor="checkout-name" className="block text-xs font-black text-gray-700 dark:text-gray-300 mb-2">
+          <label htmlFor="checkout-name" className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">
             نام و نام خانوادگی تحویل‌گیرنده <span className="text-rose-500">*</span>
           </label>
           <div className="relative">
@@ -131,7 +131,7 @@ export default function CheckoutRecipientForm({
               value={formData.name}
               onChange={(e) => updateField('name', e.target.value)}
               placeholder="مثلا: علی محمدی"
-              className={`w-full bg-gray-50/80 dark:bg-gray-800/70 border rounded-2xl py-3 px-4 pr-10 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none transition-colors ${
+              className={`field w-full py-3 px-4 pr-10 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none transition-colors ${
                 fieldErrors.name
                   ? 'border-rose-400 focus:border-rose-500'
                   : 'border-gray-200/80 dark:border-gray-700 focus:border-[var(--color-cta)]/30'
@@ -151,11 +151,11 @@ export default function CheckoutRecipientForm({
         {/* Phone */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label htmlFor="checkout-phone" className="text-xs font-black text-gray-700 dark:text-gray-300">
+            <label htmlFor="checkout-phone" className="text-xs font-bold text-gray-700 dark:text-gray-300">
               شماره موبایل گیرنده <span className="text-rose-500">*</span>
             </label>
             {!isPhoneValid && (
-              <span className="text-[10px] font-bold text-rose-500 flex items-center gap-1">
+              <span className="text-xs font-bold text-rose-500 flex items-center gap-1">
                 <AlertCircle className="h-3 w-3" /> باید با 09 شروع شود و ۱۱ رقم باشد
               </span>
             )}
@@ -168,7 +168,7 @@ export default function CheckoutRecipientForm({
               onChange={(e) => updateField('phone', e.target.value)}
               onBlur={(e) => updateField('phone', normalizeIranianMobile(e.target.value))}
               placeholder="09123456789"
-              className={`w-full bg-gray-50/80 dark:bg-gray-800/70 border rounded-2xl py-3 px-4 pl-10 text-left font-mono text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none transition-colors ${
+              className={`field w-full py-3 px-4 pl-10 text-left font-mono text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none transition-colors ${
                 !isPhoneValid || fieldErrors.phone
                   ? 'border-rose-400 focus:border-rose-500 text-rose-600'
                   : 'border-gray-200/80 dark:border-gray-700 focus:border-[var(--color-cta)]/30'
@@ -187,13 +187,13 @@ export default function CheckoutRecipientForm({
 
         {/* Province */}
         <div>
-          <label htmlFor="checkout-province" className="block text-xs font-black text-gray-700 dark:text-gray-300 mb-2">
+          <label htmlFor="checkout-province" className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">
             استان مقصد <span className="text-rose-500">*</span>
           </label>
           <select
             value={formData.province}
             onChange={(e) => updateField('province', e.target.value)}
-            className={`w-full bg-gray-50/80 dark:bg-gray-800/70 border rounded-2xl py-3 px-4 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none cursor-pointer transition-colors ${
+            className={`field w-full py-3 px-4 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none cursor-pointer transition-colors ${
               fieldErrors.province
                 ? 'border-rose-400 focus:border-rose-500'
                 : 'border-gray-200/80 dark:border-gray-700 focus:border-[var(--color-cta)]/30'
@@ -214,7 +214,7 @@ export default function CheckoutRecipientForm({
 
         {/* City */}
         <div>
-          <label htmlFor="checkout-city" className="block text-xs font-black text-gray-700 dark:text-gray-300 mb-2">
+          <label htmlFor="checkout-city" className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">
             شهر مقصد <span className="text-rose-500">*</span>
           </label>
           <input
@@ -222,7 +222,7 @@ export default function CheckoutRecipientForm({
             value={formData.city}
             onChange={(e) => updateField('city', e.target.value)}
             placeholder="مثلا: تهران"
-            className={`w-full bg-gray-50/80 dark:bg-gray-800/70 border rounded-2xl py-3 px-4 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none transition-colors ${
+            className={`field w-full py-3 px-4 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none transition-colors ${
               fieldErrors.city
                 ? 'border-rose-400 focus:border-rose-500'
                 : 'border-gray-200/80 dark:border-gray-700 focus:border-[var(--color-cta)]/30'
@@ -240,7 +240,7 @@ export default function CheckoutRecipientForm({
 
       {/* Address */}
       <div>
-        <label htmlFor="checkout-address" className="block text-xs font-black text-gray-700 dark:text-gray-300 mb-2">
+        <label htmlFor="checkout-address" className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">
           آدرس پستی کامل و دقیق <span className="text-rose-500">*</span>
         </label>
         <textarea
@@ -248,7 +248,7 @@ export default function CheckoutRecipientForm({
           value={formData.address}
           onChange={(e) => updateField('address', e.target.value)}
           placeholder="خیابان اصلی، بلوار، کوچه، پلاک، زنگ یا شماره واحد..."
-          className={`w-full bg-gray-50/80 dark:bg-gray-800/70 border rounded-2xl p-4 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none resize-none transition-colors leading-relaxed ${
+          className={`field w-full p-4 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none resize-none transition-colors leading-relaxed ${
             fieldErrors.address
               ? 'border-rose-400 focus:border-rose-500'
               : 'border-gray-200/80 dark:border-gray-700 focus:border-[var(--color-cta)]/30'
@@ -267,11 +267,11 @@ export default function CheckoutRecipientForm({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label htmlFor="checkout-postal" className="text-xs font-black text-gray-700 dark:text-gray-300">
+            <label htmlFor="checkout-postal" className="text-xs font-bold text-gray-700 dark:text-gray-300">
               کد پستی ۱۰ رقمی (اختیاری)
             </label>
             {!isPostalCodeValid && (
-              <span className="text-[10px] font-bold text-rose-500 flex items-center gap-1">
+              <span className="text-xs font-bold text-rose-500 flex items-center gap-1">
                 <AlertCircle className="h-3 w-3" /> باید ۱۰ رقم عدد انگلیسی باشد
               </span>
             )}
@@ -283,7 +283,7 @@ export default function CheckoutRecipientForm({
             value={formData.postalCode}
             onChange={(e) => updateField('postalCode', e.target.value)}
             placeholder="1234567890"
-            className={`w-full bg-gray-50/80 dark:bg-gray-800/70 border rounded-2xl py-3 px-4 text-left font-mono text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none transition-colors ${
+            className={`field w-full py-3 px-4 text-left font-mono text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none transition-colors ${
               !isPostalCodeValid || fieldErrors.postalCode
                 ? 'border-rose-400 focus:border-rose-500 text-rose-600'
                 : 'border-gray-200/80 dark:border-gray-700 focus:border-[var(--color-cta)]/30'
@@ -298,7 +298,7 @@ export default function CheckoutRecipientForm({
         </div>
 
         <div>
-          <label htmlFor="checkout-notes" className="block text-xs font-black text-gray-700 dark:text-gray-300 mb-2">
+          <label htmlFor="checkout-notes" className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">
             توضیحات و هماهنگی تحویل (اختیاری)
           </label>
           <input
@@ -306,7 +306,7 @@ export default function CheckoutRecipientForm({
             value={formData.notes}
             onChange={(e) => updateField('notes', e.target.value)}
             placeholder="مثلا: تحویل به لابی یا هماهنگی قبل از مراجعه..."
-            className="w-full bg-gray-50/80 dark:bg-gray-800/70 border border-gray-200/80 dark:border-gray-700 rounded-2xl py-3 px-4 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30 transition-colors"
+            className="field w-full py-3 px-4 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none focus:border-[var(--color-cta)]/30 transition-colors"
           id="checkout-notes"
           name="recipientNotes"
           autoComplete="off"

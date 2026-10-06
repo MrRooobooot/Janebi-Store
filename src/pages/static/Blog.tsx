@@ -211,7 +211,7 @@ export default function Blog() {
       transition={{ duration: prefersReducedMotion ? 0 : 0.4 }}
       className="space-y-8"
     >
-      <div className="text-white rounded-3xl [background:linear-gradient(135deg,#e11d48,#be123c)] p-8 sm:p-10 relative overflow-hidden shadow-lg shadow-[var(--color-cta)]/25">
+      <div className="text-white rounded-2xl [background:linear-gradient(135deg,#e11d48,#be123c)] p-8 sm:p-10 relative overflow-hidden shadow-lg shadow-[var(--color-cta)]/25">
         <div className="relative z-10 max-w-xl">
           <span className="inline-flex items-center gap-1.5 bg-black/25 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full mb-3">
             <BookOpen className="h-3.5 w-3.5" /> مجله تخصصی جانبی آرنا
@@ -264,7 +264,7 @@ export default function Blog() {
           <p className="text-sm text-red-600 dark:text-red-400 font-bold">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="mt-4 inline-flex items-center justify-center min-h-[44px] px-5 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold transition-colors"
+            className="btn-primary mt-4 inline-flex items-center justify-center min-h-[44px] px-5 rounded-xl bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold transition-colors"
           >
             تلاش مجدد
           </button>
@@ -302,7 +302,7 @@ export default function Blog() {
               >
                 {isAll ? 'همه مقالات' : cat}
                 <span
-                  className={`text-[10px] font-black rounded-full px-1.5 ${
+                  className={`text-xs font-bold rounded-full px-1.5 ${
                     active ? 'bg-white/20 text-white' : 'bg-zinc-200/80 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400'
                   }`}
                 >
@@ -333,7 +333,7 @@ export default function Blog() {
               >
                 <div className="aspect-[16/9] w-full relative rounded-2xl overflow-hidden bg-gradient-to-br from-[var(--color-cta)]/10 to-[var(--color-cta)]/5 dark:from-zinc-800 dark:to-zinc-900 flex items-center justify-center">
                   <img src={art.image || FALLBACK_IMAGE} alt={art.title} loading="lazy" decoding="async" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 motion-reduce:transition-none motion-reduce:group-hover:scale-100" />
-                  <span className="absolute top-3 right-3 bg-zinc-100 dark:bg-zinc-800 text-[var(--color-text-main-light)] dark:text-zinc-200 text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
+                  <span className="absolute top-3 right-3 bg-zinc-100 dark:bg-zinc-800 text-[var(--color-text-main-light)] dark:text-zinc-200 text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
                     {art.category}
                   </span>
                 </div>
@@ -346,7 +346,7 @@ export default function Blog() {
                         <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {art.readTime}</span>
                       )}
                     </div>
-                    <h3 className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-base leading-7 mb-3 h-14 line-clamp-2 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors motion-reduce:transition-none">
+                    <h3 className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-base leading-7 mb-3 h-14 line-clamp-2 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors motion-reduce:transition-none">
                       {art.title}
                     </h3>
                     <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed line-clamp-3 mb-6">
@@ -358,7 +358,7 @@ export default function Blog() {
                   </div>
 
                   <div className="pt-4 border-t border-zinc-200/80 dark:border-zinc-800 flex items-center justify-between text-xs font-bold text-[var(--color-emphasis-text)]">
-                    <span className="flex items-center gap-1.5 text-zinc-500 dark:text-zinc-400 font-medium text-[11px]">
+                    <span className="flex items-center gap-1.5 text-zinc-500 dark:text-zinc-400 font-medium text-xs">
                       <User className="h-3.5 w-3.5" /> {art.author}
                     </span>
                     <span className="flex items-center gap-1 group-hover:translate-x-[-4px] transition-transform motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">
@@ -397,7 +397,7 @@ export default function Blog() {
                 const max = el.scrollHeight - el.clientHeight;
                 setReadProgress(max > 0 ? Math.min(100, Math.round((el.scrollTop / max) * 100)) : 0);
               }}
-              className="bg-zinc-50 dark:bg-zinc-900 w-full max-w-2xl max-h-[88vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-2xl"
+              className="bg-zinc-50 dark:bg-zinc-900 w-full max-w-2xl max-h-[88vh] overflow-y-auto rounded-t-3xl sm:rounded-2xl border border-zinc-200/80 dark:border-zinc-800 shadow-2xl"
             >
               {/* Reading progress bar (r37 UX): sticky, dual-theme, motion-safe. */}
               <div
@@ -423,7 +423,7 @@ export default function Blog() {
                 >
                   <X className="h-5 w-5" />
                 </button>
-                <span className="absolute top-4 right-4 bg-zinc-100 dark:bg-zinc-800 text-[var(--color-text-main-light)] dark:text-zinc-200 text-[11px] font-bold px-2.5 py-1 rounded-full shadow">
+                <span className="absolute top-4 right-4 bg-zinc-100 dark:bg-zinc-800 text-[var(--color-text-main-light)] dark:text-zinc-200 text-xs font-bold px-2.5 py-1 rounded-full shadow">
                   {openArticle.category}
                 </span>
                 <button
@@ -475,7 +475,7 @@ export default function Blog() {
                       .map((tag) => (
                         <span
                           key={tag}
-                          className="inline-flex items-center gap-1 rounded-full bg-[var(--color-cta)]/10 dark:bg-zinc-800/90 border border-[var(--color-cta)]/80 dark:border-zinc-700 px-3 py-1 text-[11px] font-bold text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)]"
+                          className="inline-flex items-center gap-1 rounded-full bg-[var(--color-cta)]/10 dark:bg-zinc-800/90 border border-[var(--color-cta)]/80 dark:border-zinc-700 px-3 py-1 text-xs font-bold text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)]"
                         >
                           <Tag className="h-3 w-3" aria-hidden="true" /> {tag}
                         </span>
@@ -486,7 +486,7 @@ export default function Blog() {
                 {/* Related posts: same category, most recent first, excludes current */}
                 {related.length > 0 && (
                   <div className="mt-8 pt-6 border-t border-zinc-200/80 dark:border-zinc-800">
-                    <h3 className="flex items-center gap-2 mt-8 mb-3 text-sm font-black text-[var(--color-text-main-light)] dark:text-white">
+                    <h3 className="flex items-center gap-2 mt-8 mb-3 text-sm font-bold text-[var(--color-text-main-light)] dark:text-white">
                       <BookOpen className="h-4 w-4 text-[var(--color-emphasis-text)]" /> مطالب مرتبط
                     </h3>
                     <div className="grid gap-3">
@@ -505,7 +505,7 @@ export default function Blog() {
                           />
                           <span className="min-w-0">
                             <span className="block text-xs font-bold text-[var(--color-text-main-light)] dark:text-zinc-200 line-clamp-2 mb-1">{rel.title}</span>
-                            <span className="block text-[11px] text-[var(--color-emphasis-text)] font-bold">{rel.category} · {rel.readTime || 'مقاله'}</span>
+                            <span className="block text-xs text-[var(--color-emphasis-text)] font-bold">{rel.category} · {rel.readTime || 'مقاله'}</span>
                           </span>
                         </button>
                       ))}

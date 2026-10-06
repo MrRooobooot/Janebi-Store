@@ -62,7 +62,7 @@ export default function PageControls({ page, pageSize, totalItems, onPageChange 
         <ChevronLeft className="h-4 w-4" />
       </button>
 
-      <span className="text-[11px] text-gray-400 font-bold mr-2">
+      <span className="text-xs text-gray-400 font-bold mr-2">
         صفحه {toPersianDigits(page)} از {toPersianDigits(totalPages)}
       </span>
     </div>

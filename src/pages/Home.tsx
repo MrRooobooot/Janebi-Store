@@ -11,7 +11,7 @@ import {
   TrendingUp, PackageCheck, ChevronLeft, ChevronRight,
 } from 'lucide-react';
 import { getJson } from '../lib/jsonFetch';
-import { getCategoryIcon } from '../lib/categoryIcons';
+import { getCategoryIcon, getCategoryWell } from '../lib/categoryIcons';
 import { Product } from '../types';
 import { toPersianDigits, normalizePersianTypography } from '../lib/utils';
 import { useStoreSettings } from '../hooks/useStoreSettings';
@@ -150,6 +150,7 @@ export default function Home() {
   }, [heroSlides.length]);
 
   const currentSlide = heroSlides[activeSlide];
+  const heroIsArt = heroSlides.some((slide) => HERO_ART.test(slide.image));
 
   useEffect(() => {
     let cancelled = false;
@@ -229,13 +230,13 @@ export default function Home() {
         }}
         className="w-full h-full min-h-[140px] sm:min-h-[148px] relative flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl bg-white dark:bg-[var(--color-surface-dark)] border border-slate-200/90 dark:border-white/[0.08] hover:border-primary-300 dark:hover:border-primary-500/40 hover:shadow-md transition-all duration-200 group text-center shadow-xs select-none min-touch-target"
       >
-        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-100 dark:bg-white/[0.04] flex items-center justify-center text-slate-700 dark:text-slate-200 group-hover:bg-[var(--color-cta)] group-hover:text-white transition-all duration-200 mb-2.5 group-hover:scale-105 shadow-xs shrink-0">
-          <Icon className="h-5 w-5 sm:h-6 sm:w-6 stroke-[1.8]" />
+        <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center mb-2.5 shrink-0 transition-all duration-200 group-hover:scale-105 group-hover:bg-[var(--color-cta)] group-hover:text-white group-hover:border-transparent ${getCategoryWell(cat.title)}`}>
+          <Icon className="h-6 w-6 sm:h-7 sm:w-7 stroke-[2]" />
         </div>
         <span className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors w-full px-1 block leading-tight line-clamp-2">
           {cat.title}
         </span>
-        <span className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 block">
+        <span className="text-xs text-slate-500 dark:text-slate-400 mt-1 block">
           {toPersianDigits(cat.count || 0)} کالا
         </span>
       </Link>
@@ -251,7 +252,11 @@ export default function Home() {
             rotation-safe (slide titles are plain <p>), SEO + a11y clean. */}
         <h1 className="sr-only">فروشگاه لوازم جانبی موبایل و تبلت | جانبی آرنا</h1>
         <div
-          className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-white via-slate-50 to-rose-50/30 dark:from-[var(--color-surface-dark)] dark:via-[var(--color-surface-header-dark)] dark:to-[var(--color-surface-footer-dark)] border border-slate-200/90 dark:border-white/[0.08] shadow-lg dark:shadow-2xl transition-colors duration-500 aspect-[4/3] sm:aspect-[16/9] lg:aspect-[5/2] touch-pan-y"
+          className={`relative rounded-2xl overflow-hidden border border-slate-200/90 dark:border-white/[0.08] shadow-lg dark:shadow-2xl transition-colors duration-500 touch-pan-y ${
+            heroIsArt
+              ? 'bg-gradient-to-br from-white via-slate-50 to-rose-50/30 dark:from-[var(--color-surface-dark)] dark:via-[var(--color-surface-header-dark)] dark:to-[var(--color-surface-footer-dark)] aspect-[4/3] sm:aspect-[16/9] lg:aspect-[5/2]'
+              : 'bg-gradient-to-br from-[#fecdd3] via-[#ffe4e6] to-[#fff5f6] dark:from-[#3b1020] dark:via-[#241018] dark:to-[#120c14] aspect-[4/3] lg:aspect-[3/2]'
+          }`}
           onTouchStart={(e) => { mobileTouchX.current = e.touches[0].clientX; }}
           onTouchEnd={(e) => {
             const dx = e.changedTouches[0].clientX - mobileTouchX.current;
@@ -261,7 +266,7 @@ export default function Home() {
           }}
         >
           {/* Branded backdrop — shows through wherever a slide has no full-bleed art */}
-          <div className="absolute inset-0 bg-[radial-gradient(var(--color-border-light)_1px,transparent_1px)] dark:bg-[radial-gradient(var(--color-border-dark)_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none opacity-60" />
+          <div className={`absolute inset-0 bg-[radial-gradient(var(--color-border-light)_1px,transparent_1px)] dark:bg-[radial-gradient(rgba(255,255,255,0.16)_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none ${heroIsArt ? 'opacity-60' : 'opacity-35'}`} />
 
           {/* Image-only banner: one layer per slide, crossfaded on the 6s rotation, and the layer
               itself is the link to its category — no copy, no catalogue cards on top. */}
@@ -272,7 +277,7 @@ export default function Home() {
               aria-label={slide.title}
               aria-hidden={idx !== activeSlide}
               tabIndex={idx === activeSlide ? 0 : -1}
-              className="absolute inset-0 block transition-opacity duration-700 ease-out motion-reduce:transition-none"
+              className="absolute inset-0 flex items-center justify-center transition-opacity duration-700 ease-out motion-reduce:transition-none"
               style={{ opacity: idx === activeSlide ? 1 : 0, pointerEvents: idx === activeSlide ? 'auto' : 'none' }}
             >
               {HERO_ART.test(slide.image) ? (
@@ -285,8 +290,20 @@ export default function Home() {
                   className={`h-full w-full object-cover${idx === activeSlide ? ' hero-kenburns' : ''}`}
                 />
               ) : (
-                /* Bundled product illustration default — contained, never cropped to full bleed */
-                <img src={slide.image} alt="" className="h-full w-full object-contain p-6 sm:p-10" />
+                <>
+                  <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 h-[72%] aspect-square -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#fb7185]/35 blur-3xl" />
+                  <img
+                    src={slide.image}
+                    alt=""
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-[-10%] h-[120%] w-[120%] max-w-none object-cover object-center opacity-45 blur-3xl saturate-150"
+                  />
+                  <img
+                    src={slide.image}
+                    alt=""
+                    className="relative z-10 h-[88%] w-[88%] object-contain object-center drop-shadow-[0_18px_40px_rgba(11,21,54,0.18)]"
+                  />
+                </>
               )}
             </Link>
           ))}
@@ -326,7 +343,7 @@ export default function Home() {
         </div>
         {currentSlide && (
           <div className="mt-3 flex flex-col gap-1 px-1 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm font-black text-slate-900 dark:text-white sm:text-base">
+            <p className="text-base font-bold text-slate-900 dark:text-white sm:text-lg">
               {normalizePersianTypography(currentSlide.title)}
             </p>
             <Link
@@ -350,8 +367,8 @@ export default function Home() {
                   <Icon className="h-4 w-4" />
                 </span>
                 <span className="min-w-0">
-                  <span className="block truncate text-[11px] font-black text-slate-900 dark:text-white">{item.title}</span>
-                  <span className="block truncate text-[10px] text-slate-500 dark:text-slate-400">{item.desc}</span>
+                  <span className="block truncate text-xs font-bold text-slate-900 dark:text-white">{item.title}</span>
+                  <span className="block truncate text-xs text-slate-500 dark:text-slate-400">{item.desc}</span>
                 </span>
               </div>
             );
@@ -361,7 +378,7 @@ export default function Home() {
 
       {/* 2. Amazing Deals Section — product-first fold */}
       <section className="w-full">
-        <div className="bg-gradient-to-br from-rose-50/40 via-white to-slate-50 dark:from-[var(--color-surface-dark)] dark:via-[var(--color-surface-header-dark)] dark:to-[var(--color-surface-footer-dark)] rounded-3xl p-2.5 sm:p-8 text-slate-900 dark:text-white border border-rose-200/70 dark:border-white/[0.08] shadow-lg dark:shadow-2xl relative overflow-hidden transition-colors">
+        <div className="bg-gradient-to-br from-[#ffe4e6] via-[#fff5f6] to-white dark:from-[var(--color-surface-dark)] dark:via-[var(--color-surface-header-dark)] dark:to-[var(--color-surface-footer-dark)] rounded-2xl p-2.5 sm:p-8 text-slate-900 dark:text-white border border-rose-200/80 dark:border-white/[0.08] shadow-lg dark:shadow-2xl relative overflow-hidden transition-colors">
           
           {/* Section Header */}
           <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 mb-2 sm:mb-6 pb-2 sm:pb-4 border-b border-rose-100 dark:border-white/[0.06]">
@@ -371,7 +388,7 @@ export default function Home() {
               </div>
               <div className="min-w-0">
                 <h2 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white">{normalizePersianTypography(settings.dealsTitle || STORE_SETTINGS_DEFAULTS.dealsTitle)}</h2>
-                <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">{normalizePersianTypography(settings.dealsSubtitle || STORE_SETTINGS_DEFAULTS.dealsSubtitle)}</p>
+                <p className="text-xs sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">{normalizePersianTypography(settings.dealsSubtitle || STORE_SETTINGS_DEFAULTS.dealsSubtitle)}</p>
               </div>
             </div>
           </div>
@@ -411,7 +428,7 @@ export default function Home() {
                   <Icon className="h-6 w-6 stroke-[2]" />
                 </div>
                 <div className="min-w-0">
-                  <h4 className="text-xs sm:text-sm font-black text-slate-900 dark:text-slate-100">{item.title}</h4>
+                  <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100">{item.title}</h4>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">{item.desc}</p>
                 </div>
               </div>
@@ -451,7 +468,7 @@ export default function Home() {
               </button>
             </div>
 
-            <Link to="/products" className="text-xs font-black text-[var(--color-emphasis-text)] hover:underline flex items-center gap-1 shrink-0 mr-1 sm:mr-2 min-h-[44px]">
+            <Link to="/products" className="text-xs font-bold text-[var(--color-emphasis-text)] hover:underline flex items-center gap-1 shrink-0 mr-1 sm:mr-2 min-h-[44px]">
               <span className="hidden sm:inline">مشاهده کاتالوگ کامل</span>
               <span className="sm:hidden">همه</span>
               <ArrowLeft className="h-3.5 w-3.5" />
@@ -514,7 +531,7 @@ export default function Home() {
             </div>
             <h2 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white whitespace-nowrap">کالاهای برگزیده بازار</h2>
             {activeTab === 'all' && (
-              <Link to="/products" className="inline-flex min-h-11 shrink-0 items-center gap-1 text-xs font-black text-[var(--color-emphasis-text)]">
+              <Link to="/products" className="inline-flex min-h-11 shrink-0 items-center gap-1 text-xs font-bold text-[var(--color-emphasis-text)]">
                 مشاهده همه
                 <ArrowLeft className="h-3.5 w-3.5" />
               </Link>
@@ -528,7 +545,7 @@ export default function Home() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 aria-pressed={activeTab === tab.id}
-                className={`shrink-0 snap-start inline-flex items-center px-4 sm:px-3.5 min-h-11 sm:min-h-[38px] rounded-full text-[13px] sm:text-xs font-black transition-all duration-200 border ${
+                className={`shrink-0 snap-start inline-flex items-center px-4 sm:px-3.5 min-h-11 sm:min-h-[38px] rounded-full text-[13px] sm:text-xs font-bold transition-all duration-200 border ${
                   activeTab === tab.id
                     ? 'bg-[var(--color-cta)] border-[var(--color-cta)] text-white shadow-xs shadow-[var(--color-cta)]/30'
                     : 'border-slate-200 dark:border-slate-700/70 text-[var(--color-text-muted-light)] dark:text-[var(--color-text-muted-dark)] hover:text-[var(--color-text-main-light)] dark:hover:text-[var(--color-text-main-dark)] hover:border-[var(--color-cta)]/40 bg-white dark:bg-white/[0.04]'
@@ -549,7 +566,7 @@ export default function Home() {
               <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">خطا در بارگذاری محصولات. اتصال اینترنت خود را بررسی کنید.</p>
               <button
                 onClick={() => setReloadKey((k) => k + 1)}
-                className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-black px-6 py-2.5 rounded-xl transition-colors"
+                className="btn-primary bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold px-6 py-2.5 rounded-xl transition-colors"
               >
                 تلاش مجدد
               </button>

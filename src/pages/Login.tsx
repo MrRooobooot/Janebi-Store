@@ -216,7 +216,7 @@ export default function Login() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="w-full max-w-md surface-card rounded-3xl p-8 shadow-xl relative overflow-hidden"
+        className="w-full max-w-md surface-card rounded-2xl p-8 shadow-xl relative overflow-hidden"
       >
         <div className="absolute -top-12 -right-12 w-40 h-40 bg-[var(--color-cta)]/10 rounded-full blur-2xl pointer-events-none" />
 
@@ -258,7 +258,7 @@ export default function Login() {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="09123456789"
-                className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3.5 px-4 pl-10 text-center tracking-[0.3em] text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:tracking-normal placeholder:text-gray-400 focus:outline-none focus:border-[var(--color-cta)]/30 focus:ring-2 focus:ring-[var(--color-cta)]/20 transition-all"
+                className="field w-full py-3.5 px-4 pl-10 text-center tracking-[0.3em] text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:tracking-normal placeholder:text-gray-400 focus:outline-none focus:border-[var(--color-cta)]/30 focus:ring-2 focus:ring-[var(--color-cta)]/20 transition-all"
                 autoComplete="username"
                 required
               id="login-phone"
@@ -280,7 +280,7 @@ export default function Login() {
                     کد تایید پیامک‌شده *
                   </label>
                   {otpSent && (
-                    <span className="text-[11px] text-[var(--color-emphasis-text)] font-mono">
+                    <span className="text-xs text-[var(--color-emphasis-text)] font-mono">
                       {otpCountdown > 0
                         ? `${toPersianDigits(otpCountdown)} ثانیه تا ارسال مجدد`
                         : "پیامک نرسیده؟ ارسال مجدد"}
@@ -297,7 +297,7 @@ export default function Login() {
                       value={otpCode}
                       onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
                       placeholder="12345"
-                      className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3.5 px-4 pl-10 text-center tracking-widest text-sm font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-400 focus:outline-none focus:border-[var(--color-cta)]/30 focus:ring-2 focus:ring-[var(--color-cta)]/20 transition-all"
+                      className="field w-full py-3.5 px-4 pl-10 text-center tracking-widest text-sm font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-400 focus:outline-none focus:border-[var(--color-cta)]/30 focus:ring-2 focus:ring-[var(--color-cta)]/20 transition-all"
                       autoComplete="one-time-code"
                       inputMode="numeric"
                       enterKeyHint="done"
@@ -310,7 +310,7 @@ export default function Login() {
                     type="button"
                     onClick={handleSendOtp}
                     disabled={isLoading || otpCountdown > 0}
-                    className="px-4 py-3.5 rounded-2xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] text-xs font-extrabold hover:bg-[var(--color-cta)]/20 transition-all disabled:opacity-50"
+                    className="px-4 py-3.5 rounded-2xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] text-xs font-bold hover:bg-[var(--color-cta)]/20 transition-all disabled:opacity-50"
                   >
                     {otpSent ? "ارسال مجدد" : "دریافت کد"}
                   </button>
@@ -328,13 +328,13 @@ export default function Login() {
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     placeholder="حداقل ۶ کاراکتر"
-                    className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3.5 px-4 pl-10 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-400 focus:outline-none focus:border-[var(--color-cta)]/30 focus:ring-2 focus:ring-[var(--color-cta)]/20 transition-all"
+                    className="field w-full py-3.5 px-4 pl-10 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-400 focus:outline-none focus:border-[var(--color-cta)]/30 focus:ring-2 focus:ring-[var(--color-cta)]/20 transition-all"
                     autoComplete="new-password"
                     required
                   />
                   <Lock className="h-4 w-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
-                <p className="mt-1.5 text-[11px] font-medium text-gray-500 dark:text-gray-400">حداقل ۶ کاراکتر</p>
+                <p className="mt-1.5 text-xs font-medium text-gray-500 dark:text-gray-400">حداقل ۶ کاراکتر</p>
               </div>
 
               <div>
@@ -348,7 +348,7 @@ export default function Login() {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="تکرار رمز جدید"
-                    className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3.5 px-4 pl-10 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-400 focus:outline-none focus:border-[var(--color-cta)]/30 focus:ring-2 focus:ring-[var(--color-cta)]/20 transition-all"
+                    className="field w-full py-3.5 px-4 pl-10 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-400 focus:outline-none focus:border-[var(--color-cta)]/30 focus:ring-2 focus:ring-[var(--color-cta)]/20 transition-all"
                     required
                   id="login-confirm-password"
                   name="passwordConfirm"
@@ -370,7 +370,7 @@ export default function Login() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-gray-50/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl py-3.5 px-4 pl-10 pr-10 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-400 focus:outline-none focus:border-[var(--color-cta)]/30 focus:ring-2 focus:ring-[var(--color-cta)]/20 transition-all"
+                  className="field w-full py-3.5 px-4 pl-10 pr-10 text-left text-xs font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] placeholder:text-gray-400 focus:outline-none focus:border-[var(--color-cta)]/30 focus:ring-2 focus:ring-[var(--color-cta)]/20 transition-all"
                   autoComplete="current-password"
                   required
                 id="login-password"
@@ -386,7 +386,7 @@ export default function Login() {
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
-              <p className="mt-1.5 text-[11px] font-medium text-gray-500 dark:text-gray-400">حداقل ۴ کاراکتر</p>
+              <p className="mt-1.5 text-xs font-medium text-gray-500 dark:text-gray-400">حداقل ۴ کاراکتر</p>
             </div>
           ) : null}
 
@@ -401,7 +401,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-extrabold py-4 px-6 rounded-2xl shadow-lg shadow-[var(--color-cta)]/25 flex items-center justify-center gap-2 transition-all active:scale-98 text-sm mt-6 disabled:opacity-60"
+              className="btn-primary w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold py-4 px-6 rounded-2xl shadow-lg shadow-[var(--color-cta)]/25 flex items-center justify-center gap-2 transition-all active:scale-98 text-sm mt-6 disabled:opacity-60"
             >
               <span>{mode === "forgot" ? "تغییر رمز عبور" : "ورود به حساب"}</span>
               <ArrowLeft className="h-4 w-4" />
@@ -436,7 +436,7 @@ export default function Login() {
 
         <div className="mt-8 pt-6 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] text-center text-xs font-medium text-gray-500">
           حساب کاربری ندارید؟{" "}
-          <Link to={searchParams.get("next") ? `/register?next=${encodeURIComponent(searchParams.get("next") || "")}` : "/register"} className="font-extrabold text-[var(--color-emphasis-text)] hover:underline">
+          <Link to={searchParams.get("next") ? `/register?next=${encodeURIComponent(searchParams.get("next") || "")}` : "/register"} className="font-bold text-[var(--color-emphasis-text)] hover:underline">
             ثبت‌نام کنید
           </Link>
         </div>

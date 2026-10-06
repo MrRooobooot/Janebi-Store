@@ -198,7 +198,7 @@ export default function AdminReviews() {
                     <td className="p-3.5">
                       <div className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">{rev.userName}</div>
                       {rev.isVerifiedBuyer && (
-                        <span className="text-[10px] text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5 mt-0.5">
+                        <span className="text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5 mt-0.5">
                           <CheckCircle className="h-3 w-3" /> خریدار
                         </span>
                       )}
@@ -216,13 +216,13 @@ export default function AdminReviews() {
                     </td>
                     <td className="p-3.5 max-w-[280px]">
                       <div className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">{rev.title}</div>
-                      <div className="text-[11px] text-gray-500 dark:text-gray-400 truncate">{rev.comment}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{rev.comment}</div>
                     </td>
-                    <td className="p-3.5 text-gray-500 dark:text-gray-400 text-[11px] whitespace-nowrap">
+                    <td className="p-3.5 text-gray-500 dark:text-gray-400 text-xs whitespace-nowrap">
                       {rev.date}
                     </td>
                     <td className="p-3.5">
-                      <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${(rev.approved ?? true)
+                      <span className={`px-2 py-1 rounded-full text-xs font-bold ${(rev.approved ?? true)
                         ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
                         : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'}`}>
                         {(rev.approved ?? true) ? 'منتشرشده' : 'در انتظار بررسی'}
@@ -265,9 +265,9 @@ export default function AdminReviews() {
       {/* Review Detail Modal */}
       {selectedReview && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative">
+          <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative">
             <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] mb-4">
-              <h3 className="text-base font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">جزئیات کامل نظر</h3>
+              <h3 className="text-base font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">جزئیات کامل نظر</h3>
               <button onClick={() => setSelectedReview(null)} className="text-gray-600 dark:text-gray-400 hover:text-gray-800 text-xs font-bold">بستن</button>
             </div>
 
@@ -275,7 +275,7 @@ export default function AdminReviews() {
               <div className="p-3.5 rounded-2xl bg-gray-50 dark:bg-gray-800/60 flex items-center justify-between">
                 <div>
                   <div className="font-bold text-[var(--color-text-main-light)] dark:text-white text-sm">{selectedReview.userName}</div>
-                  <div className="text-[11px] text-gray-600 dark:text-gray-400 mt-0.5">تاریخ ثبت: {selectedReview.date}</div>
+                  <div className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">تاریخ ثبت: {selectedReview.date}</div>
                 </div>
                 <div className="flex items-center gap-1 bg-amber-50 dark:bg-amber-950/40 text-amber-600 px-3 py-1.5 rounded-xl font-bold">
                   <Star className="h-4 w-4 fill-amber-400 text-amber-400" />

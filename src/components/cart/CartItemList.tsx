@@ -24,7 +24,7 @@ export default function CartItemList({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between px-2 mb-2">
-        <h2 className="text-lg font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
+        <h2 className="text-lg font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
           <span>اقلام سبد خرید</span>
           <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/60 text-[var(--color-emphasis-text)]">
             {toPersianDigits(cart.length)} قلم کالا
@@ -49,7 +49,7 @@ export default function CartItemList({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: -60, scale: 0.95 }}
             transition={{ duration: 0.3 }}
-            className="bg-[var(--color-surface-light)]/90 dark:bg-[var(--color-surface-dark)]/90 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/80 rounded-3xl p-5 sm:p-6 shadow-sm hover:border-[var(--color-cta)]/30 dark:hover:border-gray-700 transition-all flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-6 group"
+            className="bg-[var(--color-surface-light)]/90 dark:bg-[var(--color-surface-dark)]/90 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/80 rounded-2xl p-5 sm:p-6 shadow-sm hover:border-[var(--color-cta)]/30 dark:hover:border-gray-700 transition-all flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-6 group"
           >
             {/* Product Info */}
             <div className="flex items-center gap-4 sm:gap-5 flex-1 min-w-0">
@@ -69,11 +69,11 @@ export default function CartItemList({
 
               <div className="space-y-2 flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-[10px] font-black px-2.5 py-0.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
                     {item.brand}
                   </span>
                   {item.category && (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/40 text-[var(--color-emphasis-text)]">
+                    <span className="text-xs font-bold px-2 py-0.5 rounded-lg bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/40 text-[var(--color-emphasis-text)]">
                       {item.category}
                     </span>
                   )}
@@ -102,29 +102,29 @@ export default function CartItemList({
                   onClick={() => updateQuantity(item.id, item.quantity + 1)}
                   disabled={item.quantity >= MAX_CART_QUANTITY}
                   aria-label={`افزایش تعداد ${item.title}`}
-                  className="min-touch-target w-11 h-11 sm:w-10 sm:h-10 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center justify-center font-bold shadow-xs hover:bg-primary-600 hover:text-white transition-all disabled:opacity-30 active:scale-95"
+                  className="min-touch-target w-11 h-11 sm:w-10 sm:h-10 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center justify-center font-bold shadow-xs hover:bg-[var(--color-cta)] hover:text-white transition-all disabled:opacity-30 active:scale-95"
                 >
                   <Plus className="h-4 w-4" />
                 </button>
-                <span className="font-black text-sm w-7 text-center text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] font-mono">
+                <span className="font-bold text-sm w-7 text-center text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] font-mono">
                   {toPersianDigits(item.quantity)}
                 </span>
                 <button
                   onClick={() => updateQuantity(item.id, item.quantity - 1)}
                   disabled={item.quantity <= 1}
                   aria-label={`کاهش تعداد ${item.title}`}
-                  className="min-touch-target w-11 h-11 sm:w-10 sm:h-10 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center justify-center font-bold shadow-xs hover:bg-primary-600 hover:text-white transition-all disabled:opacity-30 active:scale-95"
+                  className="min-touch-target w-11 h-11 sm:w-10 sm:h-10 rounded-xl bg-[var(--color-surface-light)] dark:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center justify-center font-bold shadow-xs hover:bg-[var(--color-cta)] hover:text-white transition-all disabled:opacity-30 active:scale-95"
                 >
                   <Minus className="h-4 w-4" />
                 </button>
               </div>
 
               <div className="text-right">
-                <div className="font-black text-base sm:text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
+                <div className="font-bold text-base sm:text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
                   {formatPrice(item.price * item.quantity)}
                 </div>
                 {item.quantity > 1 && (
-                  <div className="text-[11px] text-gray-400 font-medium">
+                  <div className="text-xs text-gray-400 font-medium">
                     هر عدد {formatPrice(item.price)}
                   </div>
                 )}

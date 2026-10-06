@@ -332,7 +332,7 @@ export default function AdminOrders() {
 
         <button
           onClick={handleExportCSV}
-          className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-4 py-2.5 rounded-2xl text-xs shadow-md shadow-emerald-500/20 transition-all cursor-pointer self-start sm:self-auto"
+          className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-2xl text-xs shadow-md shadow-emerald-500/20 transition-all cursor-pointer self-start sm:self-auto"
         >
           <Download className="h-4 w-4" />
           <span>خروجی اکسل / CSV</span>
@@ -359,7 +359,7 @@ export default function AdminOrders() {
             }`}
           >
             <span>{tab.label}</span>
-            <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono ${
+            <span className={`px-1.5 py-0.2 rounded-full text-xs font-mono ${
               statusFilter === tab.id ? 'bg-[var(--color-surface-light)]/25 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600'
             }`}>
               {tab.count}
@@ -380,7 +380,7 @@ export default function AdminOrders() {
           <Trash2 className="h-4 w-4" />
           <span>حذف سفارش‌های انتخاب‌شده {selectedIds.size > 0 && `(${toPersianDigits(selectedIds.size)})`}</span>
         </button>
-        <span className="text-[11px] text-gray-500 font-bold">
+        <span className="text-xs text-gray-500 font-bold">
           {toPersianDigits(filteredOrders.length)} سفارش
         </span>
       </div>
@@ -445,10 +445,10 @@ export default function AdminOrders() {
                   <td className="p-3.5 text-gray-600 dark:text-gray-300">{order.date}</td>
                   <td className="p-3.5 text-gray-600 dark:text-gray-300">
                     <div className="font-bold text-gray-800 dark:text-gray-200">{order.recipientName}</div>
-                    <div className="text-[11px] text-gray-500 font-mono" dir="ltr">{order.recipientPhone}</div>
+                    <div className="text-xs text-gray-500 font-mono" dir="ltr">{order.recipientPhone}</div>
                   </td>
-                  <td className="p-3.5 font-black text-[var(--color-emphasis-text)]">{formatPrice(order.total)}</td>
-                  <td className="p-3.5 text-gray-600 dark:text-gray-300 font-mono text-[11px]">
+                  <td className="p-3.5 font-bold text-[var(--color-emphasis-text)]">{formatPrice(order.total)}</td>
+                  <td className="p-3.5 text-gray-600 dark:text-gray-300 font-mono text-xs">
                     {order.refId ? (
                       <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 font-bold">
                         {order.refId}
@@ -458,7 +458,7 @@ export default function AdminOrders() {
                     )}
                   </td>
                   <td className="p-3.5 text-center">
-                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold ${
+                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${
                       order.status === 'delivered' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300' :
                       order.status === 'processing' ? 'bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300' :
                       order.status === 'shipped' ? 'bg-purple-100 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300' :
@@ -484,7 +484,7 @@ export default function AdminOrders() {
                       <div className="relative group">
                         <button 
                           disabled={updatingId === order.id}
-                          className="flex items-center gap-1 bg-primary-50 hover:bg-primary-100 dark:bg-primary-950/30 text-primary-700 dark:text-primary-300 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-colors"
+                          className="flex items-center gap-1 bg-primary-50 hover:bg-primary-100 dark:bg-primary-950/30 text-primary-700 dark:text-primary-300 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-colors"
                         >
                           {updatingId === order.id ? '...' : 'تغییر وضعیت'}
                           <ChevronDown className="w-3 h-3" />
@@ -517,11 +517,11 @@ export default function AdminOrders() {
       {/* Order Details & Print Modal */}
       {selectedOrder && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs text-right">
-          <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 sm:p-8 space-y-6">
+          <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 sm:p-8 space-y-6">
             <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border-light)] dark:border-gray-700">
               <div className="flex items-center gap-2">
                 <Package className="w-5 h-5 text-[var(--color-emphasis-text)]" />
-                <h3 className="font-extrabold text-base text-[var(--color-text-main-light)] dark:text-white">
+                <h3 className="font-bold text-base text-[var(--color-text-main-light)] dark:text-white">
                   جزئیات سفارش <span className="font-mono text-[var(--color-emphasis-text)]" dir="ltr">{selectedOrder.id}</span>
                 </h3>
               </div>
@@ -575,7 +575,7 @@ export default function AdminOrders() {
               </div>
               <div>
                 <span className="text-gray-500 block mb-1">مبلغ کل:</span>
-                <span className="font-black text-[var(--color-emphasis-text)]">{formatPrice(selectedOrder.total)}</span>
+                <span className="font-bold text-[var(--color-emphasis-text)]">{formatPrice(selectedOrder.total)}</span>
               </div>
             </div>
 
@@ -605,12 +605,12 @@ export default function AdminOrders() {
                       <img src={item.image} alt={item.title} width="40" height="40" loading="lazy" decoding="async" className="w-10 h-10 rounded-lg object-contain bg-[var(--color-surface-light)] dark:bg-gray-800 p-1 border border-gray-200 dark:border-gray-700" />
                       <div>
                         <div className="font-bold text-[var(--color-text-main-light)] dark:text-white">{item.title}</div>
-                        <div className="text-[11px] text-gray-500">{item.brand}</div>
+                        <div className="text-xs text-gray-500">{item.brand}</div>
                       </div>
                     </div>
                     <div className="text-left font-bold text-gray-700 dark:text-gray-300">
                       <div>{toPersianDigits(item.qty)} عدد</div>
-                      <div className="text-[var(--color-emphasis-text)] text-[11px]">{formatPrice(item.price)}</div>
+                      <div className="text-[var(--color-emphasis-text)] text-xs">{formatPrice(item.price)}</div>
                     </div>
                   </div>
                 ))}

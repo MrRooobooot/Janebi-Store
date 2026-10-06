@@ -87,13 +87,13 @@ export default function AuditLogs() {
         <div>
           <PageHeader icon={ ScrollText } title="لاگ فعالیت مدیران" subtitle="ثبت خودکار تمام تغییرات حساس: محصولات، سفارشات، کدهای تخفیف، کاربران و تنظیمات" />
         </div>
-        <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400 bg-[var(--color-surface-light)] dark:bg-gray-800 border border-[var(--color-border-light)] dark:border-gray-700 rounded-xl px-3 py-2">
+        <span className="text-xs font-bold text-gray-500 dark:text-gray-400 bg-[var(--color-surface-light)] dark:bg-gray-800 border border-[var(--color-border-light)] dark:border-gray-700 rounded-xl px-3 py-2">
           مجموع رکوردها: {toPersianDigits(total.toLocaleString('fa-IR'))}
         </span>
       </div>
 
       {/* Search */}
-      <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 p-4 rounded-3xl border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs">
+      <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 p-4 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs">
         <div className="relative">
           <input
             type="text"
@@ -107,12 +107,12 @@ export default function AuditLogs() {
       </div>
 
       {error ? (
-        <div className="p-6 bg-red-50 dark:bg-red-900/20 rounded-3xl text-red-600 dark:text-red-300 text-xs font-bold flex items-center gap-2">
+        <div className="p-6 bg-red-50 dark:bg-red-900/20 rounded-2xl text-red-600 dark:text-red-300 text-xs font-bold flex items-center gap-2">
           <ShieldAlert className="h-5 w-5" />
           {error}
         </div>
       ) : (
-        <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl border border-[var(--color-border-light)] dark:border-gray-700 overflow-hidden shadow-xs">
+        <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700 overflow-hidden shadow-xs">
           <div className="overflow-x-auto">
             <table className="w-full text-right text-xs">
               <thead className="bg-gray-50/80 dark:bg-gray-700/50 text-gray-600 dark:text-gray-400 border-b border-[var(--color-border-light)] dark:border-gray-700">
@@ -141,15 +141,15 @@ export default function AuditLogs() {
                         </span>
                       </td>
                       <td className="p-3.5 text-gray-600 dark:text-gray-300">{log.entity}</td>
-                      <td className="p-3.5 font-mono text-[11px] text-gray-500 dark:text-gray-400" dir="ltr">{log.entityId ?? '—'}</td>
-                      <td className="p-3.5 font-mono text-[11px] text-gray-500 dark:text-gray-400" dir="ltr">{log.adminUserId ?? '—'}</td>
-                      <td className="p-3.5 text-[11px] text-gray-500 dark:text-gray-400 max-w-[220px]" dir="ltr">
+                      <td className="p-3.5 font-mono text-xs text-gray-500 dark:text-gray-400" dir="ltr">{log.entityId ?? '—'}</td>
+                      <td className="p-3.5 font-mono text-xs text-gray-500 dark:text-gray-400" dir="ltr">{log.adminUserId ?? '—'}</td>
+                      <td className="p-3.5 text-xs text-gray-500 dark:text-gray-400 max-w-[220px]" dir="ltr">
                         {log.meta ? (
                           <details className="group">
                             <summary className="truncate cursor-pointer list-none text-gray-600 dark:text-gray-300 hover:text-primary-500 transition-colors">
                               {JSON.stringify(log.meta)}
                             </summary>
-                            <pre className="mt-1 max-h-40 overflow-auto rounded-lg bg-gray-100 dark:bg-gray-800 p-2 text-[10px] leading-relaxed whitespace-pre-wrap break-all">{JSON.stringify(log.meta, null, 2)}</pre>
+                            <pre className="mt-1 max-h-40 overflow-auto rounded-lg bg-gray-100 dark:bg-gray-800 p-2 text-xs leading-relaxed whitespace-pre-wrap break-all">{JSON.stringify(log.meta, null, 2)}</pre>
                           </details>
                         ) : '—'}
                       </td>

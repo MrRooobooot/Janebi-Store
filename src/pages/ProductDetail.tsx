@@ -172,7 +172,7 @@ export default function ProductDetail() {
   if (loading) return <ProductDetailSkeleton />;
   if (!product)
     return (
-      <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-12 text-center border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex flex-col items-center shadow-xs">
+      <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-12 text-center border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex flex-col items-center shadow-xs">
         <div className="w-16 h-16 rounded-2xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/40 text-[var(--color-emphasis-text)] flex items-center justify-center mb-4 border border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/60 shadow-inner">
           <AlertCircle className="h-8 w-8" />
         </div>
@@ -182,7 +182,7 @@ export default function ProductDetail() {
         </p>
         <Link
           to="/products"
-          className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white px-8 py-3 rounded-xl font-medium transition-colors"
+          className="btn-primary bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white px-8 py-3 rounded-xl font-medium transition-colors"
         >
           بازگشت به محصولات
         </Link>
@@ -232,7 +232,7 @@ export default function ProductDetail() {
         className="space-y-10 pb-28 lg:pb-12 text-right"
       >
         {/* Main Product Card */}
-        <div className="bg-[var(--color-surface-light)]/85 dark:bg-[var(--color-surface-dark)]/85 backdrop-blur-xl rounded-3xl p-6 sm:p-8 lg:p-10 shadow-sm border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] transition-colors">
+        <div className="bg-[var(--color-surface-light)]/85 dark:bg-[var(--color-surface-dark)]/85 backdrop-blur-xl rounded-2xl p-6 sm:p-8 lg:p-10 shadow-sm border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] transition-colors">
           <div className="flex flex-col lg:flex-row gap-10 lg:gap-14">
             {/* Gallery Column */}
             <div className="w-full lg:w-5/12">
@@ -240,10 +240,10 @@ export default function ProductDetail() {
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.4 }}
-                className="aspect-square bg-gradient-to-br from-[var(--color-canvas-light)] to-[var(--color-canvas-light)]/70 dark:from-white/[0.05] dark:to-white/[0.02] backdrop-blur-md rounded-3xl flex items-center justify-center p-8 mb-4 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] relative overflow-hidden group shadow-inner"
+                className="aspect-square bg-[var(--color-stage-light)] dark:bg-[var(--color-stage-dark)] rounded-2xl flex items-center justify-center p-8 mb-4 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] relative overflow-hidden group shadow-inner"
               >
                 {product.discount && (
-                  <div className="absolute top-5 right-5 bg-gradient-to-r from-rose-600 to-[var(--color-cta)]/10 text-white font-black px-3.5 py-1.5 rounded-xl z-10 text-xs shadow-md tracking-wider">
+                  <div className="absolute top-5 right-5 bg-gradient-to-r from-rose-600 to-[var(--color-cta)]/10 text-white font-bold px-3.5 py-1.5 rounded-xl z-10 text-xs shadow-md tracking-wider">
                     {toPersianDigits(product.discount)}٪ تخفیف
                   </div>
                 )}
@@ -345,7 +345,7 @@ export default function ProductDetail() {
               <div>
                 {/* Brand & Action Share Header */}
                 <div className="flex items-center justify-between mb-3">
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/40 text-[var(--color-emphasis-text)] border border-[var(--color-cta)]/50 dark:border-[var(--color-cta)]/50 text-xs font-extrabold">
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/40 text-[var(--color-emphasis-text)] border border-[var(--color-cta)]/50 dark:border-[var(--color-cta)]/50 text-xs font-bold">
                     <span>برند: {product.brand}</span>
                   </div>
                   <button
@@ -389,7 +389,7 @@ export default function ProductDetail() {
                 </div>
 
                 {/* Price & Stock Status Box */}
-                <div className="bg-[var(--color-canvas-light)]/80 dark:bg-white/[0.045] rounded-3xl p-6 mb-8 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/80">
+                <div className="bg-[var(--color-canvas-light)]/80 dark:bg-white/[0.045] rounded-2xl p-6 mb-8 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/80">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                       <span className="text-xs text-gray-500 dark:text-gray-400 font-medium block mb-1">
@@ -400,7 +400,7 @@ export default function ProductDetail() {
                           <span className="text-[var(--color-text-subtle-light)] dark:text-[var(--color-text-subtle-dark)] text-sm line-through font-medium">
                             {formatPrice(product.originalPrice)}
                           </span>
-                          <span className="bg-rose-600 text-white text-[11px] font-black px-2 py-0.5 rounded-full">
+                          <span className="bg-rose-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
                             {toPersianDigits(product.discount)}٪ تخفیف
                           </span>
                         </div>
@@ -414,15 +414,15 @@ export default function ProductDetail() {
                     {/* Stock Status Indicator */}
                     <div className="text-right sm:text-left">
                       {outOfStock ? (
-                        <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 text-xs font-extrabold border border-rose-200 dark:border-rose-900/50">
+                        <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 text-xs font-bold border border-rose-200 dark:border-rose-900/50">
                           <AlertCircle className="h-4 w-4" /> ناموجود در انبار
                         </span>
                       ) : lowStock ? (
-                        <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] text-xs font-extrabold border border-[var(--color-cta)]/40">
+                        <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)] text-xs font-bold border border-[var(--color-cta)]/40">
                           <AlertCircle className="h-4 w-4" /> تنها {toPersianDigits(stock)} عدد در انبار باقیست
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-xs font-extrabold border border-emerald-200 dark:border-emerald-900/50">
+                        <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold border border-emerald-200 dark:border-emerald-900/50">
                           <PackageCheck className="h-4 w-4" /> موجود و آماده ارسال
                         </span>
                       )}
@@ -464,7 +464,7 @@ export default function ProductDetail() {
                       >
                         <Minus className="h-4 w-4" />
                       </button>
-                      <span className="min-w-8 text-center text-sm font-black">{toPersianDigits(qty)}</span>
+                      <span className="min-w-8 text-center text-sm font-bold">{toPersianDigits(qty)}</span>
                       <button
                         type="button"
                         aria-label="افزایش تعداد"
@@ -481,12 +481,12 @@ export default function ProductDetail() {
                 <button
                   onClick={handleAddToCart}
                   disabled={outOfStock}
-                  className={`flex-1 font-black py-4 px-6 rounded-2xl flex items-center justify-center gap-2.5 transition-all shadow-lg active:scale-98 text-sm sm:text-base ${
+                  className={`flex-1 font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-2.5 transition-all shadow-lg active:scale-98 text-sm sm:text-base ${
                     outOfStock
                       ? 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed shadow-none'
                       : addedToCart
                       ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/20'
-                      : 'bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white shadow-[var(--color-cta)]/25'
+                      : 'btn-primary shadow-[var(--color-cta)]/25'
                   }`}
                 >
                   {outOfStock ? (
@@ -536,7 +536,7 @@ export default function ProductDetail() {
                     { icon: PackageCheck, label: '۷ روز مرجوعی' },
                     { icon: Truck, label: 'ارسال سریع' },
                   ].map(({ icon: Icon, label }) => (
-                    <span key={label} className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 dark:text-emerald-400">
+                    <span key={label} className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-400">
                       <Icon className="h-3.5 w-3.5 shrink-0" />
                       {label}
                     </span>
@@ -546,13 +546,13 @@ export default function ProductDetail() {
             </div>
           </div>
         </div>
-        <div className="bg-[var(--color-surface-light)]/85 dark:bg-[var(--color-surface-dark)]/85 backdrop-blur-xl rounded-3xl p-6 sm:p-8 lg:p-10 shadow-sm border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
+        <div className="bg-[var(--color-surface-light)]/85 dark:bg-[var(--color-surface-dark)]/85 backdrop-blur-xl rounded-2xl p-6 sm:p-8 lg:p-10 shadow-sm border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
           <div className="flex gap-4 sm:gap-8 border-b border-gray-200 dark:border-[var(--color-border-dark)] mb-6 sm:mb-8 overflow-x-auto scroll-px-4 px-1 pb-px">
             <button
               onClick={() => setActiveTab('description')}
               className={`min-h-11 flex items-center px-0.5 pb-4 font-bold text-sm sm:text-base border-b-2 transition-all whitespace-nowrap relative ${
                 activeTab === 'description'
-                  ? 'text-[var(--color-emphasis-text)] border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/30 font-black'
+                  ? 'text-[var(--color-emphasis-text)] border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/30 font-bold'
                   : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-800 dark:hover:text-gray-200'
               }`}
             >
@@ -562,7 +562,7 @@ export default function ProductDetail() {
               onClick={() => setActiveTab('specs')}
               className={`min-h-11 flex items-center px-0.5 pb-4 font-bold text-sm sm:text-base border-b-2 transition-all whitespace-nowrap relative ${
                 activeTab === 'specs'
-                  ? 'text-[var(--color-emphasis-text)] border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/30 font-black'
+                  ? 'text-[var(--color-emphasis-text)] border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/30 font-bold'
                   : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-800 dark:hover:text-gray-200'
               }`}
             >
@@ -572,7 +572,7 @@ export default function ProductDetail() {
               onClick={() => setActiveTab('reviews')}
               className={`min-h-11 flex items-center px-0.5 pb-4 font-bold text-sm sm:text-base border-b-2 transition-all whitespace-nowrap relative ${
                 activeTab === 'reviews'
-                  ? 'text-[var(--color-emphasis-text)] border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/30 font-black'
+                  ? 'text-[var(--color-emphasis-text)] border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/30 font-bold'
                   : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-800 dark:hover:text-gray-200'
               }`}
             >
@@ -612,7 +612,7 @@ export default function ProductDetail() {
                 <dl className="divide-y divide-[var(--color-border-subtle-light)] dark:divide-[var(--color-border-dark)] text-xs sm:text-sm">
                   <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex justify-between even:bg-[var(--color-canvas-light)]/60 dark:even:bg-white/[0.035] transition-colors">
                     <dt className="font-bold text-gray-500 dark:text-gray-400">نام تجاری / برند</dt>
-                    <dd className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] sm:col-span-2 flex items-center gap-2">
+                    <dd className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] sm:col-span-2 flex items-center gap-2">
                       <span>{product.brand}</span>
                       {/* dark-fill brand vectors (#000 apple/sony/bose) vanish on the dark spec row — white .logo-tile, same sanctioned exception as Enamad */}
                       <span className="logo-tile rounded-lg border border-[var(--color-border-light)] px-1.5 py-1 shrink-0">
@@ -833,7 +833,7 @@ export default function ProductDetail() {
                     <p className="text-xs text-gray-600 dark:text-gray-300 truncate font-bold leading-tight">
                       {product.title}
                     </p>
-                    <p className="text-sm font-black text-[var(--color-emphasis-text)] leading-tight mt-1">
+                    <p className="text-sm font-bold text-[var(--color-emphasis-text)] leading-tight mt-1">
                       {formatPrice(product.price)}
                     </p>
                   </div>
@@ -854,12 +854,12 @@ export default function ProductDetail() {
                   <button
                     onClick={handleAddToCart}
                     disabled={outOfStock}
-                    className={`min-touch-target flex-1 h-11 px-4 sm:px-5 rounded-xl font-black text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-md ${
+                    className={`min-touch-target flex-1 h-11 px-4 sm:px-5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-md ${
                       outOfStock
                         ? 'bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed'
                         : addedToCart
                         ? 'bg-emerald-600 text-white shadow-emerald-600/20'
-                        : 'bg-[var(--color-cta)] text-white shadow-[var(--color-cta)]/25'
+                        : 'btn-primary'
                     }`}
                   >
                     {outOfStock ? (
@@ -894,11 +894,11 @@ export default function ProductDetail() {
           >
             <div className="pointer-events-auto flex items-center gap-6 bg-[var(--color-surface-light)]/95 dark:bg-[var(--color-surface-dark)]/95 backdrop-blur-2xl rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-2xl px-6 py-3.5 w-full max-w-3xl mx-6">
               <div className="min-w-0 flex-1">
-                <p className="text-[11px] text-gray-500 dark:text-gray-400 font-bold truncate leading-tight">
+                <p className="text-xs text-gray-500 dark:text-gray-400 font-bold truncate leading-tight">
                   {product.title}
                 </p>
                 <div className="flex items-center gap-3 mt-1">
-                  <span className="text-lg font-black text-[var(--color-emphasis-text)] tracking-tight leading-none">
+                  <span className="text-lg font-bold text-[var(--color-emphasis-text)] tracking-tight leading-none">
                     {formatPrice(product.price)}
                   </span>
                   {product.discount && product.originalPrice && (
@@ -907,7 +907,7 @@ export default function ProductDetail() {
                     </span>
                   )}
                   <span
-                    className={`text-[10px] font-extrabold px-2 py-1 rounded-full leading-none ${
+                    className={`text-xs font-bold px-2 py-1 rounded-full leading-none ${
                       outOfStock
                         ? 'bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400'
                         : 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300'
@@ -944,12 +944,12 @@ export default function ProductDetail() {
                 <button
                   onClick={handleAddToCart}
                   disabled={outOfStock}
-                  className={`h-11 px-6 rounded-xl font-black text-sm flex items-center gap-2 transition-all active:scale-95 shadow-md ${
+                  className={`h-11 px-6 rounded-xl font-bold text-sm flex items-center gap-2 transition-all active:scale-95 shadow-md ${
                     outOfStock
                       ? 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed shadow-none'
                       : addedToCart
                       ? 'bg-emerald-600 text-white shadow-emerald-600/20'
-                      : 'bg-[var(--color-cta)] text-white shadow-[var(--color-cta)]/25'
+                      : 'btn-primary'
                   }`}
                 >
                   {outOfStock ? (

@@ -18,8 +18,8 @@ export default function CheckoutShippingPaymentForm({
   return (
     <div className="space-y-6">
       {/* Shipping Method Selection */}
-      <div className="bg-[var(--color-surface-light)]/90 dark:bg-[var(--color-surface-dark)]/90 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
-        <h3 className="font-black text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2 pb-3 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
+      <div className="bg-[var(--color-surface-light)]/90 dark:bg-[var(--color-surface-dark)]/90 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-6 sm:p-8 shadow-sm space-y-4">
+        <h3 className="font-bold text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2 pb-3 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
           <Truck className="h-5 w-5 text-[var(--color-emphasis-text)]" />
           <span>شیوه ارسال سفارش</span>
         </h3>
@@ -38,8 +38,8 @@ export default function CheckoutShippingPaymentForm({
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between">
-                <span className="font-black text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">پست پیشتاز هوایی</span>
-                <span className="font-black text-xs text-[var(--color-emphasis-text)]">
+                <span className="font-bold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">پست پیشتاز هوایی</span>
+                <span className="font-bold text-xs text-[var(--color-emphasis-text)]">
                   {isFreeShipping ? 'رایگان' : formatPrice(SHIPPING_FEES.express)}
                 </span>
               </div>
@@ -62,8 +62,8 @@ export default function CheckoutShippingPaymentForm({
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between">
-                <span className="font-black text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">پست سفارشی زمینی</span>
-                <span className="font-black text-xs text-[var(--color-emphasis-text)]">
+                <span className="font-bold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">پست سفارشی زمینی</span>
+                <span className="font-bold text-xs text-[var(--color-emphasis-text)]">
                   {isFreeShipping ? 'رایگان' : formatPrice(SHIPPING_FEES.standard)}
                 </span>
               </div>
@@ -76,8 +76,8 @@ export default function CheckoutShippingPaymentForm({
       </div>
 
       {/* Payment Method Selection */}
-      <div className="bg-[var(--color-surface-light)]/90 dark:bg-[var(--color-surface-dark)]/90 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
-        <h3 className="font-black text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2 pb-3 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
+      <div className="bg-[var(--color-surface-light)]/90 dark:bg-[var(--color-surface-dark)]/90 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-6 sm:p-8 shadow-sm space-y-4">
+        <h3 className="font-bold text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2 pb-3 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
           <CreditCard className="h-5 w-5 text-[var(--color-emphasis-text)]" />
           <span>شیوه پرداخت وجه</span>
         </h3>
@@ -96,8 +96,8 @@ export default function CheckoutShippingPaymentForm({
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between">
-                <span className="font-black text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">درگاه پرداخت شتابی</span>
-                <span className="text-[10px] font-black bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-md">
+                <span className="font-bold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">درگاه پرداخت شتابی</span>
+                <span className="text-xs font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-md">
                   توصیه شده
                 </span>
               </div>
@@ -119,7 +119,7 @@ export default function CheckoutShippingPaymentForm({
               <Wallet className="h-6 w-6" />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="font-black text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">پرداخت درب منزل (COD)</div>
+              <div className="font-bold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">پرداخت درب منزل (COD)</div>
               <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium leading-relaxed">
                 پرداخت وجه از طریق دستگاه کارت‌خوان مأمور پست هنگام تحویل کالا
               </div>

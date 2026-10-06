@@ -124,7 +124,10 @@
   --color-band-tint-dark: rgba(225, 29, 72, 0.06);
   /* Image placeholder tile — warm, from the canvas family (was cool slate) */
   --color-tile-light: #f8f6f4;
-  --color-tile-dark: rgba(255, 255, 255, 0.03);
+  --color-tile-dark: rgba(255, 255, 255, 0.06);
+  /* Product-art stage: a step darker than the white card so drawings don't vanish */
+  --color-stage-light: #efe6dc;
+  --color-stage-dark: rgba(255, 255, 255, 0.07);
 
   /* ── Elevation Shadows (token: shadow.*) ── */
   --shadow-elevation-1: 0 4px 20px rgba(11, 21, 54, 0.04);
@@ -407,6 +410,71 @@ textarea::placeholder {
 
 .brand-glow-emerald {
   box-shadow: var(--shadow-glow-emerald);
+}
+
+/* ── Shared controls. No `display` here: an unlayered display beats Tailwind `hidden`. ── */
+.btn-primary {
+  min-height: 44px;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.75rem;
+  background-color: var(--color-cta);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.875rem;
+  line-height: 1.25;
+  box-shadow: var(--shadow-glow-cta);
+  cursor: pointer;
+}
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--color-cta-hover);
+}
+.btn-primary:active:not(:disabled) {
+  background-color: var(--color-cta-active);
+}
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  min-height: 44px;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border-light);
+  background-color: var(--color-surface-light);
+  color: var(--color-text-main-light);
+  font-weight: 700;
+  font-size: 0.875rem;
+  line-height: 1.25;
+  cursor: pointer;
+}
+.dark .btn-secondary {
+  border-color: var(--color-border-dark);
+  background-color: var(--color-surface-dark);
+  color: var(--color-text-main-dark);
+}
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.field {
+  min-height: 44px;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border-light);
+  background-color: var(--color-surface-light);
+  color: var(--color-text-main-light);
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+.dark .field {
+  border-color: var(--color-border-dark);
+  background-color: var(--color-surface-dark);
+  color: var(--color-text-main-dark);
+}
+.field[aria-invalid="true"] {
+  border-color: var(--color-accent-error);
 }
 
 /* ── Logo Carousel ────────────────────────────────────── */

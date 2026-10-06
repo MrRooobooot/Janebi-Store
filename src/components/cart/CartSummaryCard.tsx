@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { Tag, ArrowLeft, ShieldCheck, CheckCircle2, XCircle, X } from 'lucide-react';
 import { formatPrice } from '../../lib/utils';
@@ -35,18 +36,15 @@ export default function CartSummaryCard({
 
   return (
     <div className="bg-[var(--color-surface-light)]/90 dark:bg-[var(--color-surface-dark)]/90 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] surface-card rounded-2xl p-5 shadow-sm lg:sticky lg:top-24 space-y-6">
-      <h3 className="font-black text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] flex items-center justify-between">
-        <span>خلاصه پیش‌فاکتور</span>
-        <span className="text-xs font-bold text-primary-500 dark:text-primary-300 bg-primary-50 dark:bg-primary-950/40 px-2.5 py-1 rounded-xl">
-          محاسبه رسمی
-        </span>
+      <h3 className="font-bold text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
+        خلاصه پیش‌فاکتور
       </h3>
 
       {/* Coupon form */}
       <form onSubmit={handleApplyCoupon} className="space-y-3">
         <label
           htmlFor="coupon-code-input"
-          className="block text-xs font-black text-slate-700 dark:text-slate-300"
+          className="block text-xs font-bold text-slate-700 dark:text-slate-300"
         >
           کد تخفیف یا کوپن هدیه دارید؟
         </label>
@@ -66,7 +64,7 @@ export default function CartSummaryCard({
               placeholder="مثلا: OFF20"
               aria-invalid={Boolean(couponError)}
               aria-describedby={couponError ? 'coupon-error-message' : appliedDiscount > 0 ? 'coupon-success-message' : undefined}
-              className={`w-full bg-white dark:bg-[var(--color-surface-dark)] border rounded-xl py-2.5 px-3.5 text-left font-mono text-xs font-bold text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none uppercase tracking-wider transition-colors ${
+              className={`field w-full py-2.5 px-3.5 text-left font-mono text-xs uppercase tracking-wider transition-colors ${
                 couponError
                   ? 'border-red-400 dark:border-red-600 focus:border-red-500'
                   : 'border-slate-200/90 dark:border-white/[0.08] focus:border-[var(--color-cta)]'
@@ -78,7 +76,7 @@ export default function CartSummaryCard({
             type="submit"
             disabled={couponLoading || !couponInput.trim()}
             aria-label="اعمال کد تخفیف"
-            className="min-touch-target inline-flex items-center justify-center bg-primary-600 hover:bg-primary-700 dark:bg-primary-600 dark:hover:bg-primary-500 text-white font-extrabold px-5 py-3 rounded-2xl text-xs transition-all disabled:opacity-40 active:scale-95 shadow-sm shrink-0"
+            className="btn-primary min-touch-target inline-flex items-center justify-center bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] dark:bg-[var(--color-cta)] dark:hover:bg-[var(--color-cta-hover)] text-white font-bold px-5 py-3 rounded-2xl text-xs transition-all disabled:opacity-40 active:scale-95 shadow-sm shrink-0"
           >
             {couponLoading ? 'بررسی...' : 'اعمال'}
           </button>
@@ -88,7 +86,7 @@ export default function CartSummaryCard({
           <div
             id="coupon-error-message"
             role="alert"
-            className="flex items-center justify-between text-xs font-black text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/40 p-3 rounded-2xl border border-rose-200/80 dark:border-rose-800/60"
+            className="flex items-center justify-between text-xs font-bold text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/40 p-3 rounded-2xl border border-rose-200/80 dark:border-rose-800/60"
           >
             <span className="flex items-center gap-1.5">
               <XCircle className="h-4 w-4 text-rose-500 shrink-0" />
@@ -111,7 +109,7 @@ export default function CartSummaryCard({
           <div
             id="coupon-success-message"
             role="status"
-            className="flex items-center justify-between text-xs font-black text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 p-3 rounded-2xl border border-emerald-200/80 dark:border-emerald-800/60 animate-fade-in"
+            className="flex items-center justify-between text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 p-3 rounded-2xl border border-emerald-200/80 dark:border-emerald-800/60 animate-fade-in"
           >
             <span className="flex items-center gap-1.5">
               <CheckCircle2 className="h-4 w-4 text-emerald-500" />
@@ -126,7 +124,7 @@ export default function CartSummaryCard({
       <div className="space-y-3.5 pt-2 text-xs font-bold text-slate-600 dark:text-slate-400">
         <div className="flex justify-between items-center">
           <span>جمع کل اقلام سبد</span>
-          <span className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-sm">
+          <span className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-sm">
             {formatPrice(cartTotal)}
           </span>
         </div>
@@ -134,47 +132,67 @@ export default function CartSummaryCard({
         {appliedDiscount > 0 && (
           <div className="flex justify-between items-center text-emerald-600 dark:text-emerald-400">
             <span>سود شما از تخفیف</span>
-            <span className="font-black text-sm">-{formatPrice(appliedDiscount)}</span>
+            <span className="font-bold text-sm">-{formatPrice(appliedDiscount)}</span>
           </div>
         )}
 
         <div className="flex justify-between items-center">
           <span>هزینه بسته‌بندی و ارسال</span>
           {isFreeShipping ? (
-            <span className="font-black text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-md text-[11px]">
+            <span className="font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-md text-xs">
               رایگان
             </span>
           ) : (
-            <span className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
+            <span className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
               {formatPrice(SHIPPING_FEES.standard)}
             </span>
           )}
         </div>
 
         <div className="border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pt-4 flex justify-between items-center text-sm">
-          <span className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">مبلغ نهایی قابل پرداخت:</span>
+          <span className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">مبلغ نهایی قابل پرداخت:</span>
           <div className="text-left">
-            <div className="font-black text-lg text-[var(--color-cta)] tracking-tight">
+            <div className="font-bold text-lg text-[var(--color-cta)] tracking-tight">
               {formatPrice(payable)}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Checkout Action Button — Rose CTA #e11d48 */}
       <Link
         to="/checkout"
         aria-label="ادامه فرایند خرید و تکمیل اطلاعات پرداخت"
-        className="w-full bg-primary-600 hover:bg-primary-700 dark:bg-primary-600 dark:hover:bg-primary-500 text-white font-black py-4 px-6 rounded-2xl shadow-lg shadow-[var(--color-cta)]/25 flex items-center justify-center gap-2.5 transition-all active:scale-98 text-sm sm:text-base group"
+        className="btn-primary hidden w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] dark:bg-[var(--color-cta)] dark:hover:bg-[var(--color-cta-hover)] text-white font-bold py-4 px-6 rounded-2xl shadow-lg shadow-[var(--color-cta)]/25 lg:flex items-center justify-center gap-2.5 transition-all active:scale-98 text-sm sm:text-base group"
       >
         <span>تکمیل اطلاعات و پرداخت</span>
         <ArrowLeft className="h-5 w-5 group-hover:translate-x-[-3px] transition-transform" />
       </Link>
 
-      <div className="flex items-center justify-center gap-2 text-[11px] font-bold text-slate-400 pt-2 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
+      <div className="hidden lg:flex items-center justify-center gap-2 text-xs font-bold text-slate-400 pt-2 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
         <ShieldCheck className="h-4 w-4 text-emerald-500" />
         <span>پرداخت امن و رمزنگاری‌شده بانکی</span>
       </div>
+
+      {createPortal(
+        <div className="fixed inset-x-0 bottom-0 z-50 pb-safe pointer-events-none lg:hidden">
+          <div className="mx-3 mb-[76px] pointer-events-auto">
+            <div className="surface-glass flex items-center gap-3 rounded-2xl p-3 text-right shadow-2xl">
+              <div className="min-w-0 shrink-0">
+                <p className="text-xs font-bold text-gray-500 dark:text-gray-400">مبلغ نهایی</p>
+                <p className="text-sm font-bold text-primary-600 dark:text-primary-400">{formatPrice(payable)}</p>
+              </div>
+              <Link
+                to="/checkout"
+                aria-label="ادامه فرایند خرید و تکمیل اطلاعات پرداخت"
+                className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-[var(--color-cta)] px-3 text-xs font-bold text-white shadow-md"
+              >
+                <span>تکمیل اطلاعات و پرداخت</span>
+              </Link>
+            </div>
+          </div>
+        </div>,
+        document.body,
+      )}
     </div>
   );
 }

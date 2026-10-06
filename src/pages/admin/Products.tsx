@@ -388,7 +388,7 @@ export default function AdminProducts() {
         </div>
         <button
           onClick={() => openModal()}
-          className="flex items-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-extrabold px-5 py-3 rounded-2xl text-xs shadow-lg shadow-primary-500/25 transition-all cursor-pointer self-start sm:self-auto hover:scale-105 active:scale-95"
+          className="btn-primary flex items-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold px-5 py-3 rounded-2xl text-xs shadow-lg shadow-primary-500/25 transition-all cursor-pointer self-start sm:self-auto hover:scale-105 active:scale-95"
         >
           <Plus className="h-4 w-4" />
           <span>افزودن محصول جدید</span>
@@ -396,7 +396,7 @@ export default function AdminProducts() {
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 p-4 rounded-3xl border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs flex flex-col md:flex-row items-center gap-3">
+      <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 p-4 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700 shadow-xs flex flex-col md:flex-row items-center gap-3">
         <div className="relative flex-1 w-full">
           <input
             type="text"
@@ -434,11 +434,11 @@ export default function AdminProducts() {
       </div>
 
       {/* Products Table */}
-      <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl border border-[var(--color-border-light)] dark:border-gray-700 overflow-hidden shadow-xs">
+      <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl border border-[var(--color-border-light)] dark:border-gray-700 overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-right border-collapse">
             <thead>
-              <tr className="border-b border-[var(--color-border-light)] dark:border-gray-700 bg-gray-50/75 dark:bg-gray-800/50 text-[11px] font-black text-gray-600 dark:text-gray-300">
+              <tr className="border-b border-[var(--color-border-light)] dark:border-gray-700 bg-gray-50/75 dark:bg-gray-800/50 text-xs font-bold text-gray-600 dark:text-gray-300">
                 <th className="p-4 pr-6">کالا و دسته‌بندی</th>
                 <th className="p-4">برند</th>
                 <th className="p-4">قیمت اصلی</th>
@@ -482,18 +482,18 @@ export default function AdminProducts() {
                             className="w-12 h-12 rounded-xl object-contain bg-gray-50 dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-gray-700 p-1 shrink-0"
                           />
                           <div className="min-w-0">
-                            <h4 className="font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] line-clamp-1 leading-snug">{p.title}</h4>
+                            <h4 className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] line-clamp-1 leading-snug">{p.title}</h4>
                             <div className="flex items-center gap-2 mt-1">
-                              <span className="inline-block px-2 py-0.5 rounded-md text-[10px] font-bold bg-primary-50 dark:bg-primary-950/40 text-primary-700 dark:text-primary-300 border border-primary-200/50 dark:border-primary-800/40">
+                              <span className="inline-block px-2 py-0.5 rounded-md text-xs font-bold bg-primary-50 dark:bg-primary-950/40 text-primary-700 dark:text-primary-300 border border-primary-200/50 dark:border-primary-800/40">
                                 {p.category}
                               </span>
                               {p.sku && (
-                                <span className="text-[10px] text-gray-600 dark:text-gray-400 font-mono">
+                                <span className="text-xs text-gray-600 dark:text-gray-400 font-mono">
                                   SKU: {p.sku}
                                 </span>
                               )}
                               {p.isActive === 0 && (
-                                <span className="inline-block px-2 py-0.5 rounded-md text-[10px] font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 border border-gray-300/60 dark:border-gray-700">
+                                <span className="inline-block px-2 py-0.5 rounded-md text-xs font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 border border-gray-300/60 dark:border-gray-700">
                                   مخفی
                                 </span>
                               )}
@@ -509,11 +509,11 @@ export default function AdminProducts() {
                       </td>
                       <td className="p-4">
                         {hasDiscount ? (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/50 dark:border-rose-800/40">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/50 dark:border-rose-800/40">
                             {toPersianDigits(p.discount || 0)}٪
                           </span>
                         ) : (
-                          <span className="text-gray-600 dark:text-gray-400 text-[11px]">-</span>
+                          <span className="text-gray-600 dark:text-gray-400 text-xs">-</span>
                         )}
                       </td>
                       <td className="p-4 font-bold text-[var(--color-emphasis-text)] font-mono">
@@ -527,9 +527,9 @@ export default function AdminProducts() {
                             const belowFloor = pct < MIN_MARGIN_PCT;
                             return (
                               <div className="flex flex-col items-start gap-1">
-                                <span className="font-mono text-[11px]">{formatPrice(margin)}</span>
+                                <span className="font-mono text-xs">{formatPrice(margin)}</span>
                                 <span
-                                  className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black border ${
+                                  className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold border ${
                                     belowFloor
                                       ? 'text-rose-700 bg-rose-50 dark:bg-rose-900/20 border-rose-200/50 dark:border-rose-800/40'
                                       : 'text-emerald-700 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200/50 dark:border-emerald-800/40'
@@ -541,7 +541,7 @@ export default function AdminProducts() {
                             );
                           })()
                         ) : (
-                          <span className="text-gray-600 dark:text-gray-400 text-[11px]">-</span>
+                          <span className="text-gray-600 dark:text-gray-400 text-xs">-</span>
                         )}
                       </td>
                       <td className="p-4">
@@ -559,7 +559,7 @@ export default function AdminProducts() {
                               if (e.key === 'Escape') setStockEditId(null);
                             }}
                             aria-label={`موجودی جدید برای ${p.title}`}
-                            className="w-20 bg-white dark:bg-gray-700 border-2 border-primary-500 rounded-xl px-2 py-1 text-xs font-mono font-black text-gray-800 dark:text-gray-100 focus:outline-none text-center"
+                            className="w-20 bg-white dark:bg-gray-700 border-2 border-primary-500 rounded-xl px-2 py-1 text-xs font-mono font-bold text-gray-800 dark:text-gray-100 focus:outline-none text-center"
                           />
                         ) : (
                           <button
@@ -611,7 +611,7 @@ export default function AdminProducts() {
       {/* Modern Fixed-Height Responsive Modal */}
       {isModalOpen && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/65 backdrop-blur-md">
-          <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-3xl max-w-2xl w-full shadow-2xl border border-[var(--color-border-light)] dark:border-gray-700 flex flex-col max-h-[92vh] overflow-hidden text-right animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-[var(--color-surface-light)] dark:bg-gray-800 rounded-2xl max-w-2xl w-full shadow-2xl border border-[var(--color-border-light)] dark:border-gray-700 flex flex-col max-h-[92vh] overflow-hidden text-right animate-in fade-in zoom-in-95 duration-200">
             
             {/* Modal Sticky Header */}
             <div className="p-5 border-b border-[var(--color-border-light)] dark:border-gray-700 flex items-center justify-between bg-[var(--color-surface-light)]/80 dark:bg-gray-800/80 backdrop-blur-md shrink-0">
@@ -620,10 +620,10 @@ export default function AdminProducts() {
                   <Package className="h-5 w-5" />
                 </div>
                 <div>
-                  <h2 className="text-base sm:text-lg font-black text-[var(--color-text-main-light)] dark:text-white">
+                  <h2 className="text-base sm:text-lg font-bold text-[var(--color-text-main-light)] dark:text-white">
                     {editingProduct ? `ویرایش کالا: ${editingProduct.title}` : 'افزودن کالای جدید به فروشگاه'}
                   </h2>
-                  <span className="text-[11px] text-gray-500">اطلاعات کالا به صورت زنده در کاتالوگ و انبار ذخیره خواهد شد</span>
+                  <span className="text-xs text-gray-500">اطلاعات کالا به صورت زنده در کاتالوگ و انبار ذخیره خواهد شد</span>
                 </div>
               </div>
               <button 
@@ -639,7 +639,7 @@ export default function AdminProducts() {
               
               {/* Product Title */}
               <div>
-                <label className="block text-gray-800 dark:text-gray-200 mb-1.5 font-black">
+                <label className="block text-gray-800 dark:text-gray-200 mb-1.5 font-bold">
                   عنوان کامل محصول <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -657,7 +657,7 @@ export default function AdminProducts() {
                 <div>
                   <label className="block text-gray-800 dark:text-gray-200 mb-1.5 flex items-center justify-between">
                     <span>دسته‌بندی <span className="text-rose-500">*</span></span>
-                    <span className="text-[10px] text-[var(--color-emphasis-text)] flex items-center gap-1 font-bold">
+                    <span className="text-xs text-[var(--color-emphasis-text)] flex items-center gap-1 font-bold">
                       <Wand2 className="h-3 w-3" /> انتخاب خودکار وکتور
                     </span>
                   </label>
@@ -694,14 +694,14 @@ export default function AdminProducts() {
 
               {/* Price Calculation Hub */}
               <div className="bg-primary-50/50 dark:bg-primary-950/20 p-4 rounded-2xl border border-primary-200/60 dark:border-primary-800/40 space-y-4">
-                <div className="flex items-center gap-2 text-primary-800 dark:text-primary-300 font-black">
+                <div className="flex items-center gap-2 text-primary-800 dark:text-primary-300 font-bold">
                   <Calculator className="h-4 w-4 text-[var(--color-emphasis-text)]" />
                   <span>محاسبه هوشمند قیمت و تخفیف کالا</span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
-                    <label className="block text-gray-700 dark:text-gray-300 mb-1 text-[11px]">قیمت اصلی (قبل تخفیف - تومان)</label>
+                    <label className="block text-gray-700 dark:text-gray-300 mb-1 text-xs">قیمت اصلی (قبل تخفیف - تومان)</label>
                     <input
                       type="text"
                       value={formData.originalPrice ? formatPrice(parseInt(toEnglishDigits(formData.originalPrice), 10) || 0) : ''}
@@ -712,7 +712,7 @@ export default function AdminProducts() {
                   </div>
 
                   <div>
-                    <label className="block text-gray-700 dark:text-gray-300 mb-1 text-[11px]">درصد تخفیف (٪)</label>
+                    <label className="block text-gray-700 dark:text-gray-300 mb-1 text-xs">درصد تخفیف (٪)</label>
                     <input
                       type="text"
                       inputMode="numeric"
@@ -724,14 +724,14 @@ export default function AdminProducts() {
                   </div>
 
                   <div>
-                    <label className="block text-gray-700 dark:text-gray-300 mb-1 text-[11px]">قیمت نهایی فروش (تومان) <span className="text-rose-500">*</span></label>
+                    <label className="block text-gray-700 dark:text-gray-300 mb-1 text-xs">قیمت نهایی فروش (تومان) <span className="text-rose-500">*</span></label>
                     <input
                       type="text"
                       required
                       value={formData.price ? formatPrice(parseInt(toEnglishDigits(formData.price), 10) || 0) : ''}
                       onChange={(e) => handlePriceChange(e.target.value)}
                       placeholder="مثال: ۹۸۰,۰۰۰"
-                      className="w-full bg-[var(--color-surface-light)] dark:bg-gray-800 border border-primary-300 dark:border-primary-500 rounded-xl p-2.5 text-xs font-mono font-black text-[var(--color-emphasis-text)] focus:outline-none focus:border-primary-500"
+                      className="w-full bg-[var(--color-surface-light)] dark:bg-gray-800 border border-primary-300 dark:border-primary-500 rounded-xl p-2.5 text-xs font-mono font-bold text-[var(--color-emphasis-text)] focus:outline-none focus:border-primary-500"
                     />
                   </div>
                 </div>
@@ -805,7 +805,7 @@ export default function AdminProducts() {
               <div>
                 <label className="block text-gray-800 dark:text-gray-200 mb-2 flex items-center justify-between">
                   <span>تصویر و وکتور کالا (کاملاً متقارن و سنتر)</span>
-                  <span className="text-[11px] text-[var(--color-emphasis-text)] font-bold">
+                  <span className="text-xs text-[var(--color-emphasis-text)] font-bold">
                     پیشنهاد متناسب با دسته: {formData.category}
                   </span>
                 </label>
@@ -821,11 +821,11 @@ export default function AdminProducts() {
                     className="w-16 h-16 rounded-xl border border-gray-200 dark:border-gray-600 object-contain p-1.5 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] shadow-sm shrink-0" 
                   />
                   <div className="overflow-hidden grow">
-                    <span className="text-[11px] text-gray-500 dark:text-gray-400 block mb-0.5">آدرس فایل تصویر وکتور:</span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 block mb-0.5">آدرس فایل تصویر وکتور:</span>
                     <span className="font-mono text-xs text-[var(--color-emphasis-text)] font-bold truncate block dir-ltr text-left">
                       {formData.image}
                     </span>
-                    <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold block mt-1">
+                    <span className="text-xs text-emerald-600 dark:text-emerald-400 font-bold block mt-1">
                       ✓ بهینه‌سازی‌شده برای بارگذاری محلی و بدون باگ در شبکه ایران
                     </span>
                   </div>
@@ -833,7 +833,7 @@ export default function AdminProducts() {
 
                 {/* Real photo upload — POST /api/admin/upload/product-image (JPEG/PNG/WebP ≤5MB) */}
                 <div className="flex items-center gap-2 mb-3">
-                  <label className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800 text-sky-700 dark:text-sky-300 text-[11px] font-bold cursor-pointer hover:bg-sky-100 dark:hover:bg-sky-900/40 transition-colors">
+                  <label className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800 text-sky-700 dark:text-sky-300 text-xs font-bold cursor-pointer hover:bg-sky-100 dark:hover:bg-sky-900/40 transition-colors">
                     <Upload className="h-3.5 w-3.5" />
                     {uploading ? 'در حال آپلود...' : 'آپلود عکس واقعی (JPG/PNG/WebP)'}
                     <input
@@ -844,7 +844,7 @@ export default function AdminProducts() {
                       onChange={handleImageUpload}
                     />
                   </label>
-                  {uploadError && <span className="text-[10px] text-rose-600 dark:text-rose-400 font-bold">{uploadError}</span>}
+                  {uploadError && <span className="text-xs text-rose-600 dark:text-rose-400 font-bold">{uploadError}</span>}
                 </div>
 
                 {/* Visual Grid Selector */}
@@ -868,8 +868,8 @@ export default function AdminProducts() {
                       >
                         <img src={item.url} alt={item.label} width="36" height="36" loading="lazy" decoding="async" className="w-9 h-9 rounded-lg object-contain bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] p-0.5 shrink-0 shadow-xs" />
                         <div className="min-w-0">
-                          <span className="text-[11px] font-black truncate block leading-tight">{item.label}</span>
-                          <span className={`text-[9px] block ${isSelected ? 'text-primary-100' : 'text-gray-600 dark:text-gray-400'}`}>{item.category}</span>
+                          <span className="text-xs font-bold truncate block leading-tight">{item.label}</span>
+                          <span className={`text-xs block ${isSelected ? 'text-primary-100' : 'text-gray-600 dark:text-gray-400'}`}>{item.category}</span>
                         </div>
                       </button>
                     );
@@ -918,7 +918,7 @@ export default function AdminProducts() {
               <button
                 type="submit"
                 form="product-form"
-                className="px-6 py-2.5 rounded-2xl text-xs font-black bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white shadow-md shadow-primary-500/25 transition-all cursor-pointer hover:scale-102 active:scale-95"
+                className="btn-primary px-6 py-2.5 rounded-2xl text-xs font-bold bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white shadow-md shadow-primary-500/25 transition-all cursor-pointer hover:scale-102 active:scale-95"
               >
                 {editingProduct ? 'ذخیره تغییرات محصول' : 'ثبت و انتشار محصول'}
               </button>

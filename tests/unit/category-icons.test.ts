@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getCategoryIcon } from '../../src/lib/categoryIcons';
+import { getCategoryIcon, getCategoryWell } from '../../src/lib/categoryIcons';
 import {
   Layers, Headset, Car, PlugZap, Cable, Shield, Headphones, BatteryCharging,
   MonitorSmartphone, Watch, Gamepad2, Usb, ArrowRightLeft, Smartphone, Sparkles,
@@ -34,5 +34,15 @@ describe('categoryIcons — thematic mapping', () => {
   it('unknown title falls back to Smartphone', () => {
     expect(getCategoryIcon('دسته ناشناخته')).toBe(Smartphone);
     expect(getCategoryIcon('')).toBe(Smartphone);
+  });
+
+  it('gives category marks a tinted plate instead of the page canvas', () => {
+    const titles = ['قاب و کاور موبایل', 'گلس و محافظ صفحه', 'کابل و سیم', 'شارژر و آداپتور', 'پاوربانک', 'هولدر و نگهدارنده'];
+    const wells = titles.map((title) => getCategoryWell(title));
+    for (const well of wells) {
+      expect(well).not.toMatch(/slate-100|bg-white/);
+      expect(well.startsWith('bg-')).toBe(true);
+    }
+    expect(new Set(wells).size).toBeGreaterThan(3);
   });
 });

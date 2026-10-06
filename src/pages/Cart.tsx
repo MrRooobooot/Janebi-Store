@@ -44,7 +44,7 @@ export default function Cart() {
           description="می‌توانید برای مشاهده محصولات و اضافه کردن آن‌ها به سبد خرید، به صفحه فروشگاه سر بزنید."
           actionText="مشاهده محصولات"
           actionLink="/products"
-          className="bg-[var(--color-surface-light)]/80 dark:bg-[var(--color-surface-dark)]/80 backdrop-blur-xl rounded-3xl p-12 shadow-xs border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]"
+          className="bg-[var(--color-surface-light)]/80 dark:bg-[var(--color-surface-dark)]/80 backdrop-blur-xl rounded-2xl p-12 shadow-xs border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]"
         />
       </motion.div>
     );
@@ -55,15 +55,12 @@ export default function Cart() {
       initial={shouldReduceMotion ? false : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className="w-full text-right space-y-6"
+      className="w-full text-right space-y-6 pb-40 lg:pb-0"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white flex items-center gap-3">
-          <span className="relative">
-            سبد خرید
-            <span className="absolute bottom-1 left-0 right-0 h-3 bg-[var(--color-cta)]/50 dark:bg-[var(--color-cta)]/20 -z-10 rounded-sm"></span>
-          </span>
+          <span>سبد خرید</span>
           <span className="text-xs font-bold bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-slate-300 px-3 py-1 rounded-full border border-slate-200/80 dark:border-white/[0.08]">
             {toPersianDigits(cart.length)} کالا
           </span>

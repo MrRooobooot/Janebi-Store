@@ -30,7 +30,7 @@ export default function NotFound() {
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-sm">
         <Link 
           to="/"
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-md shadow-[var(--color-cta)]/25"
+          className="btn-primary w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-md shadow-[var(--color-cta)]/25"
         >
           <Home className="h-5 w-5" />
           <span>بازگشت به خانه</span>

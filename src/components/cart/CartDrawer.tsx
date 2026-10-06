@@ -81,8 +81,8 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     <ShoppingBag className="h-5 w-5" />
                   </div>
                   <div>
-                    <h2 id="cart-drawer-title" className="font-black text-base">سبد خرید شما</h2>
-                    <p aria-live="polite" className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">
+                    <h2 id="cart-drawer-title" className="font-bold text-base">سبد خرید شما</h2>
+                    <p aria-live="polite" className="text-xs text-zinc-500 dark:text-zinc-400 font-medium">
                       {toPersianDigits(cartCount)} کالا در سبد
                     </p>
                   </div>
@@ -107,10 +107,10 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     </span>
                   ) : (
                     <span className="text-zinc-600 dark:text-zinc-400">
-                      تنها <strong className="text-[var(--color-emphasis-text)] font-black">{formatPrice(amountLeft)}</strong> تا ارسال رایگان
+                      تنها <strong className="text-[var(--color-emphasis-text)] font-bold">{formatPrice(amountLeft)}</strong> تا ارسال رایگان
                     </span>
                   )}
-                  <span className="font-mono text-zinc-500 dark:text-zinc-400 text-[11px]">
+                  <span className="font-mono text-zinc-500 dark:text-zinc-400 text-xs">
                     {toPersianDigits(progressPercent)}٪
                   </span>
                 </div>
@@ -132,14 +132,14 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                       <ShoppingCart className="h-8 w-8" />
                     </div>
                     <div>
-                      <h3 className="font-black text-base text-zinc-800 dark:text-zinc-200">سبد خرید خالی است</h3>
+                      <h3 className="font-bold text-base text-zinc-800 dark:text-zinc-200">سبد خرید خالی است</h3>
                       <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 max-w-xs leading-relaxed">
                         محصولات مورد علاقه خود را انتخاب کنید و به سبد خرید اضافه نمایید.
                       </p>
                     </div>
                     <button
                       onClick={() => { onClose(); navigate('/products'); }}
-                      className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-black px-5 py-2.5 rounded-xl shadow-md transition-all cursor-pointer"
+                      className="btn-primary bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white text-xs font-bold px-5 py-2.5 rounded-xl shadow-md transition-all cursor-pointer"
                     >
                       مشاهده کاتالوگ محصولات
                     </button>
@@ -162,18 +162,18 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
 
                           {/* Price & Savings Display */}
                           <div className="mt-1 flex items-center gap-2">
-                            <span className="text-xs font-black text-[var(--color-emphasis-text)]">
+                            <span className="text-xs font-bold text-[var(--color-emphasis-text)]">
                               {formatPrice(item.price * item.quantity)}
                             </span>
                             {hasDiscount && (
-                              <span className="text-[11px] text-zinc-500 dark:text-zinc-400 line-through">
+                              <span className="text-xs text-zinc-500 dark:text-zinc-400 line-through">
                                 {formatPrice((item.originalPrice as number) * item.quantity)}
                               </span>
                             )}
                           </div>
 
                           {hasDiscount && discountTotal > 0 && (
-                            <div className="mt-1 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 text-[10px] font-black">
+                            <div className="mt-1 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 text-xs font-bold">
                               <Percent className="h-2.5 w-2.5" />
                               <span>سود شما: {formatPrice(discountTotal)}</span>
                             </div>
@@ -224,7 +224,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 <div className="p-4 sm:p-5 border-t border-zinc-100 dark:border-zinc-800/80 bg-zinc-50/70 dark:bg-zinc-900/40 space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400">مجموع کل قابل پرداخت:</span>
-                    <span aria-live="polite" className="text-base font-black text-[var(--color-emphasis-text)]">
+                    <span aria-live="polite" className="text-base font-bold text-[var(--color-emphasis-text)]">
                       {formatPrice(cartTotal)}
                     </span>
                   </div>
@@ -238,7 +238,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     </button>
                     <button
                       onClick={() => { onClose(); navigate('/checkout'); }}
-                      className="w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-black py-3 rounded-xl text-xs shadow-md shadow-[var(--color-cta)]/25 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                      className="btn-primary w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold py-3 rounded-xl text-xs shadow-md shadow-[var(--color-cta)]/25 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       <span>تکمیل و پرداخت</span>
                       <ArrowLeft className="h-4 w-4" />

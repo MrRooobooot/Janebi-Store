@@ -62,7 +62,7 @@ export default function AdminLayout() {
   if (!user || user.role !== 'admin') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 p-4">
-        <div className="max-w-md w-full bg-zinc-50 dark:bg-zinc-900/60 rounded-3xl p-8 text-center shadow-xl border border-zinc-200/80 dark:border-zinc-800">
+        <div className="max-w-md w-full bg-zinc-50 dark:bg-zinc-900/60 rounded-2xl p-8 text-center shadow-xl border border-zinc-200/80 dark:border-zinc-800">
           <div className="bg-red-100 dark:bg-red-900/30 p-6 rounded-full inline-block mb-6">
             <ShieldAlert className="h-16 w-16 text-red-500" />
           </div>
@@ -72,7 +72,7 @@ export default function AdminLayout() {
           </p>
           <button 
             onClick={() => navigate('/')}
-            className="w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold py-3.5 rounded-xl transition-all"
+            className="btn-primary w-full bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold py-3.5 rounded-xl transition-all"
           >
             بازگشت به فروشگاه
           </button>
@@ -87,7 +87,7 @@ export default function AdminLayout() {
   if (user.mustChangePassword) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 p-4">
-        <div className="max-w-md w-full bg-zinc-50 dark:bg-zinc-900/60 rounded-3xl p-8 text-center shadow-xl border border-zinc-200/80 dark:border-zinc-800">
+        <div className="max-w-md w-full bg-zinc-50 dark:bg-zinc-900/60 rounded-2xl p-8 text-center shadow-xl border border-zinc-200/80 dark:border-zinc-800">
           <div className="bg-amber-100 dark:bg-amber-900/30 p-6 rounded-full inline-block mb-6">
             <ShieldAlert className="h-16 w-16 text-amber-500" />
           </div>
@@ -149,10 +149,10 @@ export default function AdminLayout() {
             <LogoSymbol className="w-6 h-6" />
           </div>
           <div>
-            <span className="text-sm font-black text-[var(--color-text-main-light)] dark:text-white">
+            <span className="text-sm font-bold text-[var(--color-text-main-light)] dark:text-white">
               جانبی <span className="text-[var(--color-emphasis-text)]">آرنا</span>
             </span>
-            <span className="block text-[9px] text-zinc-500 dark:text-zinc-400 font-bold uppercase tracking-widest font-mono">ADMIN PANEL</span>
+            <span className="block text-xs text-zinc-500 dark:text-zinc-400 font-bold uppercase tracking-widest font-mono">ADMIN PANEL</span>
           </div>
         </Link>
         <div className="flex items-center gap-1">
@@ -186,7 +186,7 @@ export default function AdminLayout() {
         />
         <div className="overflow-hidden grow">
           <div className="font-bold text-[var(--color-text-main-light)] dark:text-white text-xs truncate">{user.name}</div>
-          <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+          <div className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
             مدیر سیستم (آنلاین)
           </div>
@@ -197,7 +197,7 @@ export default function AdminLayout() {
       <nav className="flex-1 px-3 py-2 space-y-4 overflow-y-auto">
         {navSections.map((section) => (
           <div key={section.title}>
-            <div className="px-3.5 pb-1.5 text-[10px] font-bold text-zinc-400 dark:text-zinc-500 tracking-wider">{section.title}</div>
+            <div className="px-3.5 pb-1.5 text-xs font-bold text-zinc-400 dark:text-zinc-500 tracking-wider">{section.title}</div>
             <div className="space-y-1">
         {section.items.map((item) => {
           const Icon = item.icon;
@@ -220,7 +220,7 @@ export default function AdminLayout() {
                 <span>{item.label}</span>
               </div>
               {item.badge && (
-                <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold text-white shadow-xs ${item.badgeColor || 'bg-rose-500'}`}>
+                <span className={`px-2 py-0.5 rounded-full text-xs font-bold text-white shadow-xs ${item.badgeColor || 'bg-rose-500'}`}>
                   {item.badge}
                 </span>
               )}
@@ -302,10 +302,10 @@ export default function AdminLayout() {
             <div className="w-7 h-7 rounded-lg bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 flex items-center justify-center shadow-xs">
               <LogoSymbol className="w-5 h-5" />
             </div>
-            <span className="text-xs font-black text-[var(--color-text-main-light)] dark:text-white">
+            <span className="text-xs font-bold text-[var(--color-text-main-light)] dark:text-white">
               جانبی <span className="text-[var(--color-emphasis-text)]">آرنا</span>
             </span>
-            <span className="text-[9px] bg-primary-100 dark:bg-primary-950/60 text-primary-700 dark:text-primary-300 font-black px-2 py-0.5 rounded-md border border-primary-200 dark:border-primary-900/50">مدیریت</span>
+            <span className="text-xs bg-primary-100 dark:bg-primary-950/60 text-primary-700 dark:text-primary-300 font-bold px-2 py-0.5 rounded-md border border-primary-200 dark:border-primary-900/50">مدیریت</span>
           </div>
           <button
             onClick={toggleTheme}

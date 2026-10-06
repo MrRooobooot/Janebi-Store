@@ -119,7 +119,7 @@ export default function ProductFilterSidebar({
           >
             <span>همه دسته‌ها</span>
             <span
-              className={`text-[10px] px-2 py-0.5 rounded-full font-bold tabular-nums min-w-7 text-center transition-colors ${
+              className={`text-xs px-2 py-0.5 rounded-full font-bold tabular-nums min-w-7 text-center transition-colors ${
                 selectedCategory === 'همه'
                   ? 'bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)]'
                   : 'bg-gray-100 dark:bg-white/[0.06] text-gray-600 dark:text-gray-300'
@@ -144,7 +144,7 @@ export default function ProductFilterSidebar({
             >
               <span>{cat.name}</span>
               <span
-                className={`text-[10px] px-2 py-0.5 rounded-full font-bold tabular-nums min-w-7 text-center transition-colors ${
+                className={`text-xs px-2 py-0.5 rounded-full font-bold tabular-nums min-w-7 text-center transition-colors ${
                   selectedCategory === cat.name
                     ? 'bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)]'
                     : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300'
@@ -169,7 +169,7 @@ export default function ProductFilterSidebar({
           {selectedBrands.length > 0 && (
             <button
               onClick={() => setSelectedBrands([])}
-              className="text-[11px] text-[var(--color-emphasis-text)] hover:text-[var(--color-cta-hover)] font-medium px-2 py-1 rounded-lg hover:bg-[var(--color-cta)]/10 dark:hover:bg-[var(--color-cta)]/10 transition-colors"
+              className="text-xs text-[var(--color-emphasis-text)] hover:text-[var(--color-cta-hover)] font-medium px-2 py-1 rounded-lg hover:bg-[var(--color-cta)]/10 dark:hover:bg-[var(--color-cta)]/10 transition-colors"
             >
               پاک کردن
             </button>
@@ -201,7 +201,7 @@ export default function ProductFilterSidebar({
                   <span>{b.name}</span>
                 </div>
                 <span
-                  className={`text-[10px] font-bold ${
+                  className={`text-xs font-bold ${
                     isChecked ? 'text-[var(--color-emphasis-text)]' : 'text-gray-500 dark:text-gray-300'
                   }`}
                 >
@@ -225,7 +225,7 @@ export default function ProductFilterSidebar({
         {/* Min & Max Inputs */}
         <div className="grid grid-cols-2 gap-3 mb-4">
           <div className="group">
-            <label className="block text-[10px] font-medium text-gray-600 dark:text-gray-400 mb-1.5 group-focus-within:text-[var(--color-emphasis-text)] transition-colors">
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5 group-focus-within:text-[var(--color-emphasis-text)] transition-colors">
               از قیمت
             </label>
             <input
@@ -242,7 +242,7 @@ export default function ProductFilterSidebar({
             />
           </div>
           <div className="group">
-            <label className="block text-[10px] font-medium text-gray-600 dark:text-gray-400 mb-1.5 group-focus-within:text-[var(--color-emphasis-text)] transition-colors">
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5 group-focus-within:text-[var(--color-emphasis-text)] transition-colors">
               تا قیمت
             </label>
             <input
@@ -271,7 +271,7 @@ export default function ProductFilterSidebar({
                   setMinPrice(preset.min);
                   setMaxPrice(preset.max);
                 }}
-                className={`text-[10px] px-3 py-1.5 rounded-lg transition-all duration-200 border-2 ${
+                className={`text-xs px-3 py-1.5 rounded-lg transition-all duration-200 border-2 ${
                   isActive
                     ? 'bg-[var(--color-cta)] text-white border-[var(--color-cta)] font-bold shadow-md shadow-[var(--color-cta)]/25'
                     : 'bg-[var(--color-surface-light)] dark:bg-gray-800/80 text-gray-600 dark:text-gray-300 border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] hover:border-gray-200 dark:hover:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 font-medium'
@@ -370,13 +370,13 @@ export default function ProductFilterSidebar({
   return (
     <>
       {/* Desktop Filter Sidebar */}
-      <aside className="hidden lg:block lg:col-span-3 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 pb-28 shadow-xs h-fit sticky top-28 max-h-[calc(100vh-7.5rem)] overflow-y-auto scroll-smooth">
+      <aside className="hidden lg:block lg:col-span-3 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-6 pb-28 shadow-xs h-fit sticky top-28 max-h-[calc(100vh-7.5rem)] overflow-y-auto scroll-smooth">
         <div className="flex items-center justify-between mb-6 pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
-          <h3 className="font-extrabold text-base text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
+          <h3 className="font-bold text-base text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2">
             <span>فیلترهای پیشرفته</span>
           </h3>
           {activeFiltersCount > 0 && (
-            <span className="bg-[var(--color-cta)] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-xs">
+            <span className="bg-[var(--color-cta)] text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-xs">
               {activeFiltersCount}
             </span>
           )}

@@ -56,7 +56,7 @@ export default function RecentlyViewed({
             <History className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="text-xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] tracking-tight flex items-center gap-2">
+            <h3 className="text-xl font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] tracking-tight flex items-center gap-2">
               {title}
             </h3>
             <p className="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">

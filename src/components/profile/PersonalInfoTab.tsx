@@ -81,8 +81,8 @@ export default function PersonalInfoTab() {
   return (
     <div className="space-y-6 text-right">
       {/* Profile Form */}
-      <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 sm:p-8 shadow-xs space-y-6">
-        <h2 className="font-extrabold text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2 pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
+      <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-6 sm:p-8 shadow-xs space-y-6">
+        <h2 className="font-bold text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2 pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
           <User className="h-5 w-5 text-[var(--color-emphasis-text)]" />
           <span>اطلاعات حساب کاربری</span>
         </h2>
@@ -167,7 +167,7 @@ export default function PersonalInfoTab() {
 
           <button
             type="submit"
-            className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold text-xs px-6 py-3 rounded-2xl flex items-center gap-2 transition-all shadow-md shadow-[var(--color-cta)]/25 active:scale-95 cursor-pointer"
+            className="btn-primary bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white font-bold text-xs px-6 py-3 rounded-2xl flex items-center gap-2 transition-all shadow-md shadow-[var(--color-cta)]/25 active:scale-95 cursor-pointer"
           >
             <Save className="h-4 w-4" />
             ذخیره تغییرات حساب
@@ -176,8 +176,8 @@ export default function PersonalInfoTab() {
       </div>
 
       {/* Password Change Form */}
-      <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 sm:p-8 shadow-xs space-y-6">
-        <h2 className="font-extrabold text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2 pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
+      <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-6 sm:p-8 shadow-xs space-y-6">
+        <h2 className="font-bold text-lg text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] flex items-center gap-2 pb-4 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
           <ShieldCheck className="h-5 w-5 text-[var(--color-emphasis-text)]" />
           <span>تغییر کلمه عبور</span>
         </h2>
@@ -222,7 +222,7 @@ export default function PersonalInfoTab() {
           <button
             type="submit"
             disabled={passwordLoading}
-            className="bg-gray-900 dark:bg-[var(--color-cta)] hover:bg-black dark:hover:bg-[var(--color-cta-hover)] text-white font-bold text-xs px-6 py-3 rounded-2xl flex items-center gap-2 transition-all shadow-md active:scale-95 disabled:opacity-50 cursor-pointer"
+            className="btn-primary bg-gray-900 dark:bg-[var(--color-cta)] hover:bg-black dark:hover:bg-[var(--color-cta-hover)] text-white font-bold text-xs px-6 py-3 rounded-2xl flex items-center gap-2 transition-all shadow-md active:scale-95 disabled:opacity-50 cursor-pointer"
           >
             {passwordLoading ? 'در حال به‌روزرسانی...' : 'به‌روزرسانی کلمه عبور'}
           </button>

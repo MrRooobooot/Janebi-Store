@@ -53,7 +53,7 @@ export default function ProfileSidebar({
                 <Icon className={`h-4 w-4 ${isActive ? 'text-[var(--color-cta)]' : 'text-gray-400'}`} />
                 <span>{item.label}</span>
                 {item.badge && (
-                  <span className="text-[10px] px-1.5 py-0.5 rounded-full font-bold bg-gray-100 dark:bg-gray-800 text-gray-500">
+                  <span className="text-xs px-1.5 py-0.5 rounded-full font-bold bg-gray-100 dark:bg-gray-800 text-gray-500">
                     {item.badge}
                   </span>
                 )}
@@ -71,7 +71,7 @@ export default function ProfileSidebar({
       </div>
 
       {/* Desktop sidebar (lg and up only) */}
-      <aside className="hidden lg:block bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-3xl p-6 shadow-xs text-right space-y-6">
+      <aside className="hidden lg:block bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-6 shadow-xs text-right space-y-6">
       {/* User Header Badge */}
       <div className="flex items-center gap-4 pb-6 border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">
         <div className="relative shrink-0">
@@ -88,10 +88,10 @@ export default function ProfileSidebar({
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <h3 className="font-extrabold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] truncate">
+            <h3 className="font-bold text-sm text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] truncate">
               {user.name}
             </h3>
-            <span className="bg-gradient-to-r from-[var(--color-cta)] to-[var(--color-accent-surface)] text-white text-[9px] font-black px-2 py-0.5 rounded-full flex items-center gap-1 shrink-0">
+            <span className="bg-gradient-to-r from-[var(--color-cta)] to-[var(--color-accent-surface)] text-white text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shrink-0">
               <Award className="h-3 w-3" /> VIP
             </span>
           </div>
@@ -125,7 +125,7 @@ export default function ProfileSidebar({
               <div className="flex items-center gap-2">
                 {item.badge && (
                   <span
-                    className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                    className={`text-xs px-2 py-0.5 rounded-full font-bold ${
                       isActive
                         ? 'bg-[var(--color-cta)] text-white'
                         : 'bg-gray-100 dark:bg-gray-800 text-gray-500'

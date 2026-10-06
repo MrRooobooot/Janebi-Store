@@ -170,8 +170,8 @@ export default function Profile() {
             className="fixed inset-0 bg-black/60 backdrop-blur-xs cursor-default"
           />
 
-          <div className="relative w-full max-w-sm bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 shadow-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] z-10 text-center space-y-4">
-            <h3 className="font-extrabold text-base text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
+          <div className="relative w-full max-w-sm bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-6 shadow-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] z-10 text-center space-y-4">
+            <h3 className="font-bold text-base text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">
               خروج از حساب کاربری
             </h3>
             <p className="text-xs text-gray-500 font-medium">

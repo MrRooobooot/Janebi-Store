@@ -71,7 +71,7 @@ export default function RelatedProducts({ product }: { product: Product }) {
           </div>
           <h2
             id="related-products-heading"
-            className="text-base sm:text-lg font-black text-zinc-900 dark:text-zinc-100 truncate"
+            className="text-base sm:text-lg font-bold text-zinc-900 dark:text-zinc-100 truncate"
           >
             محصولات مشابه در دسته‌بندی «{product.category}»
           </h2>

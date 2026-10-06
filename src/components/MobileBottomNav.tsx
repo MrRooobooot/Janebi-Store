@@ -82,17 +82,17 @@ export default function MobileBottomNav() {
                 <Icon className={`h-5 w-5 transition-transform duration-300 ${isActive ? 'scale-110 drop-shadow-md' : ''}`} />
                 {item.badge !== undefined && item.badge > 0 && (
                   <span
-                    className="pop-in absolute -top-1.5 -right-2 text-[10px] font-black h-4 min-w-4 px-1 rounded-full flex items-center justify-center shadow-xs bg-primary-600 text-white"
+                    className="pop-in absolute -top-1.5 -right-2 text-xs font-bold h-5 min-w-5 px-1 rounded-full flex items-center justify-center bg-[var(--color-cta)] text-white"
                   >
                     {toPersianDigits(item.badge)}
                   </span>
                 )}
               </div>
-              <span className="text-[11px] mt-0.5 tracking-tight z-10">{item.label}</span>
+              <span className="text-xs mt-0.5 tracking-tight z-10">{item.label}</span>
               {isActive && (
                 <span
                   aria-hidden="true"
-                  className="absolute bottom-0 w-6 h-0.5 bg-primary-600 rounded-full shadow-[0_0_8px_rgba(225,29,72,0.8)]"
+                  className="absolute bottom-0 w-6 h-0.5 bg-[var(--color-cta)] rounded-full"
                 />
               )}
             </Link>
@@ -109,7 +109,7 @@ export default function MobileBottomNav() {
           <div className="relative flex items-center justify-center p-1 z-10">
             {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </div>
-          <span className="text-[11px] mt-0.5 tracking-tight z-10">{isDarkMode ? 'روشن' : 'تاریک'}</span>
+          <span className="text-xs mt-0.5 tracking-tight z-10">{isDarkMode ? 'روشن' : 'تاریک'}</span>
         </button>
 
         {navItems.slice(2).map((item) => {
@@ -140,17 +140,17 @@ export default function MobileBottomNav() {
                 <Icon className={`h-5 w-5 transition-transform duration-300 ${isActive ? 'scale-110 drop-shadow-md' : ''}`} />
                 {item.badge !== undefined && item.badge > 0 && (
                   <span
-                    className="pop-in absolute -top-1.5 -right-2 text-[10px] font-black h-4 min-w-4 px-1 rounded-full flex items-center justify-center shadow-xs bg-primary-600 text-white"
+                    className="pop-in absolute -top-1.5 -right-2 text-xs font-bold h-5 min-w-5 px-1 rounded-full flex items-center justify-center bg-[var(--color-cta)] text-white"
                   >
                     {toPersianDigits(item.badge)}
                   </span>
                 )}
               </div>
-              <span className="text-[11px] mt-0.5 tracking-tight z-10">{item.label}</span>
+              <span className="text-xs mt-0.5 tracking-tight z-10">{item.label}</span>
               {isActive && (
                 <span
                   aria-hidden="true"
-                  className="absolute bottom-0 w-6 h-0.5 bg-primary-600 rounded-full shadow-[0_0_8px_rgba(225,29,72,0.8)]"
+                  className="absolute bottom-0 w-6 h-0.5 bg-[var(--color-cta)] rounded-full"
                 />
               )}
             </Link>

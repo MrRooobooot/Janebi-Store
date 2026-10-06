@@ -111,7 +111,7 @@ export default function ChatWidget() {
     <div className={`fixed left-3 sm:left-auto sm:right-6 z-50 print:hidden flex flex-col items-start sm:items-end transition-all duration-300 ${isProductDetail ? 'bottom-[148px] sm:bottom-6' : 'bottom-[5.75rem] sm:bottom-6'}`}>
       {isOpen && (
           <div
-            className="dropdown-in bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl shadow-2xl border border-gray-200 dark:border-[var(--color-border-dark)] w-[92vw] sm:w-96 h-[32rem] flex flex-col overflow-hidden mb-4 transition-colors"
+            className="dropdown-in bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl shadow-2xl border border-gray-200 dark:border-[var(--color-border-dark)] w-[92vw] sm:w-96 h-[32rem] flex flex-col overflow-hidden mb-4 transition-colors"
           >
             {/* Header */}
             <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border-b border-gray-200 dark:border-[var(--color-border-dark)] text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] p-4 flex items-center justify-between">
@@ -120,10 +120,10 @@ export default function ChatWidget() {
                   <Bot className="h-5 w-5 text-[var(--color-emphasis-text)] dark:text-[var(--color-emphasis-text)]" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-sm">
+                  <h3 className="font-bold text-sm">
                     راهنمای خرید جانبی آرنا
                   </h3>
-                  <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">پاسخ خودکار به سوال‌های متداول</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">پاسخ خودکار به سوال‌های متداول</p>
                 </div>
               </div>
               <button 
@@ -147,7 +147,7 @@ export default function ChatWidget() {
                   }`}
                 >
                   <div>{msg.text}</div>
-                  <div className={`text-[9px] mt-1 text-left ${msg.isUser ? 'text-white/80' : 'text-gray-400'}`}>
+                  <div className={`text-xs mt-1 text-left ${msg.isUser ? 'text-white/80' : 'text-gray-400'}`}>
                     {msg.time}
                   </div>
                 </div>
@@ -169,7 +169,7 @@ export default function ChatWidget() {
                 <button
                   key={idx}
                   onClick={() => handleSend(q)}
-                  className="whitespace-nowrap px-2.5 py-1 text-[11px] font-medium bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-gray-700 dark:text-gray-300 hover:text-[var(--color-emphasis-text)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-full transition-colors shrink-0"
+                  className="whitespace-nowrap px-2.5 py-1 text-xs font-medium bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] text-gray-700 dark:text-gray-300 hover:text-[var(--color-emphasis-text)] border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-full transition-colors shrink-0"
                 >
                   {q}
                 </button>
@@ -188,7 +188,7 @@ export default function ChatWidget() {
               <button 
                 type="submit" 
                 disabled={!input.trim()}
-                className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] disabled:opacity-50 text-white p-2.5 rounded-xl transition-all flex items-center justify-center shrink-0 active:scale-95"
+                className="bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] disabled:opacity-50 text-white p-2.5 rounded-xl transition-all flex items-center justify-center shrink-0 active:scale-95 min-h-11 min-w-11"
               >
                 <Send className="h-4 w-4" />
               </button>
@@ -203,7 +203,7 @@ export default function ChatWidget() {
           className="hover:scale-105 active:scale-95 transition-transform bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] active:bg-[var(--color-cta-active)] text-white border border-transparent shadow-lg shadow-[var(--color-cta)]/25 w-11 h-11 sm:w-auto sm:h-12 sm:px-4 rounded-full flex items-center justify-center gap-2 transition-colors cursor-pointer"
         >
           <MessageCircle className="h-5 w-5 shrink-0" />
-          <span className="hidden sm:inline text-xs font-black">پاسخ خودکار</span>
+          <span className="hidden sm:inline text-xs font-bold">پاسخ خودکار</span>
         </button>
       )}
     </div>

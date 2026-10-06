@@ -12,7 +12,7 @@ export default function About() {
       className="space-y-10"
     >
       {/* Hero Section */}
-      <div className="rounded-3xl p-8 sm:p-12 text-white [background:linear-gradient(135deg,#e11d48,#be123c)] relative overflow-hidden shadow-lg shadow-[var(--color-cta)]/25">
+      <div className="rounded-2xl p-8 sm:p-12 text-white [background:linear-gradient(135deg,#e11d48,#be123c)] relative overflow-hidden shadow-lg shadow-[var(--color-cta)]/25">
         <div className="relative z-10 max-w-2xl">
           <div className="inline-flex items-center gap-2 bg-black/25 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold mb-4">
             <Award className="h-4 w-4" /> درباره فروشگاه جانبی آرنا
@@ -73,7 +73,7 @@ export default function About() {
       </div>
 
       {/* Story & Details */}
-      <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-3xl p-6 sm:p-10 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-6">
+      <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-6 sm:p-10 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-6">
         <h2 className="text-2xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">داستان جانبی آرنا</h2>
         <p className="text-gray-700 dark:text-gray-300 text-sm sm:text-base leading-relaxed">
           جانبی آرنا فعالیت خود را از سال ۱۳۹۸ به عنوان یک فروشگاه تخصصی لوازم جانبی تلفن همراه در تهران آغاز کرد. هدف اولیه ما برطرف کردن چالش خرید لوازم جانبی اصلی و باکیفیت در میان تنوع بی‌شمار کالاهای تقلبی بازار بود.
