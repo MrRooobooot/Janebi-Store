@@ -156,6 +156,7 @@ export default function Home() {
   const dealProducts = useMemo(() => {
     return products
       .filter((p) => (p.discount || 0) > 0 && (p.stockQuantity || 0) > 0)
+      .filter((p) => /\.(webp|png|jpe?g)(\?|$)/i.test(p.image || ''))
       .sort((a, b) => (b.discount || 0) - (a.discount || 0))
       .slice(0, 4);
   }, [products]);
@@ -308,7 +309,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 2. Amazing Deals Section — product-first fold */}
+      {(loading || dealProducts.length > 0) && (
       <section className="w-full">
         <div className="mb-4 flex items-end justify-between gap-3 sm:mb-6">
           <div className="min-w-0">
@@ -326,17 +327,14 @@ export default function Home() {
             Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="h-64 animate-pulse rounded-2xl bg-slate-100 dark:bg-white/[0.03]" />
             ))
-          ) : dealProducts.length > 0 ? (
+          ) : (
             dealProducts.map((p) => (
               <ProductCard key={p.id} product={p} variant="compact" />
             ))
-          ) : (
-            <div className="col-span-full py-8 text-center text-sm font-medium text-slate-500 dark:text-slate-300">
-              در حال حاضر تمام شگفت‌انگیزها به پایان رسیده‌اند.
-            </div>
           )}
         </div>
       </section>
+      )}
 
       {/* 3. Wholesale / B2B Banner Strip — removed (user: «نیازی نداریم»); /contact?type=wholesale still reachable from header nav */}
 
