@@ -1,13 +1,25 @@
 # tests/ — index
 
-54 suites, 425 assertions. Run everything through the gate: `npm run verify`
+**71 test files, 542 test cases — 537 passed, 5 skipped (PostgreSQL, no `PG_DATABASE_URL`), 0 failed**
+(counted 2026-10-10 on the working tree; all 71 are now tracked — the 2 that were uncommitted at count time, `infra-exposure-guards` and `products-brand-filter`, landed in `cdd2e45` and `6b18894`).
+Here a *suite* = one test file; the same run reports 176 `describe` blocks.
+Count method (reproducible, runs against `:memory:` SQLite per `vitest.config.ts`; touches no real DB):
+
+```bash
+npx vitest run --reporter=json --outputFile=/tmp/vitest-count.json
+# numTotalTests / numPassedTests / numPendingTests / testResults.length
+```
+
+Per tier: api 35 files / 320 tests · unit 32 / 203 · concurrency 2 / 11 · postgres 1 / 5 (all skipped) ·
+`bale-worker/src/worker.idempotency.test.ts` 1 / 3 (picked up by the same Vitest run, outside `tests/`).
+Playwright specs in `e2e/` are **not** included. Run everything through the gate: `npm run verify`
 (typecheck → vitest → build → SEC-01 static-exposure → SEC-03 CSP/security.txt).
 Browser flows live in `e2e/`, not here.
 
 | Tier | Dir | Isolation | What it proves |
 |------|-----|-----------|----------------|
-| api | `tests/api` (27) | in-process supertest on `app.ts`, scratch DB | Route contracts: auth/JWT, cart, orders, payment, coupons, admin, users, wishlist, contact, sitemap, cookies/cache, admin hardening |
-| unit | `tests/unit` (24) | pure functions + a few app-level asserts | Invariants that must never regress: stock/VIP math, coupon discounts, LIKE escaping, Persian normalization, migration journal, OTP gates, payment failover, a11y/CSP header shape |
+| api | `tests/api` (35) | in-process supertest on `app.ts`, scratch DB | Route contracts: auth/JWT, cart, orders, payment, coupons, admin, users, wishlist, contact, sitemap, cookies/cache, admin hardening |
+| unit | `tests/unit` (32) | pure functions + a few app-level asserts | Invariants that must never regress: stock/VIP math, coupon discounts, LIKE escaping, Persian normalization, migration journal, OTP gates, payment failover, a11y/CSP header shape |
 | concurrency | `tests/concurrency` (2) | parallel requests | Inventory race + adversarial stress (never a negative stock, no double decrement) |
 | postgres | `tests/postgres` (1) | live PG engine | Dual-dialect parity (schema, migrations, concurrency) |
 

@@ -125,7 +125,7 @@ describe('Admin hardening: self-role guard, audit coverage, coupon edit', () => 
 
 // ---------------------------------------------------------
 // Regression: admin mutations that must keep derived state honest
-// (proven broken on sandbox 2026-09-13; ledger docs/UI-AUDIT-LOG.md §admin review)
+// (proven broken on sandbox 2026-09-13; ledger docs/reference/UI-AUDIT-LOG.md §admin review)
 // ---------------------------------------------------------
 describe('Admin derived-state invariants: review delete, product delete, bulk-delete unwind', () => {
   const suffix = Date.now();

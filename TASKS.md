@@ -27,11 +27,11 @@
 - [x] **پاک‌سازی کاتالوگ تستی قدیمی:** ۱۲۷ کالای تستی (۱۱۷ `JB-*` + ۱۲ seed دست‌نویس) حذف شد، صفر خطا؛ ۲ کالا محافظت‌شده (`id 14`, `id 5588` — ارجاع در سفارش‌های **لغو‌شده**) به «ناموجود» (stock=0) منتقل شدند. کاتالوگ prod الان = **۴۰**: ۳۸ هولدر واقعی + ۲ بازماندهٔ ناموجود. sitemap ۲۱۳ → ۷۷. پروب Chromium+WebKit: `/`, `/products`, دسته = ۰ broken، ۰ pageerror. ← **تصحیح ۱۴۰۵/۰۶/۳۰:** امروز prod = **۴۵ کالا** (۳۷ ارلدام + ۷ MCdodo + ۱ بیسوس)، همه فعال؛ آن ۲ ردیف ناموجود دیگر وجود ندارند.
 - ✅ **بسته شد (۱۴۰۵/۰۶/۳۰):** پرچم `is_active` در اسکیما + فیلتر API/پنل/سبد/sitemap اضافه شد؛ حذف فیزیکی ردیف لازم نیست و تاریخچهٔ سفارش دست‌نخورده می‌ماند. روی prod امروز هیچ ردیف stock≤0 وجود ندارد (هر دو ردیف قدیمی رفته‌اند).
 - ⚠️ **باز:** `features`/مشخصات فنی خالی (سند Google Docs خصوصی است — ورودی لازم). **بازبینی بصری عکس‌ها انجام شد (۱۴۰۵/۰۶/۳۰):** عدد سند («۹ مدل زیر ۱۰۰۰px») اشتباه بود — واقعیت: **۱۹ از ۳۷** عکس زیر ۱۰۰۰px (۹۰۰×۹۰۰؛ کمینه ۹۰۰، بیشینه ۲۵۰۰، بزرگ‌ترین فایل ۱۹۰KB). پس‌زمینهٔ ناسالم فقط ۳ مورد: `eh127` (بژ/سفید شکسته + خط کف استودیو)، `eh184` (صفحهٔ خاکستری + سایهٔ ریخته)، `eh186` (واترمارک قرمز ارلدام گوشهٔ بالا-چپ). **تصحیح خودکار پس‌زمینه رد شد:** floodfill با fuzz ۱۸٪ روی `eh127`/`eh184` پس‌زمینه را سفید کرد ولی بسته‌بندی سفید محصول را هم خورد (تأیید بصری) — فایل‌های تولیدشده پاک شدند و اصل‌ها دست‌نخورده‌اند؛ این کار به کات‌اوت دستی یا اصل عکس نیاز دارد. کانتکت‌شیت تازه: `earldom-sheet-2026-09-21.png` (۳۷ خانه) + `earldom-ba-2026-09-21.png` (قبل/بعد).
-- جزئیات و مسیر بازتولید: `docs/REAL-INVENTORY-0916.md`.
+- جزئیات و مسیر بازتولید: `docs/reports/2026-09-16-real-inventory-holder-import.md`.
 
 
 ## ⏸ PENDING (منتظر ورودی کاربر) — جایگزینی کاتالوگ تستی با لیست واقعی
-**وضعیت:** کاتالوگ تستی **پاک شد** (۱۴۰۵/۰۶/۲۵): ۱۲۷ کالای تستی حذف، تنها موجودی واقعی (۳۸ قلم هولدر ارلدام/باسئوس) روی prod ماند. بارگذاری بخش‌های بعدی انبار (قاب، گلس، کابل، شارژر، هندزفری، پاوربانک، هدفون، مبدل، گیمینگ، خودرو، ساعت، دانگل) با همان مسیر `docs/REAL-INVENTORY-0916.md` انجام می‌شود.
+**وضعیت:** کاتالوگ تستی **پاک شد** (۱۴۰۵/۰۶/۲۵): ۱۲۷ کالای تستی حذف، تنها موجودی واقعی (۳۸ قلم هولدر ارلدام/باسئوس) روی prod ماند. بارگذاری بخش‌های بعدی انبار (قاب، گلس، کابل، شارژر، هندزفری، پاوربانک، هدفون، مبدل، گیمینگ، خودرو، ساعت، دانگل) با همان مسیر `docs/reports/2026-09-16-real-inventory-holder-import.md` انجام می‌شود.
 
 **ورودی لازم (CSV، هر ردیف یک کالا):** `نام` · `برند` · `مدل/کد` · **`بارکد GTIN`** · **`قیمت خرید (تومان)`** · **`کانال (رسمی/خاکستری)`** · `قیمت دیجیکالا (اختیاری)` · `موجودی` · `دسته (از لیست بستهٔ مصوب)`
 
@@ -42,7 +42,7 @@
 - [x] دسته‌بندی قیمتی خودکار هر ردیف (سبد `پک`/`زیر باند`/`هم‌تراز`/`مذاکره`/`حذف-تعویض`) با `scripts/data/price-watch.mjs` — دور ۰۹-۲۱. اتصال سبد به پنل ادمین بعد از ورود کاتالوگ واقعی (واقعیت بازار لازم است).
 - [ ] فید ترب (نیاز به فرمت پنل ترب) · قیمت باشگاه (login-only) — کران روزانه در این دور انجام نشد (خارج از دامنهٔ درخواست).
 
-**شاهد فعلی بازار:** `docs/PRICE-POSITION-REPORT-0914.md` (میانهٔ فاصله +۲۴٫۹٪ روی ۴۳ SKU برنددار خودکار-سنجیده‌شده)
+**شاهد فعلی بازار:** `docs/reports/2026-09-14-price-position-report.md` (میانهٔ فاصله +۲۴٫۹٪ روی ۴۳ SKU برنددار خودکار-سنجیده‌شده)
 
 
 ## Status: Completed (Aug 28, 2026)
@@ -57,7 +57,7 @@
 - [x] تست رگرسیون: ۳ invariant در `tests/api/admin-hardening.test.ts`؛ گیت `npm run verify` = **409 passed / 5 skipped**؛ دیپلوی + اثبات آرتیفکت سرو‌شده.
 - [x] **R1 محافظت حساب مالک** — `OWNER_USER_ID` (env) + گارد `403 OWNER_PROTECTED` روی role/password/points + cloaking در `GET /users`؛ سیم‌کشی env/example/deploy.sh؛ اثبات زندهٔ prod: غیرمالک → ۴۰۳×۳ و مالک در لیست نیست، مالک → می‌بیند؛ حالت مالک دست‌نخورده.
 - [x] **R2 صفحه‌بندی** — `?page=&limit=` (سقف ۵۰۰) + همیشه `X-Total-Count` روی ۵ لیست؛ بدون پارامتر = لیست کامل (کاپ پیش‌فرض = truncation خاموش، رد شد)؛ فیلتر status پیام‌ها در SQL. اثبات prod: `page=1&limit=1` + `X-Total-Count: 8`.
-- [x] **R3 بسته شد** (۱۴۰۵/۰۶/۲۲): `users.created_at` (epoch ms) به اسکیما هر دو دیالکت + migration `0012_users_created_at.sql`؛ `ORDER BY COALESCE(created_at,0) DESC`؛ ثبت `createdAt` در register و OTP؛ اسکریپت `scripts/data/backfill-user-created-at.cjs` (بازحل دقیق روز از متن جلالی ذخیره‌شده، بدون جعل). روی prod: ستون + journal تأیید، ۲/۳ ردیف بازحل شد (`۱۴۰۵/۶/۱۴` → ۲۰۲۶-۰۹-۰۵)، ردیف مالک با placeholder «۱ فروردین ۱۴۰۵» عمداً `NULL` و آخر لیست. جزئیات: `docs/ADMIN-CODE-REVIEW-2026-09-13.md` §۲/R3.
+- [x] **R3 بسته شد** (۱۴۰۵/۰۶/۲۲): `users.created_at` (epoch ms) به اسکیما هر دو دیالکت + migration `0012_users_created_at.sql`؛ `ORDER BY COALESCE(created_at,0) DESC`؛ ثبت `createdAt` در register و OTP؛ اسکریپت `scripts/data/backfill-user-created-at.cjs` (بازحل دقیق روز از متن جلالی ذخیره‌شده، بدون جعل). روی prod: ستون + journal تأیید، ۲/۳ ردیف بازحل شد (`۱۴۰۵/۶/۱۴` → ۲۰۲۶-۰۹-۰۵)، ردیف مالک با placeholder «۱ فروردین ۱۴۰۵» عمداً `NULL` و آخر لیست. جزئیات: `docs/archive/ADMIN-CODE-REVIEW-2026-09-13.md` §۲/R3.
 
 ### Round 2026-09-13b — Rotation F: checkout/payment micro-flow (SHIPPED, live 57d7ad3)
 
@@ -69,7 +69,7 @@
   5. **شناسه‌های machine** — `ss01` وزیرمتن ارقام ASCII کد سفارش را به گلیف فارسی می‌برد (شناسهٔ کپی‌شدنی خراب) + `.dir-ltr` در CSS تعریف نشده بود → utility `.latin-nums` + تعریف `.dir-ltr`؛ اعمال روی توست/ردیف سفارش/داشبورد/callback.
 - [x] گیت: `npm run verify` PASS (406 تست)، `design-audit` **8/8 PASS** (err:0)، probe sandbox **12/12**؛ دیپلوی OK + health `database ok`.
 - [x] اثبات روی prod (بدون ایجاد سفارش واقعی): blur `9123456789→09123456789` ✓؛ توست مهمان فارسی + ریدایرکت `/login` ✓؛ صفر نشت انگلیسی در callback ✓؛ `latin-nums` در CSS سرو‌شده ✓؛ `Location` فارسی روی `/api/payment/verify` ✓؛ vision روی `f-s7-toast-latin.png` = ارقام لاتین و BiDi سالم ✓.
-- [x] Ledger: `docs/UI-AUDIT-LOG.md` §Rotation F (۵ یافته، شواهد، wontfix/سالم‌ها).
+- [x] Ledger: `docs/reference/UI-AUDIT-LOG.md` §Rotation F (۵ یافته، شواهد، wontfix/سالم‌ها).
 - Next: چرخش بعدی per لاگ؛ برای check-out روی prod با حساب واقعی باید کاربر تأیید کند (ایجاد سفارش واقعی = داده واقعی).
 
 ### Round 2026-09-13 — Rotation C (forms) + specs backfill + SEO meta + review path (SHIPPED, live 61e93b8)
@@ -283,7 +283,7 @@
 - [x] Created consolidated verification pipeline (`scripts/verify-all.sh`) and unified `npm run verify` command (Strict Typecheck + Vitest + Full Build).
 - [x] Implemented comprehensive transactional invariants and Persian input edge-case test suite (`tests/unit/concurrency-invariants.test.ts`).
 - [x] Locked profile `code-pro` (`SOUL.md`) to zero-sycophancy and mandatory `npm run verify` enforcement on Janebi Arena.
-- [x] Full Production Readiness Documentation & System PRD (`AGENTS.md`, `PROJECT_AUDIT.md`, `PROJECT_GRAPH.md`).
+- [x] Full Production Readiness Documentation & System PRD (`AGENTS.md`, `docs/reference/PROJECT_AUDIT.md`, `PROJECT_GRAPH.md`).
 - [x] Verified full verification pipeline (`npm run verify`): 36 test files (297 tests passed), TypeScript clean, client & server builds valid.
 
 ## Status: Completed (Aug 30, 2026) — Prod-First Safari/WebKit Bug Sweep
@@ -304,7 +304,7 @@
 - [x] Guarded `vite.config.ts` with explicit production NODE_ENV + `esbuild.drop: ['debugger']` (defense-in-depth; Vite 8 uses oxc over esbuild options).
 
 ### 8. Deep Forensic Audit (READ-ONLY — findings only, no code changed)
-Full evidence, per-section scores /100, and remediation priorities: **`PROJECT_AUDIT.md` (2026-08-31 edition)**.
+Full evidence, per-section scores /100, and remediation priorities: **`docs/reference/PROJECT_AUDIT.md` (2026-08-31 edition)**.
 
 Key findings (P0 first):
 - [!] Fake aggregate ratings/counts seeded in prod (`reviewsCount` up to 450 vs 2 real reviews) + client fallbacks (`DEFAULT_REVIEWS`, ProductCard `'۴.۸'` default) — must recompute & remove.

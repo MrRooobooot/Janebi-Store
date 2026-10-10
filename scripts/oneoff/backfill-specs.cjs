@@ -1,6 +1,6 @@
 // backfill-specs.cjs — run INSIDE janebi-store container: PUT /api/admin/products/:id
 // for every plan entry (features + clean title/desc + JB- sku + p- image path).
-// Source of truth: /tmp/specs-backfill-plan.json (docs/specs-backfill-plan.json in repo).
+// Source of truth: /tmp/specs-backfill-plan.json (docs/data/specs-backfill-plan.json in repo).
 // Auth: self-signed short-lived admin JWT (in-container, secret never leaves).
 const jwt = require('jsonwebtoken');
 const fs = require('fs');

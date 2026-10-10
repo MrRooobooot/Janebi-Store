@@ -2,7 +2,7 @@
 """PRE-INSERT VALIDATION — no DB writes. Validates every record in
 ingest-products.jsonl against the Pre-Insert Gate and emits the preview report.
 - source_url reachability checked with bounded concurrency (HEAD fallback GET)
-- classification re-checked against docs/CATEGORY-TREE.md
+- classification re-checked against docs/reference/CATEGORY-TREE.md
 - duplicates by (brand, name) and dk_id
 - nothing is written to the database
 """
@@ -10,7 +10,7 @@ import json, re, urllib.request, concurrent.futures as cf, os, collections, sys
 
 BASE = "/Users/aidin/Desktop/Janebi-Store"
 JSONL = f"{BASE}/.hermes/reports/ingest-products.jsonl"
-TREE = f"{BASE}/docs/CATEGORY-TREE.md"
+TREE = f"{BASE}/docs/reference/CATEGORY-TREE.md"
 
 recs = [json.loads(l) for l in open(JSONL) if l.strip()]
 

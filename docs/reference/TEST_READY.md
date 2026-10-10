@@ -1,5 +1,7 @@
 # TEST_READY: Janebi-Store E-Commerce Platform
 
+> **Historical snapshot (2026-09-05).** The counts below describe that day only. Current verified counts and the counting method: `tests/README.md` (2026-10-10: 71 files, 542 tests, 537 passed, 5 skipped).
+
 **Date:** 2026-09-05  
 **Platform Status:** PRODUCTION READY  
 **Test Runner:** Vitest 4 with Supertest 7 & SQLite WAL Mode  

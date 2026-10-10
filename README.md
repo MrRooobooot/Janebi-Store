@@ -29,8 +29,8 @@ site HTTP 200, `/api/health` reports `database: ok`, catalog serves 45 products.
   monitors, nginx drift guard, live security probes (see `scripts/ops/`).
 
 The codebase is ~580 commits of production iteration; this README describes the current
-verified state. Deeper documents: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) ·
-[`docs/PORTFOLIO_CASE_STUDY.md`](docs/PORTFOLIO_CASE_STUDY.md).
+verified state. Deeper documents: [`docs/reference/ARCHITECTURE.md`](docs/reference/ARCHITECTURE.md) ·
+[`docs/reference/PORTFOLIO_CASE_STUDY.md`](docs/reference/PORTFOLIO_CASE_STUDY.md).
 
 ## Architecture
 
@@ -48,13 +48,13 @@ flowchart LR
 - **Backend**: Node 22 + Express 5 (TypeScript), Zod validation, Drizzle ORM, pino-http logging.
 - **Service worker** (`public/sw.js`): precache + versioned static/API caches.
 - **Deploy**: rsync + Docker Compose; nginx terminates TLS (Let's Encrypt) and reverse-proxies
-  to the app container. Full detail and diagrams in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+  to the app container. Full detail and diagrams in [`docs/reference/ARCHITECTURE.md`](docs/reference/ARCHITECTURE.md).
 
 ## Core Engineering Problems
 
 These are the real problems this codebase solves — each is documented with
 problem/detection/root-cause/solution/verification in
-[`docs/PORTFOLIO_CASE_STUDY.md`](docs/PORTFOLIO_CASE_STUDY.md).
+[`docs/reference/PORTFOLIO_CASE_STUDY.md`](docs/reference/PORTFOLIO_CASE_STUDY.md).
 
 1. **Payment handoff & gateway environment mismatch** — gateway StartPay rejected some
    sessions based on HTTP Referer; handoff is now server-side (`/pay/:authority`), and the
@@ -86,7 +86,7 @@ problem/detection/root-cause/solution/verification in
   the start-pay form at `/pay/:authority` with the correct Referer, which fixed an
   intermittent gateway rejection (diagnosed with a live matrix probe
   `scripts/ops/zarinpal-startpay-probe.py`; measurement matrix recorded in the handoff test;
-  runbook `docs/live-payment-runbook.md`).
+  runbook `docs/reference/live-payment-runbook.md`).
 - **Environment switch**: `ZARINPAL_SANDBOX=true|false` selects the gateway host; tests are
   environment-aware so CI (sandbox) and production (live) both assert correct behavior.
 - **Order state machine**: orders move through explicit statuses; callbacks verify authority
@@ -182,7 +182,7 @@ operational values come from `deploy.env` (gitignored) or the server's `.env`.
 
 ## Failure Investigations
 
-Short list; full write-ups in [`docs/PORTFOLIO_CASE_STUDY.md`](docs/PORTFOLIO_CASE_STUDY.md):
+Short list; full write-ups in [`docs/reference/PORTFOLIO_CASE_STUDY.md`](docs/reference/PORTFOLIO_CASE_STUDY.md):
 
 - **"Payment fails sometimes"** → root-caused to gateway Referer gating; fixed by moving the
   handoff server-side. Diagnosed with a live 9-cell matrix probe against the real gateway.

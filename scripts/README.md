@@ -59,6 +59,6 @@ in `oneoff/` (kept for provenance, not for reuse).
 - `fk-audit.cjs`, `merge-dup-brands.cjs`, `merge-dup-categories.cjs` — integrity + duplicate-entity merges (idempotent).
 
 ## oneoff/
-- `build-specs-plan.py` → `backfill-specs.cjs` — specs plan generation + `PUT /api/admin/products/:id` backfill (plan JSON: `docs/specs-backfill-plan.json`).
+- `build-specs-plan.py` → `backfill-specs.cjs` — specs plan generation + `PUT /api/admin/products/:id` backfill (plan JSON: `docs/data/specs-backfill-plan.json`).
 - `ingest`-era media steps: `apply-product-images.py`, `migrate-product-images.py`, `regen-og-images.py`.
 - `seed-post19.sh` — single blog post deploy helper.

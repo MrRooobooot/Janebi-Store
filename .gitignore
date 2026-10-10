@@ -97,3 +97,10 @@ migration-assets/
 .agents/
 .hermes/
 docs/shots/
+
+# Personal / agent-workspace files at the repo root (local only, never commit)
+/IDENTITY.md
+/SOUL.md
+/USER.md
+/DREAMS.md
+/memory/

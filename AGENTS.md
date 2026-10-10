@@ -1,6 +1,6 @@
 # AGENTS.md — Janebi Store · Project Reference Document (PRD)
 
-> **Last Updated**: 2026-09-05T09:30:00+03:30  
+> **Last Updated**: 2026-09-05T09:30:00+03:30 (content) · 2026-10-10: doc paths updated for the `docs/` reorganisation only — rest of this file not re-verified; current test counts are in `tests/README.md`
 > **Status**: Production Ready & Deployed  
 > **Domain**: https://janebiarena.ir  
 > **Root**: `/Users/aidin/Desktop/Janebi-Store`
@@ -55,7 +55,7 @@ Janebi-Store/
 ├── scripts/                # Verification & data scripts (verify-all.sh, seed-blog.ts, backup-db.mjs, vps-monitor.py)
 ├── e2e/                    # Playwright E2E specs (npm run test:e2e)
 ├── drizzle/                # Migrations — sqlite/ + pg/ (dual dialect, journal-tracked)
-├── docs/                   # Baselines (architecture/auth/db/payment/api), SEO handbook, dated review reports
+├── docs/                   # reference/ (baselines, architecture, runbooks), reports/ (dated), data/, archive/ — index: docs/README.md
 ├── .hermes/                # Agent ops state — agents-status.json feed, dashboard widget, reports/ archive
 ├── .agents/                # Historical multi-agent build archive (briefings/handoffs, Aug 2026)
 ├── deploy.sh               # Production deploy (rsync + remote docker rebuild, deploy-lock)
@@ -63,7 +63,7 @@ Janebi-Store/
 ├── TASKS.md                # Task tracker and backlog
 ├── CHANGELOG_AGENT.md      # Chronological work logs
 ├── agent.md                # Project status ledger (historical decisions D1-D10, deployment status)
-└── PROJECT_AUDIT.md        # Comprehensive production readiness audit
+└── PLAYWRIGHT.md           # Which of the 3 Playwright configs to use (production audit: docs/reference/PROJECT_AUDIT.md)
 ```
 
 ---

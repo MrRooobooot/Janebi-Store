@@ -254,8 +254,8 @@ browsers. Version it, scope it, and probe it like infrastructure.
 **Problem.** Multiple independent security issues traced to the same root class: trusting
 request/proxy headers.
 
-**Detection.** Findings during security audit rounds (`docs/SECURITY-AUDIT-2026-09-14.md`
-and the remediation log `docs/BACKEND-REMEDIATION-2026-09-18.md`): a CSP `Reporting-Endpoints` header was derived from
+**Detection.** Findings during security audit rounds (`docs/reports/2026-09-14-security-audit.md`
+and the remediation log `docs/reports/2026-09-18-backend-remediation.md`): a CSP `Reporting-Endpoints` header was derived from
 `X-Forwarded-Host` (nginx forwards it verbatim) — so `X-Forwarded-Host: evil.example`
 both forged the header **and**, because nginx micro-caches some responses, **poisoned the
 cached response every other visitor received**, sending their CSP violation reports to an
@@ -360,4 +360,4 @@ UX cost.
 | Backup | `scripts/ops/backup-db.mjs`, `scripts/ops/backup-verify.sh` |
 | SW probes | `scripts/audit/sw-cache-probe.mjs`, `sw-reviews-probe.mjs`, `console-errors.mjs` |
 | Security gates | `scripts/verify-all.sh`, `scripts/gate/`, `.github/workflows/secret-scan.yml`, `.gitleaks.toml` |
-| Architecture | `docs/ARCHITECTURE.md`, `server/app.ts`, `server/routes/products.ts` |
+| Architecture | `docs/reference/ARCHITECTURE.md`, `server/app.ts`, `server/routes/products.ts` |

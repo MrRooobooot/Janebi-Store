@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Build docs/specs-backfill-plan.json — clean + extract, ZERO fabrication.
+"""Build docs/data/specs-backfill-plan.json — clean + extract, ZERO fabrication.
 Every emitted feature is a verbatim token from the product's OWN title/description
 (model, watt, length, material, compatibility). Digikala provenance stripped:
 desc line «منبع استعلام…», DK- skus, dk- image filenames (rename on VPS is a
 separate verified step). Category names normalized to the locked 14
-(docs/CATEGORY-TREE.md SoT)."""
+(docs/reference/CATEGORY-TREE.md SoT)."""
 import json, re, unicodedata
 
 d = json.load(open('/tmp/prod.json'))
@@ -109,7 +109,7 @@ for p in d:
     }
     plan.append(entry)
 
-json.dump(plan, open('docs/specs-backfill-plan.json', 'w'), ensure_ascii=False, indent=1)
+json.dump(plan, open('docs/data/specs-backfill-plan.json', 'w'), ensure_ascii=False, indent=1)
 n_feat = sum(1 for e in plan if e['features'])
 n_img = sum(1 for e in plan if e['image'])
 n_desc = sum(1 for e in plan if e['description'] and 'دیجی' not in e['description'])

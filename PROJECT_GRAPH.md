@@ -2,8 +2,8 @@
 
 > **Autonomous Engineering Knowledge Base & Live System Map**
 > **Last Verified & Updated:** 2026-09-16 (security rounds SEC-H1..H6 + repo tidy: CORS/X-Forwarded-Host trust removed, nginx API-cache poisoning closed, health telemetry gated, CSP `http:` image source dropped, JWT localStorage mirror deleted → cookie-only sessions)
-> **Status:** Live; operational safeguards need remediation (read-only audit 2026-09-17: `docs/OPS-CONFIG-AUDIT-2026-09-17.md`). Historical gate: 58 suites / 447 passing tests, not rerun by this audit; served `BUILD_INFO` is the deployment truth.
-> **PRD Reference:** `AGENTS.md` | `PROJECT_AUDIT.md` | `TASKS.md`
+> **Status:** Live; operational safeguards need remediation (read-only audit 2026-09-17: `docs/reports/2026-09-17-ops-config-audit.md`). Historical gate: 58 suites / 447 passing tests, not rerun by this audit (**re-counted 2026-10-10 on the working tree: 71 test files, 542 tests, 537 passed, 5 PG skipped, 0 failed — method in `tests/README.md`**); served `BUILD_INFO` is the deployment truth.
+> **PRD Reference:** `AGENTS.md` | `docs/reference/PROJECT_AUDIT.md` | `TASKS.md`
 > **Repo layout:** scripts grouped by purpose → `scripts/README.md`; docs index → `docs/README.md` (dated one-off reports live in `docs/archive/`).
 
 ---
@@ -19,7 +19,7 @@
 - Product-card discount pills are `shrink-0 min-w-max`. The card header wraps the two 44px actions under the pill on a 320px two-column grid.
 
 ## Real inventory: MCdodo cables (2026-09-19, commit b450c8d — DB-only, no deploy)
-- 7 Mcdodo Lightning cables added to prod via admin API (in-container short-lived owner JWT): ids 5633–5639, SKUs CA-5261/3581/3580/7271/7270/2261/2260, prices 875k/635k/545k/475k/475k/410k/335k تومان, category «کابل و سیم», stock 10. Full ledger: `docs/REAL-INVENTORY-2026-09-19.md`.
+- 7 Mcdodo Lightning cables added to prod via admin API (in-container short-lived owner JWT): ids 5633–5639, SKUs CA-5261/3581/3580/7271/7270/2261/2260, prices 875k/635k/545k/475k/475k/410k/335k تومان, category «کابل و سیم», stock 10. Full ledger: `docs/reports/2026-09-19-real-inventory-mcdodo-cables.md`.
 - Prod catalogue now **45 products, 2 categories** («کابل و سیم» + «هولدر و نگهدارنده»). Pre-write backup: `/home/ubuntu/backups/janebi-pre-mcdodo-20260919-190933.db`.
 - Images sourced from exact-model marketplace listings, store-watermarked candidates rejected via vision QA, normalized square white-canvas WebP ≤54 KB, shipped to BOTH `public/images/products/` and `dist/images/products/`. Per-asset curl 200 ×7.
 - Verified: X-Total-Count 45, per-SKU price compare clean, PDP/API/img 200 ×7, FTS «مک‌دودو»→7, dual-engine visible-image probe (chromium+webkit) 7/7 (`scripts/audit/mcdodo-live-probe.mjs` — visible-only filter; hidden 40×40 thumbs and below-fold lazy imgs MUST be excluded from naturalWidth assertions).
@@ -82,14 +82,14 @@ unified per file**: gray/zinc/slate tri-mix in 16 files → single majority fami
 class replacements). Gates: tsc clean, 476/481 tests, design-audit 16/16 PASS, live sweep
 (2 engines × 4 pages): h1=1 (except /cart), 0 broken imgs, 0 console/HTTP errors.
 
-**Backend remediation (2026-09-18).** Vitest now uses isolated in-memory SQLite; destructive persistent-DB teardown removed. Consolidated gate: 475 pass / 5 optional PG skips (61 files, incl. payment-callback regression). **PG application parity proven:** all 16 real-router order/rollback/payment-callback tests pass on an isolated disposable PostgreSQL cluster. Payment gateways liveness-verified on prod (Zarinpal code 100, 454 ms; Saman 200); SMS.ir template path accepted (status 1). Exact price assertions reject previously surviving mutations. `jsonFetch` reads failure bodies once. Payment E2E passes both engines; external Enamad 501 attributed by trace and excluded by origin, not status. Full attributed browser run after scoped sync fix: **86/86 passed, 0 flaky, Chromium+WebKit**. Deployment verified separately below. See `docs/BACKEND-REMEDIATION-2026-09-18.md`.
+**Backend remediation (2026-09-18).** Vitest now uses isolated in-memory SQLite; destructive persistent-DB teardown removed. Consolidated gate: 475 pass / 5 optional PG skips (61 files, incl. payment-callback regression). **PG application parity proven:** all 16 real-router order/rollback/payment-callback tests pass on an isolated disposable PostgreSQL cluster. Payment gateways liveness-verified on prod (Zarinpal code 100, 454 ms; Saman 200); SMS.ir template path accepted (status 1). Exact price assertions reject previously surviving mutations. `jsonFetch` reads failure bodies once. Payment E2E passes both engines; external Enamad 501 attributed by trace and excluded by origin, not status. Full attributed browser run after scoped sync fix: **86/86 passed, 0 flaky, Chromium+WebKit**. Deployment verified separately below. See `docs/reports/2026-09-18-backend-remediation.md`.
 
 **Historical test validity audit (2026-09-17).** Full gate: 450 pass / 5 PG skips (58 files).
 Two price-display mutations survived all 35 related utility tests; digit-mapping
 mutation was caught by 4. Guest smoke exit propagation fixed and verified with
 an empty local page (failure exit 1) and live dual-engine positive control.
 Full E2E attempt failed and was stopped; isolated home WebKit reruns passed,
-so full-suite stability remains unverified. See `docs/TEST-VALIDITY-AUDIT-2026-09-17.md`.
+so full-suite stability remains unverified. See `docs/reports/2026-09-17-test-validity-audit.md`.
 
 **Read-only ops audit (2026-09-17, supersedes older operational assurances).**
 Served `BUILD_INFO=c25a69e`; 24-hour nginx status parsing found 0 HTTP 5xx;
@@ -101,7 +101,7 @@ limits are absent despite daemon config on disk; cron logs lack rotation;
 monitor timestamp comparison and failed-alert retry are incorrect; backup
 upload failure can still end with `backup OK`. No application deployment.
 Details and scope limits:
-`docs/OPS-CONFIG-AUDIT-2026-09-17.md`. Earlier claims that backup/monitor failures
+`docs/reports/2026-09-17-ops-config-audit.md`. Earlier claims that backup/monitor failures
 cannot be silent are superseded; historical test counts are not a fresh gate.
 
 **Structure.** `server/routes/admin.ts` (51 lines) is an entry point: router-wide
@@ -249,7 +249,7 @@ nginx version banner off, sshd MaxAuthTries 3.
 
 ## 5. Known Gaps & Debts (2026-08-31 Deep Audit → Sep 1 remediation)
 
-Full evidence + remediation list: `PROJECT_AUDIT.md`. Highest-priority debts:
+Full evidence + remediation list: `docs/reference/PROJECT_AUDIT.md`. Highest-priority debts:
 1. **Fake aggregate ratings — FIXED & COMMITTED (2026-09-01):** seed aggregates zeroed (`seed-data.ts`), client fallbacks removed (`ProductCard` default rating, `ProductReviews` fake list). Remaining: prod DB recompute of `products.rating/reviewsCount` from real `reviews`.
 2. **OTP dead in prod — GATED (2026-09-01):** no SMS provider wired (`auth.ts`); `smsProviderEnabled` from `SMS_API_KEY`/`SMS_PROVIDER`; in production **all** OTP-driven endpoints (`/otp/send`, `/otp/verify`, `/reset-password`) return 503 `{error:'سرویس پیامکی فعال نیست'}`; dev/test keep the in-memory simulator flow. Add Kavenegar/Ghasedak adapter + env keys to re-enable.
 3. **PG parity regression — FIXED (2026-08-31):** `blogPosts` added to `schema.pg.ts` (schema.pg.ts:152).
@@ -351,7 +351,7 @@ Full evidence + remediation list: `PROJECT_AUDIT.md`. Highest-priority debts:
 
 ## Live black-box security audit (2026-09-14, commit `452d1cb` — deployed & live-verified)
 
-Full report: `docs/SECURITY-AUDIT-2026-09-14.md`. Scope: unauthenticated external
+Full report: `docs/reports/2026-09-14-security-audit.md`. Scope: unauthenticated external
 surface of prod (curl/openssl; source read only to confirm root cause).
 
 - **SEC-01 CRITICAL — backend bundle + source map were publicly downloadable.**
