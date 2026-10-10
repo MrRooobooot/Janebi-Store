@@ -1,6 +1,15 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { db } from "../db/index.js";
 import { blogPosts, products } from "../db/schema.js";
+import {
+  CATALOG_HUB_DESCRIPTION,
+  CATALOG_HUB_TITLE,
+  catalogCanonical,
+  catalogDescription,
+  catalogTitle,
+  type CatalogFilters,
+} from "../../src/lib/catalogCopy.js";
+import { queryCatalogue } from "../routes/products.js";
 
 /**
  * Server-side per-route SEO metadata (title / description / Open Graph).
@@ -173,54 +182,83 @@ async function routeMetaFor(pathname: string): Promise<RouteMeta | null> {
   }
 }
 
-/** /products hub — also the canonical target for every filtered/sorted variant of it. */
+/** /products hub — the exact strings the client restores on the unfiltered hub.
+ *  Shared with the client via src/lib/catalogCopy.ts so raw HTML and DOM agree. */
 const PRODUCTS_HUB_META: RouteMeta = {
-  title: "خرید لوازم جانبی موبایل | جانبی آرنا",
-  description:
-    "لیست کامل محصولات جانبی آرنا: شارژر، پاوربانک، هندزفری، کابل و لوازم جانبی موبایل با قیمت روز و ارسال سریع.",
+  title: CATALOG_HUB_TITLE,
+  description: CATALOG_HUB_DESCRIPTION,
   ogType: "website",
-  ogUrl: "https://janebiarena.ir/products",
+  ogUrl: catalogCanonical(),
 };
 
-/** Category landing page: `/products?category=<name>`.
- *
- * The filtered URL is its own canonical. It used to point at the hub, which made Google
- * file every category under "Alternate page with proper canonical tag" — a category page
- * could never rank for its own name. A stale/unknown category name must fall back to the
- * hub, not to the shell's homepage canonical, which produced
- * "Duplicate without user-selected canonical" pages attributed to the homepage.
- * The sitemap lists the %20-encoded form, so the canonical is encoded the same way.
+/**
+ * Live item count for a filtered listing, from the shared query builder — the
+ * same number `X-Total-Count` reports and the page prints. Never a literal.
  */
-async function routeMetaForCategory(category: string | null): Promise<RouteMeta | null> {
-  if (!category) return null;
+async function catalogItemCount(filters: CatalogFilters): Promise<number> {
+  const { total } = await queryCatalogue({
+    category: filters.category ?? undefined,
+    brands: filters.brands?.length ? filters.brands.join(",") : undefined,
+    limit: 1,
+  });
+  return total;
+}
+
+/** Meta for a catalogue listing, byte-identical to what the client writes into
+ *  <head> after hydration (same module + same live count).
+ *
+ *  The filtered URL is its own canonical. It used to point at the hub, which made Google
+ *  file every category/brand page under "Alternate page with proper canonical tag" — a
+ *  filtered listing could never rank for its own name. A stale/unknown filter value must
+ *  fall back to the hub, not to the shell's homepage canonical, which produced
+ *  "Duplicate without user-selected canonical" pages attributed to the homepage.
+ *  The sitemap lists the %20-encoded form, so the canonical is encoded the same way.
+ */
+async function routeMetaForListing(filters: CatalogFilters): Promise<RouteMeta | null> {
+  const brands = filters.brands ?? [];
+  const category = filters.category ?? null;
+  if (!category && brands.length === 0) return PRODUCTS_HUB_META;
   try {
-    const row = await db
-      .select({ category: products.category })
+    // A filter value with no live product behind it is not a listing: fall back
+    // to the hub instead of minting a thin/canonical-orphan page.
+    const exists = await db
+      .select({ id: products.id })
       .from(products)
-      .where(and(eq(products.category, category), eq(products.isActive, 1)))
+      .where(
+        and(
+          eq(products.isActive, 1),
+          category ? eq(products.category, category) : inArray(products.brand, brands)
+        )
+      )
       .limit(1);
-    if (!row[0]) return null;
+    if (!exists[0]) return PRODUCTS_HUB_META;
+    const total = await catalogItemCount(filters);
     return {
-      title: `خرید ${category} | جانبی آرنا`,
-      description: normalizeDescription(
-        null,
-        `خرید انواع ${category} با بهترین قیمت، ضمانت اصالت و ارسال سریع از فروشگاه جانبی آرنا.`
-      ),
+      title: catalogTitle(filters),
+      description: catalogDescription(filters, total),
       ogType: "website",
-      ogUrl: `https://janebiarena.ir/products?category=${encodeURIComponent(category)}`,
+      ogUrl: catalogCanonical(filters),
     };
   } catch {
     return null;
   }
 }
 
-/** Resolve metadata for a request; query string included for category pages. */
+/** Resolve metadata for a request; query string included for catalogue listings. */
 export async function routeMetaForRequest(pathname: string, query: URLSearchParams): Promise<RouteMeta | null> {
   if (pathname === "/products" || pathname === "/products/") {
-    const cat = query.get("category");
-    if (cat) return (await routeMetaForCategory(cat)) ?? PRODUCTS_HUB_META;
-    // SEO: the /products hub must not inherit the homepage shell canonical (r47 gap).
-    return PRODUCTS_HUB_META;
+    const category = query.get("category");
+    const brandParam = query.get("brands") || query.get("brand");
+    const brands = brandParam
+      ? brandParam
+          .split(",")
+          .map((b) => b.trim())
+          .filter(Boolean)
+      : [];
+    return routeMetaForListing({
+      category: category && category !== "همه" ? category : null,
+      brands,
+    });
   }
   return routeMetaFor(pathname);
 }

@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Product } from '../types';
 import { buildProductQuery } from '../lib/productQuery';
+import { DEFAULT_CATALOG_PAGE_SIZE } from '../lib/constants';
 import { getJson } from '../lib/jsonFetch';
 
 export interface PricePreset {
@@ -94,7 +95,7 @@ export function useProductFilters() {
       onlyDiscounted,
       sortBy,
       page,
-      limit: 20,
+      limit: DEFAULT_CATALOG_PAGE_SIZE,
     });
     if (clientFilterCache.has(cacheKey)) {
       const cached = clientFilterCache.get(cacheKey)!;

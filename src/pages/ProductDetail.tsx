@@ -82,10 +82,12 @@ export default function ProductDetail() {
         });
 
         // Dynamic Product JSON-LD Schema for AI Crawlers and Search Engines —
-        // shared honesty-gated builder (src/lib/productJsonLd.ts). Server
-        // prerender emits the identical payload for raw-HTML crawlers.
-        const existingScript = document.getElementById('product-schema-jsonld');
-        if (existingScript) existingScript.remove();
+        // shared honesty-gated builder (src/lib/productJsonLd.ts). The server
+        // prerender emits the identical payload for raw-HTML crawlers under a
+        // second id, so BOTH ids are cleared before injecting: exactly one
+        // Product node is what keeps rendered DOM == served HTML.
+        document.getElementById('product-schema-jsonld')?.remove();
+        document.getElementById('product-jsonld-prerender')?.remove();
 
         const jsonLd = buildProductJsonLd(data, 'https://janebiarena.ir', window.location.href);
         if (jsonLd) {

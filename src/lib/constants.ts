@@ -13,6 +13,13 @@ export const SHIPPING_FEES = {
 export const MAX_CART_QUANTITY = 99;
 
 /**
+ * Page size of the catalogue listing. The client asks the API for this many
+ * products and the server-side raw-HTML prerender renders the same page, so a
+ * crawler without JS sees exactly the items a user sees (no hardcoded count).
+ */
+export const DEFAULT_CATALOG_PAGE_SIZE = 20;
+
+/**
  * Contact messages with status 'read' older than this many days are archived
  * automatically by the contact-archive reaper (server/routes/contact.ts).
  * Admins can archive/unarchive manually via

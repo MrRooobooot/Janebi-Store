@@ -8,6 +8,7 @@ import { sendOrderReceiptSms } from './services/sms.js';
 import { ALL_PRODUCTS, REVIEWS_STORE, VALID_COUPONS } from './data/seed-data.js';
 import { blogPostingJsonLdFor, productJsonLdFor, breadcrumbJsonLdFor, productBreadcrumbJsonLdFor, injectBreadcrumbIntoHtml } from "./lib/breadcrumbs.js";
 import { routeMetaForRequest, injectSeoMetadata, productOgImageFor } from "./lib/seoMeta.js";
+import { catalogSnapshotFor, injectCatalogSnapshot } from "./lib/catalogSnapshot.js";
 import { shouldNoIndex } from "./lib/robots.js";
 import { LEGACY_PRODUCT_REDIRECTS } from "./data/legacyProductRedirects.js";
 import { eq } from "drizzle-orm";
@@ -170,13 +171,14 @@ async function startServer() {
           return sendNotFound(res, shell);
         }
 
-        const [crumb, postingLd, productLd, meta, productImage, productCrumb] = await Promise.all([
+        const [crumb, postingLd, productLd, meta, productImage, productCrumb, catalog] = await Promise.all([
           breadcrumbJsonLdFor(pathname),
           blogPostingJsonLdFor(pathname),
           productJsonLdFor(pathname),
           routeMetaForRequest(pathname, query),
           productOgImageFor(pathname),
           productBreadcrumbJsonLdFor(pathname),
+          catalogSnapshotFor(pathname, query),
         ]);
         // Structured JSON-LD only differs on /blog and /product routes; avoid
         // re-reading on every request by falling back to a plain sendFile.
@@ -184,12 +186,17 @@ async function startServer() {
         // No route metadata → cheapest path, but the robots meta still has to match the
         // X-Robots-Tag the middleware already sent (this early return used to ship the
         // pristine shell with index,follow on noindex routes like /cart and /login).
-        if (!structuredLd && !meta) {
+        if (!structuredLd && !meta && !catalog) {
           return res.set("Content-Type", "text/html").send(applyNoIndexMeta(shell, pathname, query));
         }
         let html = applyNoIndexMeta(shell, pathname, query);
         if (structuredLd) html = injectBreadcrumbIntoHtml(html, structuredLd);
         if (meta) html = injectSeoMetadata(html, productImage ? { ...meta, ogImage: productImage.og, preloadImage: productImage.hero } : meta);
+        // Catalogue listings: the raw shell above carries head tags only — a crawler
+        // that runs no JS saw an empty #root. Put the real listing (same query
+        // builder, same page size as the client) inside #root so the crawler reads
+        // what a user reads; React replaces it on hydration.
+        if (catalog) html = injectCatalogSnapshot(html, catalog);
         return res
           .status(200)
           .set("Content-Type", "text/html")

@@ -7,6 +7,7 @@ import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { useEffect } from 'react';
 import { toPersianDigits } from '../lib/utils';
 import { applyCatalogSeo, restoreCatalogSeo } from '../lib/catalogSeo';
+import { CATALOG_HUB_H1, catalogH1 } from '../lib/catalogCopy';
 
 export default function Products() {
   const {
@@ -44,45 +45,54 @@ export default function Products() {
   } = useProductFilters();
 
   const isCategoryFiltered = selectedCategory !== 'همه';
+  const isBrandFiltered = selectedBrands.length > 0;
+  const isFiltered = isCategoryFiltered || isBrandFiltered;
   const realCount = totalProducts; // real count returned by the live API — never fabricated
+  // Single source for the filter wording: `src/lib/catalogCopy.ts` — the same
+  // module the server-side raw-HTML prerender uses, so <head>, h1 and the
+  // crawler-visible HTML can never disagree about which listing this is.
+  const brandLabel = selectedBrands.join(' و ');
+  const catalogFilters = {
+    category: isCategoryFiltered ? selectedCategory : null,
+    brands: selectedBrands,
+  };
 
-  // Category-aware <head> SEO (title / description / CollectionPage JSON-LD).
-  // Runs only on settled API data (loading=false) so meta always reflects the
-  // real live catalogue, not transient loading states.
+  // Filter-aware <head> SEO (title / description / canonical / CollectionPage
+  // JSON-LD). Runs only on settled API data (loading=false) so meta always
+  // reflects the real live catalogue, not transient loading states.
   useEffect(() => {
     if (loading) return;
-    if (isCategoryFiltered) {
-      applyCatalogSeo({
-        title: `خرید ${selectedCategory} | جانبی آرنا`,
-        description: `خرید ${selectedCategory} اورجینال در جانبی آرنا — ${toPersianDigits(realCount)} محصول موجود با ضمانت اصالت، گارانتی تعویض فیزیکی و ارسال سریع به سراسر ایران.`,
-        itemCount: realCount,
-        category: selectedCategory,
-      });
+    if (isFiltered) {
+      applyCatalogSeo({ itemCount: realCount, ...catalogFilters });
     } else {
       restoreCatalogSeo();
     }
     return () => restoreCatalogSeo();
-  }, [isCategoryFiltered, selectedCategory, realCount, loading]);
+  }, [isFiltered, isCategoryFiltered, isBrandFiltered, selectedCategory, selectedBrands, realCount, loading]);
 
   return (
     <div className="page-stack w-full">
       {/* Page Title Header — warm rose-tinted band (Iranian-palette hero, ≥4.5:1 subtext) */}
       <div className="mb-6 text-right">
-          {isCategoryFiltered ? (
+          {isFiltered ? (
             <>
-              <p className="text-xs text-slate-500">دسته‌بندی انتخاب‌شده</p>
+              <p className="text-xs text-slate-500">
+                {isCategoryFiltered ? 'دسته‌بندی انتخاب‌شده' : 'برند انتخاب‌شده'}
+              </p>
               <h1 className="mt-1 text-lg font-black text-slate-900 dark:text-white sm:text-4xl">
-                خرید {selectedCategory}
+                {catalogH1(catalogFilters)}
               </h1>
               <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-                {toPersianDigits(realCount)} محصول اورجینال در دسته «{selectedCategory}» با ضمانت اصالت، گارانتی تعویض فیزیکی و ارسال سریع
+                {toPersianDigits(realCount)} محصول اورجینال
+                {isCategoryFiltered ? ` در دسته «${selectedCategory}»` : ''}
+                {isBrandFiltered ? ` از برند ${brandLabel}` : ''} با ضمانت اصالت، گارانتی تعویض فیزیکی و ارسال سریع
               </p>
             </>
           ) : (
             <>
               <p className="text-xs text-slate-500">کاتالوگ کامل جانبی آرنا</p>
               <h1 className="mt-1 text-lg font-black text-slate-900 dark:text-white sm:text-4xl">
-                فروشگاه تجهیزات و لوازم جانبی اورجینال
+                {CATALOG_HUB_H1}
               </h1>
               <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
                 بررسی، مقایسه تخصصی و خرید مستقیم انواع قاب، گلس، شارژر فست، کابل و پاوربانک با گارانتی تعویض فیزیکی

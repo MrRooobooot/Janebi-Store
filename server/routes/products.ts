@@ -6,6 +6,7 @@ import { products, reviews } from "../db/schema.js";
 import { eq, or, and, SQL, gte, lte, gt, inArray, desc, asc, sql } from "drizzle-orm";
 import { likeWithEscape, containsLikePattern } from "../utils/like";
 
+import { DEFAULT_CATALOG_PAGE_SIZE } from "../../src/lib/constants.js";
 import { appCache } from "../utils/cache.js";
 import { storeEvents } from "../services/events.js";
 
@@ -45,6 +46,140 @@ function ftsSearchCondition(search: string): SQL | null {
   }
 }
 
+export interface CatalogQueryParams {
+  category?: string;
+  search?: string;
+  brands?: string;
+  brand?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  inStock?: string;
+  hasDiscount?: string;
+  sort?: string;
+  limit?: string | number;
+  page?: string | number;
+}
+
+function catalogOrderBy(sort?: string): any {
+  switch (sort) {
+    case "price-asc":
+      return asc(products.price);
+    case "price-desc":
+      return desc(products.price);
+    case "popular":
+    case "rating-desc":
+      return desc(products.rating);
+    case "reviews-desc":
+      return desc(products.reviewsCount);
+    case "discount-desc":
+      return desc(products.discount);
+    case "newest":
+    default:
+      return desc(products.id);
+  }
+}
+
+/**
+ * The ONE place a public catalogue URL is turned into SQL. Used by
+ * `GET /api/products` and by the server-side raw-HTML prerender
+ * (server/lib/catalogSnapshot.ts), so a crawler without JS and a rendered
+ * browser can never be shown two different listings for the same URL — and the
+ * page size is the shared DEFAULT_CATALOG_PAGE_SIZE the client asks for.
+ */
+export async function queryCatalogue(params: CatalogQueryParams) {
+  const conditions: SQL[] = [];
+
+  // Soft-hide: is_active=0 keeps a product out of every public listing while the
+  // row survives for order history (order_items FK). Only the admin list shows it.
+  conditions.push(eq(products.isActive, 1));
+
+  if (params.category && params.category !== "همه") {
+    conditions.push(eq(products.category, params.category));
+  }
+
+  if (params.search) {
+    const fts = ftsSearchCondition(String(params.search));
+    if (fts) {
+      conditions.push(fts);
+    } else {
+      const s = containsLikePattern(String(params.search));
+      conditions.push(
+        or(
+          likeWithEscape(products.title, s),
+          likeWithEscape(products.category, s),
+          likeWithEscape(products.brand, s)
+        )!
+      );
+    }
+  }
+
+  // `brand` (singular) is the public URL param spelled by the brand directory
+  // (src/pages/static/Brands.tsx → /products?brand=X); `brands` (plural,
+  // comma-separated) is what the catalogue hook sends. Same concept, two
+  // spellings — accept both so a link can never silently list everything.
+  const brandParam = params.brands || params.brand;
+  if (brandParam) {
+    const brandArray = String(brandParam)
+      .split(",")
+      .map((b) => b.trim())
+      .filter(Boolean);
+    if (brandArray.length > 0) {
+      conditions.push(inArray(products.brand, brandArray));
+    }
+  }
+
+  if (params.minPrice) {
+    conditions.push(gte(products.price, parseInt(String(params.minPrice))));
+  }
+
+  if (params.maxPrice) {
+    conditions.push(lte(products.price, parseInt(String(params.maxPrice))));
+  }
+
+  if (params.inStock === "true") {
+    conditions.push(gt(products.stockQuantity, 0));
+  }
+
+  if (params.hasDiscount === "true") {
+    conditions.push(gt(products.discount, 0));
+  }
+
+  const finalCondition = conditions.length > 0 ? and(...conditions) : undefined;
+  const orderBy = catalogOrderBy(params.sort);
+  const pageSize = params.limit ? parseInt(String(params.limit)) : DEFAULT_CATALOG_PAGE_SIZE;
+  const currentPage = params.page ? parseInt(String(params.page)) : 1;
+  const offset = (currentPage - 1) * pageSize;
+
+  const results = await db.query.products.findMany({
+    where: finalCondition,
+    limit: pageSize,
+    offset,
+    orderBy,
+    // costPrice is wholesale and barcode is a supplier-reconciliation field:
+    // neither belongs in a public response (isActive is admin-only too).
+    columns: { costPrice: false, barcode: false, isActive: false },
+    with: {
+      features: true,
+    },
+  });
+
+  // COUNT as a real SQL aggregate — the previous full findMany just to read
+  // .length scanned every matching row per page request.
+  const countRows = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(products)
+    .where(finalCondition);
+  const total = Number(countRows[0]?.count ?? 0);
+
+  return {
+    items: results.map((p) => ({ ...p, features: p.features.map((f) => f.feature) })),
+    total,
+    pageSize,
+    currentPage,
+    totalPages: Math.ceil(total / pageSize),
+  };
+}
+
 router.get("/", validate(productQuerySchema), async (req, res) => {
   const cacheKey = `products:${JSON.stringify(req.query)}`;
   const cached = appCache.get(cacheKey);
@@ -59,110 +194,22 @@ router.get("/", validate(productQuerySchema), async (req, res) => {
     return res.json(cached.data);
   }
 
-  const { category, search, limit, brands, minPrice, maxPrice, inStock, hasDiscount, sort, page } = req.query as any;
-  
-  const conditions: SQL[] = [];
+  const { category, search, limit, brands, brand, minPrice, maxPrice, inStock, hasDiscount, sort, page } = req.query as any;
 
-  // Soft-hide: is_active=0 keeps a product out of every public listing while the
-  // row survives for order history (order_items FK). Only the admin list shows it.
-  conditions.push(eq(products.isActive, 1));
-  
-  if (category && category !== "همه") {
-    conditions.push(eq(products.category, category));
-  }
-  
-  if (search) {
-    const fts = ftsSearchCondition(String(search));
-    if (fts) {
-      conditions.push(fts);
-    } else {
-      const s = containsLikePattern(String(search));
-      conditions.push(or(
-        likeWithEscape(products.title, s),
-        likeWithEscape(products.category, s),
-        likeWithEscape(products.brand, s)
-      )!);
-    }
-  }
-  
-  if (brands) {
-    const brandArray = brands.split(",");
-    if (brandArray.length > 0) {
-      conditions.push(inArray(products.brand, brandArray));
-    }
-  }
-
-  if (minPrice) {
-    conditions.push(gte(products.price, parseInt(minPrice)));
-  }
-
-  if (maxPrice) {
-    conditions.push(lte(products.price, parseInt(maxPrice)));
-  }
-
-  if (inStock === "true") {
-    conditions.push(gt(products.stockQuantity, 0));
-  }
-
-  if (hasDiscount === "true") {
-    conditions.push(gt(products.discount, 0));
-  }
-
-  const finalCondition = conditions.length > 0 ? and(...conditions) : undefined;
-
-  let orderBy: any = desc(products.id);
-  if (sort) {
-    switch (sort) {
-      case "price-asc":
-        orderBy = asc(products.price);
-        break;
-      case "price-desc":
-        orderBy = desc(products.price);
-        break;
-      case "popular":
-        orderBy = desc(products.rating);
-        break;
-      case "rating-desc":
-        orderBy = desc(products.rating);
-        break;
-      case "reviews-desc":
-        orderBy = desc(products.reviewsCount);
-        break;
-      case "discount-desc":
-        orderBy = desc(products.discount);
-        break;
-      case "newest":
-      default:
-        orderBy = desc(products.id);
-        break;
-    }
-  }
-
-  const pageSize = limit ? parseInt(limit) : 20; // Default limit
-  const currentPage = page ? parseInt(page) : 1;
-  const offset = (currentPage - 1) * pageSize;
-
-  const results = await db.query.products.findMany({
-    where: finalCondition,
-    limit: pageSize,
-    offset,
-    orderBy,
-    // costPrice is wholesale and barcode is a supplier-reconciliation field:
-    // neither belongs in a public response (isActive is admin-only too).
-    columns: { costPrice: false, barcode: false, isActive: false },
-    with: {
-      features: true
-    }
+  // Same query builder the raw-HTML prerender uses (single source of truth).
+  const { items: formatted, total, totalPages, currentPage } = await queryCatalogue({
+    category,
+    search,
+    limit,
+    brands,
+    brand,
+    minPrice,
+    maxPrice,
+    inStock,
+    hasDiscount,
+    sort,
+    page,
   });
-
-  // COUNT as a real SQL aggregate — the previous full findMany just to read
-  // .length scanned every matching row per page request.
-  const countRows = await db
-    .select({ count: sql<number>`count(*)` })
-    .from(products)
-    .where(finalCondition);
-  const total = Number(countRows[0]?.count ?? 0);
-  const totalPages = Math.ceil(total / pageSize);
 
   const customHeaders: Record<string, string> = {
     "X-Total-Count": total.toString(),
@@ -175,11 +222,6 @@ router.get("/", validate(productQuerySchema), async (req, res) => {
   res.setHeader("X-Current-Page", customHeaders["X-Current-Page"]);
   res.setHeader("X-Cache", "MISS");
   res.setHeader("Cache-Control", "public, max-age=30");
-  
-  const formatted = results.map(p => ({
-    ...p,
-    features: p.features.map(f => f.feature)
-  }));
 
   appCache.set(cacheKey, formatted, 60, customHeaders);
   

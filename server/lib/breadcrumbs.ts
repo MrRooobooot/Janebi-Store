@@ -20,7 +20,7 @@ const SITE_ORIGIN = "https://janebiarena.ir";
 
 function jsonLdScript(data: unknown): string {
   return (
-    '<script type="application/ld+json" id="breadcrumb-jsonld">' +
+    '<script type="application/ld+json" id="breadcrumb-jsonld-prerender">' +
     JSON.stringify(data).replace(/</g, "\\u003c") +
     "</script>"
   );

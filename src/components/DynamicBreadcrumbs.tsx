@@ -129,6 +129,14 @@ export default function DynamicBreadcrumbs() {
     });
   }
 
+  // The server prerender emits the identical BreadcrumbList for raw-HTML
+  // crawlers under `breadcrumb-jsonld-prerender`. Dropping it once the client
+  // owns the page leaves exactly one BreadcrumbList in the rendered DOM
+  // (two competing nodes is the duplicate-schema bug).
+  useEffect(() => {
+    document.getElementById('breadcrumb-jsonld-prerender')?.remove();
+  }, [location.pathname, location.search]);
+
   if (location.pathname === '/' || items.length <= 1) {
     return null;
   }
@@ -137,6 +145,7 @@ export default function DynamicBreadcrumbs() {
     <>
       {/* SEO Schema markup for BreadcrumbList */}
       <script
+        id="breadcrumb-jsonld"
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({

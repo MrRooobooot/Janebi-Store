@@ -7,20 +7,38 @@
  * - Zero fabricated data: caller passes only values returned by the API.
  * - restore() returns the head to the static index.html defaults.
  */
-interface CatalogSeoInput {
-  title: string;
-  description: string;
+import {
+  CATALOG_HUB_DESCRIPTION,
+  CATALOG_HUB_TITLE,
+  catalogCanonical,
+  catalogDescription,
+  catalogTitle,
+  type CatalogFilters,
+} from './catalogCopy';
+
+interface CatalogSeoInput extends CatalogFilters {
   /** Real product count from the live API response (Persian-digits applied by caller if displayed). */
   itemCount: number;
-  /** Category filter value from the live API ('همه' for the unfiltered catalog). */
-  category: string;
 }
 
 const JSONLD_ID = 'catalog-jsonld';
+/** The server's no-JS prerender for this listing (removed once the live one exists). */
+const PRERENDER_JSONLD_ID = 'catalog-jsonld-prerender';
 
 function setMetaContent(selector: string, content: string): void {
   const el = document.head.querySelector<HTMLMetaElement>(selector);
   if (el) el.setAttribute('content', content);
+}
+
+/** Point the single canonical link at the listing actually being shown. */
+function setCanonical(href: string): void {
+  let el = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+  if (!el) {
+    el = document.createElement('link');
+    el.setAttribute('rel', 'canonical');
+    document.head.appendChild(el);
+  }
+  el.setAttribute('href', href);
 }
 
 function escapeJsonLd(text: string): string {
@@ -29,16 +47,19 @@ function escapeJsonLd(text: string): string {
 
 export function applyCatalogSeo(input: CatalogSeoInput): void {
   if (typeof document === 'undefined') return;
-  document.title = input.title;
-  setMetaContent('meta[name="description"]', input.description);
-  setMetaContent('meta[property="og:title"]', input.title);
-  setMetaContent('meta[property="og:description"]', input.description);
+  const title = catalogTitle(input);
+  const description = catalogDescription(input, input.itemCount);
+  const canonical = catalogCanonical(input);
+  document.title = title;
+  setMetaContent('meta[name="description"]', description);
+  setMetaContent('meta[property="og:title"]', title);
+  setMetaContent('meta[property="og:description"]', description);
+  setCanonical(canonical);
 
-  const isFiltered = input.category !== 'همه';
-  const canonical = isFiltered
-    ? `https://janebiarena.ir/products?category=${encodeURIComponent(input.category)}`
-    : 'https://janebiarena.ir/products';
-
+  // The server prerenders this listing for no-JS crawlers under
+  // `catalog-jsonld-prerender`; the live block replaces it, so the document
+  // never carries two competing CollectionPage blocks.
+  document.getElementById(PRERENDER_JSONLD_ID)?.remove();
   document.getElementById(JSONLD_ID)?.remove();
   const script = document.createElement('script');
   script.id = JSONLD_ID;
@@ -47,8 +68,8 @@ export function applyCatalogSeo(input: CatalogSeoInput): void {
   const payload = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: input.title,
-    description: input.description,
+    name: title,
+    description,
     url: canonical,
     mainEntity: {
       '@type': 'ItemList',
@@ -62,9 +83,7 @@ export function applyCatalogSeo(input: CatalogSeoInput): void {
 export function restoreCatalogSeo(): void {
   if (typeof document === 'undefined') return;
   document.getElementById(JSONLD_ID)?.remove();
-  document.title = 'جانبی آرنا | خرید آنلاین لوازم جانبی موبایل و تبلت با ضمانت اصالت';
-  setMetaContent(
-    'meta[name="description"]',
-    'فروشگاه تخصصی جانبی آرنا؛ خرید انواع قاب و کاور گوشی، گلس نشکن، شارژر اصل، کابل، پاوربانک و هولدر با تضمین کیفیت، بهترین قیمت و ارسال سریع به سراسر ایران.'
-  );
+  setCanonical(catalogCanonical());
+  document.title = CATALOG_HUB_TITLE;
+  setMetaContent('meta[name="description"]', CATALOG_HUB_DESCRIPTION);
 }
