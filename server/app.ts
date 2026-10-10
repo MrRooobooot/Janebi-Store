@@ -35,7 +35,7 @@ import { shouldNoIndex } from "./lib/robots.js";
 
 export const app = express();
 
-// Trust reverse proxy (Nginx)
+// trust proxy 1 is safe ONLY while the app port stays loopback-only and nginx overwrites X-Forwarded-For with $remote_addr — see tests/unit/infra-exposure-guards.test.ts
 app.set("trust proxy", 1);
 
 // Reporting-Endpoints (modern report-to transport for CSP violations).
