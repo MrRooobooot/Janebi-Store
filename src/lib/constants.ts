@@ -43,18 +43,6 @@ export const STORE_SETTINGS_DEFAULTS: Record<string, string> = {
   address: 'تهران، خیابان ولیعصر، تقاطع طالقانی، مجتمع نور، طبقه ۲، واحد ۱۰۴',
   freeShippingThreshold: '2000000',
   announcement: 'ارسال رایگان برای تمامی سفارش‌های بالای ۲ میلیون تومان | کد تخفیف: WELCOME10',
-  heroSlide1Title: 'هولدرهای مگنتی خودرو و پایه‌های رومیزی ضدلغزش',
-  heroSlide1Subtitle: 'هولدرهای آهنربایی قدرتمند N52 سازگار با مگ‌سیف آیفون و انواع گوشی‌ها، مناسب رانندگی شهری و اسنپ بدون لغزش و تکان',
-  heroSlide1Link: '/products?category=هولدر و نگهدارنده',
-  heroSlide1Badge: 'فروش تکی و عمده کارتنی',
-  heroSlide2Title: 'قاب‌های مگ‌سیف و گلس‌های سوپردی فول‌چسب',
-  heroSlide2Subtitle: 'تنوع بیش از ۵۰۰ مدل کاور سیلیکونی پاک‌کنی، قاب‌های ضدضربه و گلس‌های نشکن برای انواع مدل‌های آیفون، سامسونگ و شیائومی',
-  heroSlide2Link: '/products?category=قاب و کاور',
-  heroSlide2Badge: 'تخفیف ویژه سفارش‌های پک و تعدادی',
-  heroSlide3Title: 'کابل‌های کنفی تقویت‌شده و محافظ‌های فنری کابل',
-  heroSlide3Subtitle: 'کابل‌های تایپ‌سی، لایتنینگ و محافظ‌های سیلیکونی سر کابل برای جلوگیری از پارگی و افزایش چندبرابری طول عمر شارژر',
-  heroSlide3Link: '/products?category=کابل',
-  heroSlide3Badge: 'تضمین سلامت فیزیکی ۱۰۰٪',
   // Homepage sections — admin/bale-bot editable (2026-09-09). Every homepage
   // block reads these via /api/settings; defaults = current live copy.
   announcementBarEnabled: 'true', // 'false' hides the top announcement bar (bot toggle st:bar_tog)
@@ -76,12 +64,6 @@ export const STORE_SETTINGS_DEFAULTS: Record<string, string> = {
   valueProp3Desc: 'مهلت تست ۷ روزه و امکان تعویض در صورت مغایرت',
   valueProp4Title: 'مشاوره خرید هولدر و کابل',
   valueProp4Desc: 'راهنمایی انتخاب مدل متناسب با خودرو و مدل گوشی',
-  heroSlide1Tag: 'مرجع تخصصی هولدر و استند موبایل',
-  heroSlide2Tag: 'محافظت ۱۰۰٪ از بدنه، لنز و صفحه نمایش',
-  heroSlide3Tag: 'کابل‌های فست و محافظ‌های ضدقطعی',
-  heroSlide1ButtonText: 'مشاهده انواع هولدر و استند',
-  heroSlide2ButtonText: 'انتخاب قاب و محافظ صفحه',
-  heroSlide3ButtonText: 'مشاهده کابل‌ها و محافظ‌ها',
 };
 
 /**

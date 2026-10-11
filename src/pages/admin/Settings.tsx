@@ -1,6 +1,6 @@
 import { authFetch } from '../../lib/api';
 import React, { useState, useEffect } from 'react';
-import { Settings, Save, Phone, Mail, MapPin, Clock, Truck, Megaphone, Check, Loader2, Database, Download, Sparkles, Layers, Zap, Building2, Crown, Star } from 'lucide-react';
+import { Settings, Save, Phone, Mail, MapPin, Clock, Truck, Megaphone, Check, Loader2, Database, Download, Sparkles, Zap, Building2, Crown, Star } from 'lucide-react';
 import PageHeader from '../../components/admin/PageHeader';
 import { useToast } from '../../contexts/ToastContext';
 import { STORE_SETTINGS_DEFAULTS } from '../../lib/constants';
@@ -14,21 +14,6 @@ interface StoreSettingsData {
   address: string;
   freeShippingThreshold: number;
   announcement: string;
-  heroSlide1Title?: string;
-  heroSlide1Subtitle?: string;
-  heroSlide1Link?: string;
-  heroSlide1Badge?: string;
-  heroSlide2Title?: string;
-  heroSlide2Subtitle?: string;
-  heroSlide2Link?: string;
-  heroSlide2Badge?: string;
-  heroSlide3Title?: string;
-  heroSlide3Subtitle?: string;
-  heroSlide3Link?: string;
-  heroSlide3Badge?: string;
-  heroSlide1Image?: string;
-  heroSlide2Image?: string;
-  heroSlide3Image?: string;
   announcementBarEnabled: string;
   dealsTitle: string;
   dealsSubtitle: string;
@@ -48,12 +33,6 @@ interface StoreSettingsData {
   valueProp3Desc: string;
   valueProp4Title: string;
   valueProp4Desc: string;
-  heroSlide1Tag: string;
-  heroSlide2Tag: string;
-  heroSlide3Tag: string;
-  heroSlide1ButtonText: string;
-  heroSlide2ButtonText: string;
-  heroSlide3ButtonText: string;
 }
 
 const FIELD =
@@ -85,75 +64,6 @@ function CollapsibleSection({
       </summary>
       <div className="pt-4 space-y-4">{children}</div>
     </details>
-  );
-}
-
-const HERO_INPUT =
-  'w-full bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs';
-
-const HERO_SLIDE_FIELDS = {
-  1: {
-    title: 'heroSlide1Title',
-    subtitle: 'heroSlide1Subtitle',
-    badge: 'heroSlide1Badge',
-    tag: 'heroSlide1Tag',
-    buttonText: 'heroSlide1ButtonText',
-    link: 'heroSlide1Link',
-    image: 'heroSlide1Image',
-  },
-  2: {
-    title: 'heroSlide2Title',
-    subtitle: 'heroSlide2Subtitle',
-    badge: 'heroSlide2Badge',
-    tag: 'heroSlide2Tag',
-    buttonText: 'heroSlide2ButtonText',
-    link: 'heroSlide2Link',
-    image: 'heroSlide2Image',
-  },
-  3: {
-    title: 'heroSlide3Title',
-    subtitle: 'heroSlide3Subtitle',
-    badge: 'heroSlide3Badge',
-    tag: 'heroSlide3Tag',
-    buttonText: 'heroSlide3ButtonText',
-    link: 'heroSlide3Link',
-    image: 'heroSlide3Image',
-  },
-} as const;
-
-function HeroSlideEditor({
-  n,
-  label,
-  settings,
-  setSettings,
-}: {
-  n: 1 | 2 | 3;
-  label: string;
-  settings: StoreSettingsData;
-  setSettings: React.Dispatch<React.SetStateAction<StoreSettingsData>>;
-}) {
-  const fields = HERO_SLIDE_FIELDS[n];
-  const setField = (key: keyof StoreSettingsData) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSettings((prev) => ({ ...prev, [key]: e.target.value }));
-  };
-  return (
-    <div className="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 space-y-3">
-      <span className="text-xs font-bold text-[var(--color-emphasis-text)]">{label}</span>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <input type="text" placeholder="عنوان زیر بنر" value={settings[fields.title] || ''} onChange={setField(fields.title)} className={HERO_INPUT} />
-        <input type="text" placeholder="متن دکمه زیر بنر" value={settings[fields.buttonText] || ''} onChange={setField(fields.buttonText)} className={HERO_INPUT} />
-        <input type="text" placeholder="لینک دکمه" value={settings[fields.link] || ''} onChange={setField(fields.link)} className={`${HERO_INPUT} text-left dir-ltr`} />
-        <input type="text" placeholder="مسیر تصویر" value={settings[fields.image] || ''} onChange={setField(fields.image)} className={`${HERO_INPUT} text-left dir-ltr`} />
-      </div>
-      <details className="rounded-xl border border-dashed border-gray-300 dark:border-gray-600 px-3 py-2">
-        <summary className="cursor-pointer text-xs font-bold text-gray-500 dark:text-gray-400">روی صفحه دیده نمی‌شود</summary>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3">
-          <input type="text" placeholder="زیرعنوان" value={settings[fields.subtitle] || ''} onChange={setField(fields.subtitle)} className={`${HERO_INPUT} md:col-span-2`} />
-          <input type="text" placeholder="نشان" value={settings[fields.badge] || ''} onChange={setField(fields.badge)} className={HERO_INPUT} />
-          <input type="text" placeholder="برچسب" value={settings[fields.tag] || ''} onChange={setField(fields.tag)} className={HERO_INPUT} />
-        </div>
-      </details>
-    </div>
   );
 }
 
@@ -337,21 +247,6 @@ export default function AdminSettings() {
               </p>
             </div>
           </div>
-        </div>
-
-        {/* ۳. مدیریت ۳ اسلایدر هیرو صفحه اول */}
-        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-6">
-          <h2 className="text-base font-bold text-[var(--color-text-main-light)] dark:text-white border-b border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] pb-3 flex items-center gap-2">
-            <Layers className="h-5 w-5 text-[var(--color-emphasis-text)]" />
-            مدیریت اسلایدرهای هیرو صفحه اول
-          </h2>
-
-          <p className="text-xs leading-relaxed text-gray-500 dark:text-gray-400">
-            روی بنر فقط تصویر دیده می‌شود. عنوان و متن دکمه زیر بنر نمایش داده می‌شوند.
-          </p>
-          <HeroSlideEditor n={1} label="اسلاید شماره ۱" settings={settings} setSettings={setSettings} />
-          <HeroSlideEditor n={2} label="اسلاید شماره ۲" settings={settings} setSettings={setSettings} />
-          <HeroSlideEditor n={3} label="اسلاید شماره ۳" settings={settings} setSettings={setSettings} />
         </div>
 
         {/* ۴. بخش‌های محتوایی صفحه اصلی (تاشو) */}

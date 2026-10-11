@@ -7,7 +7,6 @@ import { db } from '../../db/index.js';
 import { storeSettings } from '../../db/schema.js';
 import { appCache } from '../../utils/cache.js';
 import { STORE_SETTINGS_DEFAULTS } from '../../../src/lib/constants.js';
-import { HERO_IMAGE_DEFAULTS } from '../settings.js';
 import { and } from 'drizzle-orm';
 import { validate } from '../../middleware/validate.js';
 import { settingsSchema } from '../../validators/index.js';
@@ -20,19 +19,22 @@ const router = Router();
 // they survive container restarts (previously RAM-only).
 // ---------------------------------------------------------
 // Admin-editable settings allow-list — derived from the canonical shared
-// defaults (src/lib/constants.ts), so hero-slide fields are editable too and
-// no literals drift between admin, public GET and client fallback.
-// Hero image keys (audit §3.6) come from the shared server-side defaults.
-const DEFAULT_SETTINGS: Record<string, string> = {
-  ...STORE_SETTINGS_DEFAULTS,
-  ...HERO_IMAGE_DEFAULTS,
-};
+// defaults (src/lib/constants.ts), so no literals drift between admin, public
+// GET and client fallback.
+const DEFAULT_SETTINGS: Record<string, string> = { ...STORE_SETTINGS_DEFAULTS };
+
+// Hero-slide controls were removed: the homepage hero is HERO_COPY and never
+// read these keys. Rows left in store_settings by older saves are not returned
+// as active settings (no data is deleted).
+const RETIRED_SETTING_KEY = /^heroSlide\d/;
 
 router.get('/settings', async (req, res) => {
   try {
     const rows = await db.select().from(storeSettings);
     const merged: Record<string, string> = { ...DEFAULT_SETTINGS };
-    for (const row of rows) merged[row.key] = row.value;
+    for (const row of rows) {
+      if (!RETIRED_SETTING_KEY.test(row.key)) merged[row.key] = row.value;
+    }
     // freeShippingThreshold stays numeric for API compatibility.
     res.json({ ...merged, freeShippingThreshold: parseInt(merged.freeShippingThreshold) || 0 });
   } catch (error) {
@@ -66,7 +68,9 @@ router.put('/settings', validate(settingsSchema), async (req, res) => {
 
     const rows = await db.select().from(storeSettings);
     const merged: Record<string, string> = { ...DEFAULT_SETTINGS };
-    for (const row of rows) merged[row.key] = row.value;
+    for (const row of rows) {
+      if (!RETIRED_SETTING_KEY.test(row.key)) merged[row.key] = row.value;
+    }
 
     res.json({
       success: true,

@@ -10,21 +10,6 @@ interface StoreSettings {
   address: string;
   freeShippingThreshold: number;
   announcement: string;
-  heroSlide1Title?: string;
-  heroSlide1Subtitle?: string;
-  heroSlide1Link?: string;
-  heroSlide1Badge?: string;
-  heroSlide2Title?: string;
-  heroSlide2Subtitle?: string;
-  heroSlide2Link?: string;
-  heroSlide2Badge?: string;
-  heroSlide3Title?: string;
-  heroSlide3Subtitle?: string;
-  heroSlide3Link?: string;
-  heroSlide3Badge?: string;
-  heroSlide1Image?: string;
-  heroSlide2Image?: string;
-  heroSlide3Image?: string;
   announcementBarEnabled?: string;
   dealsTitle?: string;
   dealsSubtitle?: string;
@@ -44,12 +29,6 @@ interface StoreSettings {
   valueProp3Desc?: string;
   valueProp4Title?: string;
   valueProp4Desc?: string;
-  heroSlide1Tag?: string;
-  heroSlide2Tag?: string;
-  heroSlide3Tag?: string;
-  heroSlide1ButtonText?: string;
-  heroSlide2ButtonText?: string;
-  heroSlide3ButtonText?: string;
 }
 
 // Client fallback derived from the canonical shared defaults (single source of

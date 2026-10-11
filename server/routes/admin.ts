@@ -11,7 +11,6 @@ import { db, isPostgres } from '../db/index.js';
 import { users, products, orders, orderItems, reviews, coupons, productFeatures, cartItems, wishlistItems, storeSettings, auditLogs } from '../db/schema.js';
 import { appCache } from '../utils/cache.js';
 import { STORE_SETTINGS_DEFAULTS } from '../../src/lib/constants.js';
-import { HERO_IMAGE_DEFAULTS } from './settings.js';
 import { eq, ne, desc, sql, inArray, and } from 'drizzle-orm';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
 import { validate } from '../middleware/validate.js';
