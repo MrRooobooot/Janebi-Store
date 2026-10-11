@@ -69,6 +69,16 @@ export default function DynamicBreadcrumbs() {
     }
   }, [productId]);
 
+  // The server prerender emits the identical BreadcrumbList for raw-HTML
+  // crawlers under `breadcrumb-jsonld-prerender`. Dropping it once the client
+  // owns the page leaves exactly one BreadcrumbList in the rendered DOM
+  // (two competing nodes is the duplicate-schema bug). This hook must run on
+  // every render, before the early return below: a hook after `return null`
+  // changes the hook count between `/` and other routes (React #310 / #300).
+  useEffect(() => {
+    document.getElementById('breadcrumb-jsonld-prerender')?.remove();
+  }, [location.pathname, location.search]);
+
   if (location.pathname === '/') {
     return null;
   }
@@ -128,14 +138,6 @@ export default function DynamicBreadcrumbs() {
       });
     });
   }
-
-  // The server prerender emits the identical BreadcrumbList for raw-HTML
-  // crawlers under `breadcrumb-jsonld-prerender`. Dropping it once the client
-  // owns the page leaves exactly one BreadcrumbList in the rendered DOM
-  // (two competing nodes is the duplicate-schema bug).
-  useEffect(() => {
-    document.getElementById('breadcrumb-jsonld-prerender')?.remove();
-  }, [location.pathname, location.search]);
 
   if (location.pathname === '/' || items.length <= 1) {
     return null;

@@ -344,6 +344,8 @@ test.describe('Auth flows — real form typing', () => {
     const pw = page.locator('input[type="password"]');
     await pw.nth(0).fill(TEST_PASS);
     if ((await pw.count()) > 1) await pw.nth(1).fill(TEST_PASS);
+    // The register form requires accepting the terms (id="register-terms") before submit.
+    await page.locator('#register-terms').check();
     await page.getByRole('button', { name: /ثبت‌نام و عضویت/ }).click();
     await expect(page.locator('header').getByText(/کاربر آزمایش مرورگر/).first()).toBeVisible({ timeout: 12000 });
     await assertNoErrors(errors);
@@ -497,7 +499,9 @@ test.describe('Checkout — end to end', () => {
     await page.getByPlaceholder(/مثلا: تهران/).first().fill('تهران');
     await page.getByPlaceholder(/خیابان اصلی/).fill('خیابان آزمایش، پلاک ۱۲، واحد ۳');
     await page.getByText('پرداخت درب منزل (COD)').click();
-    await page.locator('[aria-label*="ثبت نهایی سفارش"]').click();
+    // COD mode labels the submit "ثبت سفارش با پرداخت درب منزل". getByRole skips the
+    // hidden lg:hidden mobile twin, so this resolves to the one visible button.
+    await page.getByRole('button', { name: /ثبت سفارش با پرداخت درب منزل/ }).click();
 
     await expect(page.getByText(/با موفقیت ثبت شد/)).toBeVisible({ timeout: 20000 });
     await expect(page).toHaveURL(/profile/, { timeout: 12000 });
@@ -517,7 +521,8 @@ test.describe('Checkout — end to end', () => {
     await page.getByPlaceholder('09123456789').fill('0912345');
     await page.getByPlaceholder(/مثلا: تهران/).first().fill('تهران');
     await page.getByPlaceholder(/خیابان اصلی/).fill('خیابان تست ۲');
-    await page.locator('[aria-label*="ثبت نهایی سفارش"]').click();
+    // Default payment is online, so the visible submit is the gateway label.
+    await page.getByRole('button', { name: /ثبت نهایی سفارش/ }).click();
     await expect(page.getByText(/معتبر|تکمیل کنید|ضروری/).first()).toBeVisible({ timeout: 8000 });
     await assertNoErrors(errors);
   });
@@ -535,7 +540,8 @@ test.describe('Checkout — end to end', () => {
     await page.getByPlaceholder(/خیابان اصلی/).fill('خیابان تست ۱');
     const online = page.getByText(/درگاه پرداخت شتابی|پرداخت آنلاین|پرداخت اینترنتی/).first();
     if (await online.count()) await online.click();
-    await page.locator('[aria-label*="ثبت نهایی سفارش"]').click();
+    // Online mode labels the submit "ثبت نهایی سفارش و انتقال به درگاه پرداخت امن".
+    await page.getByRole('button', { name: /ثبت نهایی سفارش/ }).click();
     // outcome: gateway redirect → callback success page, profile fallback, or error toast
     await Promise.race([
       page.waitForURL(/\/checkout\/callback|profile|zarinpal|saman|shaparak/i, { timeout: 25000 }).catch(() => {}),
@@ -803,6 +809,62 @@ test.describe('Mobile UX (375px)', () => {
     await page.locator('header button[aria-label="باز کردن منو"]').click();
     await expect(page.locator('header button[aria-label="بستن منو"]')).toBeVisible({ timeout: 6000 });
     await page.locator('header button[aria-label="بستن منو"]').click();
+    await assertNoErrors(errors);
+  });
+});
+
+// Regression: a hook declared after an early `return null` in a layout-level
+// component (DynamicBreadcrumbs, rendered on every route) makes the hook count
+// differ between `/` and every other path. Client navigation that crosses `/`
+// then crashes the whole page (React #310 / #300). Direct loads never cross it,
+// so only in-app clicks can catch this.
+const CRASH_SCREEN = /متأسفانه خطایی در نمایش صفحه رخ داد/;
+
+async function expectRendered(page: Page) {
+  await expect(page.getByText(CRASH_SCREEN)).toHaveCount(0);
+  // First header is the site header; static pages also render their own <header>.
+  await expect(page.locator('header').first()).toBeVisible({ timeout: 15000 });
+}
+
+test.describe('Client navigation keeps the page mounted (hook order)', () => {
+  test('direct load of / renders without error boundary', async ({ page }) => {
+    const errors = collectErrors(page);
+    await page.goto('/');
+    await expectRendered(page);
+    await expect(page.locator('footer')).toBeVisible();
+    await assertNoErrors(errors);
+  });
+
+  test('in-app / → /products renders the catalogue', async ({ page }) => {
+    const errors = collectErrors(page);
+    await page.goto('/');
+    await expect(page.locator('header')).toBeVisible();
+    await page.locator('a[href^="/products"]:visible').first().click();
+    await expect(page).toHaveURL(/\/products/, { timeout: 15000 });
+    await expectRendered(page);
+    await expect(page.locator('.product-card').first()).toBeVisible({ timeout: 20000 });
+    await assertNoErrors(errors);
+  });
+
+  test('in-app /products → / renders the homepage', async ({ page }) => {
+    const errors = collectErrors(page);
+    await page.goto('/products');
+    await expect(page.locator('.product-card').first()).toBeVisible({ timeout: 20000 });
+    await page.locator('header a[href="/"]:visible').first().click();
+    await expect(page).toHaveURL(/\/$/, { timeout: 15000 });
+    await expectRendered(page);
+    await expect(page.locator('footer')).toBeVisible();
+    await assertNoErrors(errors);
+  });
+
+  test('in-app /products → static page renders', async ({ page }) => {
+    const errors = collectErrors(page);
+    await page.goto('/products');
+    await expect(page.locator('.product-card').first()).toBeVisible({ timeout: 20000 });
+    await page.locator('a[href="/about"]:visible').first().click();
+    await expect(page).toHaveURL(/\/about/, { timeout: 15000 });
+    await expectRendered(page);
+    await expect(page.locator('h1').first()).toBeVisible({ timeout: 15000 });
     await assertNoErrors(errors);
   });
 });

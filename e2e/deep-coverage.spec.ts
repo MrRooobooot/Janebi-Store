@@ -191,7 +191,7 @@ test.describe('User address lifecycle', () => {
     await expect(page.getByPlaceholder('مثلا: علی محمدی')).toHaveValue(/خریدار آدرس‌دار/, { timeout: 5000 });
 
     await page.getByText('پرداخت درب منزل (COD)').click();
-    await page.locator('[aria-label*="ثبت نهایی سفارش"]').click();
+    await page.getByRole('button', { name: /ثبت سفارش با پرداخت درب منزل/ }).click();
     await expect(page.getByText(/با موفقیت ثبت شد/)).toBeVisible({ timeout: 20000 });
     await expect(page).toHaveURL(/profile/, { timeout: 12000 });
     await assertNoErrors(errors);
@@ -314,7 +314,8 @@ test('autocomplete: suggestions render, click navigates to product; recent searc
 
   const input = page.getByPlaceholder(/جست‌وجوی محصول/).first();
   await input.click();
-  await input.fill('سامسونگ');
+  await input.fill('کابل');
+  // The catalogue has no Samsung products; «کابل» matches several (the search is by title/brand).
   const firstOption = page.getByRole('option').first();
   await expect(firstOption).toBeVisible({ timeout: 8000 });
   await firstOption.click();
@@ -334,7 +335,9 @@ test('autocomplete: suggestions render, click navigates to product; recent searc
 test('ChatWidget: opens, sends message, auto-reply renders', async ({ page }) => {
   const errors = collectErrors(page);
   await page.goto('/');
-  await page.locator('button[aria-label="باز کردن راهنمای خرید"]').click();
+  // The chat launcher's accessible name is "پاسخ خودکار" (ChatWidget.tsx); the panel
+  // title below is unchanged.
+  await page.locator('button[aria-label="پاسخ خودکار"]').click();
   await expect(page.getByText('راهنمای خرید جانبی آرنا')).toBeVisible({ timeout: 8000 });
 
   const input = page.getByPlaceholder('سوال خود را بنویسید...');
@@ -375,13 +378,15 @@ test('review submit: form validation + success toast + review appears', async ({
   await form.locator('textarea').fill('کیفیت ساخت خوب بود و ارسال سریع انجام شد، ممنون از فروشگاه.');
   await form.getByRole('button', { name: /ثبت نهایی نظر/ }).click();
   await expect(page.getByText('نظر و امتیاز شما با موفقیت ثبت شد!')).toBeVisible({ timeout: 8000 });
-  await expect(page.getByText('عنوان تست').first()).toBeVisible({ timeout: 8000 });
+  // New reviews are stored with approved:false (server/routes/products.ts) and stay off
+  // the public list until an admin publishes them, so the submitted review must NOT show yet.
+  await expect(page.getByText('عنوان تست')).toHaveCount(0, { timeout: 3000 });
 
   // After reload the product page resets to the «توضیحات» tab — re-open the
   // reviews tab (button text includes the live count, so match by prefix).
   await page.reload();
   await page.getByRole('button', { name: /نظرات کاربران/ }).click();
-  await expect(page.getByText('عنوان تست').first()).toBeVisible({ timeout: 10000 });
+  await expect(page.getByText('عنوان تست')).toHaveCount(0, { timeout: 5000 });
   await assertNoErrors(errors);
 });
 
@@ -448,7 +453,7 @@ test('Scenario C: user COD order → admin ships → user re-login sees «ارس
   await page.getByPlaceholder(/مثلا: تهران/).first().fill('تهران');
   await page.getByPlaceholder(/خیابان اصلی/).fill('خیابان سناریو سی، پلاک ۳');
   await page.getByText('پرداخت درب منزل (COD)').click();
-  await page.locator('[aria-label*="ثبت نهایی سفارش"]').click();
+  await page.getByRole('button', { name: /ثبت سفارش با پرداخت درب منزل/ }).click();
   await expect(page.getByText(/با موفقیت ثبت شد/)).toBeVisible({ timeout: 20000 });
   const orderUrl = page.url();
   expect(orderUrl).toMatch(/profile/);
@@ -510,7 +515,14 @@ test('Scenario D: user review → admin rejects → review disappears from produ
   await apage.goto('/admin/reviews');
   const revRow = apage.locator('tr').filter({ hasText: uniqueTitle }).first();
   await expect(revRow).toBeVisible({ timeout: 10000 });
-  await revRow.locator('button[title*="رد کردن"]').click();
+  // New reviews are pending until published; reject is offered only for published ones.
+  await revRow.locator('button[title="تأیید و انتشار"]').click();
+  await expect(apage.getByText('نظر تأیید شد')).toBeVisible({ timeout: 8000 });
+  // Approved reviews leave the default «pending» tab; reject from the «published» tab.
+  await apage.goto('/admin/reviews?status=published');
+  const publishedRow = apage.locator('tr').filter({ hasText: uniqueTitle }).first();
+  await expect(publishedRow).toBeVisible({ timeout: 10000 });
+  await publishedRow.locator('button[title*="رد کردن"]').click();
   await expect(apage.getByText('نظر رد شد')).toBeVisible({ timeout: 8000 });
 
   // user reloads product → review is gone from public list
@@ -862,6 +874,8 @@ test('VIP tab: coupon copy button flips to «کپی شد!»', async ({ page }) =
   await page.goto('/profile?tab=vip');
 
   const copyBtn = page.getByRole('button', { name: /کپی کد تخفیف/ }).first();
+  // Coupons load asynchronously (GET /api/coupons-active); wait before deciding to skip.
+  await copyBtn.waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
   const hasCoupons = (await copyBtn.count()) > 0;
   test.skip(!hasCoupons, 'no active coupons rendered in VIP tab');
   await copyBtn.click();
@@ -879,6 +893,8 @@ test('product lightbox opens and closes with Escape', async ({ page }) => {
   await page.goto(`/products/${p.id}`);
 
   const zoom = page.locator('button[aria-label*="بزرگ"], button[title*="بزرگ"], button:has(svg.lucide-zoom-in), button:has(svg.lucide-maximize)').first();
+  // Product data loads asynchronously; wait for the gallery trigger before deciding to skip.
+  await zoom.waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
   const hasZoom = (await zoom.count()) > 0;
   test.skip(!hasZoom, 'no zoom/lightbox trigger rendered for this product');
   await zoom.click();
