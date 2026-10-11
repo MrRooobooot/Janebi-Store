@@ -37,6 +37,10 @@ wait_health() {
   done
   return 1
 }
+# PREV_TARGET is set in step 4 (path relative to $APP, or absolute if the live symlink was).
+print_rollback() {
+  printf 'rollback: ssh %s "cd %s && ln -sfn %s .dist.next && mv -Tf .dist.next dist && docker compose up -d --force-recreate app"\n' "$REMOTE" "$APP" "$PREV_TARGET"
+}
 
 cd "$ROOT"
 step "0. local preconditions"
@@ -94,10 +98,26 @@ rsh "docker exec -i $CONTAINER node -" < "$PROBE" | tee /tmp/janebi_predeploy_db
 step "4. atomic switch of ./dist + container recreate onto the new tree"
 OLD_REL="$(rsh "cat $APP/dist/BUILD_INFO 2>/dev/null || echo '{}'" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const t=s.trim();try{process.stdout.write(JSON.parse(t).short||'unknown')}catch{process.stdout.write(t.split(/\s+/)[0]||'unknown')}})")"
 echo "current_live_release=$OLD_REL"
-rsh "cd $APP && if [ -L dist ]; then echo \"dist is already a symlink -> \$(readlink dist)\"; else mkdir -p releases && mv dist releases/prev-$OLD_REL-dist && echo \"previous tree kept at releases/prev-$OLD_REL-dist\"; fi && ln -sfn releases/$SHORT/dist .dist.next && mv -Tf .dist.next dist && echo \"dist -> \$(readlink dist)\""
+# Rollback target, resolved BEFORE dist is touched:
+#  - dist is a symlink (the layout after the first switch): its current target is
+#    releases/<old>/dist, which is immutable and is never moved, so it stays usable.
+#  - dist is a real directory (first switch): it is moved to releases/prev-<old>-dist below.
+if rsh "test -L $APP/dist"; then
+  PREV_TARGET="$(rsh "readlink $APP/dist")"
+  [ -n "$PREV_TARGET" ] || die "dist is a symlink with no readable target — refusing to switch"
+  [ "$PREV_TARGET" != "releases/$SHORT/dist" ] || die "dist already points at $SHORT — no distinct rollback target; refusing to switch"
+  rsh "cd $APP && test -f \"$PREV_TARGET/BUILD_INFO\" && test -f \"$PREV_TARGET/RELEASE_SEAL\"" \
+    || die "rollback target $PREV_TARGET is not a complete release (BUILD_INFO/RELEASE_SEAL missing) — refusing to switch"
+  echo "dist is a symlink -> $PREV_TARGET (kept as rollback target)"
+else
+  PREV_TARGET="releases/prev-$OLD_REL-dist"
+fi
+echo "rollback_target=$PREV_TARGET"
+rsh "cd $APP && if [ -L dist ]; then echo \"dist is already a symlink -> \$(readlink dist)\"; else mkdir -p releases && mv dist $PREV_TARGET && echo \"previous tree kept at $PREV_TARGET\"; fi && ln -sfn releases/$SHORT/dist .dist.next && mv -Tf .dist.next dist && echo \"dist -> \$(readlink dist)\""
+print_rollback
 T0="$(date +%s)"
 rsh "cd $APP && docker compose up -d --force-recreate app 2>&1 | tail -3"
-wait_health || die "app did not come back healthy after the recreate (rollback: see the printed command below)"
+wait_health || die "app did not come back healthy after the recreate (rollback command printed above; target $PREV_TARGET)"
 echo "app_restart_window=$(( $(date +%s) - T0 ))s"
 rsh "docker cp $REL/drizzle/sqlite/. $CONTAINER:/app/drizzle/sqlite/ >/dev/null && docker cp $REL/drizzle/pg/. $CONTAINER:/app/drizzle/pg/ >/dev/null && echo drizzle_in_container_synced"
 
@@ -120,5 +140,5 @@ for p in / /api/health /api/products /sitemap.xml /manifest.webmanifest; do
 done
 
 printf '\n=== RELEASE %s LIVE ===\n' "$SHORT"
-printf 'rollback: ssh %s "cd %s && ln -sfn releases/prev-%s-dist .dist.next && mv -Tf .dist.next dist && docker compose up -d --force-recreate app"\n' "$REMOTE" "$APP" "$OLD_REL"
+print_rollback
 printf 'identity: curl -s %s/BUILD_INFO\n' "$HOST"
