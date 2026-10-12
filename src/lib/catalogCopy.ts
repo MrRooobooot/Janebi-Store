@@ -16,11 +16,14 @@ export interface CatalogFilters {
   brands?: string[];
 }
 
-/** The unfiltered /products hub — byte-identical to index.html's static tags. */
-export const CATALOG_HUB_TITLE =
-  'جانبی آرنا | خرید آنلاین لوازم جانبی موبایل و تبلت با ضمانت اصالت';
+/**
+ * The unfiltered /products hub. Its title and description are deliberately NOT
+ * the homepage's (index.html keeps its own copy). The description states only
+ * what the page does: search, filters, and live price and stock.
+ */
+export const CATALOG_HUB_TITLE = 'همه محصولات لوازم جانبی | جانبی آرنا';
 export const CATALOG_HUB_DESCRIPTION =
-  'فروشگاه تخصصی جانبی آرنا؛ خرید انواع قاب و کاور گوشی، گلس نشکن، شارژر اصل، کابل، پاوربانک و هولدر با تضمین کیفیت، بهترین قیمت و ارسال سریع به سراسر ایران.';
+  'کاتالوگ کامل لوازم جانبی موبایل در جانبی آرنا: جست‌وجو و فیلتر بر اساس دسته و برند، با قیمت و موجودی به‌روز هر محصول.';
 export const CATALOG_HUB_H1 = 'فروشگاه تجهیزات و لوازم جانبی اورجینال';
 
 function selectedCategory(filters: CatalogFilters): string | null {
@@ -54,7 +57,7 @@ export function catalogTitle(filters: CatalogFilters = {}): string {
 /** `itemCount` must be the live API's real total for this listing — never a literal. */
 export function catalogDescription(filters: CatalogFilters = {}, itemCount: number): string {
   if (!catalogIsFiltered(filters)) return CATALOG_HUB_DESCRIPTION;
-  return `خرید ${catalogFilterSubject(filters)} اورجینال در جانبی آرنا — ${toPersianDigits(itemCount)} محصول موجود با ضمانت اصالت، گارانتی تعویض فیزیکی و ارسال سریع به سراسر ایران.`;
+  return `خرید ${catalogFilterSubject(filters)} در جانبی آرنا — ${toPersianDigits(itemCount)} محصول موجود با قیمت و موجودی به‌روز، همراه با ضمانت اصالت و ارسال به سراسر ایران.`;
 }
 
 export function catalogCanonical(filters: CatalogFilters = {}): string {

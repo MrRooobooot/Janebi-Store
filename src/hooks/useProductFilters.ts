@@ -32,7 +32,10 @@ export function useProductFilters() {
   const brandParam = searchParams.get('brand');
 
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(false);
+  // Starts true: until the first request (or cache hit) settles, totalProducts is
+  // only the initial 0, not a count. Consumers that publish the count (SEO JSON-LD)
+  // wait for loading=false, so no fake zero is published.
+  const [loading, setLoading] = useState(true);
 
   // Filter States
   const [selectedCategory, setSelectedCategory] = useState<string>(categoryParam || 'همه');

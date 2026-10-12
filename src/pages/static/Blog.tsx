@@ -5,6 +5,8 @@ import { useParams } from 'react-router-dom';
 import { toPersianDigits } from '../../lib/utils';
 import { buildBlogPostingJsonLd } from '../../lib/blogJsonLd';
 import { getJson } from '../../lib/jsonFetch';
+import { applyPageSeo } from '../../lib/headSeo';
+import { blogPostSeo, NOT_FOUND_SEO } from '../../lib/routeSeo';
 
 // Live blog posts from GET /api/blog (admin-managed blog_posts table).
 // The previous hardcoded 3-article array is gone.
@@ -97,6 +99,15 @@ export default function Blog() {
     const match = articles.find((a) => a.id === slug);
     if (match) setOpenArticle(match);
   }, [slug, articles]);
+
+  // Head for the article URL: the article's own title, description and canonical.
+  // An unknown or unpublished slug gets the not-found head (the server answers 404).
+  // Only the article URL is owned here; /blog keeps the registry's listing head.
+  useEffect(() => {
+    if (!slug || loading || error) return;
+    const post = articles.find((a) => a.id === slug);
+    applyPageSeo(post ? blogPostSeo({ id: post.id, title: post.title, excerpt: post.excerpt }) : NOT_FOUND_SEO);
+  }, [slug, articles, loading, error]);
 
   // r39 UX: Escape closes the article reader, and background scroll is locked
   // while the reader is open (modal no longer scrolls the page behind it).

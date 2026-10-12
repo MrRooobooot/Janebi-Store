@@ -5,8 +5,9 @@ import ProductSortHeader from '../components/products/ProductSortHeader';
 import ProductGrid from '../components/products/ProductGrid';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { toPersianDigits } from '../lib/utils';
-import { applyCatalogSeo, restoreCatalogSeo } from '../lib/catalogSeo';
+import { applyCatalogSeo } from '../lib/catalogSeo';
 import { CATALOG_HUB_H1, catalogH1 } from '../lib/catalogCopy';
 
 export default function Products() {
@@ -57,18 +58,17 @@ export default function Products() {
     brands: selectedBrands,
   };
 
-  // Filter-aware <head> SEO (title / description / canonical / CollectionPage
-  // JSON-LD). Runs only on settled API data (loading=false) so meta always
-  // reflects the real live catalogue, not transient loading states.
+  // Listing <head> SEO (title / description / canonical / Open Graph / Twitter /
+  // CollectionPage JSON-LD), hub and filtered alike. Runs only on settled API
+  // data (loading=false) so meta always reflects the real live catalogue.
+  // The head is reset by RouteHead when the route changes, so leaving the catalogue
+  // needs no cleanup here. A filter change inside the catalogue only re-applies.
+  const [urlParams] = useSearchParams();
+  const isSearchResult = Boolean(urlParams.get('search')?.trim());
   useEffect(() => {
     if (loading) return;
-    if (isFiltered) {
-      applyCatalogSeo({ itemCount: realCount, ...catalogFilters });
-    } else {
-      restoreCatalogSeo();
-    }
-    return () => restoreCatalogSeo();
-  }, [isFiltered, isCategoryFiltered, isBrandFiltered, selectedCategory, selectedBrands, realCount, loading]);
+    applyCatalogSeo({ itemCount: realCount, ...catalogFilters, noindex: isSearchResult });
+  }, [isFiltered, isCategoryFiltered, isBrandFiltered, selectedCategory, selectedBrands, realCount, loading, isSearchResult]);
 
   return (
     <div className="page-stack w-full">
@@ -83,9 +83,9 @@ export default function Products() {
                 {catalogH1(catalogFilters)}
               </h1>
               <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-                {toPersianDigits(realCount)} محصول اورجینال
+                {toPersianDigits(realCount)} محصول
                 {isCategoryFiltered ? ` در دسته «${selectedCategory}»` : ''}
-                {isBrandFiltered ? ` از برند ${brandLabel}` : ''} با ضمانت اصالت، گارانتی تعویض فیزیکی و ارسال سریع
+                {isBrandFiltered ? ` از برند ${brandLabel}` : ''} با قیمت و موجودی به‌روز و ضمانت اصالت
               </p>
             </>
           ) : (
@@ -95,7 +95,7 @@ export default function Products() {
                 {CATALOG_HUB_H1}
               </h1>
               <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-                بررسی، مقایسه تخصصی و خرید مستقیم انواع قاب، گلس، شارژر فست، کابل و پاوربانک با گارانتی تعویض فیزیکی
+                جست‌وجو و مقایسه‌ی انواع قاب، گلس، شارژر، کابل و پاوربانک، با قیمت و موجودی به‌روز هر محصول
               </p>
             </>
           )}

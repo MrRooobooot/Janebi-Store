@@ -8,6 +8,16 @@
 
 ---
 
+## SEO metadata ownership (2026-10-12, local working tree — not deployed)
+- **One registry for static copy:** `src/lib/routeSeo.ts` (`STATIC_ROUTES`, `ADMIN` paths, `NOT_FOUND_SEO`, `blogPostSeo`, `matchRoute`, `HOME_SEO`). Server and client both read it. `HOME_SEO` mirrors `index.html`; `tests/unit/head-seo.test.ts` fails on drift.
+- **Shared wording for dynamic pages:** `src/lib/catalogCopy.ts` (catalogue title, description, canonical), `src/lib/productSeo.ts` (product title, description fallback, canonical `/products/:id`, social image; `normalizeDescription`).
+- **Client writer:** `src/lib/headSeo.ts` (`applyPageSeo`, `setRouteJsonLd`, `resetHeadSeo`, `ROUTE_JSON_LD_IDS`). `src/components/RouteHead.tsx` (mounted in `App.tsx`) applies static, admin and 404 heads and resets on every route change. Owners write after their data loads: `Products.tsx` (catalogue), `ProductDetail.tsx` (product, or 404), `static/Blog.tsx` (article, or 404).
+- **Server writer:** `server/lib/seoMeta.ts` (`routeMetaForRequest`, `injectSeoMetadata` with canonical, robots, og:url and Twitter, `injectNotFoundMetadata`). `server/index.ts` answers 404 for URLs `matchRoute` does not know, and for unknown or unpublished `/blog/:slug`; `applyNoIndexMeta` runs last so the robots meta matches the header. A failed article lookup is not a missing article: `articleMeta` throws `SeoLookupUnavailable`, and `unavailableFor` answers 503 (`Retry-After: 60`, `Cache-Control: no-store`, a fixed Persian body with no error text). Product lookups keep the generic shell on failure, as before.
+- **Catalogue count:** `useProductFilters` starts with `loading=true`. The listing head is written only after the first settled result, so the SSR count stays until a real count exists (no placeholder 0).
+- **JSON-LD ownership:** route-level ids (`catalog-jsonld*`, `product-*`, `blog-posting-jsonld-prerender`) are cleared by `applyPageSeo`. `breadcrumb-jsonld*` belongs to `DynamicBreadcrumbs` (no crumb on 404 or on an unloaded product; the server crumb is kept on articles). `faq-page-jsonld`, `related-products-jsonld`, `blog-posting-jsonld`, `blog-list-jsonld` remove their own block on unmount.
+- **Invariants (tested):** one canonical per page; 404 has no canonical or og:url; robots equals `shouldNoIndex` for every static path; every `App.tsx` route is known to the registry; metadata carries no phrase from the guard lists in `tests/unit/route-registry.test.ts` (superlatives and undocumented claims); `/contact` names a channel only if `Contact.tsx` shows it; `/offers` makes no discount, limit or figure promise. **The guard checks listed phrases only.** Every other claim is reviewed by hand and listed in `docs/reference/seo-claims.md` (owner decisions are not decided in code).
+- **Docs:** ownership map, measured behaviour before and after, and known limits in `docs/reference/seo-baseline.md`.
+
 ## Homepage hero (2026-10-06, `src/pages/Home.tsx`)
 - Two 2:1 banners: `public/images/hero/holder.webp` and `cable.webp`. Product sits on the left; the right is empty so Vazirmatn copy from `HERO_COPY` sits on it. The frame is `aspect-[2/1]`.
 - The homepage ignores `store_settings` `heroSlide*` keys. Admin Settings still edits those keys. Do not serve `slide-1.webp` or `slide-3.webp` as the hero.

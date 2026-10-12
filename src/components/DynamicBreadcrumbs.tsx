@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { Home, ChevronLeft } from 'lucide-react';
 import { getJson } from '../lib/jsonFetch';
+import { matchRoute } from '../lib/routeSeo';
 
 const CATEGORY_PARENTS: Record<string, string> = {
   'کابل': 'لوازم جانبی و اتصالات',
@@ -75,9 +76,18 @@ export default function DynamicBreadcrumbs() {
   // (two competing nodes is the duplicate-schema bug). This hook must run on
   // every render, before the early return below: a hook after `return null`
   // changes the hook count between `/` and other routes (React #310 / #300).
+  // On an article URL the server's crumb is kept: it carries the real post title,
+  // which this component does not have.
   useEffect(() => {
+    if (matchRoute(location.pathname).kind === 'blogPost') return;
     document.getElementById('breadcrumb-jsonld-prerender')?.remove();
   }, [location.pathname, location.search]);
+
+  const route = matchRoute(location.pathname);
+  // Crumb JSON-LD only where it is accurate: not on an unknown URL, not on an
+  // article (see above), and not on a product that did not load.
+  const emitsJsonLd =
+    route.kind !== 'notFound' && route.kind !== 'blogPost' && !(route.kind === 'product' && !productInfo);
 
   if (location.pathname === '/') {
     return null;
@@ -146,7 +156,7 @@ export default function DynamicBreadcrumbs() {
   return (
     <>
       {/* SEO Schema markup for BreadcrumbList */}
-      <script
+      {emitsJsonLd && <script
         id="breadcrumb-jsonld"
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -157,11 +167,17 @@ export default function DynamicBreadcrumbs() {
               '@type': 'ListItem',
               position: idx + 1,
               name: item.label,
-              item: item.href ? `${window.location.origin}${item.href}` : window.location.href,
+              // The current page is the canonical /products/:id, not the /product/:id
+              // alias the user may have clicked (matches the server prerender).
+              item: item.href
+                ? `${window.location.origin}${item.href}`
+                : productId
+                  ? `${window.location.origin}/products/${productId}`
+                  : window.location.href,
             })),
           }).replace(/</g, '\\u003c'),
         }}
-      />
+      />}
       <nav
         aria-label="مسیر راهنما"
         className="mb-4 flex flex-wrap items-center gap-x-1.5 gap-y-1 py-1 text-[13px] text-gray-500 dir-rtl dark:text-gray-400 sm:mb-6 print:hidden"

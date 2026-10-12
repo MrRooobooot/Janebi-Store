@@ -14,6 +14,9 @@ import PictureImage from '../components/PictureImage';
 import BrandLogo from '../components/BrandLogo';
 import ProductReviews from '../components/ProductReviews';
 import { buildProductJsonLd } from '../lib/productJsonLd';
+import { productSeo, SITE_ORIGIN } from '../lib/productSeo';
+import { applyPageSeo, setRouteJsonLd } from '../lib/headSeo';
+import { NOT_FOUND_SEO } from '../lib/routeSeo';
 import RelatedProducts from '../components/RelatedProducts';
 import RecentlyViewed from '../components/RecentlyViewed';
 import { addRecentlyViewed } from '../lib/recentlyViewed';
@@ -65,6 +68,9 @@ export default function ProductDetail() {
         return res.json();
       })
       .then((data) => {
+        // Navigated away while the body was in flight: this response must not
+        // write the head of the page the user is now on.
+        if (controller.signal.aborted) return;
         setProduct(data);
         setQty(1);
         setSelectedImageIndex(0);
@@ -81,33 +87,27 @@ export default function ProductDetail() {
           rating: data.rating,
         });
 
-        // Dynamic Product JSON-LD Schema for AI Crawlers and Search Engines —
-        // shared honesty-gated builder (src/lib/productJsonLd.ts). The server
-        // prerender emits the identical payload for raw-HTML crawlers under a
-        // second id, so BOTH ids are cleared before injecting: exactly one
-        // Product node is what keeps rendered DOM == served HTML.
-        document.getElementById('product-schema-jsonld')?.remove();
-        document.getElementById('product-jsonld-prerender')?.remove();
+        // Head SEO for this product, the same wording and image the server
+        // injects (src/lib/productSeo.ts). applyPageSeo also clears the server's
+        // product JSON-LD, so exactly one Product node is in the DOM.
+        const seo = productSeo(data);
+        applyPageSeo({ ...seo, ogType: 'product' });
 
-        const jsonLd = buildProductJsonLd(data, 'https://janebiarena.ir', window.location.href);
-        if (jsonLd) {
-          const schemaScript = document.createElement('script');
-          schemaScript.id = 'product-schema-jsonld';
-          schemaScript.type = 'application/ld+json';
-          schemaScript.text = JSON.stringify(jsonLd)
-            // Escape '<' so a product title/description containing '</script'
-            // (or any '<') cannot break out of the inline JSON-LD script tag.
-            .replace(/</g, '\\u003c')
-            .replace(/>/g, '\\u003e')
-            .replace(/&/g, '\\u0026');
-          document.head.appendChild(schemaScript);
-        }
+        // Product JSON-LD from the shared honesty-gated builder. The URL is the
+        // canonical /products/:id, not the /product/:id alias the user may have
+        // clicked, so the DOM matches the server prerender.
+        const jsonLd = buildProductJsonLd(data, SITE_ORIGIN, seo.canonical);
+        if (jsonLd) setRouteJsonLd('product-schema-jsonld', jsonLd);
       })
       .catch((err) => {
         if (controller.signal.aborted || err?.name === 'AbortError') return;
         setProduct(null);
         setLoading(false);
+        // Unknown product: the server answers 404 for this URL, so the head says so too.
+        applyPageSeo(NOT_FOUND_SEO);
       });
+    // Leaving this product: RouteHead resets the head on route change. The abort
+    // stops a response for this id from writing the head of the next one.
     return () => controller.abort();
   }, [id]);
 
@@ -518,7 +518,7 @@ export default function ProductDetail() {
                   {[
                     { icon: Award, label: 'ضمانت اصالت کالا' },
                     { icon: PackageCheck, label: '۷ روز مرجوعی' },
-                    { icon: Truck, label: 'ارسال سریع' },
+                    { icon: Truck, label: 'ارسال به سراسر ایران' },
                   ].map(({ icon: Icon, label }) => (
                     <span key={label} className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-400">
                       <Icon className="h-3.5 w-3.5 shrink-0" />

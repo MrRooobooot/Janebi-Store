@@ -6,6 +6,7 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
+import RouteHead from './components/RouteHead';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import PageLoadingFallback from './components/PageLoadingFallback';
@@ -68,6 +69,7 @@ export default function App() {
                 <WishlistProvider>
                 <BrowserRouter>
                   <ScrollToTop />
+                  <RouteHead />
                   <Suspense fallback={<PageLoadingFallback />}>
                     <Routes>
                       <Route path="/" element={<Layout />}>

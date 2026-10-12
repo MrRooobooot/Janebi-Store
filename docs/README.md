@@ -28,6 +28,8 @@ There is no `assets/` folder: `screenshots/` is referenced by the root README an
 | `CATEGORY-TREE.md` | **SoT for the category tree** — closed list; no change without user approval. Read by `scripts/data/validate-ingest.py`. |
 | `live-payment-runbook.md` | Human-run runbook for the first real Zarinpal payment (Persian). |
 | `TEST_INFRA.md` | How the test tiers run and what each isolates. |
+| `seo-baseline.md` | SEO metadata ownership per route, measured behaviour before and after the 2026-10 pass, and known limits. |
+| `seo-claims.md` | Register of commercial claims in SEO copy, with the store page that states each one. |
 | `TEST_READY.md` | Test-tier readiness snapshot dated 2026-09-05. **Counts are historical;** current counts: `../tests/README.md`. |
 | `PROJECT_AUDIT.md` | Production-readiness audit, edition 2026-08-31 (severity list + status). |
 | `UI-AUDIT-LOG.md` | Running UI/UX round log; every claim carries its measured evidence. |

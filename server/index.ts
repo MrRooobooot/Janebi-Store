@@ -7,7 +7,8 @@ import { storeEvents } from './services/events.js';
 import { sendOrderReceiptSms } from './services/sms.js';
 import { ALL_PRODUCTS, REVIEWS_STORE, VALID_COUPONS } from './data/seed-data.js';
 import { blogPostingJsonLdFor, productJsonLdFor, breadcrumbJsonLdFor, productBreadcrumbJsonLdFor, injectBreadcrumbIntoHtml } from "./lib/breadcrumbs.js";
-import { routeMetaForRequest, injectSeoMetadata, productOgImageFor } from "./lib/seoMeta.js";
+import { routeMetaForRequest, injectSeoMetadata, injectNotFoundMetadata, productOgImageFor, unavailableFor, SeoLookupUnavailable } from "./lib/seoMeta.js";
+import { matchRoute } from "../src/lib/routeSeo.js";
 import { catalogSnapshotFor, injectCatalogSnapshot } from "./lib/catalogSnapshot.js";
 import { shouldNoIndex } from "./lib/robots.js";
 import { LEGACY_PRODUCT_REDIRECTS } from "./data/legacyProductRedirects.js";
@@ -151,23 +152,11 @@ async function startServer() {
           if (!exists) return sendNotFound(res, shell);
         }
 
-        // SEO-004: Authentic 404 for any non-route path. The SPA route table is
-        // mirrored here so that unknown paths (/nonexistent-xyz, scanners, old
-        // links) return HTTP 404 + noindex instead of an indexable Soft 404.
-        const SPA_ROUTES = new Set([
-          "/", "/products", "/cart", "/checkout", "/checkout/callback",
-          "/wishlist", "/compare", "/profile", "/login", "/register",
-          "/force-change-password", "/about", "/contact", "/terms",
-          "/privacy", "/faq", "/blog", "/offers", "/new-products", "/brands",
-          "/admin", "/admin/products", "/admin/orders", "/admin/reviews",
-          "/admin/users", "/admin/coupons", "/admin/messages",
-          "/admin/newsletter", "/admin/audit-logs", "/admin/settings",
-        ]);
-        const productRoute =
-          /^\/products?\/\d+\/?$/.test(pathname) ||
-          /^\/blog\/[^/]+\/?$/.test(pathname) ||
-          /^\/admin\/[a-z-]+\/?$/.test(pathname);
-        if (!productRoute && !SPA_ROUTES.has(pathname)) {
+        // SEO-004: Authentic 404 for any URL the route registry does not know
+        // (src/lib/routeSeo.ts, shared with the client). Unknown paths (scanners,
+        // old links) return HTTP 404 + noindex instead of an indexable Soft 404.
+        const route = matchRoute(pathname);
+        if (route.kind === "notFound") {
           return sendNotFound(res, shell);
         }
 
@@ -180,16 +169,18 @@ async function startServer() {
           productBreadcrumbJsonLdFor(pathname),
           catalogSnapshotFor(pathname, query),
         ]);
+        // A blog URL whose post is unknown or unpublished is a 404, as product URLs are.
+        // A lookup that failed never reaches this line: routeMetaForRequest throws, and
+        // the catch above answers 503 (see unavailableFor).
+        if (route.kind === "blogPost" && !meta) return sendNotFound(res, shell);
+
         // Structured JSON-LD only differs on /blog and /product routes; avoid
         // re-reading on every request by falling back to a plain sendFile.
         const structuredLd = [crumb, postingLd, productLd, productCrumb].filter(Boolean).join("\n");
-        // No route metadata → cheapest path, but the robots meta still has to match the
-        // X-Robots-Tag the middleware already sent (this early return used to ship the
-        // pristine shell with index,follow on noindex routes like /cart and /login).
         if (!structuredLd && !meta && !catalog) {
           return res.set("Content-Type", "text/html").send(applyNoIndexMeta(shell, pathname, query));
         }
-        let html = applyNoIndexMeta(shell, pathname, query);
+        let html = shell;
         if (structuredLd) html = injectBreadcrumbIntoHtml(html, structuredLd);
         if (meta) html = injectSeoMetadata(html, productImage ? { ...meta, ogImage: productImage.og, preloadImage: productImage.hero } : meta);
         // Catalogue listings: the raw shell above carries head tags only — a crawler
@@ -197,11 +188,22 @@ async function startServer() {
         // builder, same page size as the client) inside #root so the crawler reads
         // what a user reads; React replaces it on hydration.
         if (catalog) html = injectCatalogSnapshot(html, catalog);
+        // Last, so the robots meta always matches the X-Robots-Tag the middleware sends.
+        html = applyNoIndexMeta(html, pathname, query);
         return res
           .status(200)
           .set("Content-Type", "text/html")
           .send(html);
-      } catch {
+      } catch (err) {
+        // An article whose head cannot be read answers 503 (temporary), never 404 or the
+        // generic shell. Other routes keep the shell fallback. The log has the detail;
+        // the response does not.
+        const unavailable = unavailableFor(err, req.originalUrl.split("?")[0]);
+        if (unavailable) {
+          const detail = err instanceof SeoLookupUnavailable ? err.detail : err;
+          console.error("[seo] article head unavailable:", detail instanceof Error ? detail.message : "unknown error");
+          return res.status(unavailable.status).set(unavailable.headers).send(unavailable.body);
+        }
         return res.sendFile(path.join(distPath, "index.html"));
       }
     });
@@ -246,9 +248,8 @@ function applyNoIndexMeta(html: string, pathname: string, query: URLSearchParams
 }
 
 function sendNotFound(res: import("express").Response, shell: string) {
-  const html = shell
-    .replace(/<meta\s+name="robots"[^>]*>/i, '<meta name="robots" content="noindex, nofollow" />')
-    .replace(/<link[^>]*rel="canonical"[^>]*>\s*/gi, "");
+  // Not-found title, noindex robots, and no canonical or og:url (see routeSeo.ts NOT_FOUND_SEO).
+  const html = injectNotFoundMetadata(shell);
   return res.status(404).set({ "Content-Type": "text/html", "X-Robots-Tag": "noindex, nofollow" }).send(html);
 }
 

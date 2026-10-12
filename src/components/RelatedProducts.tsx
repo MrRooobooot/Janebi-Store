@@ -38,7 +38,7 @@ export default function RelatedProducts({ product }: { product: Product }) {
             itemListElement: sameCategory.map((p, i) => ({
               '@type': 'ListItem',
               position: i + 1,
-              url: `https://janebiarena.ir/product/${p.id}`,
+              url: `https://janebiarena.ir/products/${p.id}`,
               name: p.title,
             })),
           })
