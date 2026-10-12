@@ -99,7 +99,7 @@ server/
 ├── services/       payment/ (adapters + failover router), sms
 ├── middleware/     auth (JWT cookies), admin RBAC, error handling, rate limiters
 ├── validators/     Zod schemas per endpoint
-├── db/             Drizzle schema + dual-dialect client (better-sqlite3 / pg)
+├── db/             Drizzle schema + SQLite client (better-sqlite3)
 └── data/           seeds & fixtures (demo data only)
 ```
 
@@ -113,7 +113,7 @@ server/
 
 ## 5. Database
 
-- One Drizzle schema, two dialects. Migrations: `drizzle/sqlite/`, `drizzle/pg/`.
+- One Drizzle schema (SQLite). Migrations: `drizzle/sqlite/`.
 - Catalog search: `products_fts` (SQLite FTS5 virtual table) — prefix-match per token,
   with input sanitized so user text can never inject FTS operators; automatic LIKE
   fallback when FTS5 is unavailable (`server/routes/products.ts`, `fts5Available`).

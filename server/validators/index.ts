@@ -25,7 +25,7 @@ export const idParamSchema = z.object({
 // Numeric entity id (products / cart items / wishlist entries). Routes
 // parseInt() this value; rejecting non-numeric strings turns a would-be 500
 // (NaN param reaching the database driver) into a proper 400 — verified live
-// on PG: DELETE /api/wishlist/wish-… returned 500 before this guard.
+// live: DELETE /api/wishlist/wish-… returned 500 before this guard.
 // NOTE: address ids are strings ("addr-…") and must keep using idParamSchema.
 export const numericIdParamSchema = z.object({
   params: z.object({

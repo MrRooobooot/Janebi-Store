@@ -68,8 +68,7 @@ router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
     const today = new Date();
     const dateStr = new Intl.DateTimeFormat("fa-IR", { year: "numeric", month: "long", day: "numeric" }).format(today);
     
-    // Portable async transaction: works on both SQLite (queued by db wrapper)
-    // and PostgreSQL.
+    // Async transaction, queued by the SQLite db wrapper (server/db/index.ts).
     const newOrder = await db.transaction(async (tx) => {
       // Aggregate duplicate items by productId
       const itemMap = new Map<number, number>();
@@ -240,13 +239,10 @@ router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
 
         const updatedRows = await tx.update(products)
           // Use the drizzle column reference (not a raw identifier) so the
-          // generated SQL quotes the column correctly on both dialects —
-          // PG folds unquoted stockQuantity to stockquantity and fails.
+          // generated SQL quotes the column correctly.
           // The atomic `stockQuantity >= quantity` predicate is the real
           // oversell guard: the earlier read-only check is TOCTOU-racy and
-          // PostgreSQL's concurrent writers will happily oversell without it
-          // (verified: 25 parallel orders on stock=1 produced 9 winners and
-          // stock -8 on a live PG database). The update's rowCount must be 1;
+          // concurrent writers can oversell without it. The update's rowCount must be 1;
           // a 0-row update means another transaction won the race.
           .set({ stockQuantity: sql`${products.stockQuantity} - ${item.quantity}` })
           .where(and(
@@ -254,9 +250,8 @@ router.post("/", validate(orderSubmitSchema), async (req: AuthRequest, res) => {
             sql`${products.stockQuantity} >= ${item.quantity}`
           ))
           .returning({ id: products.id });
-        // Drizzle returns the updated row on PG (.returning()); on SQLite the
-        // wrapper emits run() metadata, so the empty result also signals a
-        // lost race. Either way: no row updated => another transaction won.
+        // On SQLite the wrapper emits run() metadata, so an empty result also
+        // signals a lost race. Either way: no row updated => another transaction won.
         if (!updatedRows || updatedRows.length === 0) {
           throw new Error(`موجودی محصول ${item.title} کافی نیست`);
         }
@@ -333,8 +328,7 @@ router.post("/:id/cancel", async (req: AuthRequest, res) => {
   const orderId = req.params.id as string;
 
   try {
-    // Portable async transaction: works on both SQLite (queued by db wrapper)
-    // and PostgreSQL.
+    // Async transaction, queued by the SQLite db wrapper (server/db/index.ts).
     const cancelledOrder = await db.transaction(async (tx) => {
       const orderList = await tx.select().from(orders).where(eq(orders.id, orderId));
       const order = orderList[0];

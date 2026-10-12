@@ -48,13 +48,11 @@ router.put('/me', validate(updateProfileSchema), async (req: AuthRequest, res) =
     res.json({ message: 'پروفایل با موفقیت بروزرسانی شد', user: userWithoutPassword });
   } catch (error: any) {
     // R1-12: unique-constraint violation on phone => friendly 400, not 500.
-    // SQLite: SQLITE_CONSTRAINT / code SQLITE_CONSTRAINT_UNIQUE;
-    // PG: error code 23505.
+    // SQLite: SQLITE_CONSTRAINT / code SQLITE_CONSTRAINT_UNIQUE.
     const code = error?.code || error?.errcode || '';
     const isUniqueViolation =
       error?.code === 'SQLITE_CONSTRAINT_UNIQUE' ||
       error?.code === 'SQLITE_CONSTRAINT' ||
-      error?.errcode === '23505' ||
       (typeof code === 'string' && code.includes('SQLITE_CONSTRAINT') && /phone/i.test(error?.message || ''));
     if (isUniqueViolation) {
       return res.status(400).json({ message: 'این شماره موبایل قبلاً ثبت شده است' });
@@ -164,9 +162,7 @@ router.delete('/me/addresses/:id', validate(idParamSchema), async (req: AuthRequ
   const addressId = req.params.id as string;
 
   try {
-    // Portable async transaction: works on both SQLite (queued by db wrapper)
-    // and PostgreSQL. No sync .run()/.all() calls — those don't exist on the
-    // PG dialect builders.
+    // Async transaction, queued by the SQLite db wrapper (server/db/index.ts).
     const deleted = await db.transaction(async (tx) => {
       const targetList = await tx.select().from(addresses).where(and(eq(addresses.id, addressId), eq(addresses.userId, userId)));
       const target = targetList[0];
@@ -201,9 +197,8 @@ router.put('/me/addresses/:id/default', validate(idParamSchema), async (req: Aut
   const addressId = req.params.id as string;
 
   try {
-    // Portable async transaction: works on both SQLite (queued by db wrapper)
-    // and PostgreSQL. Concurrent txs are serialized by the db wrapper on SQLite,
-    // so the multi-default race is impossible.
+    // Async transaction, queued by the SQLite db wrapper: concurrent txs are
+    // serialized, so the multi-default race is impossible.
     const success = await db.transaction(async (tx) => {
       const targetList = await tx.select().from(addresses).where(and(eq(addresses.id, addressId), eq(addresses.userId, userId)));
       const target = targetList[0];

@@ -1,7 +1,7 @@
 import { eq, sql } from "drizzle-orm";
 import { orderItems, products, users } from "../db/schema";
 
-type AnyTx = any; // portable tx handle across SQLite/PostgreSQL dialects
+type AnyTx = any; // transaction handle from the SQLite db wrapper
 
 /**
  * Restock every item of an order and refund the VIP points the user spent

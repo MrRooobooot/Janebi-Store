@@ -52,7 +52,6 @@ in `oneoff/` (kept for provenance, not for reuse).
 - `ingest-real-products.py` + `validate-ingest.py` — real-catalogue import pipeline (run inside the container).
 - `seed-blog.ts` — blog seeder (esbuild bundle → scp → `docker cp` → node in-container; `SEED_BLOG_ONLY=<id>` for one post).
 - `repair-blog-texts.ts` — fix escaped/newline drift in seeded blog bodies.
-- `migrate-sqlite-to-pg.ts` — SQLite → PostgreSQL parity move.
 - `price-watch.mjs` — catalogue vs market price band (Torob).
 - `purge-test-users.cjs` — purge test residue (run LAST, after any test suite).
 - `backfill-user-created-at.cjs` — derive real `users.created_at` from stored Jalali text.

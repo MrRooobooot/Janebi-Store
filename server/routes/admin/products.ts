@@ -157,8 +157,7 @@ router.delete('/products/:id', async (req, res) => {
       return res.status(409).json({ error: msg, message: msg, code: 'PRODUCT_IN_ORDERS' });
     }
 
-    // Portable async transaction: works on both SQLite (queued by db wrapper)
-    // and PostgreSQL.
+    // Async transaction, queued by the SQLite db wrapper (server/db/index.ts).
     await db.transaction(async (tx) => {
       await tx.delete(productFeatures).where(eq(productFeatures.productId, prodId));
       await tx.delete(cartItems).where(eq(cartItems.productId, prodId));

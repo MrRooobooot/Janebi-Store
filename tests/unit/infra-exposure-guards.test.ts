@@ -59,4 +59,12 @@ describe('deployment guards for `trust proxy`', () => {
     );
     expect(offenders, offenders.join('\n')).toEqual([]);
   });
+
+  it('docker-compose declares no PostgreSQL service (SQLite is the only database)', () => {
+    const compose = read('docker-compose.yml');
+    expect(compose).not.toMatch(/^\s*postgres:\s*$/m);
+    expect(compose).not.toContain('postgres:15');
+    expect(compose).not.toContain('POSTGRES_PASSWORD');
+    expect(compose).not.toContain('janebi_pgdata');
+  });
 });

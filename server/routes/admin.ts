@@ -7,7 +7,7 @@
  * same paths, same order, same audit logging.
  */
 import { Router } from 'express';
-import { db, isPostgres } from '../db/index.js';
+import { db } from '../db/index.js';
 import { users, products, orders, orderItems, reviews, coupons, productFeatures, cartItems, wishlistItems, storeSettings, auditLogs } from '../db/schema.js';
 import { appCache } from '../utils/cache.js';
 import { STORE_SETTINGS_DEFAULTS } from '../../src/lib/constants.js';

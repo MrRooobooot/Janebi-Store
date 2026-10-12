@@ -206,9 +206,7 @@ beforeAll(() => {
   }
   writeFileSync(path.join(repo, '.gitignore'), 'dist/\n');
   mkdirSync(path.join(repo, 'drizzle', 'sqlite'), { recursive: true });
-  mkdirSync(path.join(repo, 'drizzle', 'pg'), { recursive: true });
   writeFileSync(path.join(repo, 'drizzle', 'sqlite', '0001.sql'), 'CREATE TABLE t (id INTEGER);\n');
-  writeFileSync(path.join(repo, 'drizzle', 'pg', '0001.sql'), 'CREATE TABLE t (id INTEGER);\n');
   git(['init', '-q'], repo);
   git(['add', '-A'], repo);
   git(['commit', '-q', '-m', 'release A'], repo);

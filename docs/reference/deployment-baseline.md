@@ -7,7 +7,7 @@ graph TD
     Client[Web Browser] -->|HTTPS 443| Nginx[Nginx Reverse Proxy]
     Nginx -->|Proxy Pass 127.0.0.1:3000| ExpressApp[Express Node.js Container]
     ExpressApp -->|Static Assets| ClientBundle[dist/client React SPA]
-    ExpressApp -->|SQL Queries :5432| Postgres[(PostgreSQL Database Container)]
+    ExpressApp -->|SQL Queries| SQLite[(SQLite file data/janebi.db)]
     ExpressApp -->|HTTPS Outbound| ZarinpalAPI[Zarinpal Payment Gateway]
 ```
 
@@ -21,9 +21,8 @@ graph TD
   - **Stage 2 (Runner):** Lightweight Alpine Node.js image with non-root user, copies built `dist/` directory, and starts with `node dist/server.cjs`.
 
 ### 2.2 `docker-compose.yml`
-- Orchestrates two core services:
-  - `app`: Node.js Express server on port 3000.
-  - `db`: PostgreSQL 15 container on port 5432 with health check (`pg_isready`).
+- Orchestrates one service:
+  - `app`: Node.js Express server on port 3000, using the SQLite file in `./data`. PostgreSQL is not part of the deployment.
 
 ---
 
@@ -35,7 +34,7 @@ Environment variables are strictly validated at server startup with Zod:
 | :--- | :--- | :--- |
 | `PORT` | `number` (default `3000`) | Server listening port |
 | `NODE_ENV` | `'development' \| 'production'` | Runtime environment |
-| `DATABASE_URL` | `string` | PostgreSQL connection URI |
+| `DATABASE_URL` | `string` (default `./data/janebi.db`) | SQLite file path; PostgreSQL URLs are rejected at startup |
 | `JWT_ACCESS_SECRET` | `string (min 10 chars)` | Secret for signing short-lived access JWTs |
 | `JWT_REFRESH_SECRET` | `string (min 10 chars)` | Secret for signing refresh JWTs |
 | `ZARINPAL_MERCHANT_ID`| `string` | Merchant UUID from Zarinpal |

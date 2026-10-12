@@ -30,7 +30,7 @@ import blogRoutes from "./routes/blog.js";
 import sitemapRoutes from "./routes/sitemap.js";
 import adminRoutes from "./routes/admin.js";
 import uploadRoutes from "./routes/upload.js";
-import { isPostgres, pool, sqlite } from "./db/index.js";
+import { sqlite } from "./db/index.js";
 import { shouldNoIndex } from "./lib/robots.js";
 
 export const app = express();
@@ -382,8 +382,7 @@ app.use((req, res, next) => (/\.(cjs|map)$/i.test(req.path) ? res.status(404).en
 app.use("/images", express.static(path.resolve(process.cwd(), "public", "images")));
 
 // Health / readiness probe — verifies the process is up AND the database
-// answers a real query. Uses the raw connection per dialect (pool for PG,
-// better-sqlite3 handle otherwise) so it works on both deployments.
+// answers a real query (SQLite, via the raw better-sqlite3 handle).
 app.get("/api/health", async (req, res) => {
   const startedAt = Date.now();
   // SEC-H2: the detailed block (db size, memory, uptime, node version) is
@@ -394,20 +393,16 @@ app.get("/api/health", async (req, res) => {
   const viaProxy = Boolean(req.headers["x-forwarded-for"]);
   try {
     let dbSize: number | null = null;
-    if (isPostgres) {
-      await pool!.query("SELECT 1");
-    } else {
-      sqlite!.prepare("SELECT 1").get();
-      try {
-        const fs = await import("fs");
-        const path = await import("path");
-        const dbPath = path.resolve(process.cwd(), "data", "janebi.db");
-        if (fs.existsSync(dbPath)) {
-          dbSize = fs.statSync(dbPath).size;
-        }
-      } catch {
-        // ignore size check failure
+    sqlite!.prepare("SELECT 1").get();
+    try {
+      const fs = await import("fs");
+      const path = await import("path");
+      const dbPath = path.resolve(process.cwd(), "data", "janebi.db");
+      if (fs.existsSync(dbPath)) {
+        dbSize = fs.statSync(dbPath).size;
       }
+    } catch {
+      // ignore size check failure
     }
 
     const mem = process.memoryUsage();
