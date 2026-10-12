@@ -17,8 +17,8 @@
 | Routing | React Router DOM | v7 (with single/plural `/products/:id` alias) |
 | Icons | Lucide React | Pure SVG vector icons (no text emojis) |
 | Backend | Express | v5.1.0 with robust JSON/URL middleware |
-| ORM | Drizzle ORM | v0.45.1 (Dual dialect SQLite/PostgreSQL) |
-| DB Engine | better-sqlite3 (Prod/Dev) & pg (Ready) | SQLite (`data/janebi.db`) on VPS, PostgreSQL parity ready |
+| ORM | Drizzle ORM | v0.45.1 (SQLite) |
+| DB Engine | better-sqlite3 | SQLite (`data/janebi.db`) — the only supported database |
 | Validation | Zod | Shared strict input validation |
 | Auth | JWT + bcryptjs | HttpOnly cookies + Bearer auth + role protection |
 | Rate Limiting | express-rate-limit | Strict auth/OTP limits (5/15min) + general limiter (600/15min) |
@@ -42,7 +42,7 @@ Janebi-Store/
 │   ├── main.tsx            # App entry point + SW registration + PWA setup
 │   └── index.css           # Tailwind v4 theme, design tokens, focus rings, Vazirmatn font
 ├── server/
-│   ├── db/                 # Drizzle schemas (schema.ts for SQLite, schema.pg.ts for PostgreSQL)
+│   ├── db/                 # Drizzle schema (schema.ts) and SQLite client
 │   ├── middleware/         # Auth, AdminOnly, RateLimiter, ErrorHandler, RequestId
 │   ├── routes/             # Express routes (auth, products, cart, orders, admin, coupons, wishlist, reviews, payment, contact)
 │   ├── services/           # Payment gateway adapters (Zarinpal, Saman) & PaymentFailoverRouter
@@ -54,7 +54,7 @@ Janebi-Store/
 ├── public/                 # Static assets, local product SVGs, manifest.webmanifest, sw.js
 ├── scripts/                # Verification & data scripts (verify-all.sh, seed-blog.ts, backup-db.mjs, vps-monitor.py)
 ├── e2e/                    # Playwright E2E specs (npm run test:e2e)
-├── drizzle/                # Migrations — sqlite/ + pg/ (dual dialect, journal-tracked)
+├── drizzle/                # Migrations — sqlite/ (journal-tracked)
 ├── docs/                   # reference/ (baselines, architecture, runbooks), reports/ (dated), data/, archive/ — index: docs/README.md
 ├── .hermes/                # Agent ops state — agents-status.json feed, dashboard widget, reports/ archive
 ├── .agents/                # Historical multi-agent build archive (briefings/handoffs, Aug 2026)
@@ -68,7 +68,7 @@ Janebi-Store/
 
 ---
 
-## 3. Database Schema (Drizzle SQLite / PostgreSQL Parity)
+## 3. Database Schema (Drizzle SQLite)
 
 1. **`users`**: `id`, `name`, `phone` (unique), `email`, `password`, `role` (`customer` | `admin`), `avatar`, `vipPoints`, `createdAt`, `updatedAt`
 2. **`addresses`**: `id`, `userId`, `title`, `fullName`, `phone`, `province`, `city`, `address`, `postalCode`, `isDefault`, `createdAt`
@@ -154,7 +154,7 @@ Janebi-Store/
 ```bash
 npm run verify      # Adversarial gate: typecheck + Vitest + build + scripts/gate SEC-01/SEC-03 (~2 min)
 npm run lint        # tsc --noEmit (strict via tsconfig "strict": true)
-npm test            # vitest run (64 suites / 495 tests; 5 PG tests skip unless PG_DATABASE_URL is set)
+npm test            # vitest run (SQLite only)
 npm run test:e2e    # Playwright real-user e2e — NOT part of `npm run verify`
 bash scripts/gate/test-gate-guards.sh   # regression guards for the SEC-01/SEC-03 gate scripts
 npm run build       # Vite client build + Esbuild server bundle

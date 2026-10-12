@@ -43,7 +43,7 @@ router.get('/stats', async (req, res) => {
       }
     }
 
-    // Low stock products (stock <= 5) — column ref keeps PG quoting correct
+    // Low stock products (stock <= 5) — column ref keeps the column quoting correct
     const lowStockProducts = await db.select().from(products).where(sql`${products.stockQuantity} <= 5`).limit(8);
     const lowStockCountRows = await db
       .select({ count: sql<number>`count(*)` })

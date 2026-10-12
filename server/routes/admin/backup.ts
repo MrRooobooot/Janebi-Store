@@ -3,7 +3,7 @@
  * Mounted by server/routes/admin.ts after the router-wide authenticate+requireAdmin guard.
  */
 import { Router } from 'express';
-import { db, isPostgres } from '../../db/index.js';
+import { db } from '../../db/index.js';
 
 const router = Router();
 
@@ -20,10 +20,6 @@ router.get('/backup', async (req, res) => {
 
     if (!fs.existsSync(dbPath)) {
       return res.status(404).json({ error: 'فایل پایگاه داده یافت نشد' });
-    }
-
-    if (isPostgres) {
-      return res.status(400).json({ error: 'بک‌آپ VACUUM فقط برای دیتابیس SQLite پشتیبانی می‌شود' });
     }
 
     // VACUUM INTO writes a compact, fully-consistent snapshot even while

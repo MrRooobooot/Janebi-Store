@@ -4,8 +4,7 @@
 Reads migration-assets/queue.jsonl produced by migrate-product-images.py and
 updates products.image to '/images/products/dk-<id>.<ext>'.
 
-Dialect-aware: works against SQLite (DATABASE_URL=file path) AND PostgreSQL
-(DATABASE_URL=postgres://) because the live store runs PG in the container.
+Works against the SQLite database file (DATABASE_URL, default data/janebi.db).
 
 Modes:
   default        --dry-run: print the planned UPDATEs, change nothing
@@ -28,7 +27,8 @@ MIGRATED = ROOT / "migration-assets" / "products"
 PUBLIC_DIR = ROOT / "public" / "images" / "products"
 
 DB_URL = os.environ.get("DATABASE_URL", "data/janebi.db")
-IS_PG = DB_URL.startswith("postgres://") or DB_URL.startswith("postgresql://")
+if DB_URL.startswith("postgres://") or DB_URL.startswith("postgresql://"):
+    sys.exit("ABORT: PostgreSQL is no longer supported; DATABASE_URL must be the SQLite file path")
 
 
 def load_queue() -> list[dict]:
@@ -77,20 +77,6 @@ def apply_sqlite(rows: list[dict]) -> int:
     return changed
 
 
-def apply_pg(rows: list[dict]) -> int:
-    import psycopg
-
-    with psycopg.connect(DB_URL) as conn, conn.transaction():
-        changed = 0
-        with conn.cursor() as cur:
-            for r in rows:
-                cur.execute(
-                    "UPDATE products SET image=%s WHERE id=%s AND image LIKE 'http%%digikala%%'",
-                    (f"/images/products/{r['file']}", r["id"]),
-                )
-                changed += cur.rowcount
-    return changed
-
 
 def main() -> int:
     ap = argparse.ArgumentParser()
@@ -115,8 +101,8 @@ def main() -> int:
         print("dry-run complete — re-run with --apply to commit")
         return 0
 
-    changed = apply_pg(rows) if IS_PG else apply_sqlite(rows)
-    print(f"APPLIED: {changed} rows updated ({'PG' if IS_PG else 'SQLite'})")
+    changed = apply_sqlite(rows)
+    print(f"APPLIED: {changed} rows updated (SQLite)")
     return 0
 
 

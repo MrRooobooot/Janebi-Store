@@ -19,7 +19,7 @@ import fs from 'fs';
 
 async function ensureDatabaseInitialized() {
   try {
-    // Wait for dialect-specific migrations (PG) to finish before seeding.
+    // Wait for database migrations to finish before seeding.
     await dbReady();
 
     // Check if products exist, otherwise seed

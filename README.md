@@ -5,8 +5,8 @@
 [![Secret Scan](https://github.com/MrRooobooot/Janebi-Store/actions/workflows/secret-scan.yml/badge.svg)](https://github.com/MrRooobooot/Janebi-Store/actions/workflows/secret-scan.yml)
 
 A full-stack e-commerce system for a mobile-accessories store: React 19 storefront + admin
-panel, Express 5 API, Drizzle ORM (SQLite/WAL serving the live deployment; PostgreSQL 15
-supported via the same schema + parity suite), nginx + Docker Compose on a single VPS.
+panel, Express 5 API, Drizzle ORM (SQLite/WAL, the only supported database), nginx + Docker
+Compose on a single VPS.
 
 **Live in production: [janebiarena.ir](https://janebiarena.ir)** — last verified 2026-10-03:
 site HTTP 200, `/api/health` reports `database: ok`, catalog serves 45 products.
@@ -38,7 +38,7 @@ verified state. Deeper documents: [`docs/reference/ARCHITECTURE.md`](docs/refere
 flowchart LR
     B[Browser / PWA] --> N[nginx: TLS, gzip, micro-cache]
     N --> A[Express 5 API + SPA static]
-    A --> D[(SQLite WAL — live / PostgreSQL parity path)]
+    A --> D[(SQLite WAL — the only database)]
     A --> P[Payment gateways: Zarinpal primary, Saman failover]
     A --> S[SMS.ir verify API]
     A --> T[Bale ops alerts]
@@ -143,9 +143,7 @@ problem/detection/root-cause/solution/verification in
 
 ## Testing & Verification
 
-- **534 tests in 68 files** (Vitest + Supertest), including concurrency stress tests and a
-  PostgreSQL parity suite (`tests/postgres/postgres-verification.test.ts`, enabled when
-  `PG_DATABASE_URL` is set; skipped by default — 5 skipped).
+- **Tests** (Vitest + Supertest), including concurrency stress tests, run against SQLite.
 - **Local gate**: `npm run verify` → typecheck (`tsc --noEmit`), full Vitest run, production
   build, live rate-limit proof (`scripts/gate/ratelimit-live.mjs`), SEC-01 static-exposure
   probe, SEC-03 CSP inline-hash probe.
@@ -158,7 +156,7 @@ problem/detection/root-cause/solution/verification in
 
 ## Production Deployment
 
-Ubuntu 24.04 VPS → Docker Compose (`app` + `postgres:15`) → nginx (TLS via Let's Encrypt,
+Ubuntu 24.04 VPS → Docker Compose (`app`, SQLite file) → nginx (TLS via Let's Encrypt,
 gzip, micro-cache with stale-while-revalidate for catalog endpoints) → Node.
 
 ```bash
@@ -212,7 +210,7 @@ Short list; full write-ups in [`docs/reference/PORTFOLIO_CASE_STUDY.md`](docs/re
 |---|---|
 | Frontend | React 19, TypeScript, Vite 8, Tailwind v4, React Router 7, Motion, Lucide |
 | Backend | Node 22, Express 5, Zod, Drizzle ORM, bcrypt, jsonwebtoken, pino-http, Helmet |
-| Database | SQLite better-sqlite3 (WAL) — serving the live deployment; PostgreSQL 15 parity path |
+| Database | SQLite better-sqlite3 (WAL) — the only supported database |
 | Payments | Zarinpal (primary), Saman (failover), circuit breaker, COD |
 | Infra | Docker Compose, nginx, Let's Encrypt, Ubuntu 24.04 |
 | Quality | Vitest 4, Supertest, Playwright, gitleaks, custom security gates |
@@ -223,10 +221,10 @@ Short list; full write-ups in [`docs/reference/PORTFOLIO_CASE_STUDY.md`](docs/re
 ```text
 server/            Express API — routes, services, middleware, db (Drizzle), validators
 src/               React storefront + admin panel (pages, components, contexts, hooks)
-tests/             Vitest suites — api/, concurrency/, postgres/, unit/
+tests/             Vitest suites — api/, concurrency/, unit/
 scripts/           ops/ (deploy, backup, monitoring) · gate/ (live security probes) · audit/
 deploy/            Versioned nginx config for the production host
-drizzle/           Migrations (sqlite/ + pg/)
+drizzle/           Migrations (sqlite/)
 docs/              Architecture, case study, runbooks, audits, screenshots/
 public/            Static assets, service worker, llms.txt / llms-full.txt (regenerate: npm run gen:llms)
 ```
@@ -246,8 +244,6 @@ public/            Static assets, service worker, llms.txt / llms-full.txt (rege
   TTL, 5-attempt lockout, auto-registration) is fully implemented and dev-tested.
 - **Single-VPS deployment** — no HA/redundancy; recovery relies on verified backups and
   runbooks, not failover infrastructure.
-- **PostgreSQL parity tests** require `PG_DATABASE_URL` (e.g. the compose `postgres`
-  service); the default local/CI run exercises the SQLite dialect and skips them (5 skipped).
 - **Small live catalog** (2 categories, 45 SKUs at last sync) — llms files and sitemap are
   regenerated from live data, so they track the store as it grows.
 

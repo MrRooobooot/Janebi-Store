@@ -91,7 +91,7 @@ echo \"SEAL=\$(cat RELEASE_SEAL)\"
 "
 
 step "3. additive migration in the running container (old code + new schema)"
-rsh "docker cp $REL/drizzle/sqlite/. $CONTAINER:/app/drizzle/sqlite/ >/dev/null && docker cp $REL/drizzle/pg/. $CONTAINER:/app/drizzle/pg/ >/dev/null && docker restart $CONTAINER >/dev/null && echo restarted"
+rsh "docker cp $REL/drizzle/sqlite/. $CONTAINER:/app/drizzle/sqlite/ >/dev/null && docker restart $CONTAINER >/dev/null && echo restarted"
 wait_health || die "app did not come back healthy after the migration restart"
 rsh "docker exec -i $CONTAINER node -" < "$PROBE" | tee /tmp/janebi_predeploy_db_probe.txt
 
@@ -119,7 +119,7 @@ T0="$(date +%s)"
 rsh "cd $APP && docker compose up -d --force-recreate app 2>&1 | tail -3"
 wait_health || die "app did not come back healthy after the recreate (rollback command printed above; target $PREV_TARGET)"
 echo "app_restart_window=$(( $(date +%s) - T0 ))s"
-rsh "docker cp $REL/drizzle/sqlite/. $CONTAINER:/app/drizzle/sqlite/ >/dev/null && docker cp $REL/drizzle/pg/. $CONTAINER:/app/drizzle/pg/ >/dev/null && echo drizzle_in_container_synced"
+rsh "docker cp $REL/drizzle/sqlite/. $CONTAINER:/app/drizzle/sqlite/ >/dev/null && echo drizzle_in_container_synced"
 
 step "5. live verification"
 echo "-- served identity:"

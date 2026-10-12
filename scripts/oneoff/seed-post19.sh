@@ -9,7 +9,7 @@ touch /tmp/janebi-deploy.lock
 trap 'rm -f /tmp/janebi-deploy.lock' EXIT
 
 npx esbuild scripts/data/seed-blog.ts --bundle --platform=node --format=cjs \
-  --external:better-sqlite3 --external:pg --outfile=/tmp/seed-blog.cjs
+  --external:better-sqlite3 --outfile=/tmp/seed-blog.cjs
 [ -f deploy.env ] && . deploy.env
 REMOTE="${VPS_USER:-ubuntu}@${VPS_HOST:?set VPS_HOST via deploy.env}"
 scp -o ConnectTimeout=15 /tmp/seed-blog.cjs "$REMOTE":/home/ubuntu/Janebi-Store/seed-blog.cjs

@@ -15,9 +15,7 @@ SKIPPED=$(grep -oE "Tests +[0-9]+ passed \| [0-9]+ skipped" /tmp/janebi-vitest.l
 if [ -n "$SKIPPED" ] && [ "$SKIPPED" != "0" ]; then
   echo
   echo "⚠️  $SKIPPED Vitest test(s) SKIPPED — a green gate with skips is NOT full coverage."
-  echo "   Most likely the PostgreSQL suite: tests/postgres/postgres-verification.test.ts"
-  echo "   is gated by describe.skipIf(!process.env.PG_DATABASE_URL). Run with:"
-  echo "     PG_DATABASE_URL=postgres://… npm test"
+  echo "   Check which suites use describe.skipIf / it.skip in tests/."
   echo
 fi
 

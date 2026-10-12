@@ -180,10 +180,10 @@ nginx version banner off, sshd MaxAuthTries 3.
   │                   │                   │
   └───────────────────┼───────────────────┘
                       ▼
-[ Data Layer: Drizzle ORM (Dual Schema: SQLite dev / PostgreSQL prod) ]
+[ Data Layer: Drizzle ORM (SQLite) ]
                       │
                       ▼
-[ Database: SQLite (data/janebi.db) | Target: PostgreSQL 15 ]
+[ Database: SQLite (data/janebi.db) — sole production DB; PostgreSQL removed ]
 ```
 
 ---
@@ -193,7 +193,7 @@ nginx version banner off, sshd MaxAuthTries 3.
 ### A. Core Backend Services & APIs (`server/`)
 - **Server Entry:** `server/index.ts` (Express 5, middleware pipeline, static serving, graceful shutdown).
 - **Database & Schema:** `server/db/schema.ts` (SQLite tables: `users`, `addresses`, `products`, `orders`, `orderItems`, `cartItems`, `wishlist`, `reviews`, `coupons`, `settings`, `contactMessages`, `newsletterSubscribers`).
-- **Postgres Parity:** `server/db/schema.pg.ts`, `drizzle.pg.config.ts`, `docker-compose.yml`.
+- **PostgreSQL:** removed. The Compose service, `schema.pg.ts`, `drizzle.pg.config.ts`, `drizzle/pg/`, `tests/postgres/` and the `pg` dependency are no longer part of the project.
 - **Authentication & Security:** `server/routes/auth.ts`, `server/middleware/auth.ts` (Bearer JWT, bcrypt password hashing, role-based access).
 - **Payment & Failover Engine:**
   - Interface: `server/services/payment/IPaymentGateway.ts`
@@ -251,7 +251,7 @@ nginx version banner off, sshd MaxAuthTries 3.
 - `tests/unit/transaction-rollback.test.ts` (Atomic rollback on partial out-of-stock).
 - `tests/concurrency/adversarial-stress.test.ts` (50 parallel shoppers for 1 unit of stock).
 - `tests/api/` (`auth`, `admin`, `cart`, `products`, `orders`, `payment`, `reviews`, `users`, `coupons`).
-- `tests/unit/phase1-foundation.test.ts` & `phase2-database.test.ts` (PostgreSQL parity & schema checks).
+- `tests/unit/phase1-foundation.test.ts` (the PostgreSQL schema checks in `phase2-database.test.ts` were removed with PostgreSQL).
 - **Live prod verification sweep (2026-08-30):** WebKit + Chromium on `/`, `/products`, `/checkout`, `/login` — 8/8 CLEAN (0 console errors/warnings, 0 failed requests).
 - **authFetch token-recovery layer (2026-08-30):** `src/lib/api.ts` — single-flight 401→`POST /api/auth/refresh`→retry; all 41 Bearer call sites migrated (Profile, Cart/Wishlist/Auth contexts, checkout, OrderHistoryTab, PersonalInfoTab, ProductReviews, admin pages, AdminLayout, Dashboard). Server contract: refresh **without** cookie → `200 {authenticated:false}` (anonymous probe, no console noise); bad cookie → 401. Boot-time refresh in `AuthContext` unconditional (was dead code: `document.cookie.includes("refreshToken")` can never match an HttpOnly cookie). Access TTL 1d, refresh cookie 7d. Live-verified: stale-token orders flow recovers silently on Chromium + WebKit, anonymous home CLEAN.
 - **Build-pipeline integrity (2026-08-31):** `.env` must NOT contain `NODE_ENV=development` — Vite 8/rolldown overrides its own build default and ships a dev bundle (jsxDEV transform, local file-path leaks, +37% size). Removed; prod bundle `index-fuFg16cz.js` verified jsxDEV:0 on live.

@@ -1,3 +1,0 @@
-ALTER TABLE coupons ADD COLUMN IF NOT EXISTS "usageLimit" INTEGER;
---> statement-breakpoint
-ALTER TABLE coupons ADD COLUMN IF NOT EXISTS "usedCount" INTEGER NOT NULL DEFAULT 0;
