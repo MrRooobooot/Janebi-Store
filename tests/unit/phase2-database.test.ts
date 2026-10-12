@@ -49,15 +49,15 @@ describe('Phase 2 — PostgreSQL Schema & Migration Verification', () => {
     expect(migrationContent).toContain('CREATE TABLE "coupons"');
   });
 
-  it('verifies docker-compose contains Postgres 15 service with healthcheck', () => {
+  it('keeps docker-compose free of the PostgreSQL service (SQLite is the only production DB)', () => {
     const dockerComposePath = path.resolve(process.cwd(), 'docker-compose.yml');
     expect(fs.existsSync(dockerComposePath)).toBe(true);
     const content = fs.readFileSync(dockerComposePath, 'utf-8');
 
-    expect(content).toContain('janebi-postgres');
-    expect(content).toContain('postgres:15-alpine');
-    expect(content).toContain('pg_isready');
-    expect(content).toContain('janebi_pgdata');
+    expect(content).not.toContain('janebi-postgres');
+    expect(content).not.toContain('postgres:15-alpine');
+    expect(content).not.toContain('POSTGRES_PASSWORD');
+    expect(content).not.toContain('janebi_pgdata');
   });
 
   it('verifies schema parity between SQLite and PostgreSQL column structures', () => {

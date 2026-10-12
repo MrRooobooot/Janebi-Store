@@ -180,10 +180,10 @@ nginx version banner off, sshd MaxAuthTries 3.
   │                   │                   │
   └───────────────────┼───────────────────┘
                       ▼
-[ Data Layer: Drizzle ORM (Dual Schema: SQLite dev / PostgreSQL prod) ]
+[ Data Layer: Drizzle ORM (SQLite) ]
                       │
                       ▼
-[ Database: SQLite (data/janebi.db) | Target: PostgreSQL 15 ]
+[ Database: SQLite (data/janebi.db) — sole production DB; PostgreSQL removed ]
 ```
 
 ---
@@ -193,7 +193,7 @@ nginx version banner off, sshd MaxAuthTries 3.
 ### A. Core Backend Services & APIs (`server/`)
 - **Server Entry:** `server/index.ts` (Express 5, middleware pipeline, static serving, graceful shutdown).
 - **Database & Schema:** `server/db/schema.ts` (SQLite tables: `users`, `addresses`, `products`, `orders`, `orderItems`, `cartItems`, `wishlist`, `reviews`, `coupons`, `settings`, `contactMessages`, `newsletterSubscribers`).
-- **Postgres Parity:** `server/db/schema.pg.ts`, `drizzle.pg.config.ts`, `docker-compose.yml`.
+- **Postgres (legacy, not deployed):** `server/db/schema.pg.ts` and `drizzle.pg.config.ts` remain until the PostgreSQL-only code removal is finished; the Compose service was removed.
 - **Authentication & Security:** `server/routes/auth.ts`, `server/middleware/auth.ts` (Bearer JWT, bcrypt password hashing, role-based access).
 - **Payment & Failover Engine:**
   - Interface: `server/services/payment/IPaymentGateway.ts`

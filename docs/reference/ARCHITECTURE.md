@@ -17,7 +17,6 @@ flowchart LR
       NG[nginx<br/>TLS · gzip · micro-cache]
       APP[Docker: janebi-store<br/>Node 22 + Express 5]
       DB[(SQLite WAL<br/>./data/janebi.db)]
-      PG[(postgres:15 service<br/>parity/migration path)]
       REL[(releases/&lt;sha&gt;<br/>immutable builds)]
     end
     GW[Payment gateways<br/>Zarinpal · Saman]
@@ -28,7 +27,6 @@ flowchart LR
     AD --> NG
     NG --> APP
     APP --> DB
-    APP -.-> PG
     APP --> GW
     APP --> SMS
     APP --> BALE
@@ -38,10 +36,9 @@ flowchart LR
 Facts backing this diagram:
 
 - docker-compose sets `DATABASE_URL=./data/janebi.db` for the app container
-  (`docker-compose.yml`) — the live deployment serves from SQLite (WAL). The
-  `postgres:15` service is shipped and monitored (`scripts/ops/vps-monitor.py` checks
-  both containers); the PostgreSQL dialect is exercised by the parity suite
-  (`tests/postgres/`).
+  (`docker-compose.yml`) — the live deployment serves from SQLite (WAL). Compose
+  declares no other service; the monitor (`scripts/ops/vps-monitor.py`) checks only
+  `janebi-store`.
 - nginx runs on the host and reverse-proxies to `127.0.0.1:3000`
   (`deploy/nginx-janebi-store.conf`).
 
@@ -233,5 +230,5 @@ backup death is impossible" — failures alert the operator. See case study #8.
 - Single VPS: no HA. nginx `use_stale` softens restarts; rollback + verified backups are
   the recovery story.
 - OTP login fails closed (503) while the SMS provider is not configured in production.
-- PostgreSQL runs as the migration/parity path; the live deployment currently uses SQLite
-  (see §1). The parity suite needs `PG_DATABASE_URL` to run.
+- SQLite (WAL, `data/janebi.db`) is the sole production database and the only supported
+  path. PostgreSQL is not deployed and no migration to it is planned (owner decision).

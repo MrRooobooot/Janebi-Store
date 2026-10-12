@@ -7,7 +7,7 @@ store, using BALE_BOT_TOKEN + BALE_ADMIN_CHAT_IDS. No parse_mode: Bale answers
 
 Checks (each one has actually caught something or prevents a silent failure):
   1. app health  — /api/health must answer 200 with a DB-backed "ok"
-  2. containers  — janebi-store + janebi-postgres running, and RestartCount delta
+  2. containers  — janebi-store running, and RestartCount delta
   3. disk        — root filesystem below threshold
   4. 5xx rate    — nginx access log, last 5 minutes
   5. backup age  — newest *.db under BACKUP_DIR must be younger than MAX_AGE_H
@@ -35,7 +35,7 @@ DISK_THRESHOLD = int(os.getenv("DISK_THRESHOLD_PERCENT", "85"))
 NGINX_ACCESS = os.getenv("NGINX_ACCESS_LOG", "/var/log/nginx/access.log")
 STATE_FILE = os.getenv("MONITOR_STATE", "/home/ubuntu/.janebi-monitor-state.json")
 REMIND_S = int(os.getenv("REMIND_SECONDS", str(6 * 3600)))
-CONTAINERS = ["janebi-store", "janebi-postgres"]
+CONTAINERS = ["janebi-store"]
 
 
 def env_from_file(key):

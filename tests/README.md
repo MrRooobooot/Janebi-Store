@@ -39,4 +39,4 @@ Browser flows live in `e2e/`, not here.
 - **Vitest parallel flake is not a failure.** If one suite goes red in a full run but passes alone in isolation with the file untouched, it is contention — rerun that file, don't "fix" it.
 - **One authoritative gate is enough.** `npm run verify > log; echo EXIT=$?` — never trust a piped tail's exit status.
 - **A negative fixture that logs an error is expected.** e.g. `SQLite migration FAILED — file: 0007_corrupt.sql` is the migration-journal suite proving a corrupt migration aborts; it is not a break.
-- **Postgres tier needs a live PG.** `drizzle.pg.config.ts` + `DATABASE_URL` for PG; the SQLite tier is the default and is what prod runs.
+- **The SQLite tier is the only supported tier.** The optional Postgres suite (`tests/postgres/`) is gated by `PG_DATABASE_URL` and is kept only until the PostgreSQL-only code is removed.
