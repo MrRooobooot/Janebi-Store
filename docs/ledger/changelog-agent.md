@@ -4,6 +4,15 @@
 > **Role:** agent-facing change log — commit, what moved, how it was verified.
 > Open work and priorities live in `docs/ledger/tasks.md`; the system map lives in `docs/reference/project-graph.md`. On 2026-10-13 the entries dated 2026-08-28 to 2026-09-02 were moved from the old `## [date] - title` style to this heading format, and all entries were sorted newest first. Entry text is unchanged.
 
+## 2026-10-13 — Production release ffbd08f: live and verified — live
+- Deployed `ffbd08f` (commits `61b8645`, `7619a75`, `ffbd08f` on `chore/remove-postgres-sqlite-only`) with `scripts/ops/release.sh`, replacing `1e999f8`. Rollback target: `releases/1e999f8/dist`.
+- Verified on the served site: `/BUILD_INFO` returns `ffbd08f`; `/pricing.md` says about 45 minutes; the admin products chunk contains the «خارج از فهرست مصوب» option and the approved names. `server.cjs` has the same SHA-256 (`73e799bc…`) in the local build, the release directory and the running container. `/api/health`, `/`, `/api/products`, `/sitemap.xml` and `/manifest.webmanifest` return 200. Database: `integrity_check` ok, all payment columns present, 17 migrations. The release has no schema change, so the migration step changed nothing.
+- Gate on the same commit before the push: `npm run verify` passed (80 files, 637 tests).
+- Not checked: the admin dropdown was not opened on the live site (no production login). The old name `محافظ کابل` remains only as a product label and an icon keyword (`src/pages/admin/Products.tsx:34`, `src/lib/categoryIcons.ts`), not as a category option.
+- SSH access: the deploy first failed on the Mac, not on the server. The `janebi` host in `~/.ssh/config` forced `BindInterface en0`, but `en0` was inactive (the Mac was on a phone hotspot through `en7`), so the connection failed before it left the machine. The two `BindInterface en0` lines were removed. That config is outside the repository; a backup is in the session scratchpad.
+- Two uploads were cut by hotspot drops. The first left 33 of 161 files in `releases/ffbd08f` on the server. That folder had not been shipped, so it was removed and the release was staged again from scratch. The container restarted twice (once in the interrupted run, once in the final run; app restart window 15 s).
+- Open: `scripts/ops/release.sh` step 1 (the reuse branch) runs `node` on the VPS, which has none. Re-running after a partial upload aborts before any live change. Not fixed yet.
+
 ## 2026-10-13 — Admin product form: category options now the approved 14
 - `src/pages/admin/Products.tsx`: the category dropdown is built from `APPROVED_CATEGORIES` (new `src/lib/approvedCategories.ts`), replacing 8 hard-coded names of which 7 were not in `docs/reference/CATEGORY-TREE.md`. `CATEGORY_DEFAULT_IMAGES` and `PRESET_GALLERY` use the approved names. A category value that is not approved, if one already exists on a product, is kept as an extra option so editing cannot silently change it.
 - New test `tests/unit/approved-categories.test.ts` keeps the code list identical to the locked doc. Typecheck passes. Server-side validation is not changed (see tasks).
