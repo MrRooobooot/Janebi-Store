@@ -207,6 +207,18 @@ reference check.
   **Escape drift in seeds:** literal `\n` vs real newline → verify the live API.
 - **Deploy:** lock `/tmp/janebi-deploy.lock`; never commit build artifacts; `docker cp` needs an
   ABSOLUTE path; blog seed = esbuild bundle → scp → docker cp → node in-container.
+- **Product photos:** the git source is `assets/product-photos/` (tracked). Run
+  `scripts/ops/sync-product-photos.sh --vps` to copy them into the runtime folder
+  `/home/ubuntu/Janebi-Store/public/images/products` (bind-mounted to `/app/public/images`, served at
+  `/images`) and `dist/images/products` (nginx root). Record each new file in
+  `docs/data/product-photos.json` (source, SHA-256, check). Backed up nightly by
+  `scripts/ops/backup-product-photos.sh` (cron 02:40, Bale off-box). Rows inserted by script bypass
+  `logAudit` and `appCache.invalidate`: use the admin API, or pair a script with a restart, and say so
+  in the changelog.
+- **Product prices:** a product with `cost_price` set is priced by `scripts/ops/reprice-from-cost.cjs`
+  (sale = cost × 1.20 by default, rounded up to 5,000 toman, floor 10%, one `audit_logs` row per
+  change). Run `--dry-run` first, then `--apply`; add `--publish` to show hidden costed products.
+  Products without `cost_price` (MCdodo, Earldom) keep the owner's sale price. Back up the DB first.
 - **Migrations:** PRAGMA-verify prod post-deploy. An empty catch is a bug class.
 - **Blog id-vs-slug (recurring KeyError):** `/api/blog` items have NO `slug` key — key on `id`
   (`i.get('slug') or i.get('id')`); briefs must carry the DB id from `scripts/data/seed-blog.ts`, never the
