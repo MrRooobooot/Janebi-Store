@@ -27,6 +27,7 @@ There is no `assets/` folder: `screenshots/` is referenced by the root README an
 | `auth-baseline.md`, `database-baseline.md`, `api-baseline.md`, `payment-baseline.md`, `deployment-baseline.md`, `inventory-baseline.md` | Per-domain baselines: the invariants each subsystem must keep. |
 | `CATEGORY-TREE.md` | **SoT for the category tree** — closed list; no change without user approval. Read by `scripts/data/validate-ingest.py`. |
 | `live-payment-runbook.md` | Human-run runbook for the first real Zarinpal payment (Persian). |
+| `postgres-removal-record.md` | Execution record of the PostgreSQL removal from the VPS (2026-10-13): what changed, what was verified, what is still open. |
 | `TEST_INFRA.md` | How the test tiers run and what each isolates. |
 | `seo-baseline.md` | SEO metadata ownership per route, measured behaviour before and after the 2026-10 pass, and known limits. |
 | `seo-claims.md` | Register of commercial claims in SEO copy, with the store page that states each one. |
