@@ -32,6 +32,19 @@
 
 **شاهد فعلی بازار:** `docs/reports/2026-09-14-price-position-report.md` (میانهٔ فاصله +۲۴٫۹٪ روی ۴۳ SKU برنددار خودکار-سنجیده‌شده)
 
+### Catalogue gaps to follow up (2026-10-13)
+- [ ] **عکس ۱۰ کابل MCdodo** (در فهرست موجودی، بدون عکس تأییدشده): CA-5630، CA-5633، CA-7782، CA-6942، CA-5643، CA-3670، CA-7082، CA-7281، CA-7783 (منبع مسدود). CA-7081 منابع متناقض دارد (C→iPhone در برابر C→C). منتظر عکس از مالک یا تصمیم درباره‌ی CA-7081.
+- [ ] **موجودی واقعی** ۴۴ کابل QTUQIN و ۱۲ کابل MCdodo جدید روی ۱۰ گذاشته شده (عدد placeholder). مالک باید اعداد واقعی بدهد.
+- [ ] **درصد سود QTUQIN:** ۲۰٪ روی قیمت همکاری (`scripts/ops/reprice-from-cost.cjs`) انتخاب شده، نه از مالک. تأیید یا اصلاح.
+- [ ] **مقایسه با بازار:** قیمت‌های QTUQIN و کابل‌های جدید MCdodo با ترب سنجیده نشده‌اند (`scripts/data/price-watch.mjs`).
+- [ ] **کیفیت عکس:** CA-5580 (۳۲۰px)، CA-5582 (۵۵۰×۴۰۰)، CA-5641 (۶۰۰px)، و عکس‌های QTUQIN از PDF (~۶۰۰px بزرگ‌شده). عکس اصلی از سازنده یا انبار بهتر است.
+- [ ] **مشخصات فنی خالی** روی محصولات جدید (QTUQIN و MCdodo) و بیشتر کالاهای قدیمی (۳۹ از ۴۵ در بررسی قبلی).
+- [ ] **QD04 نقطه‌ی سفید:** نقطه‌ی قرمز روی سلول رنگ ردیف بدون برچسب اتصال‌دهنده بود؛ فقط QD04 TC اضافه شد. تأیید مالک.
+- [ ] **CA-2851:** طول در منابع ۱٫۸ یا ۲ متر است؛ **CA-3591:** لیست فروشنده‌ها «USB-A/USB-C» یا «USB-C» می‌گوید. نام و طول روی صفحه بررسی شود.
+- [ ] **CA-6892:** وضعیت موجودی در لیست مشخص نیست؛ اضافه نشده. **CA-3131، CA-2271** ناموجودند؛ اضافه نشده.
+- [ ] **گزارش audit:** ایمپورت‌های قبلی QTUQIN و MCdodo با SQL مستقیم بودند و `logAudit` نداشتند. تغییرات قیمت از این به بعد در `audit_logs` ثبت می‌شود.
+- [ ] **اسلاید دوم هیرو:** CTA به دسته‌ی «قاب و محافظ صفحه» اشاره می‌کند که خالی است (از گزارش ۰۹-۱۶).
+
 ### Standing automation: status unknown (checked 2026-10-13)
 - **Not found** on 2026-10-13 in: this session's schedulers (CronList and scheduled tasks: none), this Mac's crontab and OpenClaw state, and the VPS crontab (only `backup-verify.sh` and `vps-monitor.py` are installed). The job may still exist in an agent system not reachable from here. Owner to confirm; until then do not count it as running.
 - Created 2026-09-11 night at user request («تا فردا بهت میگم قطعش کنی»): every 3h (`0 */3 * * *`), workdir Janebi-Store, skills janebi-arena-production-readiness + surgical-refactor-playbook, deliver origin.
