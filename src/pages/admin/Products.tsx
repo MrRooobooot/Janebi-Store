@@ -9,6 +9,7 @@ import {
   CheckCircle, AlertTriangle, Package, Sparkles, Tag, DollarSign, Calculator, Upload,
   Smartphone, Shield, Zap, Cable, Headphones, BatteryCharging, Wand2
 } from 'lucide-react';
+import { APPROVED_CATEGORIES, isApprovedCategory } from '../../lib/approvedCategories';
 import PageHeader from '../../components/admin/PageHeader';
 import { Product } from '../../types';
 import { toEnglishDigits, toPersianDigits, formatPrice } from '../../lib/utils';
@@ -19,30 +20,29 @@ import { toEnglishDigits, toPersianDigits, formatPrice } from '../../lib/utils';
 const MIN_MARGIN_PCT = 10;
 
 const CATEGORY_DEFAULT_IMAGES: Record<string, string> = {
-  'هولدر و پایه': '/products/hld-13.svg',
-  'قاب و کاور': '/products/cas-4.svg',
-  'گلس': '/products/gls-3.svg',
-  'کابل': '/products/cbl-1.svg',
-  'محافظ کابل': '/products/cpr-14.svg',
-  'شارژر': '/products/chg-2.svg',
-  'هندزفری': '/products/ear-6.svg',
+  'هولدر و نگهدارنده': '/products/hld-13.svg',
+  'قاب و کاور موبایل': '/products/cas-4.svg',
+  'گلس و محافظ صفحه': '/products/gls-3.svg',
+  'کابل و سیم': '/products/cbl-1.svg',
+  'شارژر و آداپتور': '/products/chg-2.svg',
+  'هندزفری و ایرباد': '/products/ear-6.svg',
   'پاوربانک': '/products/pb-7.svg',
 };
 
 const PRESET_GALLERY = [
-  { id: 'hld-13', category: 'هولدر و پایه', brand: 'Baseus', label: 'هولدر مگنتی مگ‌سیف MagPro', url: '/products/hld-13.svg' },
-  { id: 'cpr-14', category: 'محافظ کابل', brand: 'Baseus', label: 'محافظ کابل سیلیکونی فنری', url: '/products/cpr-14.svg' },
-  { id: 'ear-6', category: 'هندزفری', brand: 'Samsung', label: 'هندزفری TWS بلوتوثی Pro', url: '/products/ear-6.svg' },
-  { id: 'ear-10', category: 'هندزفری', brand: 'Xiaomi', label: 'هندزفری In-Ear ارگونومیک', url: '/products/ear-10.svg' },
-  { id: 'chg-2', category: 'شارژر', brand: 'Anker', label: 'شارژر فست GaN 20W', url: '/products/chg-2.svg' },
-  { id: 'chg-5', category: 'شارژر', brand: 'Samsung', label: 'شارژر سوپرفست 25W', url: '/products/chg-5.svg' },
-  { id: 'chg-9', category: 'شارژر', brand: 'Apple', label: 'پد شارژر وایرلس مگ‌سیف', url: '/products/chg-9.svg' },
-  { id: 'cbl-1', category: 'کابل', brand: 'Anker', label: 'کابل فست Type-C به Type-C', url: '/products/cbl-1.svg' },
-  { id: 'cbl-11', category: 'کابل', brand: 'Apple', label: 'کابل فست لایتنینگ MFi', url: '/products/cbl-11.svg' },
-  { id: 'cas-4', category: 'قاب و کاور', brand: 'Apple', label: 'کاور سیلیکونی مگ‌سیف', url: '/products/cas-4.svg' },
-  { id: 'cas-8', category: 'قاب و کاور', brand: 'Nillkin', label: 'قاب آرمور ضدضربه CamShield', url: '/products/cas-8.svg' },
-  { id: 'gls-3', category: 'گلس', brand: 'Samsung', label: 'گلس شیشه‌ای فول چسب 9H', url: '/products/gls-3.svg' },
-  { id: 'gls-12', category: 'گلس', brand: 'Baseus', label: 'گلس سرامیکی انعطاف‌پذیر', url: '/products/gls-12.svg' },
+  { id: 'hld-13', category: 'هولدر و نگهدارنده', brand: 'Baseus', label: 'هولدر مگنتی مگ‌سیف MagPro', url: '/products/hld-13.svg' },
+  { id: 'cpr-14', category: 'کابل و سیم', brand: 'Baseus', label: 'محافظ کابل سیلیکونی فنری', url: '/products/cpr-14.svg' },
+  { id: 'ear-6', category: 'هندزفری و ایرباد', brand: 'Samsung', label: 'هندزفری TWS بلوتوثی Pro', url: '/products/ear-6.svg' },
+  { id: 'ear-10', category: 'هندزفری و ایرباد', brand: 'Xiaomi', label: 'هندزفری In-Ear ارگونومیک', url: '/products/ear-10.svg' },
+  { id: 'chg-2', category: 'شارژر و آداپتور', brand: 'Anker', label: 'شارژر فست GaN 20W', url: '/products/chg-2.svg' },
+  { id: 'chg-5', category: 'شارژر و آداپتور', brand: 'Samsung', label: 'شارژر سوپرفست 25W', url: '/products/chg-5.svg' },
+  { id: 'chg-9', category: 'شارژر و آداپتور', brand: 'Apple', label: 'پد شارژر وایرلس مگ‌سیف', url: '/products/chg-9.svg' },
+  { id: 'cbl-1', category: 'کابل و سیم', brand: 'Anker', label: 'کابل فست Type-C به Type-C', url: '/products/cbl-1.svg' },
+  { id: 'cbl-11', category: 'کابل و سیم', brand: 'Apple', label: 'کابل فست لایتنینگ MFi', url: '/products/cbl-11.svg' },
+  { id: 'cas-4', category: 'قاب و کاور موبایل', brand: 'Apple', label: 'کاور سیلیکونی مگ‌سیف', url: '/products/cas-4.svg' },
+  { id: 'cas-8', category: 'قاب و کاور موبایل', brand: 'Nillkin', label: 'قاب آرمور ضدضربه CamShield', url: '/products/cas-8.svg' },
+  { id: 'gls-3', category: 'گلس و محافظ صفحه', brand: 'Samsung', label: 'گلس شیشه‌ای فول چسب 9H', url: '/products/gls-3.svg' },
+  { id: 'gls-12', category: 'گلس و محافظ صفحه', brand: 'Baseus', label: 'گلس سرامیکی انعطاف‌پذیر', url: '/products/gls-12.svg' },
   { id: 'pb-7', category: 'پاوربانک', brand: 'Baseus', label: 'پاوربانک 65W با نمایشگر دیجیتال', url: '/products/pb-7.svg' },
 ];
 
@@ -88,7 +88,7 @@ export default function AdminProducts() {
   // Form State
   const [formData, setFormData] = useState({
     title: '',
-    category: 'هندزفری',
+    category: 'هندزفری و ایرباد',
     price: '',
     originalPrice: '',
     discount: '0',
@@ -256,7 +256,7 @@ export default function AdminProducts() {
       });
     } else {
       setEditingProduct(null);
-      const defaultCat = 'هندزفری';
+      const defaultCat = 'هندزفری و ایرباد';
       setFormData({
         title: '',
         category: defaultCat,
@@ -666,14 +666,12 @@ export default function AdminProducts() {
                     onChange={(e) => handleCategoryChange(e.target.value)}
                     className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-2xl p-3 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-primary-500 cursor-pointer"
                   >
-                    <option value="هولدر و پایه">هولدر و پایه</option>
-                    <option value="قاب و کاور">قاب و کاور</option>
-                    <option value="گلس">گلس</option>
-                    <option value="کابل">کابل</option>
-                    <option value="محافظ کابل">محافظ کابل</option>
-                    <option value="شارژر">شارژر</option>
-                    <option value="هندزفری">هندزفری</option>
-                    <option value="پاوربانک">پاوربانک</option>
+                    {APPROVED_CATEGORIES.map((c) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                    {formData.category && !isApprovedCategory(formData.category) && (
+                      <option value={formData.category}>{formData.category} (خارج از فهرست مصوب)</option>
+                    )}
                   </select>
                 </div>
 
