@@ -1,5 +1,5 @@
 // probe-rotation-c.mjs — forms & micro-interactions: auth modal, coupon, qty stepper
-// DOM + pixel contrast on REAL rendered pixels (oklab getComputedStyle lies — see UI-AUDIT-LOG)
+// DOM + pixel contrast on REAL rendered pixels (oklab getComputedStyle lies — see docs/reference/ui-audit-log.md)
 import { chromium } from '@playwright/test';
 
 const BASE = process.env.PROBE_BASE || 'https://janebiarena.ir';

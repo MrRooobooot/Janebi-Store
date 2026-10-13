@@ -1,6 +1,8 @@
 # Architecture — JanebiArena
 
-> Describes the **actual, verified implementation** (state checked 2026-10-03). Every element
+> **Status:** living · **Updated:** 2026-10-13 · **Scope:** system structure and the verified request, payment, release and ops flows
+
+> Describes the **actual, verified implementation** (state checked 2026-10-13). Every element
 > maps to code in this repository; file paths are given for each part. Nothing here is
 > aspirational — where a capability does not exist (e.g. HA failover), it is listed under
 > Limitations instead.
@@ -13,7 +15,7 @@ flowchart LR
       SB[Storefront SPA<br/>React 19 + SW]
       AD[Admin panel<br/>same SPA, /admin]
     end
-    subgraph VPS[Ubuntu 24.04 VPS]
+    subgraph VPS[Production VPS]
       NG[nginx<br/>TLS · gzip · micro-cache]
       APP[Docker: janebi-store<br/>Node 22 + Express 5]
       DB[(SQLite WAL<br/>./data/janebi.db)]
@@ -97,7 +99,7 @@ server/
 ├── routes/         products, auth, cart, orders, payment, admin, reviews, blog,
 │                   sitemap, upload, csp-report, …
 ├── services/       payment/ (adapters + failover router), sms
-├── middleware/     auth (JWT cookies), admin RBAC, error handling, rate limiters
+├── middleware/     auth (`authenticate`, `requireAdmin`), validate, error handling, request id (rate limiters are defined in app.ts)
 ├── validators/     Zod schemas per endpoint
 ├── db/             Drizzle schema + SQLite client (better-sqlite3)
 └── data/           seeds & fixtures (demo data only)
@@ -105,7 +107,7 @@ server/
 
 - **Validation**: every mutating route parses with Zod before touching anything.
 - **Auth**: JWT access + refresh in httpOnly cookies; refresh rotation with `tokenVersion`
-  revocation; bcrypt password hashing; `requireAuth`/admin middleware; 403-by-default.
+  revocation; bcrypt password hashing; `authenticate` and `requireAdmin` middleware; 403 for a non-admin role.
 - **Errors**: centralized error handler; pino-http request logging.
 - **Rate limiting**: `express-rate-limit` per sensitive route group; the client IP comes
   from the proxy chain where nginx **overwrites** `X-Forwarded-For` with
@@ -146,18 +148,18 @@ sequenceDiagram
     participant C as Client (SPA)
     participant A as Express
     participant DB as SQLite
-    participant G as Gateway (Zarinpal → Saman failover)
+    participant G as Gateway (Zarinpal; Saman as failover in code)
     C->>A: POST /api/payment/request
-    A->>DB: order claim + guarded stock move (transaction)
-    A->>G: request authority (sandbox/live per ZARINPAL_SANDBOX)
+    A->>DB: claim the order's payment session (conditional update)
+    A->>G: request authority (sandbox or live per ZARINPAL_SANDBOX)
     G-->>A: authority
-    A-->>C: pay URL /pay/:authority
-    C->>A: GET /pay/:authority (server-rendered handoff, correct Referer)
-    A-->>G: auto-submit StartPay form
-    G-->>A: callback (authority, status)
-    A->>G: verify authority + amount
-    A->>DB: mark order paid
-    A-->>C: redirect to order confirmation
+    A-->>C: pay link on our origin, /pay/:authority
+    C->>A: GET /pay/:authority (meta-refresh hop, so StartPay sees our Referer)
+    A-->>C: redirect to Zarinpal StartPay
+    G-->>A: callback GET /api/payment/verify (Authority, Status)
+    A->>G: verify authority and amount
+    A->>DB: status processing + refId, or cancelled + restock on failure
+    A-->>C: redirect to /checkout/callback?status=…
 ```
 
 - Adapters under `server/services/payment/` (Zarinpal primary; Saman failover;
@@ -217,7 +219,7 @@ backup death is impossible" — failures alert the operator. See case study #8.
 | Gate | What it proves | Where |
 |---|---|---|
 | `tsc --noEmit` | type safety | `verify-all.sh` step 1 |
-| Vitest (534 tests) | behavior incl. concurrency | `verify-all.sh` step 2 (+ skip warning: "a green gate with skips is NOT full coverage") |
+| Vitest (full suite; counts in `tests/README.md`) | behavior incl. concurrency | `verify-all.sh` step 2 (+ skip warning: "a green gate with skips is NOT full coverage") |
 | `vite build` + esbuild | production build | step 3 |
 | `ratelimit-live.mjs` | limiters actually engage (Vitest can't see them: they skip under NODE_ENV=test) | step 4 |
 | `static-exposure.sh` (SEC-01) | `/server.cjs` etc. return 404 publicly | step 5 |
@@ -229,6 +231,6 @@ backup death is impossible" — failures alert the operator. See case study #8.
 
 - Single VPS: no HA. nginx `use_stale` softens restarts; rollback + verified backups are
   the recovery story.
-- OTP login fails closed (503) while the SMS provider is not configured in production.
+- OTP login answers 503 whenever the SMS provider is not configured. It was enabled in production on 2026-10-13 (`GET /api/auth/otp/status` returns `enabled: true`).
 - SQLite (WAL, `data/janebi.db`) is the sole production database and the only supported
   path. PostgreSQL is not deployed and no migration to it is planned (owner decision).

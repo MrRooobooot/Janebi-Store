@@ -1,5 +1,7 @@
 # اولین پرداخت واقعی زرین‌پال — Runbook اجرای انسانی
 
+> **Status:** living · **Updated:** 2026-10-13 · **Scope:** human-run runbook for a live Zarinpal payment test. **Verified 2026-10-13:** product 5639 price and live stock read from the API; `ZARINPAL_SANDBOX=false` read from the live container; the /pay pattern, profile button and checkout labels checked in code. The gateway error code in section 6 comes from the gateway docs and was not re-verified.
+
 وضعیت:release `0a62bd0` روی پروداکشن است و درگاه واقعی (LIVE) فعال است.
 **این یک شارژ واقعی است.** پول واقعاً از کارت شما کم می‌شود. قبل از اجرا یک‌بار کل این متن را بخوانید.
 
@@ -14,7 +16,7 @@
 | قیمت واحد | ۳۳۵٬۰۰۰ تومان (`price=335000`) |
 | هزینه ارسال | ۳۵٬۰۰۰ تومان — پست سفارشی (`SHIPPING_FEES.standard`) |
 | جمع کل | **۳۷۰٬۰۰۰ تومان** (`subtotal 335000 + shippingFee 35000`) |
-| موجودی قبل | ۱۰ عدد (`stockQuantity=10`) |
+| موجودی قبل | عدد `stockQuantity` که API زنده نشان می‌دهد (۸ در ۱۳ اکتبر ۲۰۲۶؛ عدد فعلی را قبل از پرداخت بخوانید) |
 | کوپن / امتیاز VIP | استفاده نکنید — اعداد بالا فقط بدون آن‌ها معتبرند |
 
 ## ۲) پرداخت (Payment)
@@ -39,7 +41,7 @@
 # روی سرور (فقط خواندنی):
 docker exec janebi-store node -e "
 const D=require('better-sqlite3');const db=new D('/app/data/janebi.db',{readonly:true});
-console.log(JSON.stringify(db.prepare(\"select id,status,total,payment_amount,payment_provider,payment_url,authority,refId,vip_points_earned,created_at,updated_at from orders order by rowid desc limit 1\").all(),null,1))
+console.log(JSON.stringify(db.prepare(\"select id,status,total,payment_amount,payment_provider,payment_url,authority,refId,vip_points_earned,created_at,payment_requested_at from orders order by rowid desc limit 1\").all(),null,1))
 "
 ```
 اینها را در فایل شواهد ذخیره کنید:
@@ -48,13 +50,13 @@ console.log(JSON.stringify(db.prepare(\"select id,status,total,payment_amount,pa
 - `payment_amount` (باید ۳۷۰۰۰۰ باشد) و `total`
 - `payment_url` (URL session زرین‌پال)
 - وضعیت نهایی: `processing` انتظار می‌رود
-- موجودی انبار محصول ۵۶۳۹: قبل ۱۰ → بعد از موفقیت **۹**
+- موجودی انبار محصول ۵۶۳۹: قبل N → بعد از موفقیت **N−۱** (N: عدد قبل از پرداخت)
 - امتیاز VIP حساب: delta مثبت طبق قوانین باشگاه
 - اسکرین‌شات صفحه بازگشت درگاه + رسید زرین‌پال
 
 ## ۴) ایمنی (Safety)
 
-- **شارژ واقعی است؛ مبلغ دقیق ۳۷۰٬۰۰۰ ریال.** محصول ارزان انتخاب شده تا ریسک حداقل باشد.
+- **شارژ واقعی است؛ مبلغ دقیق ۳۷۰٬۰۰۰ تومان.** محصول ارزان انتخاب شده تا ریسک حداقل باشد.
 - **اگر callback نیامد یا صفحه خطا داد، هرگز دوباره پرداخت نکنید.** اول:
   ```bash
   docker logs --since 30m janebi-store 2>&1 | grep -iE "payment|reconcile|verify" | tail -30
@@ -98,7 +100,7 @@ console.log(JSON.stringify(db.prepare(\"select id,status,total,payment_amount,pa
 پس `/pay/<authority>` یک صفحهٔ کوچک HTML می‌دهد که با `meta refresh` (نه JS — CSP خودمان `script-src 'self'` است) مرورگر را به درگاه منتقل می‌کند، به‌همراه لینک دستی «اگر منتقل نشدید». این مسیر برای URL **پیست‌شده/از هیستوری/از مرورگر درون‌برنامه‌ای** هم Referer می‌سازد؛ `302` نمی‌سازد.
 
 - اعتبارسنجی: `^[A-Za-z0-9]{8,64}$` — نه اسکیم، نه مسیر؛ در نتیجه open redirect ممکن نیست.
-- `orders.paymentUrl` همان URL خام درگاه را نگه می‌دارد (قابل حسابرسی)؛ فقط لینک نمایشی مشتری عوض شده.
+- ستون `payment_url` همان URL خام درگاه را نگه می‌دارد (قابل حسابرسی)؛ فقط لینک نمایشی مشتری عوض شده.
 - راه دستی برای پشتیبانی: `https://janebiarena.ir/pay/<authority>` را به مشتری بدهید.
 
 > اگر مرورگر مشتری Referer را **کلاً** حذف کند (افزونهٔ حریم‌خصوصی/adblock)، هیچ راه سمت سروری جواب نمی‌دهد: باید بدون افزونه یا در مرورگر دیگر امتحان شود.
@@ -125,7 +127,7 @@ console.log(JSON.stringify(db.prepare(\"select id,status,total,payment_amount,pa
 
 همه اینها یکجا برقرار باشد:
 - `status=processing`، `refId` عددی، `payment_amount=370000`، `total=370000`
-- موجودی ۵۶۳۹ = ۹، امتیاز VIP افتاده، هیچ سفارش تکراری/یتیمی ساخته نشده (تعداد orders دقیقاً +۱)
+- موجودی ۵۶۳۹ = N−۱، امتیاز VIP افتاده، هیچ سفارش تکراری/یتیمی ساخته نشده (تعداد orders دقیقاً +۱)
 
 بعد از تأیید: سفارش پردازش‌شده را از پنل ادمین طبق روال عادی (ارسال/لغو واقعی خودتان) مدیریت کنید.
 

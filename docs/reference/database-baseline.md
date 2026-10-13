@@ -1,139 +1,46 @@
-# Database Baseline — Janebi-Store
+# Database baseline — Janebi Store
 
-## 1. Relational Schema Structure
+> **Status:** living · **Updated:** 2026-10-13 · **Scope:** the SQLite engine and settings, the 15 tables with their SQL column names, migrations, and the seed. Canonical source is `server/db/schema.ts`; this page is checked against it on 2026-10-13. PostgreSQL was removed on 2026-10-13 (`docs/reports/2026-10-13-postgres-removal-record.md`).
 
-```mermaid
-erDiagram
-    users ||--o{ addresses : "has"
-    users ||--o{ orders : "places"
-    users ||--o{ reviews : "writes"
-    users ||--o{ cart_items : "stores"
-    users ||--o{ wishlist_items : "stores"
-    products ||--o{ product_features : "has"
-    products ||--o{ reviews : "receives"
-    products ||--o{ order_items : "contains"
-    products ||--o{ cart_items : "stored in"
-    products ||--o{ wishlist_items : "saved in"
-    orders ||--|{ order_items : "comprises"
-```
+## 1. Engine and settings
 
----
+- SQLite through `better-sqlite3`, accessed with Drizzle ORM. The file comes from `DATABASE_URL` (default `./data/janebi.db`, `server/env.ts`).
+- `server/db/index.ts` sets `journal_mode = WAL` and `busy_timeout = 5000`.
+- Migrations are SQL files in `drizzle/sqlite/` (16 files, `0000` to `0016`; there is no `0010`). They run synchronously when the module loads, and each migration is journaled.
 
-## 2. Table Specifications
+## 2. Tables
 
-### 2.1 Table: `users`
-- `id` (text / primary key): Identifier (e.g. `usr-1740000000000` or `usr-admin-seed`)
-- `name` (text, not null): User's full display name
-- `phone` (text, not null, unique): Iranian 11-digit mobile number (`09xxxxxxxxx`)
-- `email` (text, nullable): Optional email address
-- `password` (text, not null): Bcrypt hashed password string
-- `avatar` (text, nullable): Avatar image identifier or URL
-- `joinedDate` (text, nullable): Shamsi formatted registration date string (e.g. `۱۴۰۴/۱۱/۳۰`)
-- `vipPoints` (integer, default `0`): Loyalty program points
-- `role` (text, default `'user'`): Authorization role (`user` | `admin`)
+Column names are the SQL names. Where the code uses another name in JavaScript it is written in the schema, not here.
 
-### 2.2 Table: `addresses`
-- `id` (text / primary key): Address identifier (e.g. `addr-1740000000000`)
-- `userId` (text, not null, FK → `users.id`): Owner reference
-- `title` (text, not null): Label (e.g. "خانه", "محل کار")
-- `name` (text, not null): Recipient full name
-- `phone` (text, not null): Recipient contact phone
-- `province` (text, not null): Province name (e.g. "تهران")
-- `city` (text, not null): City name
-- `address` (text, not null): Detailed street address
-- `postalCode` (text, nullable): 10-digit postal code
-- `isDefault` (boolean, default `false`): Primary address indicator
+| Table | Columns |
+|---|---|
+| `users` | `id`, `name`, `phone` (unique), `email`, `password` (bcrypt), `avatar`, `joined_date`, `created_at`, `vip_points`, `role`, `must_change_password` |
+| `addresses` | `id`, `user_id`, `title`, `name`, `phone`, `province`, `city`, `address`, `postal_code`, `is_default` |
+| `products` | `id` (autoincrement), `title`, `category`, `price`, `originalPrice`, `discount`, `image`, `brand`, `warranty`, `description`, `rating`, `reviewsCount`, `stockQuantity` (default 10), `sku`, `cost_price`, `barcode`, `is_active` |
+| `product_features` | `id`, `product_id`, `feature` |
+| `orders` | `id`, `user_id`, `date`, `created_at`, `status`, `statusText`, `total`, `subtotal`, `shippingFee`, `discountAmount`, `vip_points_used`, `vip_points_earned`, `paymentMethod`, `shippingMethod`, `recipientName`, `recipientPhone`, `recipientAddress`, `recipientPostalCode`, `authority`, `refId`, `payment_amount`, `payment_provider`, `payment_url`, `payment_requested_at` |
+| `order_items` | `id`, `order_id`, `product_id`, `price`, `qty`, `title`, `image`, `brand` |
+| `reviews` | `id`, `product_id`, `user_id`, `userName`, `rating`, `title`, `comment`, `date`, `isVerifiedBuyer`, `recommend`, `helpfulCount`, `unhelpfulCount`, `approved` |
+| `coupons` | `code`, `percent`, `amount`, `minTotal`, `label`, `active`, `expiresAt`, `usage_limit`, `used_count` |
+| `cart_items` | `id`, `user_id`, `product_id`, `quantity`, `added_at` |
+| `wishlist_items` | `id`, `user_id`, `product_id`, `added_at` |
+| `contact_messages` | `id`, `name`, `email`, `phone`, `subject`, `message`, `status`, `created_at` |
+| `newsletter_subscribers` | `email`, `subscribed_at` |
+| `store_settings` | `key`, `value` |
+| `blog_posts` | `id`, `title`, `excerpt`, `body`, `image`, `category`, `author`, `readTime`, `tags`, `published`, `created_at` |
+| `audit_logs` | `id`, `admin_user_id`, `action`, `entity`, `entity_id`, `meta`, `created_at` |
 
-### 2.3 Table: `products`
-- `id` (serial / integer primary key): Unique numeric ID
-- `title` (text, not null): Persian product title
-- `category` (text, not null): Category key (e.g. `powerbank`, `cable`, `charger`, `case`, `audio`, `holder`)
-- `price` (integer, not null): Final selling price in Tomans
-- `originalPrice` (integer, nullable): Price before discount
-- `discount` (integer, default `0`): Percentage discount (0–100)
-- `image` (text, not null): Main product image URL
-- `brand` (text, not null): Brand name (e.g. "Anker", "Baseus", "Samsung", "Apple")
-- `warranty` (text, nullable): Guarantee details (e.g. "گارانتی ۱۸ ماهه شرکتی")
-- `description` (text, nullable): Detailed HTML/text specifications
-- `rating` (real, default `0.0`): Aggregated average rating (1.0–5.0)
-- `reviewsCount` (integer, default `0`): Number of approved customer reviews
-- `stockQuantity` (integer, default `10`, not null): Available inventory in warehouse
-- `sku` (text, unique, nullable): Stock keeping unit identifier
+## 3. Facts to keep in mind
 
-### 2.4 Table: `product_features`
-- `id` (serial / integer primary key): Feature row ID
-- `productId` (integer, not null, FK → `products.id`): Product reference
-- `feature` (text, not null): Bullet feature text string
+- **Money is integer Toman** (`price`, `total`, `subtotal`, `payment_amount`, and similar). There are no decimal columns.
+- **Casing is mixed.** Most columns are snake_case, but several tables keep camelCase (`originalPrice`, `shippingFee`, `refId`, `userName`). Read the schema before writing a probe.
+- **Cost and supplier fields stay internal.** `cost_price` (`costPrice` in code) and `barcode` are excluded from every public product query (`server/routes/products.ts`); only the admin products route returns them.
+- **Soft hide:** `products.is_active = 0` removes a product from the storefront, product detail, cart, and sitemap while keeping order history intact.
+- **Payment amount is frozen at request time** in `orders.payment_amount`; verify must read it, never the mutable `total`.
+- **Search** uses an FTS5 table created by `drizzle/sqlite/0014_products_fts.sql`, with a LIKE fallback where FTS5 is unavailable.
 
-### 2.5 Table: `orders`
-- `id` (text / primary key): Order number (e.g. `ORD-1740000000000`)
-- `userId` (text, nullable, FK → `users.id`): Registered customer ID (null for guest)
-- `date` (text, not null): Shamsi formatted creation date
-- `status` (text, not null): Enum code (`pending_payment` | `processing` | `shipped` | `delivered` | `cancelled`)
-- `statusText` (text, not null): Persian label for UI
-- `total` (integer, not null): Final paid amount in Tomans
-- `subtotal` (integer, not null): Items subtotal before discounts/shipping
-- `shippingFee` (integer, default `0`): Shipping cost in Tomans
-- `discountAmount` (integer, default `0`): Applied coupon discount amount
-- `paymentMethod` (text, not null): `online` | `cod`
-- `shippingMethod` (text, not null): `express` | `standard`
-- `recipientName` (text, not null): Receiver name
-- `recipientPhone` (text, not null): Receiver phone
-- `recipientAddress` (text, not null): Full postal delivery address
-- `recipientPostalCode` (text, nullable): 10-digit postal code
-- `authority` (text, nullable): Zarinpal payment authority token
-- `refId` (text, nullable): Zarinpal bank transaction tracking reference
+## 4. Seed
 
-### 2.6 Table: `order_items`
-- `id` (serial / integer primary key): Line item ID
-- `orderId` (text, not null, FK → `orders.id`): Parent order reference
-- `productId` (integer, not null, FK → `products.id`): Purchased product
-- `price` (integer, not null): Unit price at purchase time in Tomans
-- `qty` (integer, not null): Quantity purchased
-- `title` (text, not null): Product title snapshot
-- `image` (text, not null): Product image snapshot
-- `brand` (text, not null): Product brand snapshot
-
-### 2.7 Table: `reviews`
-- `id` (text / primary key): Review ID (e.g. `rev-1740000000000`)
-- `productId` (integer, not null, FK → `products.id`): Reviewed product
-- `userId` (text, nullable, FK → `users.id`): Author user ID
-- `userName` (text, not null): Display author name
-- `rating` (integer, not null): Score 1 to 5
-- `title` (text, not null): Review headline
-- `comment` (text, not null): Review body text
-- `date` (text, not null): Shamsi review date
-- `isVerifiedBuyer` (boolean, default `false`): Verified purchase badge
-- `recommend` (boolean, default `false`): Would recommend product
-- `helpfulCount` (integer, default `0`): Upvotes
-- `unhelpfulCount` (integer, default `0`): Downvotes
-
-### 2.8 Table: `coupons`
-- `code` (text / primary key): Coupon uppercase code (e.g. `OFF50`, `WELCOME15`)
-- `percent` (integer, nullable): Percentage discount (1–100)
-- `amount` (integer, nullable): Fixed discount amount in Tomans
-- `minTotal` (integer, not null): Minimum cart subtotal required
-- `label` (text, not null): Description banner
-- `active` (boolean, default `true`): Coupon active status
-
-### 2.9 Table: `cart_items`
-- `id` (text / primary key): Unique row ID (`cart-userId-productId`)
-- `userId` (text, not null, FK → `users.id`): User reference
-- `productId` (integer, not null, FK → `products.id`): Product reference
-- `quantity` (integer, not null, default `1`): Quantity in cart
-- `addedAt` (integer, not null): Epoch timestamp
-
-### 2.10 Table: `wishlist_items`
-- `id` (text / primary key): Unique row ID (`fav-userId-productId`)
-- `userId` (text, not null, FK → `users.id`): User reference
-- `productId` (integer, not null, FK → `products.id`): Product reference
-- `addedAt` (integer, not null): Epoch timestamp
-
----
-
-## 3. Seed Dataset
-The baseline seed file (`server/data/seed.ts`) populates:
-- 1 Admin user (`09123456789`, password hashed with bcrypt, role `admin`)
-- 1 Demo customer (`09120000000`, role `user`) with saved addresses
-- 12 comprehensive initial accessory products across 6 categories with features and initial inventory
-- 3 discount coupons (`WELCOME15`, `OFF50`, `NOWRUZ1404`)
+- `SEED_DEMO_DATA=1` seeds demo products (`server/index.ts`, `scripts/oneoff/seed-dev-db.ts`).
+- Without that flag, an empty catalogue is served and a warning is logged.
+- The seed creates no admin account. A new admin must be created through the app or directly in the database.

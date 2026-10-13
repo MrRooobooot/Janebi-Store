@@ -1,5 +1,7 @@
 # Security audit — 2026-09-14 (black-box, live janebiarena.ir)
 
+> **Status:** frozen · **Date:** 2026-09-14
+
 Scope: unauthenticated external attack surface of the production deployment
 (HTTP/TLS/headers/CORS/authz/rate-limits/injection/file exposure).
 Method: raw curl/openssl probes against prod; source read only to confirm root cause.

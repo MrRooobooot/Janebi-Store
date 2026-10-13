@@ -1,264 +1,120 @@
-# API Baseline Inventory — Janebi-Store
+# API baseline — Janebi Store
 
-This inventory documents all REST API endpoints currently implemented in the Express backend.
+> **Status:** living · **Updated:** 2026-10-13 · **Scope:** every HTTP route under `/api`, its access level, and the file that defines it. Request and response shapes live in `server/validators/index.ts` and the route files; this page does not repeat them.
 
----
+## How this list was read
 
-## 1. Authentication Endpoints (`server/routes/auth.ts`)
+Taken from the mounts in `server/app.ts` and the `router.*` calls under `server/routes/`, following `router.use(subRouter)` into `server/routes/admin/`. There is no generator in the repo; re-read those files to refresh it. Count at 2026-10-13: 81 routes.
 
-### `POST /api/auth/register`
-- **Auth Required:** No
-- **Role:** Public
-- **Request Body:** `{ name: string, phone: string (09xxxxxxxxx), password: string (min 6) }`
-- **Response:** `201 Created` → `{ message: string, user: UserObject, accessToken: string, refreshToken: string }`
-- **Database Effect:** Inserts row into `users` table.
-- **Side Effect:** Generates signed JWT access token (1d) and refresh token (7d).
+- **Access**
+  - `public`: no `authenticate` on the route and no file-level `router.use(authenticate)`.
+  - `user`: `authenticate` on the route, or file-level `router.use(authenticate)`.
+  - `admin`: `authenticate` + `requireAdmin`, applied with `router.use` in `server/routes/admin.ts`. `upload.ts` is mounted under `/api/admin/upload`.
+- `POST /api/coupons` is an alias of `POST /api/coupons/validate` (same handler). Coupon creation is `POST /api/admin/coupons`.
+- `/api/auth/refresh`, `/api/auth/session`, `/api/auth/logout` have no `authenticate` middleware; their checks are inside the handlers in `server/routes/auth.ts`.
 
-### `POST /api/auth/login`
-- **Auth Required:** No
-- **Role:** Public
-- **Request Body:** `{ phone: string, password: string }`
-- **Response:** `200 OK` → `{ message: string, user: UserObject, accessToken: string, refreshToken: string }`
-- **Database Effect:** Queries `users` and `addresses` tables.
-- **Side Effect:** Verifies bcrypt hash; generates JWT tokens.
+## Rate limits (`server/app.ts`)
 
-### `GET /api/auth/me`
-- **Auth Required:** Yes (`Bearer <token>`)
-- **Role:** Authenticated user
-- **Request:** None
-- **Response:** `200 OK` → `{ user: UserObjectWithAddresses }`
-- **Database Effect:** Queries `users` and `addresses` by decoded `userId`.
-- **Side Effect:** None.
+| Limiter | Applies to | Limit |
+|---|---|---|
+| general `limiter` | every `/api/` request | 600 per 15 min per IP |
+| `authLimiter` | `/api/auth/login`, `/register`, `/otp/send`, `/otp/verify`, `/reset-password` | 5 per minute per IP |
+| `strictActionLimiter` | `/api/orders`, `/api/payment/request`, `/api/auth/refresh` | 20 per minute per IP |
+| `couponLimiter` | `/api/coupons`, `/api/coupons/validate` | 10 per 15 min per IP |
+| `contactLimiter` | `/api/contact` | 10 per 15 min per IP |
+| `newsletterLimiter` | `/api/contact/newsletter` | 5 per 15 min per IP |
+| `cspReportLimiter` | `/api/csp-report` | 60 per 15 min per IP |
 
-### `POST /api/auth/send-otp`
-- **Auth Required:** No
-- **Role:** Public
-- **Request Body:** `{ phone: string }`
-- **Response:** `200 OK` → `{ message: "کد تایید ارسال شد" }`
-- **Database Effect:** None (In-memory storage `otpStore`).
-- **Side Effect:** Logs mock SMS OTP code to stdout.
+## Non-API routes
 
-### `POST /api/auth/verify-otp`
-- **Auth Required:** No
-- **Role:** Public
-- **Request Body:** `{ phone: string, code: string, name?: string }`
-- **Response:** `200 OK` → `{ message: string, user: UserObject, accessToken: string, refreshToken: string }`
-- **Database Effect:** Upserts / inserts user if not found in `users` table; queries `addresses`.
-- **Side Effect:** Clears OTP from cache; issues JWT tokens.
+- `GET /sitemap.xml`: dynamic sitemap (`server/routes/sitemap.ts`).
+- `GET /pay/:authority`: server-rendered gateway handoff (`server/app.ts`).
+- Every other path is served by the React SPA.
 
-### `POST /api/auth/refresh`
-- **Auth Required:** No (requires refresh token in body)
-- **Role:** Public
-- **Request Body:** `{ refreshToken: string }`
-- **Response:** `200 OK` → `{ accessToken: string, refreshToken: string }`
-- **Database Effect:** None.
-- **Side Effect:** Verifies JWT refresh secret signature.
+## Routes
 
----
+| Method | Path | Access | Defined in |
+|---|---|---|---|
+| GET | `/api/admin/analytics` | admin | `server/routes/admin/stats.ts` |
+| GET | `/api/admin/audit-logs` | admin | `server/routes/admin/auditLogs.ts` |
+| GET | `/api/admin/backup` | admin | `server/routes/admin/backup.ts` |
+| GET | `/api/admin/contact-messages` | admin | `server/routes/admin/messages.ts` |
+| PUT | `/api/admin/contact-messages/:id/status` | admin | `server/routes/admin/messages.ts` |
+| GET | `/api/admin/coupons` | admin | `server/routes/admin/coupons.ts` |
+| POST | `/api/admin/coupons` | admin | `server/routes/admin/coupons.ts` |
+| DELETE | `/api/admin/coupons/:code` | admin | `server/routes/admin/coupons.ts` |
+| PUT | `/api/admin/coupons/:code` | admin | `server/routes/admin/coupons.ts` |
+| POST | `/api/admin/messages/bulk-delete` | admin | `server/routes/admin/messages.ts` |
+| POST | `/api/admin/messages/read-all` | admin | `server/routes/admin/messages.ts` |
+| GET | `/api/admin/newsletter` | admin | `server/routes/admin/newsletter.ts` |
+| DELETE | `/api/admin/newsletter/:email` | admin | `server/routes/admin/newsletter.ts` |
+| GET | `/api/admin/orders` | admin | `server/routes/admin/orders.ts` |
+| PUT | `/api/admin/orders/:id/status` | admin | `server/routes/admin/orders.ts` |
+| PUT | `/api/admin/orders/:id/tracking` | admin | `server/routes/admin/orders.ts` |
+| POST | `/api/admin/orders/bulk-delete` | admin | `server/routes/admin/orders.ts` |
+| GET | `/api/admin/products` | admin | `server/routes/admin/products.ts` |
+| POST | `/api/admin/products` | admin | `server/routes/admin/products.ts` |
+| DELETE | `/api/admin/products/:id` | admin | `server/routes/admin/products.ts` |
+| PUT | `/api/admin/products/:id` | admin | `server/routes/admin/products.ts` |
+| GET | `/api/admin/reviews` | admin | `server/routes/admin/reviews.ts` |
+| DELETE | `/api/admin/reviews/:id` | admin | `server/routes/admin/reviews.ts` |
+| PUT | `/api/admin/reviews/:id/approved` | admin | `server/routes/admin/reviews.ts` |
+| GET | `/api/admin/settings` | admin | `server/routes/admin/settings.ts` |
+| PUT | `/api/admin/settings` | admin | `server/routes/admin/settings.ts` |
+| GET | `/api/admin/stats` | admin | `server/routes/admin/stats.ts` |
+| POST | `/api/admin/upload/product-image` | admin | `server/routes/upload.ts` |
+| GET | `/api/admin/users` | admin | `server/routes/admin/users.ts` |
+| PUT | `/api/admin/users/:id/password` | admin | `server/routes/admin/users.ts` |
+| PUT | `/api/admin/users/:id/points` | admin | `server/routes/admin/users.ts` |
+| PUT | `/api/admin/users/:id/role` | admin | `server/routes/admin/users.ts` |
+| POST | `/api/auth/login` | public | `server/routes/auth.ts` |
+| POST | `/api/auth/logout` | public | `server/routes/auth.ts` |
+| GET | `/api/auth/me` | user | `server/routes/auth.ts` |
+| POST | `/api/auth/otp/send` | public | `server/routes/auth.ts` |
+| GET | `/api/auth/otp/status` | public | `server/routes/auth.ts` |
+| POST | `/api/auth/otp/verify` | public | `server/routes/auth.ts` |
+| POST | `/api/auth/refresh` | public | `server/routes/auth.ts` |
+| POST | `/api/auth/register` | public | `server/routes/auth.ts` |
+| POST | `/api/auth/reset-password` | public | `server/routes/auth.ts` |
+| POST | `/api/auth/session` | public | `server/routes/auth.ts` |
+| GET | `/api/blog` | public | `server/routes/blog.ts` |
+| GET | `/api/brands` | public | `server/routes/brands.ts` |
+| DELETE | `/api/cart` | user | `server/routes/cart.ts` |
+| GET | `/api/cart` | user | `server/routes/cart.ts` |
+| POST | `/api/cart` | user | `server/routes/cart.ts` |
+| DELETE | `/api/cart/:id` | user | `server/routes/cart.ts` |
+| PUT | `/api/cart/:id` | user | `server/routes/cart.ts` |
+| GET | `/api/categories` | public | `server/routes/categories.ts` |
+| POST | `/api/contact` | public | `server/routes/contact.ts` |
+| POST | `/api/contact/newsletter` | public | `server/routes/contact.ts` |
+| GET | `/api/coupons-active` | public | `server/routes/coupons-active.ts` |
+| POST | `/api/coupons` | public | `server/routes/coupons.ts` |
+| POST | `/api/coupons/validate` | public | `server/routes/coupons.ts` |
+| POST | `/api/csp-report` | public | `server/app.ts` |
+| GET | `/api/health` | public | `server/app.ts` |
+| GET | `/api/orders` | user | `server/routes/orders.ts` |
+| POST | `/api/orders` | user | `server/routes/orders.ts` |
+| GET | `/api/orders/:id` | user | `server/routes/orders.ts` |
+| POST | `/api/orders/:id/cancel` | user | `server/routes/orders.ts` |
+| GET | `/api/orders/my-orders` | user | `server/routes/orders.ts` |
+| POST | `/api/payment/request` | user | `server/routes/payment.ts` |
+| GET | `/api/payment/verify` | public | `server/routes/payment.ts` |
+| GET | `/api/products` | public | `server/routes/products.ts` |
+| GET | `/api/products/:id` | public | `server/routes/products.ts` |
+| GET | `/api/products/:id/reviews` | public | `server/routes/products.ts` |
+| POST | `/api/products/:id/reviews` | public | `server/routes/products.ts` |
+| GET | `/api/reviews/latest` | public | `server/routes/reviews.ts` |
+| GET | `/api/settings` | public | `server/routes/settings.ts` |
+| GET | `/api/users/me` | user | `server/routes/users.ts` |
+| PUT | `/api/users/me` | user | `server/routes/users.ts` |
+| GET | `/api/users/me/addresses` | user | `server/routes/users.ts` |
+| POST | `/api/users/me/addresses` | user | `server/routes/users.ts` |
+| DELETE | `/api/users/me/addresses/:id` | user | `server/routes/users.ts` |
+| PUT | `/api/users/me/addresses/:id` | user | `server/routes/users.ts` |
+| PUT | `/api/users/me/addresses/:id/default` | user | `server/routes/users.ts` |
+| PUT | `/api/users/me/password` | user | `server/routes/users.ts` |
+| GET | `/api/wishlist` | user | `server/routes/wishlist.ts` |
+| POST | `/api/wishlist` | user | `server/routes/wishlist.ts` |
+| DELETE | `/api/wishlist/:id` | user | `server/routes/wishlist.ts` |
 
-## 2. Product Catalog Endpoints (`server/routes/products.ts`, `categories.ts`, `brands.ts`)
-
-### `GET /api/products`
-- **Auth Required:** No
-- **Role:** Public
-- **Query Params:** `category`, `search`, `limit`, `brands`, `minPrice`, `maxPrice`, `inStock`, `hasDiscount`, `sort`, `page`
-- **Response:** `200 OK` → `Product[]` + Headers: `X-Total-Count`, `X-Total-Pages`, `X-Current-Page`
-- **Database Effect:** Select query on `products` with joins on `product_features`.
-- **Side Effect:** None.
-
-### `GET /api/products/:id`
-- **Auth Required:** No
-- **Role:** Public
-- **Path Params:** `id: number`
-- **Response:** `200 OK` → `Product` with `features: string[]` and `reviews: Review[]`
-- **Database Effect:** Select query on `products`, `product_features`, and `reviews`.
-- **Side Effect:** None.
-
-### `POST /api/products/:id/reviews`
-- **Auth Required:** Optional / Authenticated
-- **Role:** Public / User
-- **Path Params:** `id: number`
-- **Request Body:** `{ rating: number (1-5), title: string, comment: string, userName: string, recommend?: boolean }`
-- **Response:** `201 Created` → `{ message: string, review: ReviewObject }`
-- **Database Effect:** Inserts row into `reviews` table; updates `rating` and `reviewsCount` on `products`.
-- **Side Effect:** None.
-
-### `GET /api/categories`
-- **Auth Required:** No
-- **Role:** Public
-- **Response:** `200 OK` → `{ name: string, count: number }[]`
-- **Database Effect:** Group-by query on `products.category`.
-- **Side Effect:** None.
-
-### `GET /api/brands`
-- **Auth Required:** No
-- **Role:** Public
-- **Response:** `200 OK` → `string[]` (All brands)
-- **Database Effect:** In-memory static brand catalog list.
-- **Side Effect:** None.
-
----
-
-## 3. Order & Checkout Endpoints (`server/routes/orders.ts`)
-
-### `POST /api/orders`
-- **Auth Required:** Optional (supports guest and authenticated checkout)
-- **Role:** Public / User
-- **Request Body:**
-  ```json
-  {
-    "userId": "string (optional)",
-    "items": [{ "productId": 1, "qty": 2, "price": 500000, "title": "...", "image": "...", "brand": "..." }],
-    "shippingAddress": { "fullName": "...", "phone": "...", "province": "...", "city": "...", "address": "...", "postalCode": "..." },
-    "shippingMethod": "express | standard",
-    "paymentMethod": "online | cod",
-    "couponCode": "string (optional)"
-  }
-  ```
-- **Response:** `201 Created` → `{ message: string, orderId: string, total: number }`
-- **Database Effect:** Transactional write: inserts `orders`, inserts `order_items`, and deducts `stockQuantity` from `products`.
-- **Side Effect:** Validates and applies coupon discounts.
-
-### `GET /api/orders/user/:userId`
-- **Auth Required:** Yes
-- **Role:** Authenticated owner or Admin
-- **Response:** `200 OK` → `Order[]` with attached `items: OrderItem[]`
-- **Database Effect:** Queries `orders` and `order_items` filtered by `userId`.
-- **Side Effect:** None.
-
-### `GET /api/orders/:id`
-- **Auth Required:** Yes
-- **Role:** Authenticated owner or Admin
-- **Response:** `200 OK` → `Order` with `items: OrderItem[]`
-- **Database Effect:** Queries `orders` and `order_items` filtered by `id`.
-- **Side Effect:** None.
-
----
-
-## 4. Payment Gateway Endpoints (`server/routes/payment.ts`)
-
-### `POST /api/payment/request`
-- **Auth Required:** No
-- **Role:** Public
-- **Request Body:** `{ orderId: string }`
-- **Response:** `200 OK` → `{ paymentUrl: string, authority: string }`
-- **Database Effect:** Updates `orders.authority` with Zarinpal tracking code.
-- **Side Effect:** Dispatches HTTP request to Zarinpal `PaymentRequest.json`.
-
-### `GET /api/payment/verify`
-- **Auth Required:** No (Zarinpal callback endpoint)
-- **Role:** Public callback
-- **Query Params:** `Authority: string`, `Status: string (OK | NOK)`
-- **Response:** `302 Redirect` → Redirects browser to `/checkout/callback?status=success|failed&orderId=...`
-- **Database Effect:**
-  - On Success: Updates `orders.status` to `processing` and stores `refId`.
-  - On Failure: Restores product inventory in `products.stockQuantity` and sets status to `cancelled`.
-- **Side Effect:** Dispatches HTTP request to Zarinpal `PaymentVerification.json`.
-
----
-
-## 5. Cart & Wishlist Endpoints (`server/routes/cart.ts`, `wishlist.ts`)
-
-### `GET /api/cart`
-- **Auth Required:** Yes
-- **Response:** `200 OK` → `CartItem[]` with nested `product: Product`
-- **Database Effect:** Select query on `cart_items` joined with `products`.
-
-### `POST /api/cart`
-- **Auth Required:** Yes
-- **Request Body:** `{ productId: number, quantity: number }`
-- **Response:** `200 OK` → `{ message: string, item: CartItem }`
-- **Database Effect:** Upserts item in `cart_items`.
-
-### `PUT /api/cart/:id`
-- **Auth Required:** Yes
-- **Request Body:** `{ quantity: number }`
-- **Response:** `200 OK` → Updated CartItem
-- **Database Effect:** Updates `cart_items.quantity`.
-
-### `DELETE /api/cart/:id`
-- **Auth Required:** Yes
-- **Response:** `200 OK` → `{ message: "Item removed" }`
-- **Database Effect:** Deletes row from `cart_items`.
-
-### `DELETE /api/cart`
-- **Auth Required:** Yes
-- **Response:** `200 OK` → `{ message: "Cart cleared" }`
-- **Database Effect:** Deletes all rows for `userId` in `cart_items`.
-
-### `GET /api/wishlist`
-- **Auth Required:** Yes
-- **Response:** `200 OK` → `WishlistItem[]` with nested `product: Product`
-- **Database Effect:** Select query on `wishlist_items` joined with `products`.
-
-### `POST /api/wishlist`
-- **Auth Required:** Yes
-- **Request Body:** `{ productId: number }`
-- **Response:** `200 OK` → `{ message: string, action: "added" | "removed" }`
-- **Database Effect:** Toggles presence in `wishlist_items`.
-
-### `DELETE /api/wishlist/:productId`
-- **Auth Required:** Yes
-- **Response:** `200 OK` → `{ message: "Removed from wishlist" }`
-- **Database Effect:** Deletes row in `wishlist_items`.
-
----
-
-## 6. User Profile & Address Book (`server/routes/users.ts`)
-
-### `PUT /api/users/profile`
-- **Auth Required:** Yes
-- **Request Body:** `{ name?: string, email?: string, avatar?: string }`
-- **Response:** `200 OK` → Updated User object.
-- **Database Effect:** Updates `users` row.
-
-### `POST /api/users/addresses`
-- **Auth Required:** Yes
-- **Request Body:** `{ title: string, name: string, phone: string, province: string, city: string, address: string, postalCode?: string, isDefault?: boolean }`
-- **Response:** `201 Created` → Created Address object.
-- **Database Effect:** Inserts row into `addresses`; if `isDefault`, unsets other default addresses for user.
-
-### `PUT /api/users/addresses/:id`
-- **Auth Required:** Yes
-- **Response:** `200 OK` → Updated Address object.
-- **Database Effect:** Updates `addresses` row.
-
-### `DELETE /api/users/addresses/:id`
-- **Auth Required:** Yes
-- **Response:** `200 OK` → `{ message: "Address deleted" }`
-- **Database Effect:** Deletes `addresses` row.
-
-### `PUT /api/users/addresses/:id/default`
-- **Auth Required:** Yes
-- **Response:** `200 OK` → `{ message: "Default address updated" }`
-- **Database Effect:** Transactional update toggling `isDefault` flag across user addresses.
-
----
-
-## 7. Coupons & Promotions (`server/routes/coupons.ts`)
-
-### `GET /api/coupons/validate`
-- **Auth Required:** No
-- **Query Params:** `code: string`, `total: number`
-- **Response:** `200 OK` → `{ valid: true, discountAmount: number, code: string, percent?: number, amount?: number, label: string }`
-- **Database Effect:** Select query on `coupons` table.
-
----
-
-## 8. Admin Management Endpoints (`server/routes/admin.ts`)
-
-All endpoints in this group strictly require `authenticate` middleware and `req.user.role === 'admin'`.
-
-| Method | Path | Description | Database Effect |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/api/admin/stats` | Overall KPIs (Revenue, Orders, Products, Users) | Aggregation queries across `orders`, `products`, `users` |
-| `GET` | `/api/admin/products` | Paginated product list with stock & filters | Select on `products` |
-| `POST` | `/api/admin/products` | Create new product and features | Insert `products` and `product_features` |
-| `PUT` | `/api/admin/products/:id` | Update product fields and features | Update `products`, rewrite `product_features` |
-| `DELETE` | `/api/admin/products/:id` | Delete product | Delete `products` |
-| `GET` | `/api/admin/orders` | List all orders with line items | Select on `orders` and `order_items` |
-| `PUT` | `/api/admin/orders/:id/status`| Update order status (`processing`, `shipped`, etc.) | Update `orders.status` |
-| `GET` | `/api/admin/users` | List all registered users | Select on `users` |
-| `GET` | `/api/admin/coupons` | List all discount coupons | Select on `coupons` |
-| `POST` | `/api/admin/coupons` | Create new discount coupon | Insert `coupons` |
-| `DELETE` | `/api/admin/coupons/:code` | Delete discount coupon | Delete `coupons` |
+Refresh the table from the route files when a route is added, removed or moved. The count in the header is the one to update.

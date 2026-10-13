@@ -1,6 +1,6 @@
 # AGENTS.md — Janebi Store · Project Reference Document (PRD)
 
-> **Last Updated**: 2026-09-05T09:30:00+03:30 (content) · 2026-10-10: doc paths updated for the `docs/` reorganisation only — rest of this file not re-verified; current test counts are in `tests/README.md`
+> **Last Updated**: 2026-09-05T09:30:00+03:30 (content) · 2026-10-10: doc paths updated for the `docs/` reorganisation only — rest of this file not re-verified; current test counts are in `tests/README.md` · 2026-10-13: docs standardised (`docs/documentation-standard.md`); ledgers moved to `docs/ledger/` and `docs/reference/project-graph.md`; §1–§4 corrected against code (versions, layout, schema, endpoints, rate limits)
 > **Status**: Production Ready & Deployed  
 > **Domain**: https://janebiarena.ir  
 > **Root**: `/Users/aidin/Desktop/Janebi-Store`
@@ -16,13 +16,13 @@
 | Animations | Motion (framer-motion) | Smooth transitions & micro-interactions |
 | Routing | React Router DOM | v7 (with single/plural `/products/:id` alias) |
 | Icons | Lucide React | Pure SVG vector icons (no text emojis) |
-| Backend | Express | v5.1.0 with robust JSON/URL middleware |
-| ORM | Drizzle ORM | v0.45.1 (SQLite) |
+| Backend | Express | v5 (`express` ^5.2.1) with JSON/URL middleware |
+| ORM | Drizzle ORM | v0.45 (`drizzle-orm` ^0.45.2, SQLite) |
 | DB Engine | better-sqlite3 | SQLite (`data/janebi.db`) — the only supported database |
 | Validation | Zod | Shared strict input validation |
-| Auth | JWT + bcryptjs | HttpOnly cookies + Bearer auth + role protection |
-| Rate Limiting | express-rate-limit | Strict auth/OTP limits (5/15min) + general limiter (600/15min) |
-| Security | Helmet + CORS + Strict Sanitization | Security headers (HSTS, CSP, XFO, nosniff, referrer) |
+| Auth | JWT (`jsonwebtoken`) + bcrypt (`bcrypt` ^6, 10 rounds) | HttpOnly cookies + Bearer auth + role protection |
+| Rate Limiting | express-rate-limit | Auth/OTP: 5 requests per minute per IP; general `/api/` limiter: 600 per 15 min |
+| Security | Helmet + CORS (allow-list from `APP_URL` / `CORS_ORIGIN`) | Security headers via Helmet, CSP with hash-pinned inline scripts |
 | Build & Runtime | Vite + Esbuild | `dist/` (client) + `dist/server.cjs` (node bundle) |
 | PWA & Offline | Web App Manifest + Service Worker | Stale-While-Revalidate APIs + Cache-First assets |
 
@@ -34,7 +34,7 @@
 Janebi-Store/
 ├── src/
 │   ├── components/         # 40+ Shared UI components (ProductCard, Header, Footer, PictureImage, etc.)
-│   ├── contexts/           # React Contexts (Auth, Cart, Toast, Wishlist, Compare)
+│   ├── contexts/           # React Contexts (Auth, Cart, Compare, Theme, Toast, Wishlist)
 │   ├── pages/              # 20+ Storefront & Admin page routes (Home, Products, Cart, Checkout, Profile, Admin)
 │   ├── lib/                # Shared utilities (Persian digits, phone normalization, price format, API fetch)
 │   ├── types/              # Domain TypeScript types
@@ -43,45 +43,30 @@ Janebi-Store/
 │   └── index.css           # Tailwind v4 theme, design tokens, focus rings, Vazirmatn font
 ├── server/
 │   ├── db/                 # Drizzle schema (schema.ts) and SQLite client
-│   ├── middleware/         # Auth, AdminOnly, RateLimiter, ErrorHandler, RequestId
-│   ├── routes/             # Express routes (auth, products, cart, orders, admin, coupons, wishlist, reviews, payment, contact)
-│   ├── services/           # Payment gateway adapters (Zarinpal, Saman) & PaymentFailoverRouter
+│   ├── middleware/         # auth (authenticate, requireAdmin), validate, errorHandler, requestId; rate limiters are defined in app.ts
+│   ├── routes/             # Express routers mounted in app.ts (auth, products, cart, orders, admin/ sub-routers, coupons, wishlist, reviews, payment, contact, users, blog, settings, brands, categories, upload)
+│   ├── services/payment/   # ZarinpalAdapter, SamanAdapter, PaymentFailoverRouter (per-gateway circuit breaker)
 │   └── index.ts            # Server entrypoint with static serving & graceful shutdown
 ├── tests/
 │   ├── api/                # API integration test suites (auth, admin, cart, orders, payment, parity, etc.)
 │   ├── unit/               # Unit test suites (invariants, rate-limiting, payment-failover, persian-utils, etc.)
 │   └── concurrency/        # Adversarial stock concurrency test suites
 ├── public/                 # Static assets, local product SVGs, manifest.webmanifest, sw.js
-├── scripts/                # Verification & data scripts (verify-all.sh, seed-blog.ts, backup-db.mjs, vps-monitor.py)
+├── scripts/                # Operator tooling in gate/, audit/, ops/, data/, oneoff/ (see scripts/README.md); verify-all.sh is the gate
 ├── e2e/                    # Playwright E2E specs (npm run test:e2e)
 ├── drizzle/                # Migrations — sqlite/ (journal-tracked)
-├── docs/                   # reference/ (baselines, architecture, runbooks), reports/ (dated), data/, archive/ — index: docs/README.md
-├── .hermes/                # Agent ops state — agents-status.json feed, dashboard widget, reports/ archive
-├── .agents/                # Historical multi-agent build archive (briefings/handoffs, Aug 2026)
+├── docs/                   # README.md (index) · documentation-standard.md · ledger/ (tasks.md, changelog-agent.md) · reference/ (living, incl. project-graph.md) · reports/ (dated, frozen) · archive/ · data/ · business/
+├── .hermes/                # Agent ops state (git-ignored)
 ├── deploy.sh               # Production deploy (rsync + remote docker rebuild, deploy-lock)
-├── PROJECT_GRAPH.md        # Permanent architectural knowledge base & live system map
-├── TASKS.md                # Task tracker and backlog
-├── CHANGELOG_AGENT.md      # Chronological work logs
-├── agent.md                # Project status ledger (historical decisions D1-D10, deployment status)
-└── PLAYWRIGHT.md           # Which of the 3 Playwright configs to use (production audit: docs/reference/PROJECT_AUDIT.md)
+├── README.md               # Public overview (GitHub front page)
+└── AGENTS.md               # This file: rules, stack, verification commands
 ```
 
 ---
 
 ## 3. Database Schema (Drizzle SQLite)
 
-1. **`users`**: `id`, `name`, `phone` (unique), `email`, `password`, `role` (`customer` | `admin`), `avatar`, `vipPoints`, `createdAt`, `updatedAt`
-2. **`addresses`**: `id`, `userId`, `title`, `fullName`, `phone`, `province`, `city`, `address`, `postalCode`, `isDefault`, `createdAt`
-3. **`products`**: `id`, `name`, `nameEn`, `slug`, `price`, `originalPrice`, `discount`, `rating`, `reviewsCount`, `image`, `images`, `category`, `brand`, `stockQuantity`, `isNew`, `isSpecial`, `specs`, `description`, `createdAt`
-4. **`orders`**: `id`, `userId`, `total`, `discount`, `shippingFee`, `finalTotal`, `status` (`pending` | `processing` | `shipped` | `delivered` | `cancelled`), `paymentMethod` (`online` | `cod`), `paymentStatus` (`pending` | `paid` | `failed`), `shippingAddress`, `shippingMethod`, `notes`, `couponCode`, `vipPointsUsed`, `vipPointsEarned`, `createdAt`, `updatedAt`
-5. **`orderItems`**: `id`, `orderId`, `productId`, `name`, `price`, `quantity`, `color`, `image`
-6. **`cartItems`**: `id`, `userId`, `productId`, `quantity`, `color`, `createdAt`
-7. **`wishlist`**: `id`, `userId`, `productId`, `createdAt`
-8. **`reviews`**: `id`, `productId`, `userId`, `userName`, `userAvatar`, `rating`, `title`, `comment`, `likes`, `isBuyer`, `isVerified`, `approved`, `createdAt`
-9. **`coupons`**: `id`, `code` (unique), `discountType` (`percent` | `fixed`), `discountValue`, `minAmount`, `maxDiscount`, `expiresAt`, `isActive`, `createdAt`
-10. **`settings`**: `id`, `key` (unique), `value`, `updatedAt`
-11. **`contactMessages`**: `id`, `name`, `phone`, `email`, `subject`, `message`, `status` (`unread` | `read` | `archived`), `createdAt`
-12. **`newsletterSubscribers`**: `id`, `email` (unique), `createdAt`
+15 SQLite tables, defined in `server/db/schema.ts`: `users`, `addresses`, `products`, `product_features`, `orders`, `order_items`, `reviews`, `coupons`, `cart_items`, `wishlist_items`, `contact_messages`, `newsletter_subscribers`, `store_settings`, `blog_posts`, `audit_logs`. Column-level detail, money units and casing rules: `docs/reference/database-baseline.md`.
 
 ---
 
@@ -95,12 +80,13 @@ Janebi-Store/
 - `POST /api/products/:id/reviews` — Submit product review (recomputes product rating dynamically)
 - `POST /api/coupons/validate` — Validate discount coupon codes
 - `POST /api/contact` — Persist customer contact message
-- `POST /api/newsletter` — Subscribe email to newsletter
+- `POST /api/contact/newsletter` — Subscribe email to newsletter
 
 ### 4.2 Auth & User APIs
 - `POST /api/auth/register` — Register via Iranian mobile + password
 - `POST /api/auth/login` — Authenticate and issue JWT tokens
 - `GET /api/auth/me` — Return current authenticated user profile
+- `POST /api/auth/refresh`, `POST /api/auth/session`, `POST /api/auth/logout` — token lifecycle; `GET /api/auth/otp/status` — OTP availability flag
 - `POST /api/auth/otp/send` — Rate-limited SMS OTP dispatch
 - `POST /api/auth/otp/verify` — Verify SMS OTP code
 - `POST /api/auth/reset-password` — Rate-limited password reset flow
@@ -118,7 +104,7 @@ Janebi-Store/
 - `POST /api/wishlist` — Toggle/add item to wishlist
 - `DELETE /api/wishlist/:id` — Remove item from wishlist
 - `POST /api/orders` — Atomic `db.transaction` order creation with stock deduction
-- `GET /api/orders` — List user orders
+- `GET /api/orders` (also `GET /api/orders/my-orders`) — List user orders
 - `GET /api/orders/:id` — Get single order detail
 - `POST /api/orders/:id/cancel` — Cancel pending/processing order (restocks items + unwinds VIP points)
 
@@ -133,7 +119,7 @@ Janebi-Store/
 - Both cancel paths (verify + reaper) flip the status **conditionally first**, then restock/refund only if they won — a concurrent real verify always wins and a paid order is never cancelled or double-restocked. `vip_points_used` must be read **before** the flip zeroes it.
 - Prod DB `orders` column casing is mixed: `payment_requested_at`, `payment_amount`, `payment_url`, `vip_points_used`, `created_at`, `user_id` are snake_case; `refId`, `statusText`, `authority` are as-is. `order_items` uses `order_id`/`product_id`/`qty`. Read the schema (`pragma_table_info`) before writing ops probes.
 
-### 4.5 Admin Panel APIs (requireAuth + requireAdmin)
+### 4.5 Admin Panel APIs (`authenticate` + `requireAdmin`, applied by `router.use` in `server/routes/admin.ts`)
 - `GET /api/admin/stats` — Dashboard sales, revenue, user, and order statistics
 - `GET /api/admin/orders` — Manage all orders with pagination & status filters
 - `PUT /api/admin/orders/:id/status` — Lifecycle transition (pending/processing/shipped/delivered/cancelled) with atomic inventory restock on cancel
@@ -144,7 +130,7 @@ Janebi-Store/
 - `PUT /api/admin/users/:id/password` — Admin reset user password
 - `GET /api/admin/coupons` & `POST /api/admin/coupons` & `DELETE /api/admin/coupons/:code` — Coupon management
 - `GET /api/admin/settings` & `PUT /api/admin/settings` — Persistent store configuration
-- `GET /api/admin/messages` — Customer contact messages viewer
+- `GET /api/admin/contact-messages` — Customer contact messages viewer
 - `GET /api/admin/newsletter` — Newsletter subscribers export
 
 ---
@@ -183,6 +169,8 @@ green is a signal, never evidence of completion.
 
 ## 7. Code-intelligence pipeline (use before reading files)
 
+> On 2026-10-13 `~/.local/bin/codebase-memory-mcp` was not installed at that path. The commands below apply only where the binary exists; `ast-grep` and grep work everywhere.
+
 ```bash
 ~/.local/bin/codebase-memory-mcp cli --json search_graph '{"project":"Users-aidin-Desktop-Janebi-Store","query":"…"}'
 ~/.local/bin/codebase-memory-mcp cli --json trace_path   '{"project":"Users-aidin-Desktop-Janebi-Store","…"}'
@@ -202,7 +190,7 @@ reference check.
 
 ## 8. Operational traps (paid for — do not re-learn)
 
-- **Project graph:** consult `PROJECT_GRAPH.md` first on any feature/debug turn; update it after
+- **Project graph:** consult `docs/reference/project-graph.md` first on any feature/debug turn; update it after
   non-trivial tasks or schema/endpoint changes.
 - **Persistent dev DB + tests = residue:** `vitest.config.ts` pins `DATABASE_URL=:memory:`, so
   `npm run verify` does NOT touch `data/janebi.db` (verified 2026-09-24: db mtime unchanged across a
@@ -221,16 +209,16 @@ reference check.
   ABSOLUTE path; blog seed = esbuild bundle → scp → docker cp → node in-container.
 - **Migrations:** PRAGMA-verify prod post-deploy. An empty catch is a bug class.
 - **Blog id-vs-slug (recurring KeyError):** `/api/blog` items have NO `slug` key — key on `id`
-  (`i.get('slug') or i.get('id')`); briefs must carry the DB id from `seed-blog.ts`, never the
+  (`i.get('slug') or i.get('id')`); briefs must carry the DB id from `scripts/data/seed-blog.ts`, never the
   title-slug from commit messages. A bundled seed smoke-run from `/tmp` fails on the
   better-sqlite3 external — verify via the esbuild output, not require-from-tmp.
-- **Shared-tree siblings:** re-read shared files (TASKS / CHANGELOG / tests) right before each patch;
-  version asserts track the LATEST sibling bump. Hotspot: `scripts/seed-blog.ts` (a supervisor child
+- **Shared-tree siblings:** re-read shared files (`docs/ledger/tasks.md` / `docs/ledger/changelog-agent.md` / tests) right before each patch;
+  version asserts track the LATEST sibling bump. Hotspot: `scripts/data/seed-blog.ts` (a supervisor child
   and the orchestrator cron edit it in overlapping rounds).
 - **DOM probes:** try/catch per section; reset ALL filters; scripts via a written file; QA FAIL only
   on direct evidence.
 - **`tsx -e` traps:** `npx tsx -e 'await …'` fails (CJS, no top-level await); importing
-  `scripts/seed-blog.ts` RUNS `main()` as a side effect — verify via a temp `.ts`, sync import,
+  `scripts/data/seed-blog.ts` RUNS `main()` as a side effect — verify via a temp `.ts`, sync import,
   delete after.
 - **Environment:** `browser_exec` is unusable on this Mac (needs Chromium as default browser) — after
   2 failures use Playwright via the project venv in the terminal. Never `find` across the whole home

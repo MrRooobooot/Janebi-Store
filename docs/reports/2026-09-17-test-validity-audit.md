@@ -1,5 +1,7 @@
 # Test validity audit — 2026-09-17
 
+> **Status:** frozen · **Date:** 2026-09-17
+
 ## Verdict
 
 The suite is not uniformly reliable. Passing tests are useful evidence, not proof that all critical flows work. Production code was not mutated; utility mutations were confined to a temporary copy without DB setup or external services.

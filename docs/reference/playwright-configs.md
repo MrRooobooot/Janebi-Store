@@ -1,4 +1,6 @@
-# PLAYWRIGHT.md — which config to use
+# Playwright configs — which one to use
+
+> **Status:** living · **Updated:** 2026-10-10 · **Scope:** which of the three Playwright configs to run, and when
 
 There are three Playwright configs in the repo root. They share `testDir: ./e2e` but differ in
 how the server is started, which database is touched and which specs they are meant for.

@@ -1,6 +1,8 @@
 # SEO copy: commercial claims register
 
-> Last reviewed: 2026-10-12. Scope: text that reaches search engines and social cards
+> **Status:** living · **Updated:** 2026-10-12 · **Scope:** register of commercial claims that reach search engines and social cards
+
+> Last reviewed: 2026-10-13. Scope: text that reaches search engines and social cards
 > (`<title>`, meta description, Open Graph, Twitter, JSON-LD descriptions). Page
 > content outside that scope is listed at the end, not rewritten.
 
@@ -73,7 +75,7 @@ made without the owner; the items below are the owner's to decide.
 
 | Where | Claim | Why it needs the owner |
 |---|---|---|
-| `FAQ.tsx:19`, `Footer.tsx:48`, `Brands.tsx` | «ضمانت اصالت و سلامت فیزیکی» (all products) | `Terms.tsx` does not define what the guarantee covers. A legal scope is needed. |
+| `FAQ.tsx:19`, `Footer.tsx:48`, `Brands.tsx` | «ضمانت اصالت و سلامت فیزیکی» (all products) | The owner confirmed the authenticity guarantee with physical testing on 2026-10-13. Still open: `Terms.tsx` does not define what the guarantee covers; a legal scope is needed. |
 | `Terms.tsx:20` | the introduction promises «شرایط گارانتی» | The body of Terms has no warranty section. Legal text. |
 | `About.tsx:20، 60، 62` and `Offers.tsx:34` | «بهترین کیفیت»، «مناسب‌ترین قیمت»، «بهترین قیمت بازار»، «بالاترین کیفیت با قیمتی رقابتی»، «بالاترین میزان تخفیف» | Superlatives with no source; the register forbids them. Removing them changes visible copy, so the owner approves. |
 | `About.tsx:32، 79، 85` | «تمامی محصولات … گارانتی تعویض اصلی»، «تمام کالاهای وارداتی … تست سنجش کیفیت»، «مهلت بازگشت ۷ روزه واقعی» | `FAQ.tsx:15` makes the return window conditional. The quality-test process has no source. |
@@ -85,11 +87,14 @@ made without the owner; the items below are the owner's to decide.
 | `src/lib/catalogCopy.ts:27` (`CATALOG_HUB_H1`) | visible `/products` heading «… اورجینال» | Same authenticity word that was removed from the count line on the same page. Owner decides the heading. |
 | `src/pages/static/Offers.tsx:32` | visible heading «پیشنهادهای ویژه و محدود» | The metadata no longer uses it. The visible heading still promises a limited offer. Owner decides. |
 
+**Owner confirmations (2026-10-13):** the 7-day return window, the replacement-warranty terms and the authenticity guarantee with physical testing before shipping (`public/pricing.md`, `FAQ.tsx:15`, `FAQ.tsx:19`) are correct as written. The rows below stay open.
+
 ## Outside SEO metadata (not changed in this pass)
 
 These are page content. They repeat claims that this register does not cover yet. They
 need an owner's review before any change:
 
+- `src/pages/static/About.tsx:20`: «بیش از ۷ سال تجربه» — not in this register yet; owner to confirm the figure.
 - `src/pages/static/About.tsx`: «بهترین قیمت بازار»، «تضمین ۱۰۰٪ اصالت»، «تضمین‌کننده بهترین کیفیت».
 - `src/components/FAQ.tsx`: «اصالت تمام محصولات… تضمین»، «ضمانت اصالت و سلامت فیزیکی».
 - `src/components/Footer.tsx`, `src/components/ChatWidget.tsx`: «ضمانت اصالت»، «گارانتی».

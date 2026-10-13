@@ -1,5 +1,7 @@
 # Portfolio Case Study — JanebiArena
 
+> **Status:** living · **Updated:** 2026-10-10 · **Scope:** problem → detection → root cause write-ups linked from the root README. **Verification (2026-10-13):** file paths, identifiers, commit hashes, cited scripts and suites, and the mechanisms described were checked against the repo. Incident narratives (drills, credential rotation status) rely on the owner's records and were not re-verified
+
 > Engineering case study of the problems this production codebase actually hit and fixed.
 > Format per story: **Problem → Detection → Root Cause → Solution → Verification → Lesson.**
 > Everything below is grounded in code, tests, scripts, or commits in this repository;
@@ -14,12 +16,12 @@ some sessions with «دسترسی از این دامنه مجاز نمی باش�
 other sessions worked. Separately, CI (which runs the sandbox gateway) went red for five
 consecutive pushes on payment tests.
 
-**Detection.** A live 9-cell matrix probe against the real gateway
+**Detection.** A live probe against the real gateway (six cells: two gateway hosts × three Referer values)
 (`scripts/ops/zarinpal-startpay-probe.py`) varied the HTTP `Referer` of the start-pay
 request: with a `janebiarena.ir` origin (apex / www / http / with-path) the gateway
 returns **200** and a valid form; with **no** Referer: **400 «دسترسی از این دامنه مجاز
-نیست»**; a **302** redirect does not supply a referrer downstream. The measured matrix is
-recorded in `tests/api/pay-handoff.test.ts`. For CI: the test hardcoded
+نیست»**; a **302** redirect does not supply a referrer downstream. The expected results are
+asserted in `tests/api/pay-handoff.test.ts`. For CI: the test hardcoded
 `www.zarinpal.com` while CI runs `ZARINPAL_SANDBOX=true` (sandbox host) — same assertion
 class, wrong expectation.
 
@@ -27,8 +29,7 @@ class, wrong expectation.
 spoof it (direct client navigation, redirect chains) fails. (b) Environment-dependent
 gateway hosts were baked into the test instead of derived from configuration.
 
-**Solution.** Move the handoff server-side: `/pay/:authority` renders and auto-submits the
-start-pay form from the server, guaranteeing the correct origin — the client never posts
+**Solution.** Move the handoff server-side: `/pay/:authority` renders a server-side page that meta-refreshes to the start-pay form, so the request reaches the gateway from our origin — the client never posts
 to the gateway directly. The test now derives the expected base from
 `zarinpalStartPayBase()` (environment-aware) while keeping the same exact-match
 assertions (no weakening).
@@ -175,7 +176,7 @@ during release (step 3 of the pipeline).
 ## 7. Monitoring failure: cron drifted from the repo
 
 **Problem.** Monitoring silently died. The monitor script had moved from
-`scripts/vps-monitor.py` to `scripts/ops/vps-monitor.py`, but the **host cron** kept
+`scripts/vps-monitor.py` to `scripts/ops/vps-monitor.py`, but the **host cron** kept <!-- link-check:ignore -->
 calling the old path. Cron entries lived on the host, not in git.
 
 **Detection.** Alerting expected during an exercise did not arrive — the absence was only
@@ -207,7 +208,7 @@ death is the classic failure mode.
 **Detection.** Operational review: the previous flow produced files but never *proved*
 they were usable, and failures raised nothing.
 
-**Solution.** `scripts/ops/backup-verify.sh` (cron 02:30, wrapper execs the repo script):
+**Solution.** `scripts/ops/backup-verify.sh` (cron 02:30, run by cron at 02:30 directly from the repo checkout):
 WAL-consistent snapshot via better-sqlite3 `.backup` → `integrity_check` +
 `foreign_key_check` **on the file** → open the DB and read real rows (**restore proof**)
 → upload a copy off-box (Bale) → prune beyond the last 7 → any failure alerts the
@@ -284,7 +285,7 @@ allowlist) and `X-Forwarded-For` (client identity for rate limits).
   credential is an explicitly tracked owner action — this case study does not claim the
   incident fully closed.**
 
-**Verification.** gitleaks with the config: "no leaks found" over 867 commits; a negative
+**Verification.** gitleaks with the config: "no leaks found" over 867 commits (the count at the time of the scan; 929 commits across all refs on 2026-10-13); a negative
 control (synthetic PAT-shaped string) is detected by the same ruleset; CI proves gates
 on every push.
 
@@ -305,12 +306,11 @@ patterns showed users entering codes that were valid-looking but server-expired.
 
 **Solution.** TTL raised to 5 minutes; the SMS.ir template's expiry line (#TIME#) is sent
 as "۵ دقیقه" so the message and the server agree; per-phone send rate limiting and a
-5-attempt lockout guard abuse. In production today the SMS provider is not configured, so
-the endpoint fails closed with `503` instead of misbehaving.
+5-attempt lockout guard abuse. The endpoint answers `503` while the SMS provider is not configured. On 2026-10-13 `GET /api/auth/otp/status` returned `enabled: true`, so codes are sent. Before the provider was wired, the endpoint failed closed with `503` instead of misbehaving.
 
 **Verification.** Flow covered by the API/unit test suites under `tests/api/` and
 `tests/unit/`; the fail-closed 503 branch is explicit in `server/routes/auth.ts`
-(`smsConfigured` gate).
+(`smsProviderEnabled` and `smsTemplateIdConfigured` gates in `server/routes/auth.ts`).
 
 **Lesson.** Timeouts must match the real world of the slowest hop, and text in the SMS
 must match server state. Also: fail closed, visibly.
@@ -360,4 +360,4 @@ UX cost.
 | Backup | `scripts/ops/backup-db.mjs`, `scripts/ops/backup-verify.sh` |
 | SW probes | `scripts/audit/sw-cache-probe.mjs`, `sw-reviews-probe.mjs`, `console-errors.mjs` |
 | Security gates | `scripts/verify-all.sh`, `scripts/gate/`, `.github/workflows/secret-scan.yml`, `.gitleaks.toml` |
-| Architecture | `docs/reference/ARCHITECTURE.md`, `server/app.ts`, `server/routes/products.ts` |
+| Architecture | `docs/reference/architecture.md`, `server/app.ts`, `server/routes/products.ts` |

@@ -1,64 +1,69 @@
-# Payment Baseline — Janebi-Store
+# Payment baseline — Janebi Store
 
-## 1. Payment Lifecycle Architecture
+> **Status:** living · **Updated:** 2026-10-13 · **Scope:** the Zarinpal payment lifecycle, gateway configuration, order states, and failure handling. Checked against `server/routes/payment.ts`, `server/services/payment/ZarinpalAdapter.ts`, `server/app.ts` and `server/routes/orders.ts` on 2026-10-13. Saman is the failover gateway in the architecture; see `PaymentFailoverRouter.ts` for its state.
 
-The payment system integrates with the Iranian **Zarinpal** payment gateway (with Sandbox and Production support).
+## 1. Lifecycle
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Customer as Customer (Browser)
-    participant Store as Janebi-Store Express API
-    participant DB as Database (Orders / Stock)
-    participant ZP as Zarinpal Gateway API
+    actor Customer as Customer (browser)
+    participant Store as Express API
+    participant DB as Database
+    participant ZP as Zarinpal
 
-    Customer->>Store: POST /api/orders (Creates order in DB, deducts stock)
+    Customer->>Store: POST /api/orders (order created, stock decremented, status pending_payment)
     Customer->>Store: POST /api/payment/request { orderId }
-    Store->>ZP: POST /pg/v4/payment/request.json (Amount, CallbackURL, MerchantID)
-    ZP-->>Store: { data: { code: 100, authority: "A000000..." } }
-    Store->>DB: UPDATE orders SET authority = 'A000000...'
-    Store-->>Customer: { paymentUrl: "https://sandbox.zarinpal.com/pg/StartPay/A000000..." }
-    Customer->>ZP: User pays on bank portal
-    ZP->>Store: GET /api/payment/verify?Authority=A000000...&Status=OK
-    Store->>ZP: POST /pg/v4/payment/verify.json { merchant_id, amount, authority }
-    ZP-->>Store: { data: { code: 100, ref_id: 123456789 } }
-    Store->>DB: UPDATE orders SET status = 'processing', refId = '123456789'
-    Store-->>Customer: HTTP 302 Redirect to /checkout/callback?status=success&orderId=...
+    Store->>ZP: POST …/pg/v4/payment/request.json (amount, callback, merchant_id)
+    ZP-->>Store: authority
+    Store->>DB: store authority and payment_requested_at
+    Store-->>Customer: link to our own /pay/{authority}
+    Customer->>Store: GET /pay/{authority}
+    Store-->>Customer: HTML hop to Zarinpal StartPay
+    Customer->>ZP: pays on the bank page
+    ZP->>Store: GET /api/payment/verify?Authority=…&Status=OK|NOK
+    Store->>ZP: POST …/pg/v4/payment/verify.json
+    Store->>DB: success → status processing, refId; failure → status cancelled, stock restored
+    Store-->>Customer: 302 /checkout/callback?status=success|failed|expired&orderId=…
 ```
 
----
+The customer never talks to the StartPay page directly from the checkout. The hop through `/pay/:authority` is the server-side handoff documented in `docs/reference/architecture.md`; Zarinpal renders StartPay only for the expected referrer.
 
-## 2. Gateway Configuration & Endpoints
-- **Environment Flags:**
-  - `ZARINPAL_MERCHANT_ID`: Merchant code provided by Zarinpal
-  - `ZARINPAL_SANDBOX`: Boolean flag (`true` | `false`)
-- **Endpoints:**
-  - **Sandbox:** `https://sandbox.zarinpal.com/pg/v4/payment/`
-  - **Live Production:** `https://payment.zarinpal.com/pg/v4/payment/`
-  - **Redirect URL:** `https://(sandbox.)zarinpal.com/pg/StartPay/{Authority}`
+## 2. Gateway configuration
 
----
+Environment: `ZARINPAL_MERCHANT_ID` and `ZARINPAL_SANDBOX` (`true` or `false`), read in `server/env.ts`.
 
-## 3. Order Status State Machine
-- `pending_payment`: Order created, stock deducted, awaiting customer payment.
-- `processing`: Payment verified successfully with bank reference code (`refId`).
-- `shipped`: Admin has packaged and dispatched order with tracking code.
-- `delivered`: Customer received package.
-- `cancelled`: Payment cancelled/failed, or manually aborted; stock restored to inventory.
+| Mode | Request and verify API | StartPay page |
+|---|---|---|
+| Sandbox (`ZARINPAL_SANDBOX=true`) | `https://sandbox.zarinpal.com/pg/v4/payment/` | `https://sandbox.zarinpal.com/pg/StartPay/{authority}` |
+| Production | `https://payment.zarinpal.com/pg/v4/payment/` | `https://www.zarinpal.com/pg/StartPay/{authority}` |
 
----
+`ZarinpalAdapter.checkHealth()` sends an `OPTIONS` request to `https://api.zarinpal.com/pg/v4/payment/request.json` with a 2.5-second timeout, in both modes, as a reachability probe.
 
-## 4. Failure & Rollback Handling
-When `GET /api/payment/verify` receives `Status=NOK` or verification fails:
-1. Locates order by `authority`.
-2. Queries all line items (`order_items`).
-3. Executes a transactional update restoring product inventory (`stockQuantity = stockQuantity + item.qty`).
-4. Sets `orders.status = 'cancelled'`.
-5. Redirects customer to `/checkout/callback?status=failed&orderId=...`.
+## 3. Order states
 
----
+Used by `orders.status` (values as written by the code):
 
-## 5. Architectural Debt in Payment Baseline
-1. **Independent Payment Table:** Payment records currently live inside `orders` table (fields `authority`, `refId`, `paymentMethod`) instead of a separate `payments` table.
-2. **Reconciliation Job:** Missing an automated cron/job to query stale `pending_payment` orders and cancel them after 30 minutes, releasing inventory reservations.
-3. **Idempotency:** Need explicit idempotency checks on double webhook/callback triggers.
+- `pending_payment`: order created, stock already deducted, waiting for payment.
+- `processing`: verify succeeded; `refId` holds the bank reference.
+- `shipped`, `delivered`: set by admin status changes.
+- `cancelled`: payment failed, customer abandoned, or an admin or customer cancelled it. Stock and VIP points are restored (see `docs/reference/inventory-baseline.md`).
+
+An expired payment session does not cancel the order. `status=expired` in the callback only means the link must be requested again.
+
+## 4. Callbacks and failures
+
+`GET /api/payment/verify` redirects to `/checkout/callback` with one of:
+
+- `status=success&orderId=…&ref_id=…`: the order was flipped to `processing` and the bank reference stored.
+- `status=failed&orderId=…`: the gateway reported `NOK`, or verification failed. The order is cancelled and stock and VIP points are restored in one transaction.
+- `status=expired&orderId=…`: the session is older than 45 minutes (`PAYMENT_SESSION_TTL_MS` in `server/routes/payment.ts`).
+- `status=failed&message=…`: malformed or unknown callback parameters.
+
+The abandoned-order reaper runs every 5 minutes (`server/routes/payment.ts`). It cancels only `pending_payment` orders with no `refId`: 45 minutes after the last payment request, or 24 hours after creation for an order that never reached a gateway.
+
+## 5. Known limits
+
+1. **Payment data lives in the `orders` table** (`authority`, `refId`, `payment_amount`, `payment_provider`, `payment_url`, `payment_requested_at`). There is no separate `payments` table.
+2. **No idempotency key.** Repeated callbacks are safe because the verify path and the reaper flip the status with a conditional update before touching stock or points. Only the winner restores stock.
+3. **Gateway fallback:** the failover router (`PaymentFailoverRouter.ts`) is in code. Whether Saman is configured in production is an operator fact, not something this document can verify.

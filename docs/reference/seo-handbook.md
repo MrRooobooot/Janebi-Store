@@ -1,5 +1,7 @@
 # راهنمای جامع سئو و بهینه‌سازی موتورهای جستجو (JanebiArena SEO Handbook)
 
+> **Status:** living · **Updated:** 2026-09-04 · **Scope:** SEO guide and engineering standards for the storefront. **Verification (2026-10-13):** the project-specific references (files, routes, the `/products/:id` pattern, the dynamic sitemap, the robots.txt sitemap line, the breadcrumb and CollectionPage JSON-LD) were checked against the repo. The general guidance cites Google documentation, which was not re-fetched
+
 > **سند مرجع سئو، معماری ایندکس، خزش و ساختار داده‌ها برای فروشگاه اینترنتی جانبی آرنا**  
 > **مرجع اصلی**: مستندات رسمی گوگل برای توسعه‌دهندگان (Google Search Central Documentation)  
 > **دامنه**: `https://janebiarena.ir`  

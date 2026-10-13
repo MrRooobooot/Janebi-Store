@@ -1,5 +1,7 @@
 # Production logs/config audit — 2026-09-17
 
+> **Status:** frozen · **Date:** 2026-09-17
+
 Scope: SSH inspection of production, ordinary public GETs, local source/config review; followed by a limited filesystem-permission fix. Production `.env` changed 0644→0600 and backup directory 0775→0700. No restarts, deletion, payment requests, or application deployment. Evidence collected approximately 18:42–18:52 UTC. Repository HEAD and served `/BUILD_INFO`: `c25a69e` (`2026-09-17T00:04:12Z`). This is not an end-to-end checkout or load-test certification.
 
 ## Verified health

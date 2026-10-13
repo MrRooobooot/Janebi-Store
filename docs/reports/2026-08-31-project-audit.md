@@ -1,5 +1,7 @@
 # PROJECT_AUDIT.md — Deep Forensic Audit (Code / DB / Mock-Data / Gaps)
 
+> **Status:** frozen · **Date:** 2026-08-31 · **Note:** statuses frozen at the edition date; current state is in `PROJECT_GRAPH.md` and `TASKS.md`
+
 **Project**: Janebi Store (Janebi Arena)
 **Date**: 2026-08-31
 **Auditor**: Code-Pro (Senior Software Architect & Principal Engineer)

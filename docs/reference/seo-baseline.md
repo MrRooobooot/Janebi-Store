@@ -1,7 +1,10 @@
 # SEO metadata baseline: ownership, behaviour and evidence
 
-> Recorded 2026-10-12 on the local working tree (not deployed). Production stays at
-> `63e4cab`. Measurements come from a local production build against a scratch SQLite
+> **Status:** living · **Updated:** 2026-10-13 · **Scope:** SEO metadata ownership per route and the evidence behind it
+
+> Measured 2026-10-12 on the working tree before deployment. The pass is in commit `054e940`,
+> which is part of release `1e999f8`. On 2026-10-13 `/BUILD_INFO` served `1e999f8` and the live site
+> matched the expected behaviour (unknown blog URL 404; `/cart` has its own title). Measurements come from a local production build against a scratch SQLite
 > database with three fake products and two fake blog posts. No production or
 > development data was read or changed.
 

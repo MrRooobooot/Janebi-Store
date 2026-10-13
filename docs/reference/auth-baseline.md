@@ -1,68 +1,41 @@
-# Authentication Baseline — Janebi-Store
+# Authentication baseline — Janebi Store
 
-## 1. Authentication Architecture
+> **Status:** living · **Updated:** 2026-10-13 · **Scope:** sign-in paths, token lifetimes and storage, role checks, and the known limits of each. Every claim here was checked against `server/routes/auth.ts`, `server/utils/cookies.ts`, `server/routes/tokenVersion.ts`, `server/middleware/auth.ts` and `src/contexts/AuthContext.tsx` on 2026-10-13.
 
-The application currently supports a hybrid authentication model:
-1. **Password Authentication (Legacy / Compatibility):** Standard registration with phone and password, hashed via bcrypt with 10 salt rounds.
-2. **SMS OTP Authentication (Primary Production Target):** 5-digit verification code sent to the customer's Iranian mobile number, valid for 2 minutes.
+## 1. Sign-in paths
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor User as Customer / Browser
-    participant API as Express Auth Router
-    participant DB as Users Table
+- **Password:** `POST /api/auth/register` (phone + password, minimum 6 characters) and `POST /api/auth/login`. Passwords are hashed with `bcrypt` at 10 rounds.
+- **SMS OTP:** `POST /api/auth/otp/send` issues a 5-digit code; `POST /api/auth/otp/verify` checks it. A code expires after 5 minutes and locks after 5 failed attempts. `POST /api/auth/otp/send` is limited to 5 requests per minute per IP. `GET /api/auth/otp/status` reports whether OTP is enabled; it returned `enabled: true` on 2026-10-13. When the SMS provider is not configured, `send` answers `503`.
+- Both paths issue the same pair of tokens.
+- `POST /api/auth/reset-password` resets a forgotten password through the same OTP mechanism.
 
-    alt SMS OTP Flow
-        User->>API: POST /api/auth/send-otp { phone: "09123456789" }
-        API-->>User: 200 OK (OTP dispatched via SMS / Mock Log)
-        User->>API: POST /api/auth/verify-otp { phone, code: "12345" }
-        API->>DB: Lookup / Upsert User
-        API-->>User: 200 OK + AccessToken (1d) + RefreshToken (7d) + User Object
-    else Password Flow
-        User->>API: POST /api/auth/login { phone, password }
-        API->>DB: Find user by phone
-        API->>API: bcrypt.compare(password, hash)
-        API-->>User: 200 OK + Tokens + User Profile
-    end
-```
+## 2. Tokens and cookies
 
----
+| Token | Signed with | Lifetime | Payload |
+|---|---|---|---|
+| Access | `JWT_ACCESS_SECRET` | 1 day | `userId` |
+| Refresh | `JWT_REFRESH_SECRET` | 7 days | `userId`, `tokenVersion` |
 
-## 2. Token Specification & Security
-- **Access Token:**
-  - Algorithm: `HS256`
-  - Signed with: `env.JWT_ACCESS_SECRET`
-  - Payload: `{ userId: string }`
-  - Lifespan: `1d` (Target in Plan v2: `15m`)
-- **Refresh Token:**
-  - Algorithm: `HS256`
-  - Signed with: `env.JWT_REFRESH_SECRET`
-  - Payload: `{ userId: string }`
-  - Lifespan: `7d`
-  - Rotation Endpoint: `POST /api/auth/refresh`
+- Both tokens are set as cookies (`server/utils/cookies.ts`): `accessToken` and `refreshToken`, both `HttpOnly`, `Path=/`, `SameSite=Strict` in production and `Lax` otherwise, and `Secure` in production.
+- `POST /api/auth/refresh` reads the refresh cookie only. The request-body fallback was removed (comment `R3-01` in `server/routes/auth.ts`).
+- Revocation works through `tokenVersion`. The current version per user is kept in `server/routes/tokenVersion.ts`, and a refresh token whose version no longer matches is rejected.
 
----
+## 3. Authorization
 
-## 3. Authorization & Role-Based Access Control (RBAC)
-- **Middleware:** `server/middleware/auth.ts`
-- **Functions:**
-  - `authenticate`: Extracts `Bearer <token>` from the `Authorization` header, verifies validity against `JWT_ACCESS_SECRET`, queries database for existing user record, and attaches `req.user` to `AuthRequest`.
-  - `requireAdmin`: Checks `req.user.role === 'admin'`. Returns `403 Forbidden` if role does not match.
+- `server/middleware/auth.ts`:
+  - `authenticate` takes the access token from `Authorization: Bearer …` if present, otherwise from the `accessToken` cookie, then loads the user.
+  - `requireAdmin` checks `role === 'admin'` and returns `403` otherwise.
+- The role model has two values, customer and admin. There is no permission model: every admin route checks the same role.
 
----
+## 4. Frontend
 
-## 4. Frontend State & Token Storage
-- **Context:** `src/contexts/AuthContext.tsx`
-- **Storage Strategy:**
-  - Access token stored in `localStorage.getItem('token')`
-  - User profile cached in `localStorage.getItem('user')`
-  - On app mount, calls `GET /api/auth/me` to refresh user data and addresses from server.
-- **Admin Routing Guard:** `src/components/admin/AdminLayout.tsx` checks `user?.role === 'admin'`.
+- `src/contexts/AuthContext.tsx` does not write any token to `localStorage` or `sessionStorage`. The browser holds the tokens only as HttpOnly cookies; the context calls `GET /api/auth/me` to learn who is signed in.
+- `src/components/admin/AdminLayout.tsx` hides the admin UI unless `user.role === 'admin'`. This is a display guard only; the API enforces the role.
 
----
+## 5. Known limits
 
-## 5. Security Vulnerabilities Identified in Baseline
-1. **Access Token Expiration:** Currently set to 1 day; Plan v2 specifies shortening to 15 minutes with automated silent refresh.
-2. **Refresh Session Revocation:** No server-side session table currently exists to instantly revoke compromised refresh tokens.
-3. **Role Checks:** Direct `role === 'admin'` check instead of granular permission gates (`requirePermission("PRODUCT_CREATE")`).
+1. **Access-token lifetime is one day.** Shortening it would need silent refresh, which the frontend does not do.
+2. **`tokenVersion` is held in process memory** (`server/routes/tokenVersion.ts`). After a restart every user's version returns to 0, so revocations made before the restart are lost. The comment in that file says this is acceptable for a single-process deployment; it should be revisited if the app runs in more than one process.
+3. **Pending OTP codes are also held in process memory** (`otpStore`, a `Map` in `server/routes/auth.ts`). A restart drops every pending code; users request a new one.
+4. **No per-session list.** Revocation is all-or-nothing per user (by version bump), not per device.
+5. **Single admin role** with no finer permissions.

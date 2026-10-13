@@ -1,5 +1,7 @@
 # UI/UX AUDIT LOG — single source of truth (append-only; one row per verified finding)
 
+> **Status:** living · **Updated:** 2026-10-10 · **Scope:** append-only UI/UX audit log; one row per verified finding
+
 Legend: status = open | fixed | wontfix. Evidence = DOM probe / pixel probe / screenshot / HTTP.
 Pixel probe (`scripts/probes/probe-pixel.mjs`) is the ONLY contrast authority —
 `getComputedStyle` on oklab colors mis-parses (2.87 artifacts, disproven 0912).

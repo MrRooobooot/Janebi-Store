@@ -1,5 +1,7 @@
 # Backend/test remediation — 2026-09-18
 
+> **Status:** frozen · **Date:** 2026-09-18
+
 ## Verified changes
 - Vitest forces SQLite `:memory:` / `TEST_DIALECT=sqlite`. Removed obsolete persistent-DB global setup/teardown (103 lines); config-only isolation assertion runs before Vitest in the consolidated gate.
 - Added real-route order regression tests: exact server-side totals, coupon/VIP accounting, rollback, stock restoration, repeated cancellation and admin shipping/status persistence. SQLite tests invoke application routers, not copied algorithms.

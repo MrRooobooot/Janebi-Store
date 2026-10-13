@@ -1,5 +1,7 @@
 # Real Inventory Import — MCdodo Cables (2026-09-19)
 
+> **Status:** frozen · **Date:** 2026-09-19
+
 ## Scope
 7 Mcdodo Lightning cables added to prod (`janebiarena.ir`) via admin API. Category: «کابل و سیم» (locked tree). No code changes.
 

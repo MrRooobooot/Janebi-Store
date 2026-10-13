@@ -1,4 +1,6 @@
 # Iranian E-commerce Storefront Design Standards — Research Findings
+
+> **Status:** frozen · **Date:** 2026-09-06 · **Note:** research snapshot; web search was unavailable that day, evidence is archived snapshots
 Researched 2026-09-06 for Janebi-Store (janebiarena.ir) comparison. Method: web_search backends were down (403/timeouts), so evidence was gathered via Wayback Machine snapshots of live sites (blocked-page-recovery ladder) and direct fetches of enamad.ir and Vazirmatn GitHub. HTML/CSS was parsed programmatically. Note: Digikala's current site is a client-rendered SPA, so its homepage snapshot is a shell — but its full shipped CSS bundle (Digi Design System tokens) WAS recovered, which is stronger evidence than prose.
 
 Evidence strength legend: [LIVE-SNAPSHOT] = parsed from archived HTML/CSS of the site (cite snapshot date), [OBSERVED] = direct fetch, [INFERRED] = general knowledge, not directly verified this session.

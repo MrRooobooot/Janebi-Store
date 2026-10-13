@@ -8,8 +8,8 @@ A full-stack e-commerce system for a mobile-accessories store: React 19 storefro
 panel, Express 5 API, Drizzle ORM (SQLite/WAL, the only supported database), nginx + Docker
 Compose on a single VPS.
 
-**Live in production: [janebiarena.ir](https://janebiarena.ir)** — last verified 2026-10-03:
-site HTTP 200, `/api/health` reports `database: ok`, catalog serves 45 products.
+**Live in production: [janebiarena.ir](https://janebiarena.ir)** — last verified 2026-10-13:
+site HTTP 200, `/api/health` reports `database: ok`, live catalog serves 45 products in 2 categories.
 
 ## Screenshots (live production, captured 2026-10-03)
 
@@ -28,9 +28,9 @@ site HTTP 200, `/api/health` reports `database: ok`, catalog serves 45 products.
 - **Ops tooling** — deploy/release scripts, backups with restore verification, health
   monitors, nginx drift guard, live security probes (see `scripts/ops/`).
 
-The codebase is ~580 commits of production iteration; this README describes the current
-verified state. Deeper documents: [`docs/reference/ARCHITECTURE.md`](docs/reference/ARCHITECTURE.md) ·
-[`docs/reference/PORTFOLIO_CASE_STUDY.md`](docs/reference/PORTFOLIO_CASE_STUDY.md).
+The repository has 622 commits (counted 2026-10-13) of production iteration; this README describes the current
+verified state. Deeper documents: [`docs/reference/architecture.md`](docs/reference/architecture.md) ·
+[`docs/reference/portfolio-case-study.md`](docs/reference/portfolio-case-study.md).
 
 ## Architecture
 
@@ -48,13 +48,13 @@ flowchart LR
 - **Backend**: Node 22 + Express 5 (TypeScript), Zod validation, Drizzle ORM, pino-http logging.
 - **Service worker** (`public/sw.js`): precache + versioned static/API caches.
 - **Deploy**: rsync + Docker Compose; nginx terminates TLS (Let's Encrypt) and reverse-proxies
-  to the app container. Full detail and diagrams in [`docs/reference/ARCHITECTURE.md`](docs/reference/ARCHITECTURE.md).
+  to the app container. Full detail and diagrams in [`docs/reference/architecture.md`](docs/reference/architecture.md).
 
 ## Core Engineering Problems
 
 These are the real problems this codebase solves — each is documented with
 problem/detection/root-cause/solution/verification in
-[`docs/reference/PORTFOLIO_CASE_STUDY.md`](docs/reference/PORTFOLIO_CASE_STUDY.md).
+[`docs/reference/portfolio-case-study.md`](docs/reference/portfolio-case-study.md).
 
 1. **Payment handoff & gateway environment mismatch** — gateway StartPay rejected some
    sessions based on HTTP Referer; handoff is now server-side (`/pay/:authority`), and the
@@ -180,7 +180,7 @@ operational values come from `deploy.env` (gitignored) or the server's `.env`.
 
 ## Failure Investigations
 
-Short list; full write-ups in [`docs/reference/PORTFOLIO_CASE_STUDY.md`](docs/reference/PORTFOLIO_CASE_STUDY.md):
+Short list; full write-ups in [`docs/reference/portfolio-case-study.md`](docs/reference/portfolio-case-study.md):
 
 - **"Payment fails sometimes"** → root-caused to gateway Referer gating; fixed by moving the
   handoff server-side. Diagnosed with a live 9-cell matrix probe against the real gateway.
@@ -231,17 +231,18 @@ public/            Static assets, service worker, llms.txt / llms-full.txt (rege
 
 ## Current Status
 
-- **Production**: live at [janebiarena.ir](https://janebiarena.ir) (verified 2026-10-03).
+- **Production**: live at [janebiarena.ir](https://janebiarena.ir) (verified 2026-10-13).
 - **CI**: green — tests, typecheck, build, secret scan.
 - **Catalog**: 45 SKUs live; the public AI-facing docs (`llms.txt`, `llms-full.txt`) are
   generated from the live API by `npm run gen:llms` and were last regenerated 2026-10-03.
 
 ## Known Limitations
 
-- **OTP login requires SMS provider configuration** which is not currently enabled in
-  production: `/api/auth/otp/send` returns a clean `503` ("سرویس پیامکی فعال نیست") and
-  password login remains the supported path. The flow itself (rate-limit per phone, 5-min
-  TTL, 5-attempt lockout, auto-registration) is fully implemented and dev-tested.
+- **OTP login depends on SMS.ir configuration.** `GET /api/auth/otp/status` reported
+  `enabled: true` on 2026-10-13. If the provider is not configured, `/api/auth/otp/send`
+  answers `503` ("سرویس پیامکی فعال نیست") and password login remains the fallback. In code
+  (`server/routes/auth.ts`): codes expire after 5 minutes and lock after 5 failed attempts;
+  auth and OTP requests are limited to 5 per minute per IP.
 - **Single-VPS deployment** — no HA/redundancy; recovery relies on verified backups and
   runbooks, not failover infrastructure.
 - **Small live catalog** (2 categories, 45 SKUs at last sync) — llms files and sitemap are

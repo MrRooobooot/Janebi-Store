@@ -1,12 +1,10 @@
-# TASKS.md — Janebi Store UI/UX & Quality Audit
+# TASKS — closed rounds (archive)
 
-> **Role:** the work ledger — open items, priorities and the round log (what was done, why, evidence).
-> **Not this file:** commit-level change records → `CHANGELOG_AGENT.md`; architecture/system map → `PROJECT_GRAPH.md`;
-> stack + hard rules (e.g. the closed category tree) → `AGENTS.md`; folder indexes → `docs/README.md`, `scripts/README.md`, `tests/README.md`.
+> **Status:** historical · **Archived:** 2026-10-13 from `TASKS.md` · **Scope:** every closed round and the old backlog, verbatim, in their original order.
+> The two open bullets (rounds 2026-09-21 and 2026-09-16), the inventory-import PENDING block and the standing automation were moved to `TASKS.md` under `## Open`. Nothing in this file is open work.
 
 ### Round 2026-09-21 — فیلدهای انباری (خرید/بارکد) + پرچم مخفی‌سازی (SHIPPED، prod)
 - [x] **اصلاح کانونیکال دسته‌ها (GSC):** `/products?category=X` قبلاً کانونیکال به `/products` می‌داد (هر دو URL داخل sitemap ⇒ گوگل «Alternate page with proper canonical tag»، ۵۰۶ گروه) و دستهٔ نامعتبر به کانونیکال **صفحهٔ اصلی** می‌افتاد («Duplicate without user-selected canonical»، ۲۱۹ گروه). حالا خودآدرس کانونیکال است (`encodeURIComponent` مثل sitemap)، `sort/page` به آدرس سادهٔ دسته، دستهٔ نامعتبر → hub. تست: +۳ در `tests/unit/seo-meta.test.ts`؛ gate ۴۹۰ تست EXIT=0؛ پروب زنده ✓.
-- [ ] **پیشنهاد بعدی (نیاز تصمیم):** پریرندر زمان ساخت برای ۸۱ URL سایتمپ — شل فعلی برای خزندهٔ بدون JS خالی است (`#root` خالی، بدون `<noscript>`) و همین «Crawled – currently not indexed» (۱۳۴) را توضیح می‌دهد. اپ `createRoot` است ⇒ ریسک hydration ندارد.
 - [x] **`costPrice` + `barcode` + `isActive` در schema** (هر دو دیالکت `schema.ts`/`schema.pg.ts`) + مایگریشن `0015_products_cost_barcode_active.sql` (sqlite + pg، افزایشی، `is_active DEFAULT 1`). شاهد prod: `pragma_table_info(products)` = `...,sku,cost_price,barcode,is_active`؛ ژورنال مایگریشن = ۱۶ ردیف؛ `is_active=1` برای ۴۵/۴۵ کالا.
 - [x] **مسیرهای عمومی هرگز فیلدهای انباری را برنمی‌گردانند:** `costPrice`/`barcode`/`isActive` در `products.ts` (لیست + جزئیات)، `cart.ts` و `wishlist.ts` با `columns: { ...: false }` حذف شده‌اند. شاهد زنده: `GET /api/products?limit=1000` → ۴۵ آیتم، نشت `costPrice=0`، `barcode=0`، `isActive=0`؛ کلیدهای پاسخ دقیقاً مثل قبل (بدون فیلد جدید). `GET /api/products/5632` → هر سه غایب.
 - [x] **`GET /api/admin/products`** تنها خوانندهٔ کامل کاتالوگ (شامل ردیف‌های مخفی + فیلدهای انباری + `features` به شکل `string[]`)؛ بدون توکن ۴۰۱. پنل ادمین از همین مسیر می‌خواند (قبلاً از مسیر عمومی می‌خواند).
@@ -26,23 +24,9 @@
 - [x] IndexNow: ۲۱۳ URL (شامل هر ۳۷ محصول با `lastmod 2026-09-16`) → ۲۰۰ OK.
 - [x] **پاک‌سازی کاتالوگ تستی قدیمی:** ۱۲۷ کالای تستی (۱۱۷ `JB-*` + ۱۲ seed دست‌نویس) حذف شد، صفر خطا؛ ۲ کالا محافظت‌شده (`id 14`, `id 5588` — ارجاع در سفارش‌های **لغو‌شده**) به «ناموجود» (stock=0) منتقل شدند. کاتالوگ prod الان = **۴۰**: ۳۸ هولدر واقعی + ۲ بازماندهٔ ناموجود. sitemap ۲۱۳ → ۷۷. پروب Chromium+WebKit: `/`, `/products`, دسته = ۰ broken، ۰ pageerror. ← **تصحیح ۱۴۰۵/۰۶/۳۰:** امروز prod = **۴۵ کالا** (۳۷ ارلدام + ۷ MCdodo + ۱ بیسوس)، همه فعال؛ آن ۲ ردیف ناموجود دیگر وجود ندارند.
 - ✅ **بسته شد (۱۴۰۵/۰۶/۳۰):** پرچم `is_active` در اسکیما + فیلتر API/پنل/سبد/sitemap اضافه شد؛ حذف فیزیکی ردیف لازم نیست و تاریخچهٔ سفارش دست‌نخورده می‌ماند. روی prod امروز هیچ ردیف stock≤0 وجود ندارد (هر دو ردیف قدیمی رفته‌اند).
-- ⚠️ **باز:** `features`/مشخصات فنی خالی (سند Google Docs خصوصی است — ورودی لازم). **بازبینی بصری عکس‌ها انجام شد (۱۴۰۵/۰۶/۳۰):** عدد سند («۹ مدل زیر ۱۰۰۰px») اشتباه بود — واقعیت: **۱۹ از ۳۷** عکس زیر ۱۰۰۰px (۹۰۰×۹۰۰؛ کمینه ۹۰۰، بیشینه ۲۵۰۰، بزرگ‌ترین فایل ۱۹۰KB). پس‌زمینهٔ ناسالم فقط ۳ مورد: `eh127` (بژ/سفید شکسته + خط کف استودیو)، `eh184` (صفحهٔ خاکستری + سایهٔ ریخته)، `eh186` (واترمارک قرمز ارلدام گوشهٔ بالا-چپ). **تصحیح خودکار پس‌زمینه رد شد:** floodfill با fuzz ۱۸٪ روی `eh127`/`eh184` پس‌زمینه را سفید کرد ولی بسته‌بندی سفید محصول را هم خورد (تأیید بصری) — فایل‌های تولیدشده پاک شدند و اصل‌ها دست‌نخورده‌اند؛ این کار به کات‌اوت دستی یا اصل عکس نیاز دارد. کانتکت‌شیت تازه: `earldom-sheet-2026-09-21.png` (۳۷ خانه) + `earldom-ba-2026-09-21.png` (قبل/بعد).
 - جزئیات و مسیر بازتولید: `docs/reports/2026-09-16-real-inventory-holder-import.md`.
 
 
-## ⏸ PENDING (منتظر ورودی کاربر) — جایگزینی کاتالوگ تستی با لیست واقعی
-**وضعیت:** کاتالوگ تستی **پاک شد** (۱۴۰۵/۰۶/۲۵): ۱۲۷ کالای تستی حذف، تنها موجودی واقعی (۳۸ قلم هولدر ارلدام/باسئوس) روی prod ماند. بارگذاری بخش‌های بعدی انبار (قاب، گلس، کابل، شارژر، هندزفری، پاوربانک، هدفون، مبدل، گیمینگ، خودرو، ساعت، دانگل) با همان مسیر `docs/reports/2026-09-16-real-inventory-holder-import.md` انجام می‌شود.
-
-**ورودی لازم (CSV، هر ردیف یک کالا):** `نام` · `برند` · `مدل/کد` · **`بارکد GTIN`** · **`قیمت خرید (تومان)`** · **`کانال (رسمی/خاکستری)`** · `قیمت دیجیکالا (اختیاری)` · `موجودی` · `دسته (از لیست بستهٔ مصوب)`
-
-**کارهای آمادهٔ اجرا روی لیست واقعی:**
-- [ ] import بخش‌های بعدی انبار (قاب، گلس، کابل، شارژر، هندزفری، پاوربانک، هدفون، مبدل، گیمینگ، خودرو، ساعت، دانگل) — منتظر CSV کاربر. کاتالوگ تستی ۱۲۷ قلمی قبلاً پاک شده بود (عدد «۱۳۸» در متن قدیمی اشتباه بود).
-- [x] فیلد `costPrice` (و `barcode`) در schema + پنل ادمین + ستون حاشیه و «زیر کف» — دور ۰۹-۲۱ (schema/مایگریشن/API/پنل/تست).
-- [x] پاک‌سازی برندهای تکراری — دور ۰۹-۲۱: روی prod برند تکراری نمانده (`ارلدام ۳۷` · `MCdodo ۷` · `بیسوس ۱`)؛ اسکریپت `merge-dup-brands.cjs` برای بارگذاری‌های بعدی اصلاح شد.
-- [x] دسته‌بندی قیمتی خودکار هر ردیف (سبد `پک`/`زیر باند`/`هم‌تراز`/`مذاکره`/`حذف-تعویض`) با `scripts/data/price-watch.mjs` — دور ۰۹-۲۱. اتصال سبد به پنل ادمین بعد از ورود کاتالوگ واقعی (واقعیت بازار لازم است).
-- [ ] فید ترب (نیاز به فرمت پنل ترب) · قیمت باشگاه (login-only) — کران روزانه در این دور انجام نشد (خارج از دامنهٔ درخواست).
-
-**شاهد فعلی بازار:** `docs/reports/2026-09-14-price-position-report.md` (میانهٔ فاصله +۲۴٫۹٪ روی ۴۳ SKU برنددار خودکار-سنجیده‌شده)
 
 
 ## Status: Completed (Aug 28, 2026)
@@ -110,12 +94,6 @@
 - [x] باگ خودِ audit هم رفع شد: ThemeContext بعد از mount کلاس دستی را برمی‌گرداند → theme از localStorage + reload؛ effectiveBg روی rgba آلفا<0.1 pass-through.
 - [x] ۱ ردیف تستی DB دیگر (23535) حذف شد (نویز test.avif). گیت: 406/411، دیپلوی OK، باندل `index-By0vun71.js` sha256==محلی، شیم دارک در CSS سرو‌شده (`329e2bd`).
 - Next: Home hero اسلاید عکس‌ها (دارک)، Footer عمق، Checkout — با همان ابزار audit.
-
-### Standing Automation — janebi-design-guardian (cron `7e0cad4fea09`)
-- Created 2026-09-11 night at user request («تا فردا بهت میگم قطعش کنی»): every 3h (`0 */3 * * *`), workdir Janebi-Store, skills janebi-arena-production-readiness + surgical-refactor-playbook, deliver origin.
-- Mission per run: boot local prod (DISABLE_CSP_UPGRADE_INSECURE=1) → `node scripts/audit/design-audit.mjs` (8 combos) → rotate hand-audit over /, /products, /blog, /offers, /brands, /cart, /login (2/run) → fix TOP 1–3 root-causes (index.css shims / dark: pairs) → gate (tsc, 8/8, verify) → commit+push+deploy (lock-respecting) → TASKS.md round entry.
-- No-findings runs: db:backup + VPS backup check, report clean, no invented work. Deploy double-fail → git revert + BLOCKED tag.
-- **USER MUST ASK TO PAUSE/REMOVE** (`cronjob_manage action=pause/remove job_id=7e0cad4fea09`) — not self-terminating.
 
 ### Round 2026-09-11c — Sitewide Design-System Polish (GOAL-09012, SHIPPED, live)
 
