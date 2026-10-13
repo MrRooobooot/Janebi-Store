@@ -12,6 +12,7 @@ in `oneoff/` (kept for provenance, not for reuse).
 | `ops/` | VPS or over SSH | Backup, monitor, drift checks, recovery. |
 | `data/` | VPS container / with prod creds | Catalogue, migration and cleanup one-shots that ARE re-run per import or incident. |
 | `oneoff/` | once, already done | Historical import/backfill/seed steps. Kept so the produced data is reproducible. |
+| `docs/` | local, on demand | Documentation hygiene. `check-links.mjs` verifies repo paths in living docs. Not part of `npm run verify`; rules in `docs/documentation-standard.md`. |
 
 ## gate/
 - `static-exposure.sh` — `/server.cjs` + `.map` must 404 while `/api/products` answers 200 (SEC-01).
