@@ -10,7 +10,7 @@
 - **Backend Runtime:** Node.js (ES Module & CommonJS dual build via `esbuild` / `tsx`)
 - **Backend Framework:** Express 5.2.1
 - **Database / ORM:** Drizzle ORM 0.45.2
-- **Database Engine (Baseline):** SQLite (`data/janebi.db`) / Migration Target: PostgreSQL (`pg` 8.23.0)
+- **Database Engine (Baseline):** SQLite (`data/janebi.db`) — the only supported database; PostgreSQL was removed (see `PROJECT_GRAPH.md`)
 - **Authentication:** JWT (`jsonwebtoken` 9.0.3) with Access & Refresh tokens, Passwords hashed via `bcrypt` 6.0.0, SMS OTP subsystem
 - **Validation:** Zod 4.4.3 (`server/validators/index.ts`)
 - **Security Middleware:** Helmet 8.3.0, CORS 2.8.6, Express Rate Limit 8.6.2
