@@ -195,6 +195,9 @@ export default function ProductDetail() {
   const stock = typeof product.stockQuantity === 'number' ? product.stockQuantity : 10;
   const outOfStock = stock <= 0;
   const lowStock = stock > 0 && stock <= 3;
+  // No features → no spec tab. The base rows show under the description instead.
+  const hasFeatures = (product.features?.length ?? 0) > 0;
+  const shownTab = activeTab === 'specs' && !hasFeatures ? 'description' : activeTab;
 
   const handleAddToCart = () => {
     if (product) {
@@ -551,27 +554,29 @@ export default function ProductDetail() {
             <button
               onClick={() => setActiveTab('description')}
               className={`min-h-11 flex items-center px-0.5 pb-4 font-bold text-sm sm:text-base border-b-2 transition-all relative ${
-                activeTab === 'description'
+                shownTab === 'description'
                   ? 'text-[var(--color-emphasis-text)] border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/30 font-bold'
                   : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-800 dark:hover:text-gray-200'
               }`}
             >
               توضیحات و نقد تخصصی
             </button>
-            <button
-              onClick={() => setActiveTab('specs')}
-              className={`min-h-11 flex items-center px-0.5 pb-4 font-bold text-sm sm:text-base border-b-2 transition-all relative ${
-                activeTab === 'specs'
-                  ? 'text-[var(--color-emphasis-text)] border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/30 font-bold'
-                  : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-800 dark:hover:text-gray-200'
-              }`}
-            >
-              مشخصات فنی و ویژگی‌ها
-            </button>
+            {hasFeatures && (
+              <button
+                onClick={() => setActiveTab('specs')}
+                className={`min-h-11 flex items-center px-0.5 pb-4 font-bold text-sm sm:text-base border-b-2 transition-all relative ${
+                  shownTab === 'specs'
+                    ? 'text-[var(--color-emphasis-text)] border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/30 font-bold'
+                    : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-800 dark:hover:text-gray-200'
+                }`}
+              >
+                مشخصات فنی و ویژگی‌ها
+              </button>
+            )}
             <button
               onClick={() => setActiveTab('reviews')}
               className={`min-h-11 flex items-center px-0.5 pb-4 font-bold text-sm sm:text-base border-b-2 transition-all relative ${
-                activeTab === 'reviews'
+                shownTab === 'reviews'
                   ? 'text-[var(--color-emphasis-text)] border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/30 font-bold'
                   : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-800 dark:hover:text-gray-200'
               }`}
@@ -580,7 +585,7 @@ export default function ProductDetail() {
             </button>
           </div>
 
-          {activeTab === 'description' && (
+          {shownTab === 'description' && (
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
@@ -598,66 +603,27 @@ export default function ProductDetail() {
                   توضیحاتی برای این محصول ثبت نشده است.
                 </p>
               )}
+              {!hasFeatures && (
+                <div>
+                  <h3 className="mb-3 text-sm font-bold text-gray-500 dark:text-gray-400">مشخصات محصول</h3>
+                  <ProductSpecList product={product} />
+                </div>
+              )}
             </motion.div>
           )}
 
-          {activeTab === 'specs' && (
+          {shownTab === 'specs' && (
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
               className="max-w-3xl"
             >
-              <div className="bg-[var(--color-canvas-light)]/70 dark:bg-white/[0.035] rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] overflow-hidden">
-                <dl className="divide-y divide-[var(--color-border-subtle-light)] dark:divide-[var(--color-border-dark)] text-xs sm:text-sm">
-                  <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex justify-between even:bg-[var(--color-canvas-light)]/60 dark:even:bg-white/[0.035] transition-colors">
-                    <dt className="font-bold text-gray-500 dark:text-gray-400">نام تجاری / برند</dt>
-                    <dd className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] sm:col-span-2 flex items-center gap-2">
-                      <span>{product.brand}</span>
-                      {/* dark-fill brand vectors (#000 apple/sony/bose) vanish on the dark spec row — white .logo-tile, same sanctioned exception as Enamad */}
-                      <span className="logo-tile rounded-lg border border-[var(--color-border-light)] px-1.5 py-1 shrink-0">
-                        <BrandLogo name={product.brand} size="sm" />
-                      </span>
-                    </dd>
-                  </div>
-                  <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex justify-between even:bg-[var(--color-canvas-light)]/60 dark:even:bg-white/[0.035] transition-colors">
-                    <dt className="font-bold text-gray-500 dark:text-gray-400">دسته‌بندی اصلی</dt>
-                    <dd className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] sm:col-span-2">{product.category}</dd>
-                  </div>
-                  {product.sku && (
-                    <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex justify-between even:bg-[var(--color-canvas-light)]/60 dark:even:bg-white/[0.035] transition-colors">
-                      <dt className="font-bold text-gray-500 dark:text-gray-400">شناسه اختصاصی (SKU)</dt>
-                      <dd className="font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] sm:col-span-2">{product.sku}</dd>
-                    </div>
-                  )}
-                  {product.warranty && (
-                    <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex justify-between even:bg-[var(--color-canvas-light)]/60 dark:even:bg-white/[0.035] transition-colors">
-                      <dt className="font-bold text-gray-500 dark:text-gray-400">گارانتی و خدمات</dt>
-                      <dd className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] sm:col-span-2 flex items-center gap-1.5">
-                        <ShieldCheck className="h-4 w-4 text-emerald-500" />
-                        {product.warranty}
-                      </dd>
-                    </div>
-                  )}
-                  {product.features && product.features.length > 0 && (
-                    <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex flex-col gap-2 even:bg-[var(--color-canvas-light)]/60 dark:even:bg-white/[0.035] transition-colors">
-                      <dt className="font-bold text-gray-500 dark:text-gray-400">سایر مشخصات و ویژگی‌ها</dt>
-                      <dd className="font-medium text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] sm:col-span-2 space-y-1.5">
-                        {product.features.map((feat: string, idx: number) => (
-                          <div key={idx} className="flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-cta)]" />
-                            <span>{feat}</span>
-                          </div>
-                        ))}
-                      </dd>
-                    </div>
-                  )}
-                </dl>
-              </div>
+              <ProductSpecList product={product} />
             </motion.div>
           )}
 
-          {activeTab === 'reviews' && (
+          {shownTab === 'reviews' && (
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
@@ -972,5 +938,56 @@ export default function ProductDetail() {
         )}
       </AnimatePresence>
     </>
+  );
+}
+
+function ProductSpecList({ product }: { product: Product }) {
+  return (
+    <div className="bg-[var(--color-canvas-light)]/70 dark:bg-white/[0.035] rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] overflow-hidden">
+      <dl className="divide-y divide-[var(--color-border-subtle-light)] dark:divide-[var(--color-border-dark)] text-xs sm:text-sm">
+        <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex justify-between even:bg-[var(--color-canvas-light)]/60 dark:even:bg-white/[0.035] transition-colors">
+          <dt className="font-bold text-gray-500 dark:text-gray-400">نام تجاری / برند</dt>
+          <dd className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] sm:col-span-2 flex items-center gap-2">
+            <span>{product.brand}</span>
+            {/* dark-fill brand vectors (#000 apple/sony/bose) vanish on the dark spec row — white .logo-tile, same sanctioned exception as Enamad */}
+            <span className="logo-tile rounded-lg border border-[var(--color-border-light)] px-1.5 py-1 shrink-0">
+              <BrandLogo name={product.brand} size="sm" />
+            </span>
+          </dd>
+        </div>
+        <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex justify-between even:bg-[var(--color-canvas-light)]/60 dark:even:bg-white/[0.035] transition-colors">
+          <dt className="font-bold text-gray-500 dark:text-gray-400">دسته‌بندی اصلی</dt>
+          <dd className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] sm:col-span-2">{product.category}</dd>
+        </div>
+        {product.sku && (
+          <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex justify-between even:bg-[var(--color-canvas-light)]/60 dark:even:bg-white/[0.035] transition-colors">
+            <dt className="font-bold text-gray-500 dark:text-gray-400">شناسه اختصاصی (SKU)</dt>
+            <dd className="font-mono font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] sm:col-span-2">{product.sku}</dd>
+          </div>
+        )}
+        {product.warranty && (
+          <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex justify-between even:bg-[var(--color-canvas-light)]/60 dark:even:bg-white/[0.035] transition-colors">
+            <dt className="font-bold text-gray-500 dark:text-gray-400">گارانتی و خدمات</dt>
+            <dd className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] sm:col-span-2 flex items-center gap-1.5">
+              <ShieldCheck className="h-4 w-4 text-emerald-500" />
+              {product.warranty}
+            </dd>
+          </div>
+        )}
+        {product.features && product.features.length > 0 && (
+          <div className="p-4 sm:grid sm:grid-cols-3 sm:gap-4 flex flex-col gap-2 even:bg-[var(--color-canvas-light)]/60 dark:even:bg-white/[0.035] transition-colors">
+            <dt className="font-bold text-gray-500 dark:text-gray-400">سایر مشخصات و ویژگی‌ها</dt>
+            <dd className="font-medium text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] sm:col-span-2 space-y-1.5">
+              {product.features.map((feat: string, idx: number) => (
+                <div key={idx} className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-cta)]" />
+                  <span>{feat}</span>
+                </div>
+              ))}
+            </dd>
+          </div>
+        )}
+      </dl>
+    </div>
   );
 }

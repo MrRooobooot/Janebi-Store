@@ -22,7 +22,8 @@ const QUICK_QUESTIONS = [
 export default function ChatWidget() {
   const location = useLocation();
   const settings = useStoreSettings();
-  const purchasePath = /^\/(product\/|cart|checkout)/.test(location.pathname);
+  // /products/:id is the canonical product URL; /product/:id is its alias.
+  const purchasePath = /^\/(products?\/|cart|checkout)/.test(location.pathname);
   const onHome = location.pathname === '/';
   const [homeChatClear, setHomeChatClear] = useState(false);
   useEffect(() => {
