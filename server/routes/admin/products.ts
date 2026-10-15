@@ -44,40 +44,43 @@ router.post('/products', validate(productCreateSchema), async (req, res) => {
   try {
     const { title, category, price, originalPrice, discount, image, brand, warranty, description, stockQuantity, sku, features, images, costPrice, barcode, isActive } = req.body;
 
-    const [inserted] = await db.insert(products).values({
-      title,
-      category,
-      price,
-      originalPrice: originalPrice ?? null,
-      discount: discount ?? 0,
-      image: image || '/placeholder.png',
-      brand: brand || 'متفرقه',
-      warranty: warranty || null,
-      description: description || null,
-      stockQuantity: stockQuantity !== undefined ? stockQuantity : 10,
-      sku: sku || `SKU-${Date.now()}`,
-      costPrice: costPrice ?? null,
-      barcode: barcode ?? null,
-      isActive: isActive ?? 1
-    }).returning();
+    // One transaction for the product row, its spec lines and its gallery: a failure
+    // part-way must not leave a product without its features, because the admin would
+    // then retry and create a duplicate.
+    const inserted = await db.transaction(async (tx) => {
+      const [row] = await tx.insert(products).values({
+        title,
+        category,
+        price,
+        originalPrice: originalPrice ?? null,
+        discount: discount ?? 0,
+        image: image || '/placeholder.png',
+        brand: brand || 'متفرقه',
+        warranty: warranty || null,
+        description: description || null,
+        stockQuantity: stockQuantity !== undefined ? stockQuantity : 10,
+        sku: sku || `SKU-${Date.now()}`,
+        costPrice: costPrice ?? null,
+        barcode: barcode ?? null,
+        isActive: isActive ?? 1
+      }).returning();
 
-    if (inserted && Array.isArray(features)) {
-      const clean = features.map((f: string) => String(f).trim()).filter(Boolean).slice(0, 20);
-      if (clean.length) {
-        await db.transaction(async (tx) => {
-          for (const feature of clean) {
-            await tx.insert(productFeatures).values({ productId: inserted.id, feature });
-          }
-        });
+      if (Array.isArray(features)) {
+        const clean = features.map((f: string) => String(f).trim()).filter(Boolean).slice(0, 20);
+        for (const feature of clean) {
+          await tx.insert(productFeatures).values({ productId: row.id, feature });
+        }
       }
-    }
 
-    if (inserted && Array.isArray(images)) {
-      const extra = images.map((u: string) => String(u).trim()).filter((u: string) => u && u !== inserted.image).slice(0, 8);
-      for (const [sort, url] of extra.entries()) {
-        await db.insert(productImages).values({ productId: inserted.id, url, sort });
+      if (Array.isArray(images)) {
+        const extra = images.map((u: string) => String(u).trim()).filter((u: string) => u && u !== row.image).slice(0, 8);
+        for (const [sort, url] of extra.entries()) {
+          await tx.insert(productImages).values({ productId: row.id, url, sort });
+        }
       }
-    }
+
+      return row;
+    });
 
     appCache.invalidate('product');
     appCache.invalidate('categories');

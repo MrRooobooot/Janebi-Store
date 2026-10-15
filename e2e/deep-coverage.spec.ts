@@ -1,3 +1,4 @@
+import path from 'path';
 import { test, expect, type Page } from '@playwright/test';
 import Database from 'better-sqlite3';
 import bcrypt from 'bcrypt';
@@ -913,17 +914,16 @@ test('Admin product edit: change price via edit modal, persists after reload', a
   await page.goto('/admin/products');
 
   await page.getByRole('button', { name: /افزودن محصول جدید/ }).click();
-  const form = page.locator('#product-form');
-  await form.getByPlaceholder('مثال: هندزفری بی‌سیم سامسونگ Galaxy Buds2 Pro').fill(title);
-  const catSel = form.locator('select').first();
-  const catOpts = await catSel.locator('option').allTextContents();
-  const pick = catOpts.find((o) => o && !/انتخاب|همه/.test(o));
-  await catSel.selectOption({ label: pick! });
-  await form.getByPlaceholder('مثال: Samsung, Apple, Anker, Xiaomi').fill('QA Brand');
-  await form.getByPlaceholder('مثال: ۱,۲۰۰,۰۰۰').fill('700000');
-  await form.getByPlaceholder('مثال: ۹۸۰,۰۰۰').fill('600000');
-  await form.locator('input[inputMode="numeric"]').last().fill('5');
-  await page.getByRole('button', { name: /ثبت و انتشار محصول/ }).click();
+  const form = page.getByRole('dialog');
+  await form.locator('#pf-title').fill(title);
+  await form.locator('#pf-category').selectOption('هندزفری و ایرباد');
+  await form.locator('#pf-brand').fill('QA Brand');
+  await form.locator('#pf-original').fill('700000');
+  await form.locator('#pf-price').fill('600000');
+  await form.locator('#pf-stock').fill('5');
+  await form.locator('input[aria-label="آپلود عکس اصلی"]').setInputFiles(path.join(process.cwd(), 'public/images/hero/holder.webp'));
+  await expect(form.locator('img[alt="عکس اصلی کالا"]')).toHaveAttribute('src', /\/images\/products\//, { timeout: 15000 });
+  await page.getByRole('button', { name: 'ثبت و انتشار کالا' }).click();
   await expect(page.getByText(/محصول با موفقیت ایجاد شد/)).toBeVisible({ timeout: 10000 });
   await page.reload();
   const row = page.locator('tr').filter({ hasText: title }).first();
@@ -934,11 +934,11 @@ test('Admin product edit: change price via edit modal, persists after reload', a
   const canEdit = (await editBtn.count()) > 0;
   test.skip(!canEdit, 'no edit affordance on admin product row');
   await editBtn.click();
-  const priceInput = form.getByPlaceholder('مثال: ۹۸۰,۰۰۰');
+  const priceInput = page.locator('#pf-price');
   await expect(priceInput).toBeVisible({ timeout: 8000 });
   await priceInput.fill('650000');
   // edit-modal submit uses the editingProduct label (Products.tsx sticky footer)
-  await page.getByRole('button', { name: /ذخیره تغییرات محصول/ }).click();
+  await page.getByRole('button', { name: 'ذخیره تغییرات' }).click();
   await expect(page.getByText('محصول با موفقیت بروزرسانی شد')).toBeVisible({ timeout: 10000 });
 
   // evidence 1: the product's own row shows the new price in fa-IR format

@@ -1,3 +1,4 @@
+import path from 'path';
 import { test, expect, type Page } from '@playwright/test';
 
 /**
@@ -616,18 +617,17 @@ test.describe('Admin panel — real CRUD clicks', () => {
     await expect(page.getByText(/مدیریت محصولات و موجودی انبار/).first()).toBeVisible({ timeout: 10000 });
 
     await page.getByRole('button', { name: /افزودن محصول جدید/ }).click();
-    // scope to the modal form — the toolbar has its own filter select/inputs
-    const form = page.locator('#product-form');
-    await form.getByPlaceholder('مثال: هندزفری بی‌سیم سامسونگ Galaxy Buds2 Pro').fill(title);
-    const catSel = form.locator('select').first();
-    const catOpts = await catSel.locator('option').allTextContents();
-    const pick = catOpts.find((o) => o && !/انتخاب|همه/.test(o));
-    await catSel.selectOption({ label: pick! });
-    await form.getByPlaceholder('مثال: Samsung, Apple, Anker, Xiaomi').fill('E2E Brand');
-    await form.getByPlaceholder('مثال: ۱,۲۰۰,۰۰۰').fill('500000');
-    await form.getByPlaceholder('مثال: ۹۸۰,۰۰۰').fill('450000');
-    await form.locator('input[inputMode="numeric"]').last().fill('7');
-    await page.getByRole('button', { name: /ثبت و انتشار محصول/ }).click();
+    // scope to the modal dialog — the toolbar has its own filter select/inputs
+    const form = page.getByRole('dialog');
+    await form.locator('#pf-title').fill(title);
+    await form.locator('#pf-category').selectOption('هندزفری و ایرباد');
+    await form.locator('#pf-brand').fill('E2E Brand');
+    await form.locator('#pf-original').fill('500000');
+    await form.locator('#pf-price').fill('450000');
+    await form.locator('#pf-stock').fill('7');
+    await form.locator('input[aria-label="آپلود عکس اصلی"]').setInputFiles(path.join(process.cwd(), 'public/images/hero/holder.webp'));
+    await expect(form.locator('img[alt="عکس اصلی کالا"]')).toHaveAttribute('src', /\/images\/products\//, { timeout: 15000 });
+    await page.getByRole('button', { name: 'ثبت و انتشار کالا' }).click();
     await expect(page.getByText(/محصول با موفقیت ایجاد شد/)).toBeVisible({ timeout: 10000 });
 
     // appears in table — reload for a deterministic fresh list (the modal's
