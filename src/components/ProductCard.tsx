@@ -41,15 +41,16 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
 
   return (
     <div className="product-card linear-card bg-white dark:bg-[var(--color-surface-dark)] rounded-2xl border border-slate-200/80 dark:border-white/[0.08] relative flex flex-col h-full overflow-hidden group select-none">
-      <div className="relative aspect-square w-full bg-white dark:bg-[var(--color-stage-dark)]">
-        <Link to={`/product/${product.id}`} className="absolute inset-0 flex items-center justify-center p-2 sm:p-3" tabIndex={-1} aria-hidden="true">
+      <div className="relative aspect-square w-full bg-white dark:bg-transparent dark:p-2">
+        {/* Dark mode: studio photos have white backdrops. They sit on a soft grey plate and multiply into it, so the photo no longer reads as a glaring white rectangle. */}
+        <Link to={`/product/${product.id}`} className="absolute inset-0 flex items-center justify-center p-2 sm:p-3 dark:inset-2 dark:rounded-xl dark:bg-[#dfe3ea]" tabIndex={-1} aria-hidden="true">
           <PictureImage
             src={product.image}
             alt=""
             width="280"
             height="280"
             sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 280px"
-            className="max-h-full max-w-full object-contain"
+            className="max-h-full max-w-full object-contain dark:mix-blend-multiply"
           />
         </Link>
         <div className="pointer-events-none absolute inset-x-2 top-2 flex items-start justify-between gap-1.5">

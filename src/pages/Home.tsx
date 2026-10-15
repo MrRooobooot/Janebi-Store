@@ -18,24 +18,6 @@ import { toPersianDigits, normalizePersianTypography, formatPrice } from '../lib
 import { useStoreSettings } from '../hooks/useStoreSettings';
 import { STORE_SETTINGS_DEFAULTS } from '../lib/constants';
 
-/** Homepage slides. Copy is HTML type; photos are product-only so old settings art cannot return. */
-const HERO_COPY: Record<string, { kicker: string; title: string; line: string; action: string; image: string }> = {
-  'هولدر و نگهدارنده': {
-    kicker: 'هولدر',
-    title: 'گوشی سر جایش می‌ماند',
-    line: 'مگنتی، برای خودرو و میز',
-    action: 'دیدن هولدرها',
-    image: '/images/hero/holder.webp',
-  },
-  'کابل و سیم': {
-    kicker: 'کابل',
-    title: 'شارژ که قطع نمی‌شود',
-    line: 'بافت کنفی، اتصال محکم',
-    action: 'دیدن کابل‌ها',
-    image: '/images/hero/cable.webp',
-  },
-};
-
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
@@ -47,29 +29,21 @@ export default function Home() {
   const [reloadKey, setReloadKey] = useState(0);
   const settings = useStoreSettings();
 
-  const heroSlides = useMemo(() => {
-    const known = Object.entries(HERO_COPY).map(([category, copy]) => ({
-      id: category,
-      ...copy,
-      to: `/products?category=${encodeURIComponent(category)}`,
-      ad: null as null | { brand: string; price: number; originalPrice?: number; discount?: number },
-    }));
-    const live = new Set(categories.map((c) => c.title as string));
-    const categorySlides = categories.length === 0 ? known : known.filter((slide) => live.has(slide.id));
-    // Product ads come first: real catalogue items with their own photo and price.
-    const ads = pickHeroAds(products).map((p) => ({
-      id: `ad-${p.id}`,
-      kicker: p.brand || p.category,
-      title: normalizePersianTypography(p.title),
-      line: '',
-      action: 'مشاهده محصول',
-      image: p.image,
-      to: `/products/${p.id}`,
-      ad: { brand: p.brand, price: p.price, originalPrice: p.originalPrice, discount: p.discount },
-    }));
-    const all = [...ads, ...categorySlides];
-    return all.length ? all : known.slice(0, 1);
-  }, [categories, products]);
+  // The hero is built only from live catalogue products (photo, name, price from the
+  // API); there is no hard-coded slide copy, so there is nothing to keep in sync.
+  const heroSlides = useMemo(
+    () =>
+      pickHeroAds(products).map((p) => ({
+        id: `ad-${p.id}`,
+        kicker: p.brand || p.category,
+        title: normalizePersianTypography(p.title),
+        action: 'مشاهده محصول',
+        image: p.image,
+        to: `/products/${p.id}`,
+        ad: { brand: p.brand, price: p.price, originalPrice: p.originalPrice, discount: p.discount },
+      })),
+    [products],
+  );
 
   useEffect(() => {
     if (activeSlide >= heroSlides.length) setActiveSlide(0);
@@ -81,6 +55,7 @@ export default function Home() {
     if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       return;
     }
+    if (heroSlides.length < 2) return;
     const timer = setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % heroSlides.length);
     }, 6000);
@@ -167,6 +142,7 @@ export default function Home() {
         {/* Single page h1 — lives OUTSIDE the carousel: one h1 on every breakpoint,
             rotation-safe (slide titles are plain <p>), SEO + a11y clean. */}
         <h1 className="sr-only">فروشگاه لوازم جانبی موبایل و تبلت | جانبی آرنا</h1>
+        {heroSlides.length > 0 && (
         <div
           className="relative aspect-[3/2] overflow-hidden rounded-3xl sm:aspect-[2/1] shadow-lg touch-pan-y"
           onTouchStart={(e) => { mobileTouchX.current = e.touches[0].clientX; }}
@@ -187,7 +163,6 @@ export default function Home() {
               className="absolute inset-0 transition-opacity duration-700 ease-out motion-reduce:transition-none"
               style={{ opacity: idx === activeSlide ? 1 : 0, pointerEvents: idx === activeSlide ? 'auto' : 'none' }}
             >
-              {slide.ad ? (
                 <span className="absolute inset-0 flex items-stretch gap-3 bg-gradient-to-l from-rose-50 via-white to-slate-100 p-3 dark:from-[#1a1020] dark:via-[#0e1629] dark:to-[#0b1222] sm:gap-8 sm:p-6">
                   <span className="relative z-10 flex w-[52%] flex-col justify-center gap-1 pb-10 pr-1 sm:gap-3 sm:pb-14 sm:pr-4">
                     <span className="w-fit rounded-full bg-[var(--color-cta)]/10 px-2.5 py-0.5 text-xs font-bold text-[var(--color-emphasis-text)] sm:text-sm">{slide.kicker}</span>
@@ -209,20 +184,6 @@ export default function Home() {
                     </span>
                   </span>
                 </span>
-              ) : (
-                <>
-                  <img src={slide.image} alt="" className="absolute inset-0 h-full w-full object-cover object-left" />
-                  <span className="absolute inset-y-0 right-0 z-10 flex w-[48%] max-w-md flex-col justify-center gap-0.5 pb-12 pr-3 text-slate-900! sm:gap-2 sm:pb-16 sm:pr-8">
-                    <span className="text-xs font-bold text-slate-600! sm:text-sm">{slide.kicker}</span>
-                    <span className="text-lg font-black leading-tight text-slate-900! sm:text-4xl">{slide.title}</span>
-                    <span className="text-xs font-medium text-slate-600! sm:text-base">{slide.line}</span>
-                    <span className="mt-0.5 inline-flex items-center gap-1 text-xs font-bold text-[var(--color-cta)] sm:mt-1 sm:text-sm">
-                      {slide.action}
-                      <ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                    </span>
-                  </span>
-                </>
-              )}
             </Link>
           ))}
 
@@ -262,6 +223,7 @@ export default function Home() {
             </div>
           )}
         </div>
+        )}
         <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 lg:grid-cols-4">
           {valueProps.map((item) => {
             const Icon = item.icon;

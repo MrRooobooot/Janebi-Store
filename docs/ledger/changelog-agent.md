@@ -4,6 +4,11 @@
 > **Role:** agent-facing change log — commit, what moved, how it was verified.
 > Open work and priorities live in `docs/ledger/tasks.md`; the system map lives in `docs/reference/project-graph.md`. On 2026-10-13 the entries dated 2026-08-28 to 2026-09-02 were moved from the old `## [date] - title` style to this heading format, and all entries were sorted newest first. Entry text is unchanged.
 
+## 2026-10-15 — Hero fully catalogue-driven; dark-mode photo plate — live (see release below)
+- `src/pages/Home.tsx`: removed the hard-coded `HERO_COPY` category slides. The hero shows only ads built from live products (photo, name, price, discount from the API) and is hidden when the catalogue has none. `public/images/hero/holder.webp` and `cable.webp` are no longer referenced.
+- `src/components/ProductCard.tsx`, `src/pages/ProductDetail.tsx`: in dark mode studio photos sit on a soft grey plate (`#dfe3ea`) and multiply into it, so white backdrops no longer read as glaring rectangles. Light mode unchanged.
+- Found, not changed (needs owner values): the live `phone`, `email` and `address` settings equal the seed defaults (`۰۲۱-۸۸۸۸۹۹۹۹`, `info@janebi-arena.ir`, «مجتمع نور …»), and the email domain differs from `janebiarena.ir`. They are admin-editable in Settings.
+
 ## 2026-10-15 — Announcement bar redesign, hero as live product ads — live (see release below)
 - `src/components/Header.tsx`: the announcement strip is one tone with the header (was a third near-black), a truck icon replaces the pulsing sparkle, the coupon is one dashed «ticket» button that copies on tap and shows a check, and the phone/hours stay from `md`. The message wraps to two lines on phones instead of being cut.
 - `src/lib/homeCatalogue.ts` `pickHeroAds`, `src/pages/Home.tsx`: the hero now opens with up to 4 ads built from the live catalogue (newest in-stock product per category, own photo, name, price, discount, CTA to the product), then the two category slides. New products enter the carousel without any edit; this is the «archive that refreshes» — no third-party images are copied in. Mobile hero ratio is 3:2 (was 2:1) so the ad layout fits; category photos anchor left. Test: `tests/unit/hero-ads.test.ts`.
