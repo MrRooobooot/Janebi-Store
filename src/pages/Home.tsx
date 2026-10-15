@@ -176,10 +176,10 @@ export default function Home() {
               style={{ opacity: idx === activeSlide ? 1 : 0, pointerEvents: idx === activeSlide ? 'auto' : 'none' }}
             >
               <img src={slide.image} alt="" className="absolute inset-0 h-full w-full object-cover" />
-              <span className="absolute inset-y-0 right-0 z-10 flex w-[48%] max-w-md flex-col justify-center gap-0.5 pb-12 pr-3 text-slate-900 sm:gap-2 sm:pb-16 sm:pr-8">
-                <span className="text-xs font-bold text-slate-500 sm:text-sm">{slide.kicker}</span>
-                <span className="text-lg font-black leading-tight sm:text-4xl">{slide.title}</span>
-                <span className="text-xs font-medium text-slate-600 sm:text-base">{slide.line}</span>
+              <span className="absolute inset-y-0 right-0 z-10 flex w-[48%] max-w-md flex-col justify-center gap-0.5 pb-12 pr-3 text-slate-900! sm:gap-2 sm:pb-16 sm:pr-8">
+                <span className="text-xs font-bold text-slate-500! sm:text-sm">{slide.kicker}</span>
+                <span className="text-lg font-black leading-tight text-slate-900! sm:text-4xl">{slide.title}</span>
+                <span className="text-xs font-medium text-slate-600! sm:text-base">{slide.line}</span>
                 <span className="mt-0.5 inline-flex items-center gap-1 text-xs font-bold text-[var(--color-cta)] sm:mt-1 sm:text-sm">
                   {slide.action}
                   <ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />

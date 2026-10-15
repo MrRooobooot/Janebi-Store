@@ -284,6 +284,12 @@ export default function Header() {
         </nav>
       </div>
 
+      {/* Phone search: second row of the sticky header so it stays reachable while
+          scrolling, with its own gap so it never touches the page content below. */}
+      <div className="md:hidden w-full max-w-7xl mx-auto px-3 pb-2.5">
+        <HeaderSearch />
+      </div>
+
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="space-y-2 border-t border-[var(--color-border-light)] bg-[var(--color-surface-light)] px-4 py-3 dark:border-[var(--color-border-dark)] dark:bg-[var(--color-surface-dark)] lg:hidden">

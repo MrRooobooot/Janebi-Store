@@ -4,6 +4,12 @@
 > **Role:** agent-facing change log — commit, what moved, how it was verified.
 > Open work and priorities live in `docs/ledger/tasks.md`; the system map lives in `docs/reference/project-graph.md`. On 2026-10-13 the entries dated 2026-08-28 to 2026-09-02 were moved from the old `## [date] - title` style to this heading format, and all entries were sorted newest first. Entry text is unchanged.
 
+## 2026-10-15 — Phone search moved into the sticky header; hero text fixed in dark mode — live (see release below)
+- `src/components/Header.tsx`, `src/components/Layout.tsx`: the phone search was a loose row above `<main>` with no gap before the hero. It is now the second row of the sticky header (`md:hidden`), so it stays reachable and cannot touch the page content; `<main>` gets `pt-3`.
+- `src/components/HeaderSearch.tsx`: wider padding next to the magnifier; the ⌘K hint shows from `md` instead of `sm` (it was visible on tablets with no keyboard).
+- `src/pages/Home.tsx`: hero kicker, title and line use `!`-important slate colours. The dark-mode shim turned them pale on the light hero photo.
+- Verified: `tsc --noEmit`; local dev server at 390px and 700px.
+
 ## 2026-10-15 — Release e447ac2: chat launcher hidden on phone listings, release.sh node-on-VPS fix — live
 - Deployed `e447ac2` with `scripts/ops/release.sh` (includes `3e0c5ca` chat launcher, `0c517bb` ledger, and the script fix). Rollback target: `releases/prev-71622cf-dist`.
 - First attempt (`0c517bb`) aborted at step 4 before any switch: `71622cf` had been shipped in place into `releases/a64236d/dist`, so that tree had lost its seal and the rollback guard refused. Fix: copied the live tree to `releases/prev-71622cf-dist`, regenerated manifest and seal, repointed `dist` at it (same content), re-ran. `releases/0c517bb` stays staged and unused; `releases/a64236d/dist` holds 71622cf content (not its original).
