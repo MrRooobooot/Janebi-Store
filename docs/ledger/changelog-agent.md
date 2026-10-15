@@ -4,6 +4,13 @@
 > **Role:** agent-facing change log — commit, what moved, how it was verified.
 > Open work and priorities live in `docs/ledger/tasks.md`; the system map lives in `docs/reference/project-graph.md`. On 2026-10-13 the entries dated 2026-08-28 to 2026-09-02 were moved from the old `## [date] - title` style to this heading format, and all entries were sorted newest first. Entry text is unchanged.
 
+## 2026-10-15 — Release e447ac2: chat launcher hidden on phone listings, release.sh node-on-VPS fix — live
+- Deployed `e447ac2` with `scripts/ops/release.sh` (includes `3e0c5ca` chat launcher, `0c517bb` ledger, and the script fix). Rollback target: `releases/prev-71622cf-dist`.
+- First attempt (`0c517bb`) aborted at step 4 before any switch: `71622cf` had been shipped in place into `releases/a64236d/dist`, so that tree had lost its seal and the rollback guard refused. Fix: copied the live tree to `releases/prev-71622cf-dist`, regenerated manifest and seal, repointed `dist` at it (same content), re-ran. `releases/0c517bb` stays staged and unused; `releases/a64236d/dist` holds 71622cf content (not its original).
+- `scripts/ops/release.sh`: the reuse branch read BUILD_INFO with `node` on the VPS, which has none. It now uses grep/cut. This closes the open item from 2026-10-13.
+- Verified: `npm run verify` exit 0 before release; live `/BUILD_INFO` = `e447ac2`; three-way `server.cjs` hash `73e799bc…` matches; DB integrity ok, 101 products, 17 migrations; `/`, `/api/health`, `/api/products`, `/sitemap.xml`, `/manifest.webmanifest` 200. Two app restarts (step 3 and step 4).
+- Not run: e2e; the live launcher behaviour on a phone was not opened after release.
+
 ## 2026-10-15 — Chat launcher hidden on phones over listings — local, not deployed
 - `src/components/ChatWidget.tsx`: on phones the launcher is hidden on `/` and `/products` as it already was on `/products/:id`, cart and checkout, because it sat over product-card text. The scroll-based homepage reveal is removed. Desktop is unchanged. Back-to-top already sits above the bottom bar.
 - Verified: `tsc --noEmit` clean; `/products` at 375px in a local dev server. Not run: `npm run verify`. Not committed to a release; not deployed.
