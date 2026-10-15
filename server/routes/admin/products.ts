@@ -94,7 +94,7 @@ router.put('/products/:id', validate(productUpsertSchema), async (req, res) => {
     const { id } = req.params as { id: string };
     const { title, category, price, originalPrice, discount, image, brand, warranty, description, stockQuantity, sku, features, images, costPrice, barcode, isActive } = req.body;
 
-    const [updated] = await db.update(products).set({
+    const patch = {
       ...(title !== undefined && { title }),
       ...(category !== undefined && { category }),
       ...(price !== undefined && { price }),
@@ -109,7 +109,12 @@ router.put('/products/:id', validate(productUpsertSchema), async (req, res) => {
       ...(costPrice !== undefined && { costPrice: costPrice ?? null }),
       ...(barcode !== undefined && { barcode: barcode ?? null }),
       ...(isActive !== undefined && { isActive })
-    }).where(eq(products.id, parseInt(id))).returning();
+    };
+
+    // A gallery-only edit carries no column changes; drizzle rejects an empty SET.
+    const [updated] = Object.keys(patch).length
+      ? await db.update(products).set(patch).where(eq(products.id, parseInt(id))).returning()
+      : await db.select().from(products).where(eq(products.id, parseInt(id)));
 
     if (!updated) {
       return res.status(404).json({ error: 'محصول یافت نشد', message: 'محصول یافت نشد' });
