@@ -255,3 +255,8 @@
 - `npm run test`: 32 test suites passed (288 tests).
 - `npm run build`: Production client and server build succeeded.
 - Live VPS deployment (`janebiarena.ir`): 200 OK, healthy DB, zero downtime.
+
+## 2026-10-15 — Home card/layout simplification (71622cf)
+- `ProductCard`: removed SKU line, fixed "اورجینال" brand pill and fallback warranty text; warranty shown only when real; "تومان" inline with price.
+- `Home`: category tiles compact (row, ~88px); value-props rendered once; "جدیدترین‌ها" scroll row when no deals (excludes products already in the grid).
+- Gate green; deployed, BUILD_INFO = 71622cf.
