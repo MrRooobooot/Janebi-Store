@@ -91,27 +91,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // Flips on logout so an in-flight merge loop stops immediately.
   const mergeAborted = React.useRef(false);
   const isLoggedInRef = React.useRef(isLoggedIn);
-  // Persisted across page loads: once the guest cart has been merged for this
-  // login, the local cart holds server rows, and re-POSTing them would add
-  // their quantities again on every reload (POST adds to the existing row).
-  const MERGED_FLAG = 'cartMergedForLogin';
-  const readMergedFlag = () => {
-    try {
-      return localStorage.getItem(MERGED_FLAG) === '1';
-    } catch {
-      return false;
-    }
-  };
   React.useEffect(() => {
     isLoggedInRef.current = isLoggedIn;
     if (!isLoggedIn) {
       mergeAborted.current = true;
       mergedOnce.current = false;
-      try {
-        localStorage.removeItem(MERGED_FLAG);
-      } catch {
-        // ignore storage errors
-      }
     }
   }, [isLoggedIn]);
   React.useEffect(() => {
@@ -120,10 +104,25 @@ export function CartProvider({ children }: { children: ReactNode }) {
     mergedOnce.current = true;
     mergeAborted.current = false;
 
-    const alreadyMerged = readMergedFlag();
-    const guestItems = alreadyMerged ? [] : cart.filter(item => typeof item.id === 'number');
-
     (async () => {
+      // Only items the server does not already hold are guest items. The local
+      // cart also holds server rows (it is written from server responses), and
+      // POST adds to the existing row's quantity, so re-posting them would
+      // double the quantity on every page load.
+      let serverCart: CartItem[];
+      try {
+        const res = await authFetch('/api/cart', { headers: {} });
+        const data = await res.json();
+        if (!Array.isArray(data)) return;
+        serverCart = data;
+      } catch (err) {
+        console.error('Failed to fetch cart before merge', err);
+        return;
+      }
+      if (mergeAborted.current || !isLoggedInRef.current) return;
+      const serverIds = new Set(serverCart.map(item => item.id));
+      const guestItems = cart.filter(item => typeof item.id === 'number' && !serverIds.has(item.id));
+
       const failedItems: CartItem[] = [];
       for (const item of guestItems) {
         // Abort: user logged out mid-merge.
@@ -149,11 +148,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
         return;
       }
       if (mergeAborted.current || !isLoggedInRef.current) return;
-      try {
-        localStorage.setItem(MERGED_FLAG, '1');
-      } catch {
-        // ignore storage errors
-      }
       try {
         const res = await authFetch('/api/cart', { headers: {} });
         const data = await res.json();
