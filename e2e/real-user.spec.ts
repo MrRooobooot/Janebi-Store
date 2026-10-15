@@ -153,7 +153,7 @@ test.describe('Home page — real clicks', () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
     await page.locator('header button[aria-label="باز کردن منو"]').click();
-    const themeBtn = page.getByRole('button', { name: /حالت (شب|روز)/ }).first();
+    const themeBtn = page.getByRole('button', { name: /حالت (روشن|تاریک)/ }).first();
     await expect(themeBtn).toBeVisible();
     const before = await page.evaluate(() => document.documentElement.classList.contains('dark'));
     await themeBtn.click();
@@ -233,11 +233,11 @@ test.describe('Catalog — filters, search, pagination, card actions', () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.waitForTimeout(300);
     await page.locator('header button[aria-label="باز کردن منو"]').click();
-    const drawerWish = page.locator('a').filter({ hasText: /علاقه‌مندی‌ها \(/ }).first();
+    const drawerWish = page.locator('a').filter({ hasText: /علاقه‌مندی \(/ }).first();
     const drawerCmp = page.locator('a').filter({ hasText: /مقایسه \(/ }).first();
     await expect(drawerWish).toBeVisible();
     await expect(drawerCmp).toBeVisible();
-    await expect(drawerWish).not.toContainText('علاقه‌مندی‌ها (۰)');
+    await expect(drawerWish).not.toContainText('علاقه‌مندی (۰)');
     await expect(drawerCmp).not.toContainText('مقایسه (۰)');
     await assertNoErrors(errors);
   });
@@ -493,10 +493,10 @@ test.describe('Checkout — end to end', () => {
     const selects = page.locator('select');
     if (await selects.count()) {
       const opts = await selects.first().locator('option').allTextContents();
-      const pick = opts.find((o) => /تهران/.test(o)) || opts[1];
+      const pick = opts.find((o) => /خراسان رضوی/.test(o)) || opts[1];
       if (pick) await selects.first().selectOption({ label: pick });
     }
-    await page.getByPlaceholder(/مثلا: تهران/).first().fill('تهران');
+    await page.getByPlaceholder(/مثلا: مشهد/).first().fill('مشهد');
     await page.getByPlaceholder(/خیابان اصلی/).fill('خیابان آزمایش، پلاک ۱۲، واحد ۳');
     await page.getByText('پرداخت درب منزل (COD)').click();
     // COD mode labels the submit "ثبت سفارش با پرداخت درب منزل". getByRole skips the
@@ -519,7 +519,7 @@ test.describe('Checkout — end to end', () => {
     // invalid phone passes HTML5 required but fails the JS Iranian-mobile check
     await page.getByPlaceholder('مثلا: علی محمدی').fill('ولیدیشن تست');
     await page.getByPlaceholder('09123456789').fill('0912345');
-    await page.getByPlaceholder(/مثلا: تهران/).first().fill('تهران');
+    await page.getByPlaceholder(/مثلا: مشهد/).first().fill('مشهد');
     await page.getByPlaceholder(/خیابان اصلی/).fill('خیابان تست ۲');
     // Default payment is online, so the visible submit is the gateway label.
     await page.getByRole('button', { name: /ثبت نهایی سفارش/ }).click();
@@ -536,7 +536,7 @@ test.describe('Checkout — end to end', () => {
     await page.goto('/checkout');
     await page.getByPlaceholder('مثلا: علی محمدی').fill('درگاه تست');
     await page.getByPlaceholder('09123456789').fill(phone);
-    await page.getByPlaceholder(/مثلا: تهران/).first().fill('تهران');
+    await page.getByPlaceholder(/مثلا: مشهد/).first().fill('مشهد');
     await page.getByPlaceholder(/خیابان اصلی/).fill('خیابان تست ۱');
     const online = page.getByText(/درگاه پرداخت شتابی|پرداخت آنلاین|پرداخت اینترنتی/).first();
     if (await online.count()) await online.click();

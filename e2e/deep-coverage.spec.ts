@@ -450,7 +450,7 @@ test('Scenario C: user COD order → admin ships → user re-login sees «ارس
   await page.goto('/checkout');
   await page.getByPlaceholder('مثلا: علی محمدی').fill('سناریو سی خریدار');
   await page.getByPlaceholder('09123456789').fill(phone);
-  await page.getByPlaceholder(/مثلا: تهران/).first().fill('تهران');
+  await page.getByPlaceholder(/مثلا: مشهد/).first().fill('مشهد');
   await page.getByPlaceholder(/خیابان اصلی/).fill('خیابان سناریو سی، پلاک ۳');
   await page.getByText('پرداخت درب منزل (COD)').click();
   await page.getByRole('button', { name: /ثبت سفارش با پرداخت درب منزل/ }).click();
