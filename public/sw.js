@@ -1,3 +1,17 @@
+// Local dev origin: never cache or intercept. Unregister so localhost always shows live source.
+const IS_LOCAL_DEV = ['localhost', '127.0.0.1', '[::1]'].includes(self.location.hostname);
+if (IS_LOCAL_DEV) {
+  self.addEventListener('install', () => self.skipWaiting());
+  self.addEventListener('activate', (event) => {
+    event.waitUntil(
+      caches.keys()
+        .then((keys) => Promise.all(keys.map((k) => caches.delete(k))))
+        .then(() => self.registration.unregister())
+    );
+  });
+  self.addEventListener('fetch', () => {});
+}
+
 const CACHE_NAME = 'janebi-static-v1.2.3';
 const API_CACHE_NAME = 'janebi-api-v1.2.1';
 
@@ -14,6 +28,7 @@ const PRECACHE_ASSETS = [
 
 // Install: Cache critical static assets
 self.addEventListener('install', (event) => {
+  if (IS_LOCAL_DEV) return;
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(PRECACHE_ASSETS);
@@ -23,6 +38,7 @@ self.addEventListener('install', (event) => {
 
 // Activate: Clean old caches
 self.addEventListener('activate', (event) => {
+  if (IS_LOCAL_DEV) return;
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
@@ -35,6 +51,7 @@ self.addEventListener('activate', (event) => {
 
 // Fetch Strategy
 self.addEventListener('fetch', (event) => {
+  if (IS_LOCAL_DEV) return;
   const { request } = event;
   const url = new URL(request.url);
 
