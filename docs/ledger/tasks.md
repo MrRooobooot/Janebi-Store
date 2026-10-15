@@ -43,7 +43,7 @@
 - [ ] **CA-2851:** طول در منابع ۱٫۸ یا ۲ متر است؛ **CA-3591:** لیست فروشنده‌ها «USB-A/USB-C» یا «USB-C» می‌گوید. نام و طول روی صفحه بررسی شود.
 - [ ] **CA-6892:** وضعیت موجودی در لیست مشخص نیست؛ اضافه نشده. **CA-3131، CA-2271** ناموجودند؛ اضافه نشده.
 - [ ] **گزارش audit:** ایمپورت‌های قبلی QTUQIN و MCdodo با SQL مستقیم بودند و `logAudit` نداشتند. تغییرات قیمت از این به بعد در `audit_logs` ثبت می‌شود.
-- [ ] **اسلاید دوم هیرو:** CTA به دسته‌ی «قاب و محافظ صفحه» اشاره می‌کند که خالی است (از گزارش ۰۹-۱۶).
+- [x] **اسلاید دوم هیرو:** بسته شد — `HERO_COPY` در `Home.tsx` فقط دو دستهٔ دارای کالا (هولدر، کابل) را دارد و اسلاید دستهٔ غایب حذف می‌شود؛ لینک به «قاب و محافظ صفحه» دیگر وجود ندارد (بررسی ۲۰۲۶-۱۰-۱۵).
 
 ### Standing automation: status unknown (checked 2026-10-13)
 - **Not found** on 2026-10-13 in: this session's schedulers (CronList and scheduled tasks: none), this Mac's crontab and OpenClaw state, and the VPS crontab (only `backup-verify.sh` and `vps-monitor.py` are installed). The job may still exist in an agent system not reachable from here. Owner to confirm; until then do not count it as running.
