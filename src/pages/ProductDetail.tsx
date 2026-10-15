@@ -59,12 +59,17 @@ export default function ProductDetail() {
   const { addToast } = useToast();
   const { addToCart } = useCart();
 
+  const [loadFailed, setLoadFailed] = useState(false);
+  const [reloadTick, setReloadTick] = useState(0);
+
   useEffect(() => {
     setLoading(true);
     const controller = new AbortController();
     fetch(`/api/products/${id}`, { signal: controller.signal })
       .then((res) => {
-        if (!res.ok) throw new Error('Not found');
+        if (res.status === 404) throw new Error('Not found');
+        if (!res.ok) throw new Error('Unavailable');
+        setLoadFailed(false);
         return res.json();
       })
       .then((data) => {
@@ -103,13 +108,18 @@ export default function ProductDetail() {
         if (controller.signal.aborted || err?.name === 'AbortError') return;
         setProduct(null);
         setLoading(false);
-        // Unknown product: the server answers 404 for this URL, so the head says so too.
-        applyPageSeo(NOT_FOUND_SEO);
+        // Only a real 404 is "not found"; a rate limit or network error is transient.
+        if (err?.message === 'Not found') {
+          setLoadFailed(false);
+          applyPageSeo(NOT_FOUND_SEO);
+        } else {
+          setLoadFailed(true);
+        }
       });
     // Leaving this product: RouteHead resets the head on route change. The abort
     // stops a response for this id from writing the head of the next one.
     return () => controller.abort();
-  }, [id]);
+  }, [id, reloadTick]);
 
   // Handle Escape key and body scroll lock for Lightbox
   useEffect(() => {
@@ -177,10 +187,21 @@ export default function ProductDetail() {
         <div className="w-16 h-16 rounded-2xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 text-[var(--color-emphasis-text)] flex items-center justify-center mb-4 border border-[var(--color-cta)]/30 dark:border-[var(--color-cta)]/60 shadow-inner">
           <AlertCircle className="h-8 w-8" />
         </div>
-        <h2 className="text-xl font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] mb-2">محصول یافت نشد!</h2>
+        <h2 className="text-xl font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] mb-2">{loadFailed ? 'بارگذاری محصول ممکن نشد' : 'محصول یافت نشد!'}</h2>
         <p className="text-gray-500 dark:text-gray-300 mb-6">
-          احتمالاً این محصول حذف شده یا آدرس را اشتباه وارد کرده‌اید.
+          {loadFailed
+            ? 'ارتباط با سرور برقرار نشد یا درخواست‌ها زیاد بوده است. چند لحظه بعد دوباره تلاش کنید.'
+            : 'احتمالاً این محصول حذف شده یا آدرس را اشتباه وارد کرده‌اید.'}
         </p>
+        {loadFailed && (
+          <button
+            type="button"
+            onClick={() => setReloadTick((t) => t + 1)}
+            className="mb-3 min-h-11 rounded-xl border border-[var(--color-cta)] px-8 py-3 font-bold text-[var(--color-emphasis-text)]"
+          >
+            تلاش مجدد
+          </button>
+        )}
         <Link
           to="/products"
           className="btn-primary bg-[var(--color-cta)] hover:bg-[var(--color-cta-hover)] text-white px-8 py-3 rounded-xl font-medium transition-colors"

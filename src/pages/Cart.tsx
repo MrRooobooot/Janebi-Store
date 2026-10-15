@@ -40,6 +40,7 @@ export default function Cart() {
       >
         <EmptyState
           icon={<ShoppingCart className="h-16 w-16 drop-shadow-xs" />}
+          headingAs="h1"
           title="سبد خرید شما خالی است!"
           description="می‌توانید برای مشاهده محصولات و اضافه کردن آن‌ها به سبد خرید، به صفحه فروشگاه سر بزنید."
           actionText="مشاهده محصولات"

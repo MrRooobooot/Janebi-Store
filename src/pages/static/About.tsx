@@ -22,42 +22,42 @@ export default function About() {
       </header>
 
       {/* Value Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 sm:gap-6">
-        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] p-6 rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs">
-          <div className="w-12 h-12 rounded-xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 text-[var(--color-emphasis-text)] flex items-center justify-center mb-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6">
+        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] p-4 sm:p-6 rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/15 text-[var(--color-emphasis-text)] flex items-center justify-center mb-4">
             <ShieldCheck className="h-6 w-6" />
           </div>
-          <h3 className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-base mb-2">تضمین ۱۰۰٪ اصالت</h3>
+          <h3 className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-sm sm:text-base mb-2">تضمین ۱۰۰٪ اصالت</h3>
           <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
             تمامی محصولات جانبی آرنا از برندهای معتبر جهانی و با گارانتی تعویض اصلی ارائه می‌شوند.
           </p>
         </div>
 
-        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] p-6 rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs">
-          <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4">
+        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] p-4 sm:p-6 rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-100 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4">
             <Truck className="h-6 w-6" />
           </div>
-          <h3 className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-base mb-2">ارسال اکسپرس کشوری</h3>
+          <h3 className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-sm sm:text-base mb-2">ارسال اکسپرس کشوری</h3>
           <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
             تحویل سریع سفارش‌ها در کمتر از ۲۴ ساعت در مشهد و ۲ الی ۳ روز کاری در سراسر ایران.
           </p>
         </div>
 
-        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] p-6 rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs">
-          <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4">
+        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] p-4 sm:p-6 rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4">
             <Headphones className="h-6 w-6" />
           </div>
-          <h3 className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-base mb-2">پشتیبانی ۲۴/۷</h3>
+          <h3 className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-sm sm:text-base mb-2">پشتیبانی همه‌روزه</h3>
           <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
-            تیم کارشناسان ما در تمامی مراحل خرید و پس از آن، آماده راهنمایی و پاسخگویی هستند.
+            هر روز از ساعت ۹ تا ۲۱، در تمام مراحل خرید و پس از آن، آماده راهنمایی و پاسخگویی هستیم.
           </p>
         </div>
 
-        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] p-6 rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs">
-          <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-4">
+        <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] p-4 sm:p-6 rounded-2xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-purple-100 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-4">
             <Award className="h-6 w-6" />
           </div>
-          <h3 className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-base mb-2">بهترین قیمت بازار</h3>
+          <h3 className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-sm sm:text-base mb-2">قیمت رقابتی</h3>
           <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
             واردات مستقیم بدون واسطه که امکان خرید بالاترین کیفیت با قیمتی رقابتی را فراهم می‌کند.
           </p>

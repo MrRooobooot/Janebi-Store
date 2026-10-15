@@ -29,6 +29,9 @@ const ROUTE_NAMES: Record<string, string> = {
   '/offers': 'تخفیف‌های ویژه',
   '/new-products': 'محصولات جدید',
   '/brands': 'برندها',
+  '/login': 'ورود',
+  '/register': 'ثبت‌نام',
+  '/force-change-password': 'تغییر رمز عبور',
 };
 
 interface BreadcrumbItem {
@@ -140,7 +143,7 @@ export default function DynamicBreadcrumbs() {
     pathnames.forEach((segment, index) => {
       currentPath += `/${segment}`;
       const isLast = index === pathnames.length - 1;
-      const label = ROUTE_NAMES[currentPath] || segment;
+      const label = ROUTE_NAMES[currentPath] || (pathnames.length === 1 ? 'صفحه پیدا نشد' : segment);
 
       items.push({
         label,
@@ -206,7 +209,7 @@ export default function DynamicBreadcrumbs() {
               ) : (
                 <span
                   aria-current="page"
-                  className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]"
+                  className="min-w-0 max-w-[70vw] truncate font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] sm:max-w-md"
                   title={item.label}
                 >
                   {item.label}

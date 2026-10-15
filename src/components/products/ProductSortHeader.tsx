@@ -91,10 +91,10 @@ export default function ProductSortHeader({
   ].filter((chip): chip is { key: string; label: string; aria: string; clear: () => void } => chip !== null);
 
   return (
-    <div className="sticky top-[5.5rem] sm:top-20 z-20 bg-[var(--color-surface-light)]/95 dark:bg-[var(--color-surface-dark)]/95 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col gap-4 transition-all">
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+    <div className="sticky top-[5.5rem] sm:top-20 z-20 bg-[var(--color-surface-light)]/95 dark:bg-[var(--color-surface-dark)]/95 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl p-2.5 sm:p-5 shadow-xs flex flex-col gap-2.5 sm:gap-4 transition-all">
+      <div className="flex flex-row items-center justify-between gap-2 sm:gap-4">
       {/* Mobile filter toggle & item counts */}
-      <div className="flex items-center justify-between sm:justify-start gap-4">
+      <div className="flex shrink-0 items-center gap-3 sm:gap-4">
         <button
           onClick={() => setMobileFilterOpen(true)}
           className="lg:hidden flex items-center gap-2 min-h-11 bg-slate-100 dark:bg-white/[0.06] hover:bg-slate-200 dark:hover:bg-white/[0.1] px-4 py-2.5 rounded-xl text-[13px] font-bold text-slate-800 dark:text-slate-200 transition-colors cursor-pointer"
@@ -108,7 +108,7 @@ export default function ProductSortHeader({
           )}
         </button>
 
-        <div className="text-xs font-bold text-slate-600 dark:text-slate-400">
+        <div className="hidden text-xs font-bold text-slate-600 dark:text-slate-400 sm:block">
           {filteredCount === totalCount ? (
             <span>مجموعاً <span className="text-[var(--color-emphasis-text)] font-bold">{toPersianDigits(totalCount)}</span> کالا</span>
           ) : (
@@ -118,7 +118,7 @@ export default function ProductSortHeader({
       </div>
 
       {/* Sorting Dropdown */}
-      <div className="flex items-center gap-2 self-end sm:self-auto w-full sm:w-auto">
+      <div className="flex min-w-0 flex-1 items-center gap-2 sm:flex-none">
         <span className="text-xs font-bold text-slate-600 dark:text-slate-400 whitespace-nowrap hidden sm:inline">
           مرتب‌سازی:
         </span>

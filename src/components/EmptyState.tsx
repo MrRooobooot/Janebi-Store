@@ -9,6 +9,8 @@ interface EmptyStateProps {
   actionLink?: string;
   onActionClick?: () => void;
   className?: string;
+  /** Heading level: use 'h1' when the empty state is the page's main content. */
+  headingAs?: 'h1' | 'h2';
 }
 
 export default function EmptyState({
@@ -18,6 +20,7 @@ export default function EmptyState({
   actionText,
   actionLink,
   onActionClick,
+  headingAs: Heading = 'h2',
   className = "linear-card bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-light)]/[0.025] rounded-2xl p-8 sm:p-12 shadow-sm border border-zinc-200/80 dark:border-white/[0.08] min-h-[45vh]"
 }: EmptyStateProps) {
   return (
@@ -27,7 +30,7 @@ export default function EmptyState({
       >
         {icon}
       </div>
-      <h2 className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-white mb-3 tracking-tight">{title}</h2>
+      <Heading className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-white mb-3 tracking-tight">{title}</Heading>
       <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-8 max-w-md mx-auto leading-relaxed font-medium">{description}</p>
       
       {actionLink && actionText && (

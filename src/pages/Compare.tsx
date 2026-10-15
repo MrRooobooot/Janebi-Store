@@ -54,6 +54,7 @@ export default function Compare() {
               <Scale className="h-8 w-8" />
             </div>
           }
+          headingAs="h1"
           title="لیست مقایسه خالی است!"
           description="شما هنوز محصولی را برای مقایسه انتخاب نکرده‌اید. با افزودن محصولات به لیست مقایسه می‌توانید راحت‌تر تصمیم‌گیری کنید."
           actionText="مشاهده محصولات"

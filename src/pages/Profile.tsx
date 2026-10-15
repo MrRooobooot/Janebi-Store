@@ -99,6 +99,7 @@ export default function Profile() {
       <div className="max-w-4xl mx-auto py-12 px-4 text-center">
         <EmptyState
           icon={<UserCheck className="h-16 w-16 text-gray-400" />}
+          headingAs="h1"
           title="وارد حساب کاربری خود شوید"
           description="برای مشاهده سوابق خرید، مدیریت آدرس‌ها و اطلاعات شخصی ابتدا وارد حساب خود شوید."
           actionText="ورود به حساب کاربری"
