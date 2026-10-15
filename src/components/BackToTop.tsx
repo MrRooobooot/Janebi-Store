@@ -5,8 +5,8 @@ import { ArrowUp } from 'lucide-react';
 export default function BackToTop() {
   const location = useLocation();
   const [isVisible, setIsVisible] = useState(false);
-  // Both /products/:id and the /product/:id alias carry the sticky purchase bar.
-  const abovePurchaseBar = /^\/products?\/[^/]/.test(location.pathname);
+  // /products/:id (and the /product/:id alias), /cart and /checkout carry a sticky bottom bar.
+  const abovePurchaseBar = /^\/(products?\/[^/]|cart|checkout)/.test(location.pathname);
 
   useEffect(() => {
     const toggleVisibility = () => {
