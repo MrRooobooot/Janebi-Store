@@ -17,6 +17,7 @@ const ROUTE_NAMES: Record<string, string> = {
   '/products': 'محصولات',
   '/cart': 'سبد خرید',
   '/checkout': 'تسویه حساب',
+  '/checkout/callback': 'نتیجه‌ی پرداخت',
   '/wishlist': 'علاقه‌مندی‌ها',
   '/profile': 'حساب کاربری',
   '/compare': 'مقایسه محصولات',
