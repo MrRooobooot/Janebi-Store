@@ -46,6 +46,28 @@ const PRESET_GALLERY = [
   { id: 'pb-7', category: 'پاوربانک', brand: 'Baseus', label: 'پاوربانک 65W با نمایشگر دیجیتال', url: '/products/pb-7.svg' },
 ];
 
+// Phone photos are often 5-12MB (or HEIC). Re-encode anything large to a
+// 1800px JPEG in the browser so the upload never trips the server size limit.
+async function shrinkPhoto(file: File): Promise<Blob> {
+  if (file.size <= 1.5 * 1024 * 1024 && /^image\/(jpeg|png|webp)$/.test(file.type)) return file;
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, 1800 / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return file;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, 'image/jpeg', 0.88));
+    return blob ?? file;
+  } catch {
+    return file;
+  }
+}
+
 export default function AdminProducts() {
   const { addToast } = useToast();
   const [products, setProducts] = useState<Product[]>([]);
@@ -216,7 +238,7 @@ export default function AdminProducts() {
     setUploading(true);
     try {
       const form = new FormData();
-      form.append('image', file);
+      form.append('image', await shrinkPhoto(file), file.name.replace(/\.[^.]+$/, '') + '.jpg');
       const res = await authFetch('/api/admin/upload/product-image', {
         method: 'POST',
         headers: {},
@@ -829,14 +851,14 @@ export default function AdminProducts() {
                   </div>
                 </div>
 
-                {/* Real photo upload — POST /api/admin/upload/product-image (JPEG/PNG/WebP ≤5MB) */}
+                {/* Real photo upload — POST /api/admin/upload/product-image (JPEG/PNG/WebP, large photos auto-resized) */}
                 <div className="flex items-center gap-2 mb-3">
                   <label className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800 text-sky-700 dark:text-sky-300 text-xs font-bold cursor-pointer hover:bg-sky-100 dark:hover:bg-sky-900/40 transition-colors">
                     <Upload className="h-3.5 w-3.5" />
                     {uploading ? 'در حال آپلود...' : 'آپلود عکس واقعی (JPG/PNG/WebP)'}
                     <input
                       type="file"
-                      accept="image/jpeg,image/png,image/webp"
+                      accept="image/*"
                       className="hidden"
                       disabled={uploading}
                       onChange={handleImageUpload}

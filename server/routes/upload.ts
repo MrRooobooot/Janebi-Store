@@ -14,7 +14,7 @@ import { authenticate, requireAdmin } from '../middleware/auth.js';
 const router = Router();
 
 const UPLOAD_DIR = path.resolve(process.cwd(), 'public', 'images', 'products');
-const MAX_BYTES = 5 * 1024 * 1024;
+const MAX_BYTES = 10 * 1024 * 1024;
 
 const ALLOWED: Record<string, string> = {
   'image/jpeg': 'jpg',
@@ -35,7 +35,21 @@ const upload = multer({
 
 router.use(authenticate, requireAdmin);
 
-router.post('/product-image', upload.single('image'), ((req: any, res) => {
+// Multer failures (oversize, wrong type) must reach the admin as a readable 4xx,
+// not fall through to the generic 500 «خطای داخلی سرور».
+const receiveImage: import('express').RequestHandler = (req, res, next) => {
+  upload.single('image')(req, res, (err: unknown) => {
+    if (!err) return next();
+    const code = (err as { code?: string }).code;
+    if (code === 'LIMIT_FILE_SIZE') {
+      return res.status(413).json({ message: 'حجم عکس بیشتر از ۱۰ مگابایت است — عکس کوچک‌تری انتخاب کنید' });
+    }
+    const message = err instanceof Error ? err.message : 'آپلود عکس ناموفق بود';
+    return res.status(400).json({ message });
+  });
+};
+
+router.post('/product-image', receiveImage, ((req: any, res) => {
   if (!req.file) return res.status(400).json({ message: 'فایلی ارسال نشد' });
   // Defense-in-depth: verify magic bytes, not just mimetype
   const buf = req.file.buffer;
