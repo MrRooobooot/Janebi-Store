@@ -92,10 +92,10 @@ export default function Compare() {
 
       <div className="bg-[var(--color-surface-light)]/80 dark:bg-[var(--color-surface-dark)]/80 backdrop-blur-xl border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] rounded-2xl overflow-hidden shadow-xs transition-colors">
         <div className="overflow-x-auto custom-scrollbar pb-2">
-          <table className="w-full min-w-[900px] text-right border-collapse">
+          <table className="w-full min-w-[560px] sm:min-w-[900px] text-right border-collapse">
             <thead>
               <tr>
-                <th className="p-6 border-b border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 bg-[var(--color-canvas-light)]/50 dark:bg-[var(--color-canvas-dark)]/50 w-1/4 align-top">
+                <th className="sticky right-0 z-10 p-4 sm:p-6 border-b border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] w-1/4 align-top">
                   <div className="text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] font-bold text-lg mb-2">
                     مشخصات کالاها
                   </div>
@@ -182,7 +182,7 @@ export default function Compare() {
             </thead>
             <tbody className="divide-y divide-[var(--color-border-light)] dark:divide-[var(--color-border-dark)]/60">
               <tr className="hover:bg-[var(--color-canvas-light)]/50 dark:hover:bg-[var(--color-canvas-dark)]/30 transition-colors">
-                <td className="p-4 font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] bg-[var(--color-canvas-light)]/50 dark:bg-[var(--color-canvas-dark)]/30 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 w-1/4 text-xs sm:text-sm">
+                <td className="sticky right-0 z-10 p-3 sm:p-4 font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 w-1/4 text-xs sm:text-sm">
                   <div className="flex items-center gap-2">
                     <Tag className="h-4 w-4 text-[var(--color-emphasis-text)]" /> برند سازنده
                   </div>
@@ -205,7 +205,7 @@ export default function Compare() {
                 ))}
               </tr>
               <tr className="hover:bg-[var(--color-canvas-light)]/50 dark:hover:bg-[var(--color-canvas-dark)]/30 transition-colors">
-                <td className="p-4 font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] bg-[var(--color-canvas-light)]/50 dark:bg-[var(--color-canvas-dark)]/30 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-xs sm:text-sm">
+                <td className="sticky right-0 z-10 p-3 sm:p-4 font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-xs sm:text-sm">
                   <div className="flex items-center gap-2">
                     <Info className="h-4 w-4 text-[var(--color-emphasis-text)]" /> دسته‌بندی
                   </div>
@@ -230,7 +230,7 @@ export default function Compare() {
                 ))}
               </tr>
               <tr className="hover:bg-[var(--color-canvas-light)]/50 dark:hover:bg-[var(--color-canvas-dark)]/30 transition-colors">
-                <td className="p-4 font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] bg-[var(--color-canvas-light)]/50 dark:bg-[var(--color-canvas-dark)]/30 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-xs sm:text-sm">
+                <td className="sticky right-0 z-10 p-3 sm:p-4 font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-xs sm:text-sm">
                   <div className="flex items-center gap-2">
                     <ShieldCheck className="h-4 w-4 text-emerald-500" /> گارانتی
                   </div>
@@ -264,7 +264,7 @@ export default function Compare() {
                   key={feature}
                   className="hover:bg-[var(--color-canvas-light)]/50 dark:hover:bg-[var(--color-canvas-dark)]/30 transition-colors"
                 >
-                  <td className="p-4 font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] bg-[var(--color-canvas-light)]/50 dark:bg-[var(--color-canvas-dark)]/30 border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-xs sm:text-sm">
+                  <td className="sticky right-0 z-10 p-3 sm:p-4 font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] border-l border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]/60 text-xs sm:text-sm">
                     <div className="flex items-center gap-2">
                       <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent-surface)] shrink-0"></div> {feature}
                     </div>
