@@ -78,10 +78,10 @@ export default function ChatWidget() {
       return 'تمامی محصولات جانبی آرنا دارای ۷ روز مهلت تست و ضمانت اصالت کالا هستند. در صورت وجود هرگونه مشکل فنی می‌توانید کالا را مرجوع کنید.';
     }
     if (text.includes('ساعت') || text.includes('تماس') || text.includes('پشتیبانی')) {
-      return `پشتیبانی ما ${settings.supportHours} پاسخگوی شماست (تلفن: ${settings.phone}).`;
+      return `پشتیبانی ما ${settings.supportHours} پاسخگوی شماست${settings.phone ? ` (تلفن: ${settings.phone})` : ''}.`;
     }
     
-    return 'این راهنما پاسخ خودکار است. برای پاسخ دقیق‌تر، تلفن پشتیبانی را تماس بگیرید یا از صفحه «تماس با ما» پیام بگذارید — تیم ما پاسخ می‌دهد.';
+    return 'این راهنما پاسخ خودکار است. برای پاسخ دقیق‌تر از صفحه «تماس با ما» پیام بگذارید — تیم ما پاسخ می‌دهد.';
   };
 
   const handleSend = (textToSend?: string) => {

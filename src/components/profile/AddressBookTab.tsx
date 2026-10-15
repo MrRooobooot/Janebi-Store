@@ -34,8 +34,8 @@ export default function AddressBookTab() {
   const [title, setTitle] = useState('خانه');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [province, setProvince] = useState('تهران');
-  const [city, setCity] = useState('تهران');
+  const [province, setProvince] = useState('خراسان رضوی');
+  const [city, setCity] = useState('مشهد');
   const [address, setAddress] = useState('');
   const [postalCode, setPostalCode] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -58,8 +58,8 @@ export default function AddressBookTab() {
     setTitle('خانه');
     setName(user?.name || '');
     setPhone(user?.phone || '');
-    setProvince('تهران');
-    setCity('تهران');
+    setProvince('خراسان رضوی');
+    setCity('مشهد');
     setAddress('');
     setPostalCode('');
     setShowModal(true);
@@ -70,8 +70,8 @@ export default function AddressBookTab() {
     setTitle(addr.title || 'خانه');
     setName(addr.name || '');
     setPhone(addr.phone || '');
-    setProvince(addr.province || 'تهران');
-    setCity(addr.city || 'تهران');
+    setProvince(addr.province || 'خراسان رضوی');
+    setCity(addr.city || 'مشهد');
     setAddress(addr.address || '');
     setPostalCode(addr.postalCode || '');
     setShowModal(true);

@@ -37,7 +37,7 @@ export const ARCHIVE_AFTER_DAYS = 90;
  */
 export const STORE_SETTINGS_DEFAULTS: Record<string, string> = {
   storeName: 'جانبی آرنا',
-  phone: '۰۲۱-۸۸۸۸۹۹۹۹',
+  phone: '', // set the real number in Admin → Settings; an empty value hides every phone line
   email: 'info@janebiarena.ir',
   supportHours: 'همه روزه از ساعت ۹:۰۰ الی ۲۱:۰۰',
   address: 'مشهد، شهرک غرب',

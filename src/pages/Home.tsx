@@ -18,6 +18,34 @@ import { toPersianDigits, normalizePersianTypography, formatPrice } from '../lib
 import { useStoreSettings } from '../hooks/useStoreSettings';
 import { STORE_SETTINGS_DEFAULTS } from '../lib/constants';
 
+function SectionHeading({ eyebrow, title, subtitle, to, linkLabel = 'مشاهده همه' }: {
+  eyebrow?: string; title: string; subtitle?: string; to?: string; linkLabel?: string;
+}) {
+  return (
+    <div className="mb-4 flex items-end justify-between gap-3 sm:mb-6">
+      <div className="min-w-0">
+        {eyebrow ? (
+          <p className="mb-1 flex items-center gap-2 text-xs font-bold text-[var(--color-emphasis-text)]">
+            <span className="h-1 w-5 rounded-full bg-[var(--color-cta)]" aria-hidden="true" />
+            {eyebrow}
+          </p>
+        ) : null}
+        <h2 className="text-xl font-black leading-tight text-slate-900 dark:text-white sm:text-3xl">{title}</h2>
+        {subtitle ? <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">{subtitle}</p> : null}
+      </div>
+      {to ? (
+        <Link
+          to={to}
+          className="inline-flex min-h-11 shrink-0 items-center gap-1 rounded-full border border-slate-200 bg-white px-3.5 text-xs font-bold text-slate-800 transition-colors hover:border-[var(--color-cta)]/50 hover:text-[var(--color-emphasis-text)] dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-100"
+        >
+          {linkLabel}
+          <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
+        </Link>
+      ) : null}
+    </div>
+  );
+}
+
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
@@ -107,6 +135,15 @@ export default function Home() {
       .sort((a, b) => b.id - a.id)
       .slice(0, 8);
   }, [products, filteredProducts]);
+  // One real photo per category, taken from its newest in-stock product — no stock imagery.
+  const categoryCovers = useMemo(() => {
+    const covers = new Map<string, string>();
+    [...products]
+      .filter((p) => (p.stockQuantity || 0) > 0 && /\.(webp|png|jpe?g)(\?|$)/i.test(p.image || ''))
+      .sort((a, b) => b.id - a.id)
+      .forEach((p) => { if (p.category && !covers.has(p.category)) covers.set(p.category, p.image); });
+    return covers;
+  }, [products]);
   const catalogueHref = activeTab === 'all'
     ? '/products'
     : `/products?category=${encodeURIComponent(activeTab)}`;
@@ -144,7 +181,7 @@ export default function Home() {
         <h1 className="sr-only">فروشگاه لوازم جانبی موبایل و تبلت | جانبی آرنا</h1>
         {heroSlides.length > 0 && (
         <div
-          className="relative aspect-[3/2] overflow-hidden rounded-3xl sm:aspect-[2/1] shadow-lg touch-pan-y"
+          className="relative aspect-[3/2] overflow-hidden rounded-3xl sm:aspect-[5/2] lg:aspect-[3/1] shadow-lg touch-pan-y"
           onTouchStart={(e) => { mobileTouchX.current = e.touches[0].clientX; }}
           onTouchEnd={(e) => {
             const dx = e.changedTouches[0].clientX - mobileTouchX.current;
@@ -163,24 +200,30 @@ export default function Home() {
               className="absolute inset-0 transition-opacity duration-700 ease-out motion-reduce:transition-none"
               style={{ opacity: idx === activeSlide ? 1 : 0, pointerEvents: idx === activeSlide ? 'auto' : 'none' }}
             >
-                <span className="absolute inset-0 flex items-stretch gap-3 bg-gradient-to-l from-rose-50 via-white to-slate-100 p-3 dark:from-[#1a1020] dark:via-[#0e1629] dark:to-[#0b1222] sm:gap-8 sm:p-6">
-                  <span className="relative z-10 flex w-[52%] flex-col justify-center gap-1 pb-10 pr-1 sm:gap-3 sm:pb-14 sm:pr-4">
-                    <span className="w-fit rounded-full bg-[var(--color-cta)]/10 px-2.5 py-0.5 text-xs font-bold text-[var(--color-emphasis-text)] sm:text-sm">{slide.kicker}</span>
-                    <span className="line-clamp-2 text-sm font-black leading-snug text-slate-900 dark:text-white sm:text-3xl sm:leading-tight">{slide.title}</span>
-                    <span className="flex flex-wrap items-baseline gap-x-2 text-slate-900 dark:text-white">
-                      <span className="text-base font-black sm:text-2xl">{formatPrice(slide.ad.price)}</span>
+                <span className="absolute inset-0 flex items-stretch gap-3 overflow-hidden bg-gradient-to-bl from-rose-100 via-white to-slate-100 p-3 dark:from-[#2a1424] dark:via-[#0e1629] dark:to-[#0b1222] sm:gap-10 sm:p-8">
+                  <span aria-hidden="true" className="pointer-events-none absolute -left-16 -top-16 h-64 w-64 rounded-full bg-[var(--color-cta)]/20 blur-3xl" />
+                  <span aria-hidden="true" className="pointer-events-none absolute -bottom-24 right-1/3 h-56 w-56 rounded-full bg-sky-400/10 blur-3xl" />
+                  <span className="relative z-10 flex w-[52%] flex-col justify-center gap-1.5 pb-10 pr-1 sm:gap-4 sm:pb-14 sm:pr-4">
+                    <span className="flex w-fit items-center gap-1.5 rounded-full bg-white/80 px-2.5 py-1 text-[11px] font-bold text-[var(--color-emphasis-text)] shadow-sm ring-1 ring-black/5 dark:bg-white/10 dark:ring-white/10 sm:text-sm">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-cta)]" aria-hidden="true" />
+                      {slide.kicker}
+                    </span>
+                    <span className="line-clamp-2 text-[15px] font-black leading-snug text-slate-900 dark:text-white sm:text-4xl sm:leading-[1.3]">{slide.title}</span>
+                    <span className="flex flex-wrap items-center gap-2 text-slate-900 dark:text-white">
+                      <span className="text-lg font-black sm:text-3xl">{formatPrice(slide.ad.price)}</span>
                       {slide.ad.discount ? (
-                        <span className="rounded-md bg-[var(--color-cta)] px-1.5 py-0.5 text-xs font-bold text-white">{toPersianDigits(slide.ad.discount)}٪</span>
+                        <span className="rounded-lg bg-[var(--color-cta)] px-2 py-0.5 text-xs font-black text-white sm:text-sm">{toPersianDigits(slide.ad.discount)}٪ تخفیف</span>
                       ) : null}
                     </span>
-                    <span className="mt-1 inline-flex w-fit items-center gap-1.5 rounded-xl bg-[var(--color-cta)] px-3 py-1.5 text-xs font-bold text-white sm:px-5 sm:py-2.5 sm:text-sm">
+                    <span className="mt-1 inline-flex w-fit items-center gap-1.5 rounded-xl bg-slate-900 px-3.5 py-2 text-xs font-bold text-white shadow-lg shadow-slate-900/20 dark:bg-white dark:text-slate-900 sm:px-6 sm:py-3 sm:text-sm">
                       {slide.action}
                       <ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     </span>
                   </span>
                   <span className="relative flex flex-1 items-center justify-center pb-8 sm:pb-12">
-                    <span className="flex aspect-square h-full max-h-full items-center justify-center overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-black/5">
-                      <img src={slide.image} alt="" loading={idx === 0 ? 'eager' : 'lazy'} className="h-full w-full object-contain p-2" />
+                    <span className="absolute inset-[8%] rounded-[2rem] bg-white/60 blur-2xl dark:bg-white/5" aria-hidden="true" />
+                    <span className="relative flex aspect-square h-full max-h-full -rotate-2 items-center justify-center overflow-hidden rounded-[1.75rem] bg-white shadow-2xl ring-1 ring-black/5 dark:bg-[#dfe3ea]">
+                      <img src={slide.image} alt="" loading={idx === 0 ? 'eager' : 'lazy'} className="h-full w-full object-contain p-3 dark:mix-blend-multiply" />
                     </span>
                   </span>
                 </span>
@@ -224,15 +267,17 @@ export default function Home() {
           )}
         </div>
         )}
-        <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 lg:grid-cols-4">
+        <div className="mt-4 grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4">
           {valueProps.map((item) => {
             const Icon = item.icon;
             return (
-              <div key={item.title} className="flex items-start gap-2">
-                <Icon className="mt-0.5 h-4 w-4 shrink-0 text-slate-500" />
+              <div key={item.title} className="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-white p-3 shadow-sm dark:border-white/[0.08] dark:bg-[var(--color-surface-dark)] sm:p-4">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--color-cta)]/10 sm:h-10 sm:w-10 text-[var(--color-emphasis-text)]">
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                </span>
                 <span className="min-w-0">
-                  <span className="block text-xs font-bold leading-snug text-slate-900 dark:text-white">{item.title}</span>
-                  <span className="mt-0.5 block text-xs leading-snug text-slate-500 dark:text-slate-400">{item.desc}</span>
+                  <span className="block text-[13px] font-black leading-snug text-slate-900 dark:text-white">{item.title}</span>
+                  <span className="mt-0.5 hidden text-xs leading-relaxed text-slate-600 dark:text-slate-400 sm:block">{item.desc}</span>
                 </span>
               </div>
             );
@@ -240,31 +285,29 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="w-full lg:mx-auto lg:max-w-2xl">
-        <div className="mb-4 flex items-end justify-between gap-3 sm:mb-6">
-          <div>
-            <h2 className="text-lg font-black text-slate-900 dark:text-white sm:text-2xl">دسته‌بندی‌های تخصصی</h2>
-          </div>
-          <Link to="/products" className="inline-flex min-h-11 shrink-0 items-center gap-1 text-xs font-bold text-[var(--color-emphasis-text)]">
-            کاتالوگ
-            <ArrowLeft className="h-3.5 w-3.5" />
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 gap-3">
+      <section className="w-full">
+        <SectionHeading eyebrow="دسته‌بندی" title="دسته‌بندی‌های تخصصی" to="/products" linkLabel="کاتالوگ" />
+        <div className="grid grid-cols-2 gap-3 sm:gap-4">
           {categories.map((cat) => {
             const Icon = cat.icon;
+            const cover = categoryCovers.get(cat.title);
             return (
               <Link
                 key={cat.slug || cat.title}
                 to={`/products?category=${encodeURIComponent(cat.title)}`}
-                className="group flex min-h-[88px] items-center gap-3 rounded-2xl border border-slate-200/80 bg-white p-3 dark:border-white/[0.08] dark:bg-[var(--color-surface-dark)]"
+                className="group relative flex min-h-[150px] flex-col justify-between overflow-hidden rounded-3xl border border-slate-200/80 bg-gradient-to-br from-white to-slate-100 p-4 transition-shadow hover:shadow-xl dark:border-white/[0.08] dark:from-[#101a2e] dark:to-[#0b1222] sm:min-h-[190px] sm:p-6"
               >
-                <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${getCategoryWell(cat.title)}`}>
+                {cover ? (
+                  <span className="absolute -left-3 -top-3 flex h-24 w-24 rotate-6 sm:left-8 sm:top-1/2 sm:-translate-y-1/2 sm:rotate-3 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-black/5 transition-transform duration-300 group-hover:rotate-3 group-hover:scale-105 motion-reduce:transition-none dark:bg-[#dfe3ea] sm:h-36 sm:w-36">
+                    <img src={cover} alt="" loading="lazy" className="h-full w-full object-contain p-2 dark:mix-blend-multiply" />
+                  </span>
+                ) : null}
+                <span className={`relative flex h-11 w-11 items-center justify-center rounded-xl ${getCategoryWell(cat.title)}`}>
                   <Icon className="h-6 w-6 stroke-[1.75]" aria-hidden />
                 </span>
-                <span>
-                  <span className="block text-sm font-black leading-snug text-slate-900 transition-colors group-hover:text-[var(--color-emphasis-text)] dark:text-white">{cat.title}</span>
-                  <span className="mt-1 block text-xs text-slate-500 dark:text-slate-400">{toPersianDigits(cat.count || 0)} کالا</span>
+                <span className="relative">
+                  <span className="block text-base font-black leading-snug text-slate-900 transition-colors group-hover:text-[var(--color-emphasis-text)] dark:text-white sm:text-xl">{cat.title}</span>
+                  <span className="mt-1 block text-xs font-semibold text-slate-600 dark:text-slate-400">{toPersianDigits(cat.count || 0)} کالا</span>
                 </span>
               </Link>
             );
@@ -274,17 +317,8 @@ export default function Home() {
 
       {/* 6. Trending Products Tabs Focus on Core Categories */}
       <section className="w-full">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5">
-          <div className="flex min-w-0 flex-wrap items-end gap-x-3 gap-y-1">
-            <div className="min-w-0">
-              <h2 className="text-lg font-black text-slate-900 dark:text-white sm:text-2xl">کالاهای برگزیده بازار</h2>
-            </div>
-            <Link to={catalogueHref} className="inline-flex min-h-11 shrink-0 items-center gap-1 text-xs font-bold text-[var(--color-emphasis-text)]">
-              مشاهده همه
-              <ArrowLeft className="h-3.5 w-3.5" />
-            </Link>
-          </div>
-
+        <SectionHeading eyebrow="منتخب" title="کالاهای برگزیده بازار" to={catalogueHref} />
+        <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           {/* Live category tabs — equality on the catalogue name, not a substring guess */}
           <div className="flex flex-wrap items-center gap-1.5">
             {[{ id: 'all', label: 'همه' }, ...categories.map((cat) => ({ id: cat.title as string, label: cat.title as string }))].map((tab) => (
@@ -329,18 +363,14 @@ export default function Home() {
       </section>
 
       {(loading || dealProducts.length > 0) && (
-      <section className="w-full">
-        <div className="mb-4 flex items-end justify-between gap-3 sm:mb-6">
-          <div className="min-w-0">
-            <p className="text-xs text-slate-500">پیشنهاد</p>
-            <h2 className="mt-1 text-lg font-black text-slate-900 dark:text-white sm:text-2xl">{normalizePersianTypography(settings.dealsTitle || STORE_SETTINGS_DEFAULTS.dealsTitle)}</h2>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">{normalizePersianTypography(settings.dealsSubtitle || STORE_SETTINGS_DEFAULTS.dealsSubtitle)}</p>
-          </div>
-          <Link to="/offers" className="inline-flex shrink-0 items-center gap-1 text-sm font-bold text-[var(--color-cta)]">
-            همه پیشنهادها
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
-        </div>
+      <section className="w-full rounded-3xl bg-gradient-to-bl from-rose-50 via-white to-white p-3 ring-1 ring-rose-100 dark:from-[#2a1424]/70 dark:via-[#0e1629] dark:to-[#0b1222] dark:ring-white/[0.06] sm:p-6">
+        <SectionHeading
+          eyebrow="پیشنهاد"
+          title={normalizePersianTypography(settings.dealsTitle || STORE_SETTINGS_DEFAULTS.dealsTitle)}
+          subtitle={normalizePersianTypography(settings.dealsSubtitle || STORE_SETTINGS_DEFAULTS.dealsSubtitle)}
+          to="/offers"
+          linkLabel="همه پیشنهادها"
+        />
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
           {loading ? (
             Array.from({ length: 4 }).map((_, i) => (
@@ -357,13 +387,7 @@ export default function Home() {
 
       {!loading && dealProducts.length === 0 && latestProducts.length > 0 && (
       <section className="w-full">
-        <div className="mb-4 flex items-end justify-between gap-3 sm:mb-6">
-          <h2 className="text-lg font-black text-slate-900 dark:text-white sm:text-2xl">جدیدترین‌ها</h2>
-          <Link to="/products" className="inline-flex min-h-11 shrink-0 items-center gap-1 text-xs font-bold text-[var(--color-emphasis-text)]">
-            مشاهده همه
-            <ArrowLeft className="h-3.5 w-3.5" />
-          </Link>
-        </div>
+        <SectionHeading eyebrow="تازه رسیده" title="جدیدترین‌ها" to="/products" />
         <div className="-mx-3 flex snap-x gap-3 overflow-x-auto px-3 pb-2 sm:mx-0 sm:px-0">
           {latestProducts.map((p) => (
             <div key={p.id} className="w-40 shrink-0 snap-start sm:w-52">

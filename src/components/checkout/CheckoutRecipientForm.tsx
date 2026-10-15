@@ -50,8 +50,8 @@ export default function CheckoutRecipientForm({
     setSelectedAddrId(addr.id);
     updateField('name', addr.name || '');
     updateField('phone', normalizeIranianMobile(addr.phone || ''));
-    updateField('province', addr.province || 'تهران');
-    updateField('city', addr.city || 'تهران');
+    updateField('province', addr.province || 'خراسان رضوی');
+    updateField('city', addr.city || 'مشهد');
     updateField('address', addr.address || '');
     updateField('postalCode', addr.postalCode || '');
   };
@@ -221,7 +221,7 @@ export default function CheckoutRecipientForm({
             type="text"
             value={formData.city}
             onChange={(e) => updateField('city', e.target.value)}
-            placeholder="مثلا: تهران"
+            placeholder="مثلا: مشهد"
             className={`field w-full py-3 px-4 text-xs font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] focus:outline-none transition-colors ${
               fieldErrors.city
                 ? 'border-rose-400 focus:border-rose-500'

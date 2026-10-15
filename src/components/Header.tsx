@@ -131,8 +131,12 @@ export default function Header() {
               </button>
             ) : null}
             <p className="hidden items-center gap-2 text-xs text-slate-600 dark:text-slate-400 md:flex">
-              <span>{toPersianDigits(settings.phone)}</span>
-              <span aria-hidden="true" className="h-3 w-px bg-slate-300 dark:bg-white/15" />
+              {settings.phone ? (
+                <>
+                  <span>{toPersianDigits(settings.phone)}</span>
+                  <span aria-hidden="true" className="h-3 w-px bg-slate-300 dark:bg-white/15" />
+                </>
+              ) : null}
               <span>{toPersianDigits(settings.supportHours)}</span>
             </p>
           </div>

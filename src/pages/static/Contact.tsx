@@ -78,6 +78,7 @@ export default function Contact() {
             </div>
           </div>
 
+          {settings.phone ? (
           <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs flex items-start gap-4">
             <div className="p-3 bg-blue-100 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 rounded-xl shrink-0">
               <Phone className="h-6 w-6" />
@@ -90,6 +91,7 @@ export default function Contact() {
               <p className="text-xs text-gray-500 mt-1">خط ویژه سفارشات تلفنی</p>
             </div>
           </div>
+          ) : null}
 
           <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-6 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs flex items-start gap-4">
             <div className="p-3 bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 rounded-xl shrink-0">
