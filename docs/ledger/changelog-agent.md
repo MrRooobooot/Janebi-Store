@@ -4,6 +4,11 @@
 > **Role:** agent-facing change log — commit, what moved, how it was verified.
 > Open work and priorities live in `docs/ledger/tasks.md`; the system map lives in `docs/reference/project-graph.md`. On 2026-10-13 the entries dated 2026-08-28 to 2026-09-02 were moved from the old `## [date] - title` style to this heading format, and all entries were sorted newest first. Entry text is unchanged.
 
+## 2026-10-15 — Contact details: real email and address — live (see release below)
+- `src/lib/constants.ts` `STORE_SETTINGS_DEFAULTS`: `email` → `info@janebiarena.ir`, `address` → «مشهد، شهرک غرب» (home-run shop, no storefront; street left out by the owner). `public/.well-known/security.txt` contact updated. Production has no `store_settings` rows for these keys, so the defaults are what is served.
+- **Not changed, waiting on the owner:** phone. The number given (`099389070955`) has 12 digits, so it is not a valid mobile (11 digits). `phone` still shows the seed placeholder, as do `public/llms.txt` and the JSON-LD `telephone` in `index.html`.
+- Open: `src/pages/static/About.tsx` promises delivery «در کمتر از ۲۴ ساعت در تهران»; the shop is in Mashhad.
+
 ## 2026-10-15 — Hero fully catalogue-driven; dark-mode photo plate — live (see release below)
 - `src/pages/Home.tsx`: removed the hard-coded `HERO_COPY` category slides. The hero shows only ads built from live products (photo, name, price, discount from the API) and is hidden when the catalogue has none. `public/images/hero/holder.webp` and `cable.webp` are no longer referenced.
 - `src/components/ProductCard.tsx`, `src/pages/ProductDetail.tsx`: in dark mode studio photos sit on a soft grey plate (`#dfe3ea`) and multiply into it, so white backdrops no longer read as glaring rectangles. Light mode unchanged.
