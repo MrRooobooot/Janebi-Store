@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, memo } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, ShieldCheck, Heart, Scale, CheckCircle2, Star, Sparkles } from 'lucide-react';
+import { ShoppingCart, ShieldCheck, Heart, Scale, CheckCircle2, Star } from 'lucide-react';
 import { useWishlist } from '../contexts/WishlistContext';
 import { useCompare } from '../contexts/CompareContext';
 import { useToast } from '../contexts/ToastContext';
@@ -62,11 +62,7 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
               <span>{toPersianDigits(product.discount)}٪</span>
               <span>تخفیف</span>
             </span>
-          ) : (
-            <span className="hidden sm:inline-flex h-6 max-w-[60%] shrink items-center overflow-hidden text-ellipsis whitespace-nowrap rounded-full bg-slate-900/55 px-2.5 text-xs font-bold text-white">
-              {product.brand || 'اورجینال'}
-            </span>
-          )}
+          ) : null}
           {variant === 'full' && (
             <div className="pointer-events-auto ms-auto flex shrink-0 items-center gap-1.5">
               <button
@@ -143,27 +139,12 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
           <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-slate-100 line-clamp-2 leading-snug min-h-10 sm:min-h-12 flex items-start group-hover:text-[var(--color-emphasis-text)] dark:group-hover:text-[var(--color-emphasis-text)] transition-colors mb-1.5 [text-wrap:balance]">
             {product.title}
           </h3>
-          {product.sku ? (
-            <p dir="ltr" className="font-mono text-xs leading-tight text-slate-500 dark:text-slate-400 mb-1.5 text-right">
-              {product.sku}
-            </p>
-          ) : null}
-
-          {variant === 'full' && (
-          <div className="hidden sm:flex h-5 items-center text-xs text-slate-500 dark:text-slate-400 font-medium truncate">
-            {product.warranty ? (
-              <div className="flex items-center gap-1 truncate">
-                <ShieldCheck className="h-3 w-3 text-emerald-500 shrink-0" />
-                <span className="truncate">{product.warranty}</span>
-              </div>
-            ) : (
-              <div className="flex items-center gap-1 truncate text-slate-500 dark:text-slate-400">
-                <Sparkles className="h-3 w-3 text-amber-500/80 shrink-0" />
-                <span className="truncate">تضمین سلامت فیزیکی</span>
-              </div>
-            )}
+          {variant === 'full' && product.warranty ? (
+          <div className="hidden sm:flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 font-medium truncate">
+            <ShieldCheck className="h-3 w-3 text-emerald-500 shrink-0" />
+            <span className="truncate">{product.warranty}</span>
           </div>
-          )}
+          ) : null}
         </Link>
 
       {/* 5. Footer: Price & Add-To-Cart CTA — pinned to card bottom (never bleeds out) */}
@@ -176,15 +157,13 @@ const ProductCard = memo(function ProductCard({ product, variant = 'full' }: { p
               <span className="text-xs text-slate-500 dark:text-slate-400 line-through leading-tight tabular-nums">
                 {formatPrice(product.originalPrice).replace(' تومان', '')}
               </span>
-            ) : (
-              <span className="text-xs leading-tight invisible" aria-hidden="true">
-                ·
+            ) : null}
+            <div className="flex flex-wrap items-baseline gap-x-1 leading-tight">
+              <span className="text-sm sm:text-base font-black text-[var(--color-emphasis-text)] tracking-tight">
+                {formatPrice(product.price).replace(' تومان', '')}
               </span>
-            )}
-            <div className="text-sm sm:text-base font-bold text-[var(--color-emphasis-text)] tracking-tight leading-tight">
-              {formatPrice(product.price).replace(' تومان', '')}
+              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">تومان</span>
             </div>
-            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 leading-tight">تومان</span>
           </div>
 
           {/* Primary Action Button */}

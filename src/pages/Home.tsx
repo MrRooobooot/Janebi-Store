@@ -112,6 +112,14 @@ export default function Home() {
     () => pickHomeProducts(products, activeTab),
     [products, activeTab],
   );
+  const latestProducts = useMemo(() => {
+    const shown = new Set(filteredProducts.map((p) => p.id));
+    return [...products]
+      .filter((p) => (p.stockQuantity || 0) > 0 && !shown.has(p.id))
+      .filter((p) => /\.(webp|png|jpe?g)(\?|$)/i.test(p.image || ''))
+      .sort((a, b) => b.id - a.id)
+      .slice(0, 8);
+  }, [products, filteredProducts]);
   const catalogueHref = activeTab === 'all'
     ? '/products'
     : `/products?category=${encodeURIComponent(activeTab)}`;
@@ -216,7 +224,7 @@ export default function Home() {
             </div>
           )}
         </div>
-        <div className="mt-4 hidden gap-x-4 gap-y-3 lg:grid lg:grid-cols-4">
+        <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 lg:grid-cols-4">
           {valueProps.map((item) => {
             const Icon = item.icon;
             return (
@@ -249,10 +257,10 @@ export default function Home() {
               <Link
                 key={cat.slug || cat.title}
                 to={`/products?category=${encodeURIComponent(cat.title)}`}
-                className="group flex min-h-[168px] flex-col items-center justify-center gap-3 rounded-3xl border border-slate-200/80 bg-white p-4 text-center dark:border-white/[0.08] dark:bg-[var(--color-surface-dark)]"
+                className="group flex min-h-[88px] items-center gap-3 rounded-2xl border border-slate-200/80 bg-white p-3 dark:border-white/[0.08] dark:bg-[var(--color-surface-dark)]"
               >
-                <span className={`flex h-16 w-16 items-center justify-center rounded-2xl ${getCategoryWell(cat.title)}`}>
-                  <Icon className="h-8 w-8 stroke-[1.75]" aria-hidden />
+                <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${getCategoryWell(cat.title)}`}>
+                  <Icon className="h-6 w-6 stroke-[1.75]" aria-hidden />
                 </span>
                 <span>
                   <span className="block text-sm font-black leading-snug text-slate-900 transition-colors group-hover:text-[var(--color-emphasis-text)] dark:text-white">{cat.title}</span>
@@ -320,21 +328,6 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="grid grid-cols-2 gap-x-4 gap-y-3 lg:hidden">
-        {valueProps.map((item) => {
-          const Icon = item.icon;
-          return (
-            <div key={item.title} className="flex items-start gap-2">
-              <Icon className="mt-0.5 h-4 w-4 shrink-0 text-slate-500" />
-              <span className="min-w-0">
-                <span className="block text-xs font-bold leading-snug text-slate-900 dark:text-white">{item.title}</span>
-                <span className="mt-0.5 block text-xs leading-snug text-slate-500 dark:text-slate-400">{item.desc}</span>
-              </span>
-            </div>
-          );
-        })}
-      </div>
-
       {(loading || dealProducts.length > 0) && (
       <section className="w-full">
         <div className="mb-4 flex items-end justify-between gap-3 sm:mb-6">
@@ -358,6 +351,25 @@ export default function Home() {
               <ProductCard key={p.id} product={p} variant="compact" />
             ))
           )}
+        </div>
+      </section>
+      )}
+
+      {!loading && dealProducts.length === 0 && latestProducts.length > 0 && (
+      <section className="w-full">
+        <div className="mb-4 flex items-end justify-between gap-3 sm:mb-6">
+          <h2 className="text-lg font-black text-slate-900 dark:text-white sm:text-2xl">جدیدترین‌ها</h2>
+          <Link to="/products" className="inline-flex min-h-11 shrink-0 items-center gap-1 text-xs font-bold text-[var(--color-emphasis-text)]">
+            مشاهده همه
+            <ArrowLeft className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+        <div className="-mx-3 flex snap-x gap-3 overflow-x-auto px-3 pb-2 sm:mx-0 sm:px-0">
+          {latestProducts.map((p) => (
+            <div key={p.id} className="w-40 shrink-0 snap-start sm:w-52">
+              <ProductCard product={p} variant="compact" />
+            </div>
+          ))}
         </div>
       </section>
       )}
