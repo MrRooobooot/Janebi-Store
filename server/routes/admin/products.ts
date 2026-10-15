@@ -4,7 +4,7 @@
  */
 import { Router } from 'express';
 import { db } from '../../db/index.js';
-import { products, orderItems, reviews, productFeatures, cartItems, wishlistItems } from '../../db/schema.js';
+import { products, orderItems, reviews, productFeatures, productImages, cartItems, wishlistItems } from '../../db/schema.js';
 import { appCache } from '../../utils/cache.js';
 import { eq, and, desc } from 'drizzle-orm';
 import { validate } from '../../middleware/validate.js';
@@ -26,10 +26,14 @@ router.get('/products', async (req, res) => {
     const rows = await db.query.products.findMany({
       orderBy: desc(products.id),
       ...(limit ? { limit, offset } : {}),
-      with: { features: true },
+      with: { features: true, images: true },
     });
     await setTotalCountHeader(res, products);
-    res.json(rows.map((p) => ({ ...p, features: p.features.map((f) => f.feature) })));
+    res.json(rows.map((p) => ({
+      ...p,
+      features: p.features.map((f) => f.feature),
+      images: [...p.images].sort((a, b) => a.sort - b.sort || a.id - b.id).map((i) => i.url),
+    })));
   } catch (error) {
     console.error('Admin products list error:', error);
     res.status(500).json({ message: 'خطای سرور در دریافت محصولات' });
@@ -38,7 +42,7 @@ router.get('/products', async (req, res) => {
 
 router.post('/products', validate(productCreateSchema), async (req, res) => {
   try {
-    const { title, category, price, originalPrice, discount, image, brand, warranty, description, stockQuantity, sku, features, costPrice, barcode, isActive } = req.body;
+    const { title, category, price, originalPrice, discount, image, brand, warranty, description, stockQuantity, sku, features, images, costPrice, barcode, isActive } = req.body;
 
     const [inserted] = await db.insert(products).values({
       title,
@@ -68,6 +72,13 @@ router.post('/products', validate(productCreateSchema), async (req, res) => {
       }
     }
 
+    if (inserted && Array.isArray(images)) {
+      const extra = images.map((u: string) => String(u).trim()).filter((u: string) => u && u !== inserted.image).slice(0, 8);
+      for (const [sort, url] of extra.entries()) {
+        await db.insert(productImages).values({ productId: inserted.id, url, sort });
+      }
+    }
+
     appCache.invalidate('product');
     appCache.invalidate('categories');
     logAudit(req, 'product.create', 'product', String(inserted.id), { title, category, price });
@@ -81,7 +92,7 @@ router.post('/products', validate(productCreateSchema), async (req, res) => {
 router.put('/products/:id', validate(productUpsertSchema), async (req, res) => {
   try {
     const { id } = req.params as { id: string };
-    const { title, category, price, originalPrice, discount, image, brand, warranty, description, stockQuantity, sku, features, costPrice, barcode, isActive } = req.body;
+    const { title, category, price, originalPrice, discount, image, brand, warranty, description, stockQuantity, sku, features, images, costPrice, barcode, isActive } = req.body;
 
     const [updated] = await db.update(products).set({
       ...(title !== undefined && { title }),
@@ -114,6 +125,17 @@ router.put('/products/:id', validate(productUpsertSchema), async (req, res) => {
         await tx.delete(productFeatures).where(eq(productFeatures.productId, prodId));
         for (const feature of clean) {
           await tx.insert(productFeatures).values({ productId: prodId, feature });
+        }
+      });
+    }
+
+    if (Array.isArray(images)) {
+      const prodId = parseInt(id);
+      const extra = images.map((u: string) => String(u).trim()).filter((u: string) => u && u !== updated.image).slice(0, 8);
+      await db.transaction(async (tx) => {
+        await tx.delete(productImages).where(eq(productImages.productId, prodId));
+        for (const [sort, url] of extra.entries()) {
+          await tx.insert(productImages).values({ productId: prodId, url, sort });
         }
       });
     }
@@ -160,6 +182,7 @@ router.delete('/products/:id', async (req, res) => {
     // Async transaction, queued by the SQLite db wrapper (server/db/index.ts).
     await db.transaction(async (tx) => {
       await tx.delete(productFeatures).where(eq(productFeatures.productId, prodId));
+      await tx.delete(productImages).where(eq(productImages.productId, prodId));
       await tx.delete(cartItems).where(eq(cartItems.productId, prodId));
       await tx.delete(wishlistItems).where(eq(wishlistItems.productId, prodId));
       await tx.delete(reviews).where(eq(reviews.productId, prodId));

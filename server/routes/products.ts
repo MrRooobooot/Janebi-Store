@@ -358,14 +358,18 @@ router.get("/:id", validate(numericIdParamSchema), async (req, res) => {
     // neither belongs in a public response (isActive is admin-only too).
     columns: { costPrice: false, barcode: false, isActive: false },
     with: {
-      features: true
+      features: true,
+      images: { orderBy: (img, { asc }) => [asc(img.sort), asc(img.id)] }
     }
   });
   
   if (product) {
+    const { images: extra, ...rest } = product;
     const formatted = {
-      ...product,
-      features: product.features.map(f => f.feature)
+      ...rest,
+      features: product.features.map(f => f.feature),
+      // cover first, then the extra gallery photos (deduped)
+      images: [product.image, ...extra.map(i => i.url)].filter((u, i, a) => u && a.indexOf(u) === i)
     };
     appCache.set(cacheKey, formatted, 60);
     res.setHeader("X-Cache", "MISS");

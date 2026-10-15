@@ -186,10 +186,25 @@ export const blogPosts = sqliteTable('blog_posts', {
   createdAt: text('created_at').notNull()
 });
 
+export const productImages = sqliteTable('product_images', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  productId: integer('product_id').references(() => products.id, { onDelete: 'cascade' }).notNull(),
+  url: text('url').notNull(),
+  sort: integer('sort').default(0).notNull()
+});
+
 // RELATIONS
 export const productsRelations = relations(products, ({ many }) => ({
   features: many(productFeatures),
+  images: many(productImages),
   reviews: many(reviews),
+}));
+
+export const productImagesRelations = relations(productImages, ({ one }) => ({
+  product: one(products, {
+    fields: [productImages.productId],
+    references: [products.id],
+  }),
 }));
 
 export const productFeaturesRelations = relations(productFeatures, ({ one }) => ({

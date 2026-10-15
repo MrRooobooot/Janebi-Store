@@ -123,7 +123,8 @@ export default function AdminProducts() {
     costPrice: '',
     barcode: '',
     isActive: '1',
-    features: [] as string[]
+    features: [] as string[],
+    images: [] as string[]
   });
 
   useEffect(() => {
@@ -256,6 +257,32 @@ export default function AdminProducts() {
     }
   };
 
+  // Extra gallery photos (up to 8 besides the cover) — several files at once.
+  const handleExtraImages = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    if (!files.length) return;
+    setUploadError('');
+    setUploading(true);
+    try {
+      const urls: string[] = [];
+      for (const file of files) {
+        const form = new FormData();
+        form.append('image', await shrinkPhoto(file), file.name.replace(/\.[^.]+$/, '') + '.jpg');
+        const res = await authFetch('/api/admin/upload/product-image', { method: 'POST', headers: {}, body: form });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.message || 'آپلود عکس ناموفق بود');
+        urls.push(data.url);
+      }
+      setFormData(prev => ({ ...prev, images: [...(prev.images as string[]), ...urls].slice(0, 8) }));
+      addToast(`${urls.length} عکس اضافه شد`, 'success');
+    } catch (err: any) {
+      setUploadError(err.message || 'خطا در آپلود عکس');
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
+  };
+
   const openModal = (product?: Product) => {
     if (product) {
       setEditingProduct(product);
@@ -272,6 +299,7 @@ export default function AdminProducts() {
         stockQuantity: product.stockQuantity ? product.stockQuantity.toString() : '10',
         sku: product.sku || '',
         features: product.features ?? [],
+        images: (product.images ?? []).filter((u) => u !== product.image),
         costPrice: product.costPrice != null ? product.costPrice.toString() : '',
         barcode: product.barcode || '',
         isActive: product.isActive === 0 ? '0' : '1'
@@ -294,7 +322,8 @@ export default function AdminProducts() {
         costPrice: '',
         barcode: '',
         isActive: '1',
-        features: []
+        features: [],
+        images: []
       });
     }
     setIsModalOpen(true);
@@ -330,7 +359,8 @@ export default function AdminProducts() {
       costPrice: costNum,
       barcode: formData.barcode.trim() || null,
       isActive: formData.isActive === '1' ? 1 : 0,
-      features: (formData.features as string[]).map((f) => f.trim()).filter(Boolean)
+      features: (formData.features as string[]).map((f) => f.trim()).filter(Boolean),
+      images: (formData.images as string[]).filter((u) => u && u !== formData.image)
     };
 
     try {
@@ -865,6 +895,30 @@ export default function AdminProducts() {
                     />
                   </label>
                   {uploadError && <span className="text-xs text-rose-600 dark:text-rose-400 font-bold">{uploadError}</span>}
+                </div>
+
+                {/* Extra gallery photos: customers trust a product more with 2-3 angles */}
+                <div className="mb-3">
+                  <label className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-bold cursor-pointer hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors">
+                    <Upload className="h-3.5 w-3.5" />
+                    {uploading ? 'در حال آپلود...' : 'افزودن عکس‌های بیشتر (چندتایی)'}
+                    <input type="file" accept="image/*" multiple className="hidden" disabled={uploading} onChange={handleExtraImages} />
+                  </label>
+                  {(formData.images as string[]).length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {(formData.images as string[]).map((url, idx) => (
+                        <div key={url} className="relative h-16 w-16 overflow-hidden rounded-lg border border-slate-200 dark:border-white/10">
+                          <img src={url} alt={`عکس ${idx + 2}`} className="h-full w-full object-cover" />
+                          <button
+                            type="button"
+                            aria-label="حذف عکس"
+                            onClick={() => setFormData(prev => ({ ...prev, images: (prev.images as string[]).filter((u) => u !== url) }))}
+                            className="absolute top-0.5 left-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-black/70 text-[11px] text-white"
+                          >×</button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Visual Grid Selector */}

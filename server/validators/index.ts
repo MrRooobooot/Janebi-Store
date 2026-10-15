@@ -252,6 +252,7 @@ export const productUpsertSchema = z.object({
     // Spec/feature pills shown on PDP + JSON-LD additionalProperty. '' entries
     // dropped server-side; cap 20 to bound textarea-abuse.
     features: z.array(z.string().min(1).max(120)).max(20).optional(),
+    images: z.array(z.string().min(1).max(500)).max(8).optional(),
   }),
 });
 
