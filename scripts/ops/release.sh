@@ -65,7 +65,7 @@ if [ "$REMOTE_HASH" = "MISSING" ]; then
   rsync -az -e "$RSYNC_SSH" --delete drizzle/ "$REMOTE:$REL/drizzle/" | tail -2
   echo "uploaded $(rsh "find $REL -type f | wc -l") files"
 else
-  REMOTE_REL="$(rsh "node -e \"process.stdout.write(JSON.parse(require('fs').readFileSync('$REL/dist/BUILD_INFO','utf8')).release)\"")"
+  REMOTE_REL="$(rsh "grep -o '\"release\":\"[0-9a-f]*\"' $REL/dist/BUILD_INFO | head -1 | cut -d'\"' -f4")"
   [ "$REMOTE_REL" = "$HEAD_SHA" ] || die "release $SHORT already staged from a different commit ($REMOTE_REL) — pick a new commit or remove $REL deliberately"
   echo "already staged from the identical commit — reusing (immutability kept)"
 fi
