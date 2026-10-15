@@ -24,18 +24,10 @@ export default function ChatWidget() {
   const settings = useStoreSettings();
   // /products/:id is the canonical product URL; /product/:id is its alias.
   const purchasePath = /^\/(products?\/|cart|checkout)/.test(location.pathname);
-  const onHome = location.pathname === '/';
-  const [homeChatClear, setHomeChatClear] = useState(false);
-  useEffect(() => {
-    if (!onHome) return;
-    // The homepage tabs mount after this widget, so a one-shot measurement
-    // misses them. Scroll position does not depend on that node.
-    const update = () => setHomeChatClear(window.scrollY > 280);
-    update();
-    window.addEventListener('scroll', update, { passive: true });
-    return () => window.removeEventListener('scroll', update);
-  }, [onHome]);
-  const tuckChat = purchasePath || (onHome && !homeChatClear);
+  // Phones: the launcher would sit over product-card text on the homepage and
+  // the catalogue, so it is hidden there as on the purchase path.
+  const listingPath = location.pathname === '/' || /^\/products\/?$/.test(location.pathname);
+  const tuckChat = purchasePath || listingPath;
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     { 

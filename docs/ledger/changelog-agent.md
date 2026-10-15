@@ -4,6 +4,10 @@
 > **Role:** agent-facing change log — commit, what moved, how it was verified.
 > Open work and priorities live in `docs/ledger/tasks.md`; the system map lives in `docs/reference/project-graph.md`. On 2026-10-13 the entries dated 2026-08-28 to 2026-09-02 were moved from the old `## [date] - title` style to this heading format, and all entries were sorted newest first. Entry text is unchanged.
 
+## 2026-10-15 — Chat launcher hidden on phones over listings — local, not deployed
+- `src/components/ChatWidget.tsx`: on phones the launcher is hidden on `/` and `/products` as it already was on `/products/:id`, cart and checkout, because it sat over product-card text. The scroll-based homepage reveal is removed. Desktop is unchanged. Back-to-top already sits above the bottom bar.
+- Verified: `tsc --noEmit` clean; `/products` at 375px in a local dev server. Not run: `npm run verify`. Not committed to a release; not deployed.
+
 ## 2026-10-14 — Product page: no spec tab without features, floating buttons follow the purchase bar — live (release a64236d)
 - `src/pages/ProductDetail.tsx`: the «مشخصات فنی و ویژگی‌ها» tab appears only when the product has `features`. Most products have none (39 of 45 in the 2026-10-13 check), so the tab used to open onto four rows. Without features the same rows (brand, category, SKU, warranty) show under the description as «مشخصات محصول». The rows are one component, `ProductSpecList`. A stale `specs` tab falls back to the description.
 - `src/components/ChatWidget.tsx`, `src/components/BackToTop.tsx`: the purchase-path check matched only `/product/:id`, so on the canonical `/products/:id` the chat launcher stayed visible and the back-to-top button sat at the low position, over the sticky purchase bar. Both now match `/products/:id` too. On a phone the chat launcher is hidden on product pages, as it already was on cart and checkout; back-to-top sits above the sticky bar.
