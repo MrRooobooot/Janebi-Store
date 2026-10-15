@@ -55,8 +55,8 @@ export function useCheckoutForm() {
   const [formData, setFormData] = useState<CheckoutFormData>({
     name: '',
     phone: '',
-    province: 'تهران',
-    city: 'تهران',
+    province: 'خراسان رضوی',
+    city: 'مشهد',
     address: '',
     postalCode: '',
     notes: '',
