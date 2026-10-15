@@ -32,3 +32,30 @@ export function pickHomeProducts<T extends HomeProduct>(products: T[], tab: stri
   }
   return [...picked, ...rest].slice(0, HOME_PRODUCT_LIMIT);
 }
+
+type AdProduct = HomeProduct & { id: number; stockQuantity?: number | null };
+
+/** How many live-product ads the hero carries. */
+export const HERO_AD_LIMIT = 4;
+
+/**
+ * Hero product ads. Newest in-stock products with a real photo, one per
+ * category first so the carousel is not four cables, then the rest. The list is
+ * derived from the catalogue, so new products enter it without any edit.
+ */
+export function pickHeroAds<T extends AdProduct>(products: T[], limit = HERO_AD_LIMIT): T[] {
+  const fresh = products
+    .filter((p) => PHOTO.test(p.image || '') && (p.stockQuantity == null || p.stockQuantity > 0))
+    .sort((a, b) => b.id - a.id);
+  const seen = new Set<string>();
+  const first: T[] = [];
+  const rest: T[] = [];
+  for (const p of fresh) {
+    if (seen.has(p.category)) rest.push(p);
+    else {
+      seen.add(p.category);
+      first.push(p);
+    }
+  }
+  return [...first, ...rest].slice(0, limit);
+}

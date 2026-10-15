@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ShoppingCart, Heart, User, Menu, Moon, Sun, X, ArrowLeftRight, Sparkles, Search, LogOut, Package, LogIn, ChevronDown } from 'lucide-react';
+import { ShoppingCart, Heart, User, Menu, Moon, Sun, X, ArrowLeftRight, Sparkles, Search, LogOut, Package, LogIn, ChevronDown, Truck, Copy, Check } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Logo from './Logo';
 import { useAuth } from '../contexts/AuthContext';
@@ -36,6 +36,7 @@ export default function Header() {
   const settings = useStoreSettings();
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [codeCopied, setCodeCopied] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   // DB-driven category nav — replaces hard-coded ?category= links (stale vs live catalogue)
@@ -90,6 +91,8 @@ export default function Header() {
     try {
       await navigator.clipboard.writeText(promoCode);
       addToast('کد کپی شد', 'success');
+      setCodeCopied(true);
+      window.setTimeout(() => setCodeCopied(false), 1600);
     } catch {
       addToast('کپی کد ممکن نشد', 'error');
     }
@@ -109,33 +112,30 @@ export default function Header() {
       
       {/* Top Announcement Bar — Strict Overflow Control (hidden when admin/bot disables it) */}
       {settings.announcementBarEnabled !== 'false' && (
-      <div className="bg-slate-100/90 dark:bg-[var(--color-surface-topbar-dark)]/95 text-slate-700 dark:text-slate-300 text-[13px] sm:text-xs py-1 sm:py-1.5 px-3 sm:px-4 border-b border-slate-200/70 dark:border-white/[0.06] w-full overflow-hidden transition-colors">
-        <div className="max-w-7xl mx-auto w-full flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
-          <div className="flex min-w-0 basis-full items-center gap-1.5 text-xs font-medium text-[var(--color-emphasis-text)] sm:basis-auto sm:flex-1">
-            <Sparkles className="h-3.5 w-3.5 shrink-0 motion-safe:animate-pulse" />
-            <span className="min-w-0 font-semibold leading-snug text-slate-800 dark:text-slate-200 sm:truncate">
-              {promoText}
-            </span>
-          </div>
-          {promoCode ? (
-            <div className="flex items-center gap-1 shrink-0">
-              <span dir="ltr" className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-[var(--color-cta)]/10 dark:bg-[var(--color-cta)]/20 text-[var(--color-emphasis-text)] font-bold text-xs sm:text-xs">
-                {promoCode}
-              </span>
+      <div className="w-full border-b border-slate-200/80 bg-slate-50 px-3 text-slate-700 transition-colors dark:border-white/[0.06] dark:bg-[var(--color-surface-header-dark)] dark:text-slate-300 sm:px-4">
+        <div className="mx-auto flex min-h-10 w-full max-w-7xl items-center justify-between gap-3">
+          <p className="flex min-w-0 items-center gap-2 py-1.5 text-xs font-semibold leading-snug text-slate-800 dark:text-slate-100 sm:text-[13px]">
+            <Truck className="h-4 w-4 shrink-0 text-[var(--color-emphasis-text)]" aria-hidden="true" />
+            <span className="line-clamp-2 sm:truncate">{promoText}</span>
+          </p>
+          <div className="flex shrink-0 items-center gap-3">
+            {promoCode ? (
               <button
                 type="button"
                 onClick={copyPromoCode}
-                className="inline-flex items-center min-h-8 px-2 rounded-md bg-white dark:bg-white/10 border border-slate-200 dark:border-white/10 text-xs font-bold text-slate-700 dark:text-slate-200 cursor-pointer"
+                aria-label={`کپی کد تخفیف ${promoCode}`}
+                className="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-lg border border-dashed border-[var(--color-cta)]/60 bg-[var(--color-cta)]/[0.06] px-2.5 text-xs font-bold text-[var(--color-emphasis-text)] transition-colors hover:bg-[var(--color-cta)]/15 active:scale-95"
               >
-                کپی
+                <span dir="ltr" className="tracking-wide">{promoCode}</span>
+                {codeCopied ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : <Copy className="h-3.5 w-3.5" aria-hidden="true" />}
               </button>
-            </div>
-          ) : null}
-          <p className="hidden min-w-0 truncate text-xs text-slate-500 md:block">
-            {toPersianDigits(settings.phone)}
-            <span className="mx-2 text-slate-300">·</span>
-            {toPersianDigits(settings.supportHours)}
-          </p>
+            ) : null}
+            <p className="hidden items-center gap-2 text-xs text-slate-600 dark:text-slate-400 md:flex">
+              <span>{toPersianDigits(settings.phone)}</span>
+              <span aria-hidden="true" className="h-3 w-px bg-slate-300 dark:bg-white/15" />
+              <span>{toPersianDigits(settings.supportHours)}</span>
+            </p>
+          </div>
         </div>
       </div>
       )}

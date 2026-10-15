@@ -12,9 +12,9 @@ import {
 } from 'lucide-react';
 import { getJson } from '../lib/jsonFetch';
 import { getCategoryIcon, getCategoryWell } from '../lib/categoryIcons';
-import { pickHomeProducts } from '../lib/homeCatalogue';
+import { pickHomeProducts, pickHeroAds } from '../lib/homeCatalogue';
 import { Product } from '../types';
-import { toPersianDigits, normalizePersianTypography } from '../lib/utils';
+import { toPersianDigits, normalizePersianTypography, formatPrice } from '../lib/utils';
 import { useStoreSettings } from '../hooks/useStoreSettings';
 import { STORE_SETTINGS_DEFAULTS } from '../lib/constants';
 
@@ -52,12 +52,24 @@ export default function Home() {
       id: category,
       ...copy,
       to: `/products?category=${encodeURIComponent(category)}`,
+      ad: null as null | { brand: string; price: number; originalPrice?: number; discount?: number },
     }));
-    if (categories.length === 0) return known;
     const live = new Set(categories.map((c) => c.title as string));
-    const available = known.filter((slide) => live.has(slide.id));
-    return available.length ? available : known.slice(0, 1);
-  }, [categories]);
+    const categorySlides = categories.length === 0 ? known : known.filter((slide) => live.has(slide.id));
+    // Product ads come first: real catalogue items with their own photo and price.
+    const ads = pickHeroAds(products).map((p) => ({
+      id: `ad-${p.id}`,
+      kicker: p.brand || p.category,
+      title: normalizePersianTypography(p.title),
+      line: '',
+      action: 'مشاهده محصول',
+      image: p.image,
+      to: `/products/${p.id}`,
+      ad: { brand: p.brand, price: p.price, originalPrice: p.originalPrice, discount: p.discount },
+    }));
+    const all = [...ads, ...categorySlides];
+    return all.length ? all : known.slice(0, 1);
+  }, [categories, products]);
 
   useEffect(() => {
     if (activeSlide >= heroSlides.length) setActiveSlide(0);
@@ -156,7 +168,7 @@ export default function Home() {
             rotation-safe (slide titles are plain <p>), SEO + a11y clean. */}
         <h1 className="sr-only">فروشگاه لوازم جانبی موبایل و تبلت | جانبی آرنا</h1>
         <div
-          className="relative aspect-[2/1] overflow-hidden rounded-3xl shadow-lg touch-pan-y"
+          className="relative aspect-[3/2] overflow-hidden rounded-3xl sm:aspect-[2/1] shadow-lg touch-pan-y"
           onTouchStart={(e) => { mobileTouchX.current = e.touches[0].clientX; }}
           onTouchEnd={(e) => {
             const dx = e.changedTouches[0].clientX - mobileTouchX.current;
@@ -175,16 +187,42 @@ export default function Home() {
               className="absolute inset-0 transition-opacity duration-700 ease-out motion-reduce:transition-none"
               style={{ opacity: idx === activeSlide ? 1 : 0, pointerEvents: idx === activeSlide ? 'auto' : 'none' }}
             >
-              <img src={slide.image} alt="" className="absolute inset-0 h-full w-full object-cover" />
-              <span className="absolute inset-y-0 right-0 z-10 flex w-[48%] max-w-md flex-col justify-center gap-0.5 pb-12 pr-3 text-slate-900! sm:gap-2 sm:pb-16 sm:pr-8">
-                <span className="text-xs font-bold text-slate-500! sm:text-sm">{slide.kicker}</span>
-                <span className="text-lg font-black leading-tight text-slate-900! sm:text-4xl">{slide.title}</span>
-                <span className="text-xs font-medium text-slate-600! sm:text-base">{slide.line}</span>
-                <span className="mt-0.5 inline-flex items-center gap-1 text-xs font-bold text-[var(--color-cta)] sm:mt-1 sm:text-sm">
-                  {slide.action}
-                  <ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              {slide.ad ? (
+                <span className="absolute inset-0 flex items-stretch gap-3 bg-gradient-to-l from-rose-50 via-white to-slate-100 p-3 dark:from-[#1a1020] dark:via-[#0e1629] dark:to-[#0b1222] sm:gap-8 sm:p-6">
+                  <span className="relative z-10 flex w-[52%] flex-col justify-center gap-1 pb-10 pr-1 sm:gap-3 sm:pb-14 sm:pr-4">
+                    <span className="w-fit rounded-full bg-[var(--color-cta)]/10 px-2.5 py-0.5 text-xs font-bold text-[var(--color-emphasis-text)] sm:text-sm">{slide.kicker}</span>
+                    <span className="line-clamp-2 text-sm font-black leading-snug text-slate-900 dark:text-white sm:text-3xl sm:leading-tight">{slide.title}</span>
+                    <span className="flex flex-wrap items-baseline gap-x-2 text-slate-900 dark:text-white">
+                      <span className="text-base font-black sm:text-2xl">{formatPrice(slide.ad.price)}</span>
+                      {slide.ad.discount ? (
+                        <span className="rounded-md bg-[var(--color-cta)] px-1.5 py-0.5 text-xs font-bold text-white">{toPersianDigits(slide.ad.discount)}٪</span>
+                      ) : null}
+                    </span>
+                    <span className="mt-1 inline-flex w-fit items-center gap-1.5 rounded-xl bg-[var(--color-cta)] px-3 py-1.5 text-xs font-bold text-white sm:px-5 sm:py-2.5 sm:text-sm">
+                      {slide.action}
+                      <ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    </span>
+                  </span>
+                  <span className="relative flex flex-1 items-center justify-center pb-8 sm:pb-12">
+                    <span className="flex aspect-square h-full max-h-full items-center justify-center overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-black/5">
+                      <img src={slide.image} alt="" loading={idx === 0 ? 'eager' : 'lazy'} className="h-full w-full object-contain p-2" />
+                    </span>
+                  </span>
                 </span>
-              </span>
+              ) : (
+                <>
+                  <img src={slide.image} alt="" className="absolute inset-0 h-full w-full object-cover object-left" />
+                  <span className="absolute inset-y-0 right-0 z-10 flex w-[48%] max-w-md flex-col justify-center gap-0.5 pb-12 pr-3 text-slate-900! sm:gap-2 sm:pb-16 sm:pr-8">
+                    <span className="text-xs font-bold text-slate-600! sm:text-sm">{slide.kicker}</span>
+                    <span className="text-lg font-black leading-tight text-slate-900! sm:text-4xl">{slide.title}</span>
+                    <span className="text-xs font-medium text-slate-600! sm:text-base">{slide.line}</span>
+                    <span className="mt-0.5 inline-flex items-center gap-1 text-xs font-bold text-[var(--color-cta)] sm:mt-1 sm:text-sm">
+                      {slide.action}
+                      <ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    </span>
+                  </span>
+                </>
+              )}
             </Link>
           ))}
 
@@ -209,7 +247,7 @@ export default function Home() {
                     aria-label={`اسلاید ${toPersianDigits(idx + 1)}`}
                     className="flex h-9 min-w-6 items-center justify-center px-1 sm:h-11"
                   >
-                    <span className={`block h-2 rounded-full transition-all duration-300 motion-reduce:transition-none ${activeSlide === idx ? 'w-7 bg-slate-900' : 'w-2 bg-slate-900/35'}`} />
+                    <span className={`block h-2 rounded-full transition-all duration-300 motion-reduce:transition-none ${activeSlide === idx ? 'w-7 bg-slate-900 dark:bg-white' : 'w-2 bg-slate-900/35 dark:bg-white/40'}`} />
                   </button>
                 ))}
               </div>

@@ -4,6 +4,12 @@
 > **Role:** agent-facing change log — commit, what moved, how it was verified.
 > Open work and priorities live in `docs/ledger/tasks.md`; the system map lives in `docs/reference/project-graph.md`. On 2026-10-13 the entries dated 2026-08-28 to 2026-09-02 were moved from the old `## [date] - title` style to this heading format, and all entries were sorted newest first. Entry text is unchanged.
 
+## 2026-10-15 — Announcement bar redesign, hero as live product ads — live (see release below)
+- `src/components/Header.tsx`: the announcement strip is one tone with the header (was a third near-black), a truck icon replaces the pulsing sparkle, the coupon is one dashed «ticket» button that copies on tap and shows a check, and the phone/hours stay from `md`. The message wraps to two lines on phones instead of being cut.
+- `src/lib/homeCatalogue.ts` `pickHeroAds`, `src/pages/Home.tsx`: the hero now opens with up to 4 ads built from the live catalogue (newest in-stock product per category, own photo, name, price, discount, CTA to the product), then the two category slides. New products enter the carousel without any edit; this is the «archive that refreshes» — no third-party images are copied in. Mobile hero ratio is 3:2 (was 2:1) so the ad layout fits; category photos anchor left. Test: `tests/unit/hero-ads.test.ts`.
+- Contrast: a computed-style sweep of `/`, `/products`, `/cart`, `/login` in light and dark at 390 and 1280 found only the hero kicker at 4.35:1 (now slate-600) and a decorative «·» divider (removed with the bar redesign). The enamad placeholder text is 2.39:1 while the badge loads (not changed). The sweep ignores text over photos.
+- Not done: no internet photo archive — third-party product photos are not ours to publish; use manufacturer-supplied marketing images with permission.
+
 ## 2026-10-15 — Phone search moved into the sticky header; hero text fixed in dark mode — live (see release below)
 - `src/components/Header.tsx`, `src/components/Layout.tsx`: the phone search was a loose row above `<main>` with no gap before the hero. It is now the second row of the sticky header (`md:hidden`), so it stays reachable and cannot touch the page content; `<main>` gets `pt-3`.
 - `src/components/HeaderSearch.tsx`: wider padding next to the magnifier; the ⌘K hint shows from `md` instead of `sm` (it was visible on tablets with no keyboard).
