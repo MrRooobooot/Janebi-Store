@@ -39,9 +39,9 @@ export default function Footer() {
     <footer className="bg-zinc-50/90 dark:bg-[var(--color-surface-footer-dark)]/95 border-t border-zinc-200/80 dark:border-white/[0.08] mt-16 transition-colors duration-300 w-full overflow-hidden">
       <div className="mx-auto max-w-7xl px-3 py-8 sm:px-6 lg:px-8">
         {/* Newsletter & Info & Trust Seal Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-x-8 gap-y-8 mb-8">
           {/* About & Contact Info */}
-          <div className="lg:col-span-4 flex flex-col justify-between space-y-4 text-right">
+          <div className="lg:col-span-3 flex flex-col space-y-4 text-right">
             <div className="space-y-2">
               <Logo size="sm" />
               <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
@@ -63,7 +63,7 @@ export default function Footer() {
           {/* Links column (§2.7 / §9): quick customer links incl. order tracking */}
           <div className="space-y-3 text-right lg:col-span-3">
             <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">دسترسی سریع</h3>
-            <nav className="flex flex-col items-start gap-1 text-xs text-zinc-600 dark:text-zinc-400" aria-label="لینک‌های فوتر">
+            <nav className="grid grid-cols-2 gap-x-4 gap-y-0 text-xs text-zinc-600 dark:text-zinc-400" aria-label="لینک‌های فوتر">
               {[
                 { to: '/profile?tab=orders', label: 'پیگیری سفارش', icon: true },
                 { to: '/about', label: 'درباره ما' },
@@ -76,7 +76,7 @@ export default function Footer() {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className="inline-flex items-center gap-2 min-h-11 py-1 font-bold hover:text-[var(--color-emphasis-text)] transition-colors"
+                  className="inline-flex items-center gap-2 min-h-11 py-1 font-bold whitespace-nowrap hover:text-[var(--color-emphasis-text)] transition-colors"
                 >
                   {item.icon ? <PackageSearch className="h-4 w-4 text-[var(--color-emphasis-text)] shrink-0" /> : null}
                   {item.label}
@@ -86,9 +86,9 @@ export default function Footer() {
           </div>
 
           {/* Newsletter Section */}
-          <div className="flex flex-col justify-between text-right lg:col-span-2">
+          <div className="flex flex-col text-right lg:col-span-3">
             <div>
-              <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100 mb-1">عضویت در خبرنامه جانبی آرنا</h3>
+              <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 mb-2">عضویت در خبرنامه جانبی آرنا</h3>
               <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">از جدیدترین تخفیف‌ها، پکیج‌ها و کدهای تخفیف اختصاصی باخبر شوید.</p>
             </div>
             <form onSubmit={handleSubscribe} className="flex w-full mt-4">
@@ -115,7 +115,7 @@ export default function Footer() {
           </div>
 
           {/* Enamad Trust Seal Badge - Responsive Card */}
-          <div className="flex flex-col items-center justify-center text-center md:col-span-2 lg:col-span-3">
+          <div className="flex flex-col items-center md:items-start lg:items-center text-center md:col-span-2 lg:col-span-3">
             <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 mb-3 flex items-center gap-1.5">
               <Award className="h-4 w-4 text-[var(--color-emphasis-text)]" />
               نماد اعتماد الکترونیکی
