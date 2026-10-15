@@ -36,7 +36,7 @@ export default function Terms() {
           <span>رویه‌های ارسال و تحویل سفارش</span>
         </div>
         <p>
-          سفارش‌های ثبت شده در شهر تهران توسط پیک اختصاصی یا پست پیشتاز ظرف کمتر از ۲۴ ساعت تحویل داده شده و سفارش‌های شهرستان از طریق پست پیشتاز یا تیپاکس ۲ الی ۳ روز کاری ارسال می‌شوند.
+          سفارش‌های ثبت شده در شهر مشهد توسط پیک اختصاصی یا پست پیشتاز ظرف کمتر از ۲۴ ساعت تحویل داده شده و سفارش‌های شهرستان از طریق پست پیشتاز یا تیپاکس ۲ الی ۳ روز کاری ارسال می‌شوند.
         </p>
 
         <div className="flex items-center gap-3 text-lg font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] pt-4 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">

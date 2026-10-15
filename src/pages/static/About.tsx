@@ -39,7 +39,7 @@ export default function About() {
           </div>
           <h3 className="font-bold text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)] text-base mb-2">ارسال اکسپرس کشوری</h3>
           <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
-            تحویل سریع سفارش‌ها در کمتر از ۲۴ ساعت در تهران و ۲ الی ۳ روز کاری در سراسر ایران.
+            تحویل سریع سفارش‌ها در کمتر از ۲۴ ساعت در مشهد و ۲ الی ۳ روز کاری در سراسر ایران.
           </p>
         </div>
 
@@ -68,7 +68,7 @@ export default function About() {
       <div className="bg-[var(--color-surface-light)] dark:bg-[var(--color-surface-dark)] rounded-2xl p-6 sm:p-10 border border-[var(--color-border-light)] dark:border-[var(--color-border-dark)] shadow-xs space-y-6">
         <h2 className="text-2xl font-black text-[var(--color-text-main-light)] dark:text-[var(--color-text-main-dark)]">داستان جانبی آرنا</h2>
         <p className="text-gray-700 dark:text-gray-300 text-sm sm:text-base leading-relaxed">
-          جانبی آرنا فعالیت خود را از سال ۱۳۹۸ به عنوان یک فروشگاه تخصصی لوازم جانبی تلفن همراه در تهران آغاز کرد. هدف اولیه ما برطرف کردن چالش خرید لوازم جانبی اصلی و باکیفیت در میان تنوع بی‌شمار کالاهای تقلبی بازار بود.
+          جانبی آرنا فعالیت خود را از سال ۱۳۹۸ به عنوان یک فروشگاه تخصصی لوازم جانبی تلفن همراه در مشهد آغاز کرد. هدف اولیه ما برطرف کردن چالش خرید لوازم جانبی اصلی و باکیفیت در میان تنوع بی‌شمار کالاهای تقلبی بازار بود.
         </p>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-[var(--color-border-light)] dark:border-[var(--color-border-dark)]">

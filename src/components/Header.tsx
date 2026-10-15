@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ShoppingCart, Heart, User, Menu, Moon, Sun, X, ArrowLeftRight, Sparkles, Search, LogOut, Package, LogIn, ChevronDown, Truck, Copy, Check } from 'lucide-react';
+import { ShoppingCart, Heart, User, Menu, Moon, Sun, X, ArrowLeftRight, Sparkles, Search, LogOut, Package, LogIn, ChevronDown, Truck, Copy, Check, ChevronLeft } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Logo from './Logo';
 import { useAuth } from '../contexts/AuthContext';
@@ -111,7 +111,7 @@ export default function Header() {
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
       
       {/* Top Announcement Bar — Strict Overflow Control (hidden when admin/bot disables it) */}
-      {settings.announcementBarEnabled !== 'false' && (
+      {settings.announcementBarEnabled !== 'false' && location.pathname === '/' && (
       <div className="w-full border-b border-slate-200/80 bg-slate-50 px-3 text-slate-700 transition-colors dark:border-white/[0.06] dark:bg-[var(--color-surface-header-dark)] dark:text-slate-300 sm:px-4">
         <div className="mx-auto flex min-h-10 w-full max-w-7xl items-center justify-between gap-3">
           <p className="flex min-w-0 items-center gap-2 py-1.5 text-xs font-semibold leading-snug text-slate-800 dark:text-slate-100 sm:text-[13px]">
@@ -292,41 +292,53 @@ export default function Header() {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="space-y-2 border-t border-[var(--color-border-light)] bg-[var(--color-surface-light)] px-4 py-3 dark:border-[var(--color-border-dark)] dark:bg-[var(--color-surface-dark)] lg:hidden">
-          <nav className="flex flex-col text-sm font-bold" aria-label="منوی اصلی">
-            {[...navLinks, ...TRUST_LINKS].map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                onClick={() => setMobileMenuOpen(false)}
-                className="border-b border-slate-100 py-3 text-slate-800 last:border-0 dark:border-white/10 dark:text-slate-100"
-              >
-                {link.label}
-              </Link>
-            ))}
+        <div className="max-h-[calc(100dvh-8.5rem)] space-y-4 overflow-y-auto border-t border-[var(--color-border-light)] bg-[var(--color-surface-light)] px-4 py-4 dark:border-[var(--color-border-dark)] dark:bg-[var(--color-surface-dark)] lg:hidden">
+          <nav aria-label="منوی اصلی" className="space-y-1.5">
+            <p className="px-1 text-[11px] font-bold text-slate-500 dark:text-slate-400">فروشگاه</p>
+            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/10 dark:bg-white/[0.03]">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center justify-between border-b border-slate-100 px-4 py-3 text-sm font-bold text-slate-800 last:border-0 active:bg-slate-50 dark:border-white/[0.06] dark:text-slate-100 dark:active:bg-white/[0.05]"
+                >
+                  {link.label}
+                  <ChevronLeft className="h-4 w-4 text-slate-400" aria-hidden="true" />
+                </Link>
+              ))}
+            </div>
           </nav>
 
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className="w-full flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 text-xs font-medium text-slate-800 dark:text-slate-200"
-          >
-            <span className="flex items-center gap-2">
-              {isDarkMode ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4 text-slate-600" />}
-              {isDarkMode ? "حالت روز (روشن)" : "حالت شب (تاریک)"}
-            </span>
-            <span className="text-xs text-slate-500 dark:text-slate-400">{isDarkMode ? "روشن" : "تاریک"}</span>
-          </button>
+          <div className="space-y-1.5">
+            <p className="px-1 text-[11px] font-bold text-slate-500 dark:text-slate-400">اطلاعات</p>
+            <div className="grid grid-cols-2 gap-2">
+              {TRUST_LINKS.map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-center text-xs font-bold text-slate-700 active:scale-[0.98] dark:border-white/10 dark:bg-white/[0.03] dark:text-slate-200"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </div>
 
-          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex justify-between text-xs text-slate-600 dark:text-slate-400">
-            <Link to="/wishlist" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-1.5 p-2">
-              <Heart className="h-4 w-4 text-rose-500" />
-              علاقه‌مندی‌ها ({toPersianDigits(wishlist.length)})
+          <div className="grid grid-cols-3 gap-2 text-[11px] font-bold text-slate-700 dark:text-slate-200">
+            <Link to="/wishlist" onClick={() => setMobileMenuOpen(false)} className="flex flex-col items-center gap-1.5 rounded-xl border border-slate-200 bg-white py-3 dark:border-white/10 dark:bg-white/[0.03]">
+              <Heart className="h-5 w-5 text-rose-500" aria-hidden="true" />
+              علاقه‌مندی ({toPersianDigits(wishlist.length)})
             </Link>
-            <Link to="/compare" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-1.5 p-2">
-              <ArrowLeftRight className="h-4 w-4 text-blue-500" />
+            <Link to="/compare" onClick={() => setMobileMenuOpen(false)} className="flex flex-col items-center gap-1.5 rounded-xl border border-slate-200 bg-white py-3 dark:border-white/10 dark:bg-white/[0.03]">
+              <ArrowLeftRight className="h-5 w-5 text-blue-500" aria-hidden="true" />
               مقایسه ({toPersianDigits(compareItems.length)})
             </Link>
+            <button type="button" onClick={toggleTheme} className="flex flex-col items-center gap-1.5 rounded-xl border border-slate-200 bg-white py-3 dark:border-white/10 dark:bg-white/[0.03]">
+              {isDarkMode ? <Sun className="h-5 w-5 text-amber-400" aria-hidden="true" /> : <Moon className="h-5 w-5 text-slate-600" aria-hidden="true" />}
+              {isDarkMode ? 'حالت روشن' : 'حالت تاریک'}
+            </button>
           </div>
         </div>
       )}
