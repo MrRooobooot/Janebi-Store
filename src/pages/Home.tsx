@@ -267,17 +267,23 @@ export default function Home() {
           )}
         </div>
         )}
-        <div className="mt-4 grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4">
-          {valueProps.map((item) => {
+        <div className="mt-3 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:grid lg:grid-cols-4 lg:gap-3 lg:overflow-visible">
+          {valueProps.map((item, i) => {
             const Icon = item.icon;
+            const tone = [
+              'bg-sky-500/10 text-sky-700 dark:bg-sky-400/15 dark:text-sky-300',
+              'bg-emerald-500/10 text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-300',
+              'bg-amber-500/10 text-amber-700 dark:bg-amber-400/15 dark:text-amber-300',
+              'bg-violet-500/10 text-violet-700 dark:bg-violet-400/15 dark:text-violet-300',
+            ][i % 4];
             return (
-              <div key={item.title} className="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-white p-3 shadow-sm dark:border-white/[0.08] dark:bg-[var(--color-surface-dark)] sm:p-4">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--color-cta)]/10 sm:h-10 sm:w-10 text-[var(--color-emphasis-text)]">
-                  <Icon className="h-5 w-5" aria-hidden="true" />
+              <div key={item.title} title={item.desc} className="flex shrink-0 items-center gap-2 rounded-full border border-slate-200/80 bg-white px-3 py-1.5 shadow-sm dark:border-white/[0.08] dark:bg-[var(--color-surface-dark)] lg:rounded-2xl lg:px-4 lg:py-2.5">
+                <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${tone}`}>
+                  <Icon className="h-4 w-4" aria-hidden="true" />
                 </span>
                 <span className="min-w-0">
-                  <span className="block text-[13px] font-black leading-snug text-slate-900 dark:text-white">{item.title}</span>
-                  <span className="mt-0.5 hidden text-xs leading-relaxed text-slate-600 dark:text-slate-400 sm:block">{item.desc}</span>
+                  <span className="block whitespace-nowrap text-xs font-bold text-slate-900 dark:text-white">{item.title}</span>
+                  <span className="hidden truncate text-[11px] text-slate-600 dark:text-slate-400 lg:block">{item.desc}</span>
                 </span>
               </div>
             );

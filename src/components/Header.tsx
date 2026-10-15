@@ -113,10 +113,10 @@ export default function Header() {
       {/* Top Announcement Bar — Strict Overflow Control (hidden when admin/bot disables it) */}
       {settings.announcementBarEnabled !== 'false' && location.pathname === '/' && (
       <div className="w-full border-b border-slate-200/80 bg-slate-50 px-3 text-slate-700 transition-colors dark:border-white/[0.06] dark:bg-[var(--color-surface-header-dark)] dark:text-slate-300 sm:px-4">
-        <div className="mx-auto flex min-h-10 w-full max-w-7xl items-center justify-between gap-3">
-          <p className="flex min-w-0 items-center gap-2 py-1.5 text-xs font-semibold leading-snug text-slate-800 dark:text-slate-100 sm:text-[13px]">
+        <div className="mx-auto flex min-h-9 w-full max-w-7xl items-center justify-between gap-3">
+          <p className="flex min-w-0 items-center gap-2 py-1 text-[11px] font-semibold leading-snug text-slate-800 dark:text-slate-100 sm:text-[13px]">
             <Truck className="h-4 w-4 shrink-0 text-[var(--color-emphasis-text)]" aria-hidden="true" />
-            <span className="line-clamp-2 sm:truncate">{promoText}</span>
+            <span className="truncate">{promoText}</span>
           </p>
           <div className="flex shrink-0 items-center gap-3">
             {promoCode ? (
@@ -124,7 +124,7 @@ export default function Header() {
                 type="button"
                 onClick={copyPromoCode}
                 aria-label={`کپی کد تخفیف ${promoCode}`}
-                className="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-lg border border-dashed border-[var(--color-cta)]/60 bg-[var(--color-cta)]/[0.06] px-2.5 text-xs font-bold text-[var(--color-emphasis-text)] transition-colors hover:bg-[var(--color-cta)]/15 active:scale-95"
+                className="inline-flex h-6 cursor-pointer items-center gap-1 rounded-md border border-dashed border-[var(--color-cta)]/60 bg-[var(--color-cta)]/[0.06] px-2 text-[11px] font-bold text-[var(--color-emphasis-text)] transition-colors hover:bg-[var(--color-cta)]/15 active:scale-95"
               >
                 <span dir="ltr" className="tracking-wide">{promoCode}</span>
                 {codeCopied ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : <Copy className="h-3.5 w-3.5" aria-hidden="true" />}
@@ -255,7 +255,7 @@ export default function Header() {
               <button
                 onClick={() => setAuthModalOpen(true)}
                 aria-label="ورود یا ثبت نام در سایت"
-                className="flex items-center gap-1 justify-center min-h-[44px] min-w-[44px] border border-[var(--color-cta)]/60 text-[var(--color-emphasis-text)] bg-transparent sm:border-transparent sm:bg-[var(--color-cta)] sm:text-white hover:bg-[var(--color-cta)]/10 sm:hover:bg-[var(--color-cta-hover)] px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition-all shadow-sm shadow-[var(--color-cta)]/25 cursor-pointer active:scale-95 shrink-0"
+                className="flex items-center gap-1 justify-center min-h-[44px] min-w-[44px] border border-transparent text-[var(--color-emphasis-text)] bg-[var(--color-cta)]/10 sm:border-transparent sm:bg-[var(--color-cta)] sm:text-white hover:bg-[var(--color-cta)]/10 sm:hover:bg-[var(--color-cta-hover)] px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition-all shadow-sm shadow-[var(--color-cta)]/25 cursor-pointer active:scale-95 shrink-0"
               >
                 <LogIn className="h-4 w-4" />
                 <span className="hidden sm:inline">ورود / عضویت</span>
