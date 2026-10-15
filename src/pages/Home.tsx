@@ -73,7 +73,15 @@ export default function Home() {
     [products],
   );
 
+  // Each page load starts the hero on a random slide, so a refresh shows a
+  // different ad first. The start is picked once per load, not on every render.
+  const heroStartPicked = useRef(false);
   useEffect(() => {
+    if (heroSlides.length > 0 && !heroStartPicked.current) {
+      heroStartPicked.current = true;
+      setActiveSlide(Math.floor(Math.random() * heroSlides.length));
+      return;
+    }
     if (activeSlide >= heroSlides.length) setActiveSlide(0);
   }, [heroSlides.length, activeSlide]);
 
