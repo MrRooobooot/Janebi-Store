@@ -24,6 +24,16 @@ describe('PictureImage & Responsive Asset Pipeline', () => {
     expect(html).toContain('test.png');
   });
 
+  it('does not guess avif/webp siblings for admin-uploaded product photos', () => {
+    const html = renderToString(
+      <PictureImage src="/images/products/p-b86190b3890bc564.jpg" alt="آپلودی" />
+    );
+    expect(html).not.toContain('<source');
+    expect(html).not.toContain('.avif');
+    expect(html).not.toContain('.webp');
+    expect(html).toContain('p-b86190b3890bc564.jpg');
+  });
+
   it('renders pure SVG without unnecessary raster source tags', () => {
     const html = renderToString(
       <PictureImage

@@ -59,7 +59,12 @@ export default function PictureImage({
 
   // Derive AVIF / WebP paths if not explicitly provided and file is raster (png/jpg/jpeg)
   const isSvg = versionedSrc.toLowerCase().includes('.svg');
-  const isRaster = /\.(png|jpe?g)$/i.test(src.split('?')[0]);
+  // Sibling .avif/.webp files are only guessed for shipped static art. Admin
+  // uploads under /images/products/ are stored as-is (jpg/png/webp, no
+  // siblings): a guessed <source> that 404s never falls back to the <img>, so
+  // the photo rendered blank.
+  const isUpload = src.split('?')[0].includes('/images/products/');
+  const isRaster = /\.(png|jpe?g)$/i.test(src.split('?')[0]) && !isUpload;
 
   const resolvedAvif = avifSrc 
     ? getAssetUrl(avifSrc) 
