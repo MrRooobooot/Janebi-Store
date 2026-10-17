@@ -4,6 +4,11 @@
 > **Role:** agent-facing change log — commit, what moved, how it was verified.
 > Open work and priorities live in `docs/ledger/tasks.md`; the system map lives in `docs/reference/project-graph.md`. On 2026-10-13 the entries dated 2026-08-28 to 2026-09-02 were moved from the old `## [date] - title` style to this heading format, and all entries were sorted newest first. Entry text is unchanged.
 
+## 2026-10-17 — Bale bot split into handler modules, no behaviour change — live (see release below)
+- `server/bot/bale.ts` 1835 → 79 lines (`startBaleBot`, retry transformer, re-exports). Moved verbatim: `bale/handlers/{commands,callbacks,text,media}.ts` (each `registerXHandlers(bot, cfg)`) and `bale/views.ts` (`editOrReply` + the `show*` renderers + `updateOrderStatus`). Only edit inside a moved body: `token` → `cfg.token` in the image download (same value). A line-multiset diff against the old file shows no other body line lost.
+- New `tests/unit/bale-handlers.test.ts` (17 cases: access control, commands, buttons, wizard, text fallback, media) drives the bot through grammy `handleUpdate` with an offline API layer; written and passing against the OLD file first, then unchanged on the split.
+- Not covered by tests: the DB-writing branches (product create/edit, order status, coupons, reviews, VIP, settings). They moved verbatim but have no behavioural pin.
+
 ## 2026-10-17 — Spec pills for 57 cables (owner-approved) — live, data only
 - `scripts/ops/apply-specs.cjs`: inserted `product_features` for 57 products that had none (connector pair, length when stated, model), taken only from each product's own title/description (`docs/data/product-specs-draft.csv`). Never overwrites existing features. One `audit_logs` row per product (`system:specs-import`). Bypasses `logAudit`/cache, so the app container was restarted. Backup before: `/app/data/pre-specs-import-20261017.db` (in the container volume).
 - Still without specs: 38 products (37 Earldom holders, 1 misc) — their titles carry no spec facts; needs manufacturer data from the owner.
