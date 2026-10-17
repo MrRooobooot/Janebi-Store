@@ -4,6 +4,10 @@
 > **Role:** agent-facing change log — commit, what moved, how it was verified.
 > Open work and priorities live in `docs/ledger/tasks.md`; the system map lives in `docs/reference/project-graph.md`. On 2026-10-13 the entries dated 2026-08-28 to 2026-09-02 were moved from the old `## [date] - title` style to this heading format, and all entries were sorted newest first. Entry text is unchanged.
 
+## 2026-10-17 — Spec pills for 57 cables (owner-approved) — live, data only
+- `scripts/ops/apply-specs.cjs`: inserted `product_features` for 57 products that had none (connector pair, length when stated, model), taken only from each product's own title/description (`docs/data/product-specs-draft.csv`). Never overwrites existing features. One `audit_logs` row per product (`system:specs-import`). Bypasses `logAudit`/cache, so the app container was restarted. Backup before: `/app/data/pre-specs-import-20261017.db` (in the container volume).
+- Still without specs: 38 products (37 Earldom holders, 1 misc) — their titles carry no spec facts; needs manufacturer data from the owner.
+
 ## 2026-10-17 — Product and article text in the raw HTML; prod audit cleared — live (see release below)
 - `server/lib/pageSnapshot.ts`, `server/index.ts`: `/product(s)/:id` and `/blog/:slug` now ship the page's real text (title, brand, category, price, stock, warranty, description, features; article paragraphs) inside `#root`, as `/products` already did via `catalogSnapshot.ts`. Values come from the page's own DB row; nothing is filled in when a field is empty. React replaces it on mount (checked in the browser pane on `/products/13`: one `h1`, no `#product-prerender` left). Unknown ids still return the existing 404. Tests: `tests/unit/page-snapshot.test.ts`.
 - **Not covered yet:** the home page and static pages still ship an empty `#root`. Build-time prerender (Playwright) was not used: the server already injects per-request, so new products need no rebuild.
