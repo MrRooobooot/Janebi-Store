@@ -4,6 +4,11 @@
 > **Role:** agent-facing change log — commit, what moved, how it was verified.
 > Open work and priorities live in `docs/ledger/tasks.md`; the system map lives in `docs/reference/project-graph.md`. On 2026-10-13 the entries dated 2026-08-28 to 2026-09-02 were moved from the old `## [date] - title` style to this heading format, and all entries were sorted newest first. Entry text is unchanged.
 
+## 2026-10-17 — Product and article text in the raw HTML; prod audit cleared — live (see release below)
+- `server/lib/pageSnapshot.ts`, `server/index.ts`: `/product(s)/:id` and `/blog/:slug` now ship the page's real text (title, brand, category, price, stock, warranty, description, features; article paragraphs) inside `#root`, as `/products` already did via `catalogSnapshot.ts`. Values come from the page's own DB row; nothing is filled in when a field is empty. React replaces it on mount (checked in the browser pane on `/products/13`: one `h1`, no `#product-prerender` left). Unknown ids still return the existing 404. Tests: `tests/unit/page-snapshot.test.ts`.
+- **Not covered yet:** the home page and static pages still ship an empty `#root`. Build-time prerender (Playwright) was not used: the server already injects per-request, so new products need no rebuild.
+- Dependencies: `npm audit --omit=dev` went from 4 findings (proxy-addr critical, source-map-js high, multer, ip-address) to 0; express, drizzle-orm, express-rate-limit, esbuild and drizzle-kit moved within their ranges. `npm audit fix` and `npm update` crash on this tree («reading 'edgesOut'»); targeted `npm update <names>` works. `trust proxy` stays at hop count 1.
+
 ## 2026-10-15 — Contact details: real email and address — live (see release below)
 - `src/lib/constants.ts` `STORE_SETTINGS_DEFAULTS`: `email` → `info@janebiarena.ir`, `address` → «مشهد، شهرک غرب» (home-run shop, no storefront; street left out by the owner). `public/.well-known/security.txt` contact updated. Production has no `store_settings` rows for these keys, so the defaults are what is served.
 - **Not changed, waiting on the owner:** phone. The number given (`099389070955`) has 12 digits, so it is not a valid mobile (11 digits). `phone` still shows the seed placeholder, as do `public/llms.txt` and the JSON-LD `telephone` in `index.html`.

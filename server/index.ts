@@ -10,6 +10,7 @@ import { blogPostingJsonLdFor, productJsonLdFor, breadcrumbJsonLdFor, productBre
 import { routeMetaForRequest, injectSeoMetadata, injectNotFoundMetadata, productOgImageFor, unavailableFor, SeoLookupUnavailable } from "./lib/seoMeta.js";
 import { matchRoute } from "../src/lib/routeSeo.js";
 import { catalogSnapshotFor, injectCatalogSnapshot } from "./lib/catalogSnapshot.js";
+import { pageSnapshotFor, injectRootContent } from "./lib/pageSnapshot.js";
 import { shouldNoIndex } from "./lib/robots.js";
 import { LEGACY_PRODUCT_REDIRECTS } from "./data/legacyProductRedirects.js";
 import { eq } from "drizzle-orm";
@@ -160,7 +161,7 @@ async function startServer() {
           return sendNotFound(res, shell);
         }
 
-        const [crumb, postingLd, productLd, meta, productImage, productCrumb, catalog] = await Promise.all([
+        const [crumb, postingLd, productLd, meta, productImage, productCrumb, catalog, pageContent] = await Promise.all([
           breadcrumbJsonLdFor(pathname),
           blogPostingJsonLdFor(pathname),
           productJsonLdFor(pathname),
@@ -168,6 +169,7 @@ async function startServer() {
           productOgImageFor(pathname),
           productBreadcrumbJsonLdFor(pathname),
           catalogSnapshotFor(pathname, query),
+          pageSnapshotFor(pathname),
         ]);
         // A blog URL whose post is unknown or unpublished is a 404, as product URLs are.
         // A lookup that failed never reaches this line: routeMetaForRequest throws, and
@@ -177,7 +179,7 @@ async function startServer() {
         // Structured JSON-LD only differs on /blog and /product routes; avoid
         // re-reading on every request by falling back to a plain sendFile.
         const structuredLd = [crumb, postingLd, productLd, productCrumb].filter(Boolean).join("\n");
-        if (!structuredLd && !meta && !catalog) {
+        if (!structuredLd && !meta && !catalog && !pageContent) {
           return res.set("Content-Type", "text/html").send(applyNoIndexMeta(shell, pathname, query));
         }
         let html = shell;
@@ -188,6 +190,8 @@ async function startServer() {
         // builder, same page size as the client) inside #root so the crawler reads
         // what a user reads; React replaces it on hydration.
         if (catalog) html = injectCatalogSnapshot(html, catalog);
+        // Product and article pages: same idea, text from the page's own DB row.
+        if (pageContent) html = injectRootContent(html, pageContent);
         // Last, so the robots meta always matches the X-Robots-Tag the middleware sends.
         html = applyNoIndexMeta(html, pathname, query);
         return res

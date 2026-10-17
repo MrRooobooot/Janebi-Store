@@ -9,6 +9,7 @@
 ### Needs a decision (from Round 2026-09-21)
 - [ ] **پیشنهاد بعدی (نیاز تصمیم):** پریرندر زمان ساخت برای ۸۱ URL سایتمپ — شل فعلی برای خزندهٔ بدون JS خالی است (`#root` خالی، بدون `<noscript>`) و همین «Crawled – currently not indexed» (۱۳۴) را توضیح می‌دهد. اپ `createRoot` است ⇒ ریسک hydration ندارد.
   - Re-verified 2026-10-13: the live sitemap lists 81 `<loc>` entries; a product page has an empty `#root` and no `<noscript>`; the raw HTML carries only title, description and metadata.
+  - **2026-10-17 partly done:** product and article pages now carry their text in the raw HTML (`server/lib/pageSnapshot.ts`, request-time, no rebuild needed). Still empty: home and static pages. After release, request indexing in Search Console and re-check «Crawled – currently not indexed» in 2–4 weeks.
 
 ### Done (2026-10-13, owner asked to fix)
 - **Admin category dropdown** now offers only the 14 approved names (`src/lib/approvedCategories.ts`, checked against `docs/reference/CATEGORY-TREE.md` by `tests/unit/approved-categories.test.ts`). The default-image map and the preset gallery use the same names. Judgment call to confirm: the cable-protector preset, which had no approved name, now files under «کابل و سیم».
